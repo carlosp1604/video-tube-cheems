@@ -3,7 +3,7 @@ import path from 'path'
 import { getKnexConfig } from './persistence/db'
 
 const knexConfig: Knex.Config = {
-  client: 'mysql',
+  client: 'mysql2',
   connection: getKnexConfig(),
   pool: {
     min: 2,

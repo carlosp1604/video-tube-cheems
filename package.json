@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "db:up": "docker-compose up -d",
-    "db:make-migration": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:make -x ts"
+    "db:make-migration": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:make -x ts",
+    "db:migrate": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:latest"
   },
   "dependencies": {
+    "@types/knex": "^0.16.1",
     "@types/node": "18.11.10",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
@@ -18,7 +20,7 @@
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.6",
     "knex": "^2.3.0",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
     "next": "13.0.6",
     "objection": "^3.0.1",
     "react": "18.2.0",

@@ -1,4 +1,7 @@
 import { Knex } from 'knex'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 export function getKnexConfig(): Knex.MySqlConnectionConfig {
   const { env } = process
@@ -15,6 +18,7 @@ export function getKnexConfig(): Knex.MySqlConnectionConfig {
     !user ||
     !password
   ) {
+    console.log(host)
     throw Error('Cannot connect to database. Missing .env vars.')
   }
 

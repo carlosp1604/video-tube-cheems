@@ -13,6 +13,8 @@ export async function up(knex: Knex): Promise<void> {
       table.timestamp('updated_at')
         .defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
         .notNullable()
+      table.timestamp('deleted_at')
+        .defaultTo(null)
     })
 }
 

@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:up": "docker-compose up -d",
     "db:make-migration": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:make -x ts",
-    "db:migrate": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:latest"
+    "db:migrate": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:latest",
+    "db:rollback": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex migrate:rollback"
   },
   "dependencies": {
     "@types/knex": "^0.16.1",

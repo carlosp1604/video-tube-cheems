@@ -5,8 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     .createTable('posts_meta', function (table) {
       table.string('type', 64).notNullable()
       table.string('value', 512).notNullable()
-      table.primary(['posts_id', 'type'])
-      table.string('posts_id', 36)
+      table.primary(['post_id', 'type'])
+      table.string('post_id', 36)
         .references('id')
         .inTable('posts')
         .notNullable()

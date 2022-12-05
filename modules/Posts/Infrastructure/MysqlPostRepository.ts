@@ -1,11 +1,10 @@
-import {PostRepositoryInterface, RepositoryOptions} from "../Domain/PostRepositoryInterface";
-import {Post} from "../Domain/Post";
-import knex from "knex";
-import {Model} from "objection";
-import {ObjectionPostMetaModel} from "./ObjectionPostMetaModel";
+import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
+import { Post } from '../Domain/Post'
+import knex from 'knex'
+import { Model } from 'objection'
 import * as knexConfig from '../../../knexfile'
-import {PostModelTranslator} from "./PostModelTranslator";
-import {ObjectionPostModel} from "./ObjectionPostModel";
+import { PostModelTranslator } from './PostModelTranslator'
+import { ObjectionPostModel } from './ObjectionPostModel'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**

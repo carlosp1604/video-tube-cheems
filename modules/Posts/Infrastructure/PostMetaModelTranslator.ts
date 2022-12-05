@@ -1,5 +1,5 @@
-import {PostMeta} from "../Domain/PostMeta";
-import {ObjectionPostMetaModel} from "./ObjectionPostMetaModel";
+import { PostMeta } from '../Domain/PostMeta'
+import { ObjectionPostMetaModel } from './ObjectionPostMetaModel'
 
 export class PostMetaModelTranslator {
   public static toDomain(objectionPostMetaModel: ObjectionPostMetaModel): PostMeta {

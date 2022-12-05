@@ -1,7 +1,7 @@
-import {ObjectionPostModel} from "./ObjectionPostModel";
-import {RepositoryOptions} from "../Domain/PostRepositoryInterface";
-import {Post} from "../Domain/Post";
-import {PostMetaModelTranslator} from "./PostMetaModelTranslator";
+import { ObjectionPostModel } from './ObjectionPostModel'
+import { RepositoryOptions } from '../Domain/PostRepositoryInterface'
+import { Post } from '../Domain/Post'
+import { PostMetaModelTranslator } from './PostMetaModelTranslator'
 
 export class PostModelTranslator {
   public static toDomain(

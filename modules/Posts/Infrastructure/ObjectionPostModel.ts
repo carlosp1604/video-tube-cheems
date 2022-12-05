@@ -1,5 +1,5 @@
 import { Model } from 'objection'
-import {ObjectionPostMetaModel} from "./ObjectionPostMetaModel";
+import { ObjectionPostMetaModel } from './ObjectionPostMetaModel'
 
 export class ObjectionPostModel extends Model {
   id!: string

@@ -1,4 +1,4 @@
-import {PostMeta} from "./PostMeta";
+import { PostMeta } from './PostMeta'
 
 export class Post {
   public readonly id: string

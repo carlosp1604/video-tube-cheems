@@ -17,7 +17,8 @@ export class PostModelTranslator {
       objectionPostModel.views_count,
       objectionPostModel.created_at,
       objectionPostModel.updated_at,
-      objectionPostModel.deleted_at
+      objectionPostModel.deleted_at,
+      objectionPostModel.published_at
     )
 
     if (options.includes('meta')) {

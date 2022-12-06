@@ -10,6 +10,7 @@ export class Post {
   public readonly createdAt: Date
   public updatedAt: Date
   public deletedAt: Date | null
+  public publishedAt: Date | null
   public meta: PostMeta[] = []
   public tags: PostTag[] = []
   public actors: Actor[] = []
@@ -21,8 +22,9 @@ export class Post {
     viewsCount: number,
     createdAt: Date,
     updatedAt: Date,
-    deletedAt: Date | null
-  ) {
+    deletedAt: Date | null,
+    publishedAt: Date | null
+) {
     this.id = id
     this.title = title
     this.description = description
@@ -30,6 +32,7 @@ export class Post {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
+    this.publishedAt = publishedAt
   }
 
   public addMeta(postMeta: PostMeta): void {

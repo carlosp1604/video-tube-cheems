@@ -11,6 +11,7 @@ export class ObjectionPostModel extends Model {
   created_at!: Date
   updated_at!: Date
   deleted_at!: Date | null
+  published_at!: Date | null
   meta!: ObjectionPostMetaModel[]
   tags!: ObjectionPostTagModel[]
   actors!: ObjectionActorModel[]

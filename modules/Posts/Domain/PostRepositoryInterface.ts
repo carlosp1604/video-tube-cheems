@@ -1,6 +1,6 @@
 import { Post } from './Post'
 
-export type RepositoryOptions = 'postMeta'
+export type RepositoryOptions = 'meta' | 'tags' | 'actors'
 
 export interface PostRepositoryInterface {
   /**
@@ -12,8 +12,7 @@ export interface PostRepositoryInterface {
   /**
    * Find a Post given its ID
    * @param postId Post ID
-   * @param options Options with the relationships to load
    * @return Post if found or null
    */
-  findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | null>
+  findById(postId: Post['id']): Promise<Post | null>
 }

@@ -1,4 +1,6 @@
 import { PostMeta } from './PostMeta'
+import { PostTag } from './PostTag'
+import { Actor } from './Actor'
 
 export class Post {
   public readonly id: string
@@ -9,6 +11,8 @@ export class Post {
   public updatedAt: Date
   public deletedAt: Date | null
   public meta: PostMeta[] = []
+  public tags: PostTag[] = []
+  public actors: Actor[] = []
 
   public constructor(
     id: string,
@@ -30,5 +34,13 @@ export class Post {
 
   public addMeta(postMeta: PostMeta): void {
     this.meta.push(postMeta)
+  }
+
+  public addTag(postTag: PostTag): void {
+    this.tags.push(postTag)
+  }
+
+  public addActor(postActor: Actor): void {
+    this.actors.push(postActor)
   }
 }

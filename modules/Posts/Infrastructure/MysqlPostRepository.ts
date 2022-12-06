@@ -1,4 +1,4 @@
-import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
+import { PostRepositoryInterface } from '../Domain/PostRepositoryInterface'
 import { Post } from '../Domain/Post'
 import knex from 'knex'
 import { Model } from 'objection'
@@ -18,20 +18,22 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   /**
    * Find a Post given its ID
    * @param postId Post ID
-   * @param options Options with the relationships to load
    * @return Post if found or null
    */
-  public async findById(postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
+  public async findById(postId: Post['id']): Promise<Post | null> {
     const knexInstance = knex(knexConfig)
     Model.knex(knexInstance)
+
     const posts = await ObjectionPostModel.query()
-      .where('id', '=', postId)
+      .where('posts.id', '=', postId)
       .withGraphFetched('meta')
+      .withGraphFetched('tags')
+      .withGraphFetched('actors')
 
     if (posts.length === 0) {
       return null
     }
 
-    return PostModelTranslator.toDomain(posts[0], options)
+    return PostModelTranslator.toDomain(posts[0], ['meta', 'tags', 'actors'])
   }
 }

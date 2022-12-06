@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('id', 36).primary().notNullable()
       table.string('title', 256).notNullable()
       table.string('description', 512).notNullable()
-      table.integer('view_counts').notNullable().defaultTo(0)
+      table.integer('views_count').notNullable().defaultTo(0)
       table.timestamp('created_at')
         .defaultTo(knex.raw('CURRENT_TIMESTAMP'))
         .notNullable()
@@ -17,7 +17,6 @@ export async function up(knex: Knex): Promise<void> {
         .defaultTo(null)
     })
 }
-
 
 export async function down(knex: Knex): Promise<void> {
   return knex.schema.dropTable('posts')

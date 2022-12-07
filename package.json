@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@types/knex": "^0.16.1",
+    "@types/luxon": "^3.1.0",
     "@types/node": "18.11.10",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
@@ -25,6 +26,7 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "knex": "^2.3.0",
+    "luxon": "^3.1.1",
     "mysql2": "^2.3.3",
     "next": "13.0.6",
     "objection": "^3.0.1",

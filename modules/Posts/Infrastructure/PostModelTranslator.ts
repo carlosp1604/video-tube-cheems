@@ -4,21 +4,33 @@ import { Post } from '../Domain/Post'
 import { PostMetaModelTranslator } from './PostMetaModelTranslator'
 import { PostTagModelTranslator } from './PostTagModelTranslator'
 import { ActorModelTranslator } from './ActorModelTranslator'
+import { DateTime } from 'luxon'
 
 export class PostModelTranslator {
   public static toDomain(
     objectionPostModel: ObjectionPostModel,
     options: RepositoryOptions[] = []
   ) {
+    let publishedAt: DateTime | null = null
+    let deletedAt: DateTime | null = null
+
+    if (objectionPostModel.published_at !== null) {
+      publishedAt = DateTime.fromJSDate(objectionPostModel.published_at)
+    }
+
+    if (objectionPostModel.deleted_at !== null) {
+      deletedAt = DateTime.fromJSDate(objectionPostModel.deleted_at)
+    }
+
     const post = new Post(
       objectionPostModel.id,
       objectionPostModel.title,
       objectionPostModel.description,
       objectionPostModel.views_count,
-      objectionPostModel.created_at,
-      objectionPostModel.updated_at,
-      objectionPostModel.deleted_at,
-      objectionPostModel.published_at
+      DateTime.fromJSDate(objectionPostModel.created_at),
+      DateTime.fromJSDate(objectionPostModel.updated_at),
+      deletedAt,
+      publishedAt
     )
 
     if (options.includes('meta')) {

@@ -1,29 +1,30 @@
 import { PostMeta } from './PostMeta'
 import { PostTag } from './PostTag'
 import { Actor } from './Actor'
+import { DateTime } from 'luxon'
 
 export class Post {
   public readonly id: string
   public readonly title: string
   public readonly description: string
   public viewsCount: number
-  public readonly createdAt: Date
-  public updatedAt: Date
-  public deletedAt: Date | null
-  public publishedAt: Date | null
-  public meta: PostMeta[] = []
-  public tags: PostTag[] = []
-  public actors: Actor[] = []
+  public readonly createdAt: DateTime
+  public updatedAt: DateTime
+  public deletedAt: DateTime | null
+  public publishedAt: DateTime | null
+  public meta: Map<string, PostMeta> = new Map<string, PostMeta>()
+  public tags: Map<PostTag['id'], PostTag> = new Map<PostTag['id'], PostTag>()
+  public actors: Map<Actor['id'], Actor> = new Map<Actor['id'], Actor>()
 
   public constructor(
     id: string,
     title: string,
     description: string,
     viewsCount: number,
-    createdAt: Date,
-    updatedAt: Date,
-    deletedAt: Date | null,
-    publishedAt: Date | null
+    createdAt: DateTime,
+    updatedAt: DateTime,
+    deletedAt: DateTime | null,
+    publishedAt: DateTime | null
 ) {
     this.id = id
     this.title = title
@@ -36,14 +37,26 @@ export class Post {
   }
 
   public addMeta(postMeta: PostMeta): void {
-    this.meta.push(postMeta)
+    if (this.meta.has(postMeta.type)) {
+      return
+    }
+
+    this.meta.set(postMeta.type, postMeta)
   }
 
   public addTag(postTag: PostTag): void {
-    this.tags.push(postTag)
+    if (this.tags.has(postTag.id)) {
+      return
+    }
+
+    this.tags.set(postTag.id, postTag)
   }
 
   public addActor(postActor: Actor): void {
-    this.actors.push(postActor)
+    if (this.actors.has(postActor.id)) {
+      return
+    }
+
+    this.actors.set(postActor.id, postActor)
   }
 }

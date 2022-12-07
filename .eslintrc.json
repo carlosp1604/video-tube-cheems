@@ -15,7 +15,8 @@
         "brace-style": ["error", "stroustrup"],
         "object-curly-spacing": ["error", "always", { "arraysInObjects": true, "objectsInObjects": true }],
         "space-before-blocks": ["error", "always"],
-        "no-undef": "off"
+        "no-undef": "off",
+        "no-unused-vars": "warn"
     },
     "plugins": [
         "unused-imports"

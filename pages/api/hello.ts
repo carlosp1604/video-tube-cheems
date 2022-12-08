@@ -1,13 +1,41 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { User } from '../../modules/Auth/Domain/User'
+import { DateTime } from 'luxon'
+import { MysqlUserRepository } from '../../modules/Auth/Infrastructure/MysqlUserRepository'
 
-type Data = {
-  name: string
-}
-
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<User | null>
 ) {
-  res.status(200).json({ name: 'John Doe' })
+  const user = new User(
+    '114',
+    'asdas',
+    'test2@email.es',
+    null,
+    0,
+    'es',
+    DateTime.now(),
+    DateTime.now(),
+    null,
+    null
+  )
+
+  const mysqlUserRepo = new MysqlUserRepository()
+  await mysqlUserRepo.insert(user, 'hola')
+
+  const foundUser = await mysqlUserRepo.findById('113')
+
+  // const result = await (
+  //   new MysqlPostRepository()
+  //     .findWithOffsetAndLimit(
+  //       1,
+  //       1,
+  //       'date_asc',
+  //       {
+  //         type: 'title',
+  //         value: '8'
+  //       })
+  //)
+
+  return res.status(200).json(foundUser)
 }

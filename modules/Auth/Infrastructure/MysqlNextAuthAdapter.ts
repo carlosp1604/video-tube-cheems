@@ -1,6 +1,5 @@
 import { Adapter, AdapterSession, AdapterUser, VerificationToken } from 'next-auth/adapters'
 import { MysqlUserRepository } from './MysqlUserRepository'
-import { UuidGenerator } from '../../../helpers/Domain/UuidGenerator'
 import { User } from '../Domain/User'
 import { DateTime } from 'luxon'
 
@@ -9,34 +8,7 @@ export default function MysqlNextAuthAdapter (): Adapter {
 
   return {
     async createUser(user): Promise<AdapterUser> {
-      const userId = UuidGenerator.get()
-      // TODO: Handle userName and language correctly
-      const userName = user.name ?? ''
-      const language = 'en'
-      const nowDate = DateTime.now()
-
-      const userToInsert = new User(
-        userId,
-        userName,
-        user.email,
-        null,
-        0,
-        language,
-        nowDate,
-        nowDate,
-        null,
-        null
-      )
-
-      await userRepository.insert(userToInsert)
-
-      return {
-        id: userToInsert.id,
-        email: userToInsert.email,
-        name: userToInsert.name,
-        emailVerified: null,
-        image: null,
-      }
+      throw Error('Not implemented!')
     },
     async getUser(id): Promise<AdapterUser | null> {
       const user = await userRepository.findById(id)
@@ -181,6 +153,7 @@ export default function MysqlNextAuthAdapter (): Adapter {
       adapterUser.image || domainUser.imageUrl,
       domainUser.viewsCount,
       domainUser.language,
+      domainUser.hashedPassword,
       domainUser.createdAt,
       domainUser.updatedAt,
       emailVerified,

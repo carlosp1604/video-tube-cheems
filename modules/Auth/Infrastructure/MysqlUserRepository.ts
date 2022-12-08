@@ -15,22 +15,12 @@ export class MysqlUserRepository implements UserRepositoryInterface {
     // TODO: Find a solution for this
     const knexInstance = knex(knexConfig)
     Model.knex(knexInstance)
+
     const userRow = UserModelTranslator.toDatabase(user)
 
     // TODO: Handle errors correctly
     await ObjectionUserModel.query()
-      .insert({
-        id: userRow.id,
-        email: userRow.email,
-        email_verified: userRow.email_verified,
-        name: userRow.name,
-        created_at: userRow.created_at,
-        deleted_at: userRow.deleted_at,
-        updated_at: userRow.updated_at,
-        views_count: userRow.views_count,
-        image_url: userRow.image_url,
-        language: userRow.language
-      })
+      .insert(userRow)
   }
 
   /**

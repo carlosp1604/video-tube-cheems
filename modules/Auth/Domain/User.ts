@@ -1,4 +1,6 @@
 import { DateTime } from 'luxon'
+import { CryptoServiceInterface } from '../../../helpers/Domain/CryptoServiceInterface'
+import { BcryptCryptoService } from '../../../helpers/Infrastructure/BcryptCryptoService'
 
 export class User {
   public readonly id: string
@@ -7,6 +9,7 @@ export class User {
   public readonly imageUrl: string | null
   public viewsCount: number
   public language: string
+  public hashedPassword: string
   public emailVerified: DateTime | null
   public readonly createdAt: DateTime
   public updatedAt: DateTime
@@ -19,6 +22,7 @@ export class User {
     imageUrl: string | null,
     viewsCount: number,
     language: string,
+    hashedPassword: string,
     createdAt: DateTime,
     updatedAt: DateTime,
     emailVerified: DateTime | null,
@@ -28,11 +32,17 @@ export class User {
     this.name = name
     this.email = email
     this.imageUrl = imageUrl
+    this.hashedPassword = hashedPassword
     this.viewsCount = viewsCount
     this.language = language
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
     this.emailVerified = emailVerified
+  }
+
+  public async matchPassword(password: string) {
+    const cryptoService: CryptoServiceInterface = new BcryptCryptoService()
+    return cryptoService.compare(password, this.hashedPassword)
   }
 }

@@ -7,6 +7,7 @@ export class ObjectionUserModel extends Model {
   views_count!: number
   image_url!: string | null
   language!: string
+  password!: string
   created_at!: Date
   updated_at!: Date
   deleted_at!: Date | null

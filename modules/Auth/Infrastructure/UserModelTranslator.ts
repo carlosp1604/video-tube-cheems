@@ -3,7 +3,7 @@ import { ObjectionUserModel } from './ObjectionUserModel'
 import { User } from '../Domain/User'
 import { ModelObject } from 'objection'
 
-type MysqlUserRow = ModelObject<ObjectionUserModel>
+type MysqlUserRow = Partial<ModelObject<ObjectionUserModel>>
 
 export class UserModelTranslator {
   public static toDomain(objectionUserModel: ObjectionUserModel) {
@@ -25,6 +25,7 @@ export class UserModelTranslator {
       objectionUserModel.image_url,
       objectionUserModel.views_count,
       objectionUserModel.language,
+      objectionUserModel.password,
       DateTime.fromJSDate(objectionUserModel.created_at),
       DateTime.fromJSDate(objectionUserModel.updated_at),
       emailVerifiedAt,
@@ -43,7 +44,8 @@ export class UserModelTranslator {
       updated_at: user.updatedAt.toJSDate(),
       views_count: user.viewsCount,
       image_url: user.imageUrl,
-      language: user.language
+      language: user.language,
+      password: user.hashedPassword
     }
   }
 }

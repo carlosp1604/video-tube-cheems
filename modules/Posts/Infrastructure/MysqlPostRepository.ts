@@ -26,7 +26,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     Model.knex(knexInstance)
 
     const posts = await ObjectionPostModel.query()
-      .where('posts.id', '=', postId)
+      .whereNull('deleted_at')
+      .andWhere('posts.id', '=', postId)
       .withGraphFetched('meta')
       .withGraphFetched('tags')
       .withGraphFetched('actors')
@@ -62,6 +63,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       .limit(limit)
       .offset(offset)
       .whereNotNull('published_at')
+      .whereNull('deleted_at')
       .andWhere((builder) => {
         if (order === 'date_desc') {
           builder.orderBy('published_at', 'desc')

@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
       table.string('email', 256).notNullable().unique()
       table.string('image_url', 256).nullable()
       table.string('language', 16).notNullable()
+      table.string('password', 60).notNullable()
       table.timestamp('email_verified').nullable()
       table.integer('views_count').notNullable().defaultTo(0)
       table.timestamp('created_at')

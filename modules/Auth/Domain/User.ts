@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { CryptoServiceInterface } from '../../../helpers/Domain/CryptoServiceInterface'
-import { BcryptCryptoService } from '../../../helpers/Infrastructure/BcryptCryptoService'
+import { bindings } from '../Infrastructure/Bindings'
 
 export class User {
   public readonly id: string
@@ -42,7 +42,7 @@ export class User {
   }
 
   public async matchPassword(password: string) {
-    const cryptoService: CryptoServiceInterface = new BcryptCryptoService()
+    const cryptoService = bindings.get<CryptoServiceInterface>('CryptoServiceInterface')
     return cryptoService.compare(password, this.hashedPassword)
   }
 }

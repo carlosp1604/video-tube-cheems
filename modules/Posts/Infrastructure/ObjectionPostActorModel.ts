@@ -1,6 +1,6 @@
 import { Model } from 'objection'
 
-export class ObjectionsPostActorModel extends Model {
+export class ObjectionPostActorModel extends Model {
   post_id!: string
   actor_id!: string
   created_at!: Date

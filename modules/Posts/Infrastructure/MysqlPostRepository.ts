@@ -1,10 +1,23 @@
-import { PostRepositoryInterface, RepositoryFilter, RepositoryOrderCriteria } from '../Domain/PostRepositoryInterface'
+import {
+  PostRepositoryInterface,
+  RepositoryFilter,
+  RepositoryOptions, RepositorySortingCriteria, RepositorySortingOptions
+} from '../Domain/PostRepositoryInterface'
 import { Post } from '../Domain/Post'
 import knex from 'knex'
-import { Model } from 'objection'
+import { Model, OrderByDirection } from 'objection'
 import * as knexConfig from '../../../knexfile'
 import { PostModelTranslator } from './PostModelTranslator'
 import { ObjectionPostModel } from './ObjectionPostModel'
+import { Actor } from '../Domain/Actor'
+import { PostTag } from '../Domain/PostTag'
+import { PostMeta } from '../Domain/PostMeta'
+import { PostComment } from '../Domain/PostComment'
+import { PostReaction } from '../Domain/PostReaction'
+import { ObjectionPostReactionModel } from './ObjectionPostReactionModel'
+import { PostReactionModelTranslator } from './PostReactionModelTranslator'
+import { PostCommentModelTranslator } from './PostCommentModelTranslator'
+import { ObjectionPostCommentModel } from './ObjectionPostCommentModel'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -12,73 +25,137 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param post Post to persist
    */
   public async save(post: Post): Promise<void> {
-    return Promise.resolve()
+    // TODO: Find a solution for this
+    const knexInstance = knex(knexConfig)
+    Model.knex(knexInstance)
+    try {
+      await ObjectionPostModel.transaction(async (transaction) => {
+        const mysqlPostRow = PostModelTranslator.toDatabase(post)
+        const newPost = await ObjectionPostModel
+          .query(transaction)
+          .insert(mysqlPostRow)
+
+        // insert post_actors
+        await Promise.all(
+          post.actors.map((actor: Actor) => {
+            return newPost
+              .$relatedQuery('postActors', transaction)
+              .insert({ actor_id: actor.id })
+          })
+        )
+
+        // insert post_post_tags
+        await Promise.all(
+          post.tags.map(async (tag: PostTag) => {
+            return newPost
+            .$relatedQuery('postTags', transaction)
+            .insert({ tag_id: tag.id })
+          })
+        )
+
+        // insert post_meta
+        await Promise.all(
+          post.meta.map(async (meta: PostMeta) => {
+            return newPost
+              .$relatedQuery('meta', transaction)
+              .insert({
+                value: meta.value,
+                type: meta.type
+              })
+          })
+        )
+
+        return newPost
+      })
+    } 
+    catch (exception: unknown) {
+      console.log(exception)
+    }
   }
 
   /**
    * Find a Post given its ID
    * @param postId Post ID
+   * @param options Post relations to load
    * @return Post if found or null
    */
-  public async findById(postId: Post['id']): Promise<Post | null> {
+  public async findById(postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
     // TODO: Find a solution for this
     const knexInstance = knex(knexConfig)
     Model.knex(knexInstance)
 
-    const posts = await ObjectionPostModel.query()
-      .whereNull('deleted_at')
-      .andWhere('posts.id', '=', postId)
-      .withGraphFetched('meta')
-      .withGraphFetched('tags')
-      .withGraphFetched('actors')
+    const post = await ObjectionPostModel.query()
+      .findById(postId)
+      .modify((queryBuilder) => {
+        queryBuilder.whereNull('deleted_at')
+        queryBuilder.andWhere('posts.id', '=', postId)
 
-    if (posts.length === 0) {
+        options.forEach((option) => {
+          if (option === 'comments') {
+            const expression = '.[user, childComments'
+            const nestedExpression = `comments(filterChildren).[childComments${expression.repeat(10)}${']'.repeat(11)}`
+            queryBuilder.withGraphFetched(nestedExpression)
+              .modifiers({
+                filterChildren(builder) {
+                  builder.whereNull('parent_comment_id')
+                }
+              })
+
+            return
+          }
+          queryBuilder.withGraphFetched(option)
+        })
+      })
+
+    if (!post) {
       return null
     }
 
-    return PostModelTranslator.toDomain(posts[0], ['meta', 'tags', 'actors'])
+    return PostModelTranslator.toDomain(post, options)
   }
 
   /**
    * Find Posts based on filter and order criteria
    * @param offset Post offset
    * @param limit
-   * @param order Post sorting criteria
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
    * @param filter Post filter
    * @return Post if found or null
    */
   public async findWithOffsetAndLimit(
     offset: number,
     limit: number,
-    order: RepositoryOrderCriteria = 'date_desc',
-    filter?: RepositoryFilter
+    sortingOption: RepositorySortingOptions,
+    sortingCriteria: RepositorySortingCriteria,
+    filter?: RepositoryFilter,
   ): Promise<Post[]> {
     // TODO: Find a solution for this
     const knexInstance = knex(knexConfig)
     Model.knex(knexInstance)
 
     const posts = await ObjectionPostModel.query()
-      .withGraphFetched('meta')
-      .withGraphFetched('actors')
-      .limit(limit)
-      .offset(offset)
-      .whereNotNull('published_at')
-      .whereNull('deleted_at')
-      .andWhere((builder) => {
-        if (order === 'date_desc') {
-          builder.orderBy('published_at', 'desc')
+      .modify((builder) => {
+        builder.whereNotNull('published_at')
+        builder.whereNull('deleted_at')
+        builder.limit(limit)
+        builder.offset(offset)
+        builder.withGraphFetched('meta')
+        builder.withGraphFetched('actors')
+        builder.withGraphFetched('reactions')
+
+        let order: OrderByDirection = 'desc'
+
+        if (sortingCriteria === 'asc') {
+          order = 'asc'
         }
 
-        if (order === 'date_asc') {
-          builder.orderBy('published_at', 'asc')
+        if (sortingOption === 'date') {
+          builder.orderBy('published_at', order)
         }
 
-        if (order === 'views_asc') {
-          builder.orderBy('views_count', 'asc')
-        }
-
-        if (order === 'views_desc') {
-          builder.orderBy('views_count', 'desc')
+        if (sortingOption === 'views') {
+          builder.orderBy('views_count', order)
         }
 
         if (filter) {
@@ -88,7 +165,72 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       })
 
       return posts.map((post) =>
-        PostModelTranslator.toDomain(post, ['meta', 'actors']))
+        PostModelTranslator.toDomain(post, ['meta', 'actors', 'reactions']))
+  }
 
+  /**
+   * Add a new Post Reaction
+   * @param reaction PostReaction
+   */
+  public async createReaction(reaction: PostReaction): Promise<void> {
+    const mysqlReactionRow = PostReactionModelTranslator.toDatabase(reaction)
+
+    await ObjectionPostReactionModel.query()
+      .insert(mysqlReactionRow)
+  }
+
+  /**
+   * Update a new Post Reaction
+   * @param reaction PostReaction
+   */
+  public async updateReaction(reaction: PostReaction): Promise<void> {
+    await ObjectionPostReactionModel.query()
+      .patch({
+        reaction_type: reaction.reactionType
+      })
+      .where('user_id', '=', reaction.userId)
+  }
+
+  /**
+   * Delete a new Post Reaction
+   * @param reaction PostReaction
+   */
+  public async deleteReaction(reaction: PostReaction): Promise<void> {
+    await ObjectionPostReactionModel.query()
+      .delete()
+      .where('user_id', '=', reaction.userId)
+  }
+
+  /**
+   * Add a new Post Comment
+   * @param comment PostComment
+   */
+  public async createComment(comment: PostComment): Promise<void> {
+    const mysqlCommentRow = PostCommentModelTranslator.toDatabase(comment)
+
+    await ObjectionPostCommentModel.query()
+      .insert(mysqlCommentRow)
+  }
+
+  /**
+   * Update a Post Comment
+   * @param comment PostComment
+   */
+  public async updateComment(comment: PostComment): Promise<void> {
+    await ObjectionPostCommentModel.query()
+      .patch({
+        comment: comment.comment
+      })
+      .where('id', '=', comment.id)
+  }
+
+  /**
+   * Delete a Post Comment
+   * @param comment PostComment
+   */
+  public async deleteComment(comment: PostComment): Promise<void> {
+    await ObjectionPostCommentModel.query()
+      .delete()
+      .where('id', '=', comment.id)
   }
 }

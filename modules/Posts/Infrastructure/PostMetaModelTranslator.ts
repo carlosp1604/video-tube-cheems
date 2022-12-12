@@ -1,6 +1,9 @@
 import { PostMeta } from '../Domain/PostMeta'
 import { ObjectionPostMetaModel } from './ObjectionPostMetaModel'
 import { DateTime } from 'luxon'
+import { ModelObject } from 'objection'
+
+type MysqlPostMetaRow = Partial<ModelObject<ObjectionPostMetaModel>>
 
 export class PostMetaModelTranslator {
   public static toDomain(objectionPostMetaModel: ObjectionPostMetaModel): PostMeta {
@@ -18,5 +21,16 @@ export class PostMetaModelTranslator {
       DateTime.fromJSDate(objectionPostMetaModel.updated_at),
       deletedAt
     )
+  }
+
+  public static toDatabase(postMeta: PostMeta): MysqlPostMetaRow {
+    return {
+      type: postMeta.type,
+      post_id: postMeta.postId,
+      value: postMeta.value,
+      created_at: postMeta.createdAt.toJSDate(),
+      deleted_at: postMeta.deletedAt?.toJSDate() ?? null,
+      updated_at: postMeta.updatedAt.toJSDate(),
+    }
   }
 }

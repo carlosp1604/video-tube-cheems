@@ -2,6 +2,10 @@ import { Model } from 'objection'
 import { ObjectionPostMetaModel } from './ObjectionPostMetaModel'
 import { ObjectionPostTagModel } from './ObjectionPostTagModel'
 import { ObjectionActorModel } from './ObjectionActorModel'
+import { ObjectionPostCommentModel } from './ObjectionPostCommentModel'
+import { ObjectionPostReactionModel } from './ObjectionPostReactionModel'
+import { ObjectionPostActorModel } from './ObjectionPostActorModel'
+import { ObjectionPostPostTagModel } from './ObjectionPostPostTagModel'
 
 export class ObjectionPostModel extends Model {
   id!: string
@@ -15,6 +19,10 @@ export class ObjectionPostModel extends Model {
   meta!: ObjectionPostMetaModel[]
   tags!: ObjectionPostTagModel[]
   actors!: ObjectionActorModel[]
+  comments!: ObjectionPostCommentModel[]
+  reactions!: ObjectionPostReactionModel[]
+  postActors!: ObjectionPostActorModel[]
+  postTags!: ObjectionPostPostTagModel[]
 
   public static get tableName(): string {
     return 'posts'
@@ -51,6 +59,38 @@ export class ObjectionPostModel extends Model {
           to: 'post_actors.actor_id'
         },
         to: 'actors.id',
+      }
+    },
+    comments: {
+      relation: Model.HasManyRelation,
+      modelClass: ObjectionPostCommentModel,
+      join: {
+        from: 'posts.id',
+        to: 'post_comments.post_id'
+      }
+    },
+    reactions: {
+      relation: Model.HasManyRelation,
+      modelClass: ObjectionPostReactionModel,
+      join: {
+        from: 'posts.id',
+        to: 'post_reactions.post_id'
+      }
+    },
+    postActors: {
+      relation: Model.HasManyRelation,
+      modelClass: ObjectionPostActorModel,
+      join: {
+        from: 'posts.id',
+        to: 'post_actors.post_id'
+      }
+    },
+    postTags: {
+      relation: Model.HasManyRelation,
+      modelClass: ObjectionPostPostTagModel,
+      join: {
+        from: 'posts.id',
+        to: 'post_post_tags.post_id'
       }
     }
   }

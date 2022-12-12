@@ -5,6 +5,11 @@ import { PostMetaModelTranslator } from './PostMetaModelTranslator'
 import { PostTagModelTranslator } from './PostTagModelTranslator'
 import { ActorModelTranslator } from './ActorModelTranslator'
 import { DateTime } from 'luxon'
+import { PostCommentModelTranslator } from './PostCommentModelTranslator'
+import { PostReactionModelTranslator } from './PostReactionModelTranslator'
+import { ModelObject } from 'objection'
+
+type MysqlPostRow = Partial<ModelObject<ObjectionPostModel>>
 
 export class PostModelTranslator {
   public static toDomain(
@@ -54,6 +59,33 @@ export class PostModelTranslator {
       }
     }
 
+    if (options.includes('comments')) {
+      for (let i = 0; i < objectionPostModel.comments.length; i++) {
+        const commentDomain = PostCommentModelTranslator.toDomain(objectionPostModel.comments[i], )
+        post.createComment(commentDomain)
+      }
+    }
+
+    if (options.includes('reactions')) {
+      for (let i = 0; i < objectionPostModel.reactions.length; i++) {
+        const reactionDomain = PostReactionModelTranslator.toDomain(objectionPostModel.reactions[i])
+        post.addReaction(reactionDomain)
+      }
+    }
+
     return post
+  }
+
+  public static toDatabase(post: Post): MysqlPostRow {
+    return {
+      id: post.id,
+      description: post.description,
+      title: post.title,
+      published_at: post.publishedAt?.toJSDate() ?? null,
+      created_at: post.createdAt.toJSDate(),
+      deleted_at: post.deletedAt?.toJSDate() ?? null,
+      updated_at: post.updatedAt.toJSDate(),
+      views_count: post.viewsCount,
+    }
   }
 }

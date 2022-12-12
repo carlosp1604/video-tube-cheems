@@ -5,6 +5,8 @@ import { Model } from 'objection'
 import * as knexConfig from '../../../knexfile'
 import { User } from '../Domain/User'
 import { ObjectionUserModel } from './ObjectionUserModel'
+import { mockSession } from 'next-auth/client/__tests__/helpers/mocks'
+import user = mockSession.user;
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
@@ -29,6 +31,9 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return User if found or null
    */
   public async findByEmail(userEmail: User['email']): Promise<User | null> {
+    // TODO: Find a solution for this
+    const knexInstance = knex(knexConfig)
+    Model.knex(knexInstance)
     const user = await ObjectionUserModel.query()
       .whereNull('deleted_at')
       .andWhere('email', '=', userEmail)
@@ -47,14 +52,14 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    */
   public async findById(userId: User['id']): Promise<User | null> {
     const user = await ObjectionUserModel.query()
+      .findById(userId)
       .whereNull('deleted_at')
-      .andWhere('id', '=', userId)
 
-    if (user.length === 0) {
+    if (!user) {
       return null
     }
 
-    return UserModelTranslator.toDomain(user[0])
+    return UserModelTranslator.toDomain(user)
   }
 
   /**

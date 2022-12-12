@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema
     .createTable('posts', function (table) {
       table.string('id', 36).primary().notNullable()
-      table.string('title', 256).notNullable()
+      table.string('title', 256).notNullable().index()
       table.string('description', 4096).notNullable()
       table.integer('views_count').notNullable().defaultTo(0)
       table.timestamp('published_at')

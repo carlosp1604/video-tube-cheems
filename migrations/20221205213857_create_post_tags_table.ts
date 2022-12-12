@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     .createTable('post_tags', function (table) {
       table.string('id', 36).primary().notNullable()
       table.string('name', 64).notNullable()
-      table.string('description', 512).nullable()
+      table.string('description', 1024).nullable()
       table.string('image_url', 256).nullable()
       table.timestamp('created_at')
         .defaultTo(knex.raw('CURRENT_TIMESTAMP'))

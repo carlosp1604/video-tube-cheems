@@ -214,23 +214,27 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
   /**
    * Update a Post Comment
-   * @param comment PostComment
+   * @param commentId Post Comment ID
+   * @param comment Post Comment comment
    */
-  public async updateComment(comment: PostComment): Promise<void> {
+  public async updateComment(
+    commentId: PostComment['id'],
+    comment: PostComment['comment']
+  ): Promise<void> {
     await ObjectionPostCommentModel.query()
       .patch({
-        comment: comment.comment
+        comment: comment
       })
-      .where('id', '=', comment.id)
+      .where('id', '=', commentId)
   }
 
   /**
    * Delete a Post Comment
-   * @param comment PostComment
+   * @param commentId Post Comment ID
    */
-  public async deleteComment(comment: PostComment): Promise<void> {
+  public async deleteComment(commentId: PostComment['id']): Promise<void> {
     await ObjectionPostCommentModel.query()
       .delete()
-      .where('id', '=', comment.id)
+      .where('id', '=', commentId)
   }
 }

@@ -26,13 +26,13 @@ export interface PostRepositoryInterface {
 
   /**
    * Add a new Post Reaction
-   * @param reaction PostReaction
+   * @param reaction Post Reaction
    */
   createReaction(reaction: PostReaction): Promise<void>
 
   /**
    * Update a new Post Reaction
-   * @param reaction PostReaction
+   * @param reaction Post Reaction
    */
   updateReaction(reaction: PostReaction): Promise<void>
 
@@ -44,21 +44,22 @@ export interface PostRepositoryInterface {
 
   /**
    * Add a new Post Comment
-   * @param comment PostComment
+   * @param comment Post Comment
    */
   createComment(comment: PostComment): Promise<void>
 
   /**
    * Update a Post Comment
-   * @param comment PostComment
+   * @param commentId Post Comment ID 
+   * @param comment Post Comment comment
    */
-  updateComment(comment: PostComment): Promise<void>
+  updateComment(commentId: PostComment['id'], comment: PostComment['comment']): Promise<void>
 
   /**
    * Delete a Post Comment
-   * @param comment PostComment
+   * @param commentId Post Comment ID 
    */
-  deleteComment(comment: PostComment): Promise<void>
+  deleteComment(commentId: PostComment['id']): Promise<void>
 
   /**
    * Find Posts based on filter and order criteria

@@ -4,7 +4,7 @@ import { PostCommentDomainException } from './PostCommentDomainException'
 
 export class PostComment {
   public readonly id: string
-  public readonly comment: string
+  public comment: string
   public readonly postId: string
   public readonly userId: string
   public readonly parentCommentId: string | null
@@ -45,12 +45,39 @@ export class PostComment {
     this._childComments.set(postComment.id, postComment)
   }
 
+  public deleteChildComment(postCommentId: PostComment['id']): void {
+    const childRemoved = this._childComments.delete(postCommentId)
+
+    if (!childRemoved) {
+      throw PostCommentDomainException.childCommentNotFound(this.id, postCommentId)
+    }
+  }
+
+  public updateChild(
+    postCommentId: PostComment['id'],
+    comment: PostComment['comment']
+  ): void {
+    const childComment = this._childComments.get(postCommentId)
+
+    if (!childComment) {
+      throw PostCommentDomainException.childCommentNotFound(this.id, postCommentId)
+    }
+
+    childComment.setComment(comment)
+    this._childComments.set(postCommentId, childComment)
+  }
+
+
   public setUser(user: User): void {
     if (this._user !== null) {
       throw PostCommentDomainException.userAlreadySet(this.id)
     }
 
     this._user = user
+  }
+
+  public setComment(comment: PostComment['comment']): void {
+    this.comment = comment
   }
 
   get user(): User {

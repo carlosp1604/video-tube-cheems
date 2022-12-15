@@ -3,9 +3,9 @@ import { PostComment } from './PostComment'
 
 export class PostCommentDomainException extends DomainException {
   public static cannotAddChildCommentId = 'post_comment_domain_cannot_add_child_comment'
+  public static childCommentNotFoundId = 'post_comment_domain_child_comment_not_found'
   public static userAlreadySetId = 'post_comment_domain_user_already_set'
   public static userIsNotSetId = 'post_comment_domain_user_is_not_set'
-  public static cannotCreateCommentId = 'post_comment_domain_cannot_create_comment'
 
   public static cannotAddChildComment(
     parentComment: PostComment['id'],
@@ -35,10 +35,13 @@ export class PostCommentDomainException extends DomainException {
     )
   }
 
-  public static cannotCreateComment(): PostCommentDomainException {
+  public static childCommentNotFound(
+    postCommentId: PostComment['id'],
+    childCommentId: PostComment['id']
+  ): PostCommentDomainException {
     return new PostCommentDomainException(
-      'You must provide a postId or postParentId to create a new comment.',
-      this.cannotCreateCommentId
+      `Child comment with ID ${childCommentId} not found in comment with ID ${postCommentId}`,
+      this.childCommentNotFoundId
     )
   }
 }

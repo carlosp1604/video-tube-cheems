@@ -5,6 +5,7 @@ import { DateTime } from 'luxon'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostDomainException } from './PostDomainException'
+import { PostCommentDomainException } from './PostCommentDomainException'
 
 export class Post {
   public readonly id: string
@@ -61,11 +62,94 @@ export class Post {
         throw PostDomainException.parentCommentNotFound(postComment.parentCommentId)
       }
 
-      parentComment.addChildComment(postComment)
+      try {
+        parentComment.addChildComment(postComment)
+      }
+      catch (exception: unknown) {
+        if (!(exception instanceof PostCommentDomainException)) {
+          throw exception
+        }
+
+        if (exception.id === PostCommentDomainException.cannotAddChildCommentId) {
+          throw PostDomainException.cannotAddComment(postComment.id)
+        }
+      }
     }
     else {
       this._comments.set(postComment.id, postComment)
     }
+  }
+
+  public deleteComment(
+    postCommentId: PostComment['id'],
+    parentCommentId: PostComment['parentCommentId'] | null  
+  ): void {
+    if (parentCommentId !== null) {
+      const parentComment = this._comments.get(parentCommentId)
+
+      if (!parentComment) {
+        throw PostDomainException.parentCommentNotFound(parentCommentId)
+      }
+
+      try {
+        parentComment.deleteChildComment(postCommentId)
+
+        return 
+      } 
+      catch (exception: unknown) {
+        if (!(exception instanceof PostCommentDomainException)) {
+          throw exception
+        }
+
+        if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
+          throw PostDomainException.cannotDeleteComment(postCommentId)
+        }
+      }
+    }
+
+    const commentRemoved = this._comments.delete(postCommentId)
+
+    if (!commentRemoved) {
+      throw PostDomainException.cannotDeleteComment(postCommentId)
+    } 
+  }
+
+  public updateComment(
+    postCommentId: PostComment['id'],
+    comment: PostComment['comment'],
+    parentCommentId: PostComment['parentCommentId'] | null
+  ): void {
+    if (parentCommentId !== null) {
+      const parentComment = this._comments.get(parentCommentId)
+
+      if (!parentComment) {
+        throw PostDomainException.parentCommentNotFound(parentCommentId)
+      }
+
+      try {
+        parentComment.updateChild(postCommentId, comment)
+
+        return 
+      } 
+      catch (exception: unknown) {
+        if (!(exception instanceof PostCommentDomainException)) {
+          throw exception
+        }
+
+        if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
+          throw PostDomainException.cannotUpdateComment(postCommentId)
+        }
+      }
+    }
+
+    const commentToUpdate = this._comments.get(postCommentId)
+
+    if (!commentToUpdate) {
+      throw PostDomainException.cannotUpdateComment(postCommentId)
+    }
+
+    commentToUpdate.setComment(comment)
+    this._comments.set(commentToUpdate.id, commentToUpdate)
   }
 
   public createComment(postComment: PostComment): void {

@@ -7,7 +7,6 @@ import { PostComment } from '../Domain/PostComment'
 import { UuidGenerator } from '../../../helpers/Domain/UuidGenerator'
 import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '../Domain/PostDomainException'
-import { PostCommentDomainException } from '../Domain/PostCommentDomainException'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
 
 export class CreatePostComment {
@@ -51,10 +50,7 @@ export class CreatePostComment {
       await this.postRepository.createComment(comment)
     }
     catch (exception: unknown) {
-      if (
-        !(exception instanceof PostDomainException) ||
-        !(exception instanceof PostCommentDomainException)
-      ) {
+      if (!(exception instanceof PostDomainException)) {
         throw exception
       }
 

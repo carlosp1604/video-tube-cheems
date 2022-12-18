@@ -1,7 +1,8 @@
 import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import MysqlNextAuthAdapter from '../../../modules/Auth/Infrastructure/MysqlNextAuthAdapter'
-import { MysqlUserRepository } from '../../../modules/Auth/Infrastructure/MysqlUserRepository'
+import { bindings } from '../../../modules/Auth/Infrastructure/Bindings'
+import { UserRepositoryInterface } from '../../../modules/Auth/Domain/UserRepositoryInterface'
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   providers: [
@@ -19,9 +20,11 @@ export const authOptions: NextAuthOptions = {
         const email = credentials?.email as string
         const password = credentials?.password as string
 
-        // TODO: Find a way to handle this correctly
+        // TODO: Find a way to handle this correctly using the adapter
+        const userRepository = bindings.get<UserRepositoryInterface>('UserRepositoryInterface')
+
         const domainUser = await (
-          new MysqlUserRepository().findByEmail(email)
+          userRepository.findByEmail(email)
         )
 
         if (
@@ -43,6 +46,9 @@ export const authOptions: NextAuthOptions = {
   adapter: MysqlNextAuthAdapter(),
   pages: {
     signIn: '/auth/signin'
+  },
+  session: {
+    strategy: 'jwt'
   }
 }
 

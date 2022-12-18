@@ -10,6 +10,8 @@ import { MysqlUserRepository } from '../../Auth/Infrastructure/MysqlUserReposito
 import { DateServiceInterface } from '../../../helpers/Domain/DateServiceInterface'
 import { DateService } from '../../../helpers/Infrastructure/DateService'
 import { UuidGenerator } from '../../../helpers/Domain/UuidGenerator'
+import { DeletePostComment } from '../Application/DeletePostComment'
+import { UpdatePostComment } from '../Application/UpdatePostComment'
 
 const postRepository: Provider<PostRepositoryInterface> =
   { provide: 'PostRepositoryInterface',
@@ -69,6 +71,31 @@ const createComment: Provider<CreatePostComment> =
       )
     }
   }
+
+  const deleteComment: Provider<DeletePostComment> =
+  { provide: 'CreatePostComment',
+    useClass: () => {
+      return new DeletePostComment(
+        bindings.get('PostRepositoryInterface'),
+        bindings.get('UserRepositoryInterface'),
+      )
+    }
+  }
+
+  const updateComment: Provider<UpdatePostComment> =
+  { provide: 'CreatePostComment',
+    useClass: () => {
+      return new UpdatePostComment(
+        bindings.get('PostRepositoryInterface'),
+        bindings.get('UserRepositoryInterface'),
+      )
+    }
+  }
+
+const baseUrl: Provider<string> =
+  { provide: 'BaseUrl',
+    useValue: process.env.BASE_URL
+  }
   
 export const bindings: DependencyInjector = makeInjector([
   postRepository,
@@ -78,4 +105,7 @@ export const bindings: DependencyInjector = makeInjector([
   dateService,
   idGenerator,
   createComment,
+  updateComment,
+  deleteComment,
+  baseUrl
 ])

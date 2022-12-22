@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
-import { ObjectionPostCommentModel } from './ObjectionPostCommentModel'
-import { PostComment } from '../Domain/PostComment'
-import { UserModelTranslator } from '../../Auth/Infrastructure/UserModelTranslator'
+import { ObjectionPostCommentModel } from '../ObjectionModels/ObjectionPostCommentModel'
+import { PostComment } from '../../Domain/PostComment'
+import { UserModelTranslator } from '../../../Auth/Infrastructure/UserModelTranslator'
 import { ModelObject } from 'objection'
 
 type MysqlPostCommentRow = Partial<ModelObject<ObjectionPostCommentModel>>

@@ -1,5 +1,5 @@
 import { Model } from 'objection'
-import { ObjectionUserModel } from '../../Auth/Infrastructure/ObjectionUserModel'
+import { ObjectionUserModel } from '../../../Auth/Infrastructure/ObjectionUserModel'
 
 export class ObjectionPostCommentModel extends Model {
   id!: string

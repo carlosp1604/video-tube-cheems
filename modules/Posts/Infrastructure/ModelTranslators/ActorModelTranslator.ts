@@ -1,5 +1,5 @@
-import { ObjectionActorModel } from './ObjectionActorModel'
-import { Actor } from '../Domain/Actor'
+import { ObjectionActorModel } from '../ObjectionModels/ObjectionActorModel'
+import { Actor } from '../../Domain/Actor'
 import { DateTime } from 'luxon'
 
 export class ActorModelTranslator {

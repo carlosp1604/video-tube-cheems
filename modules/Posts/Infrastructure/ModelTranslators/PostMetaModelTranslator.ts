@@ -1,5 +1,5 @@
-import { PostMeta } from '../Domain/PostMeta'
-import { ObjectionPostMetaModel } from './ObjectionPostMetaModel'
+import { PostMeta } from '../../Domain/PostMeta'
+import { ObjectionPostMetaModel } from '../ObjectionModels/ObjectionPostMetaModel'
 import { DateTime } from 'luxon'
 import { ModelObject } from 'objection'
 

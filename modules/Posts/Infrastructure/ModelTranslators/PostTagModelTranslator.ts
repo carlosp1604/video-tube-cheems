@@ -1,5 +1,5 @@
-import { ObjectionPostTagModel } from './ObjectionPostTagModel'
-import { PostTag } from '../Domain/PostTag'
+import { ObjectionPostTagModel } from '../ObjectionModels/ObjectionPostTagModel'
+import { PostTag } from '../../Domain/PostTag'
 import { DateTime } from 'luxon'
 import { ModelObject } from 'objection'
 

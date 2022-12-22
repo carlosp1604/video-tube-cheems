@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { ObjectionPostReactionModel } from './ObjectionPostReactionModel'
-import { PostReaction, Reaction } from '../Domain/PostReaction'
+import { ObjectionPostReactionModel } from '../ObjectionModels/ObjectionPostReactionModel'
+import { PostReaction, Reaction } from '../../Domain/PostReaction'
 import { ModelObject } from 'objection'
 
 type MysqlPostReactionRow = Partial<ModelObject<ObjectionPostReactionModel>>

@@ -1,4 +1,4 @@
-import knex, { Knex } from 'knex'
+import { Knex } from 'knex'
 import path from 'path'
 import { getKnexConfig } from './persistence/db'
 

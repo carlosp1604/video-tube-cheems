@@ -1,8 +1,7 @@
 import { z, ZodError } from 'zod'
-import { CreatePostCommentApiRequestDto } from '../Dtos/CreatePostCommentApiRequestDto'
 import { PostCommentApiRequestValidatorError } from './PostCommentApiRequestValidatorError'
 
-export class CreatePostCommentApiRequestValidator {
+export class UpdatePostCommentApiRequestValidator {
   private static createPostApiRequestSchema = z.object({
     comment: z
       .string()
@@ -13,7 +12,7 @@ export class CreatePostCommentApiRequestValidator {
     userId: z.string().uuid(),
   })
 
-  public static validate(request: CreatePostCommentApiRequestDto): PostCommentApiRequestValidatorError | void {
+  public static validate(request: UpdatePostCommentApiRequestValidator): PostCommentApiRequestValidatorError | void {
     try {
       this.createPostApiRequestSchema.parse(request)
     }
@@ -22,7 +21,7 @@ export class CreatePostCommentApiRequestValidator {
         throw exception
       }
 
-      return PostCommentApiRequestValidatorError.createPostCommentValidation(exception.issues)
+      return PostCommentApiRequestValidatorError.updatePostCommentValidation(exception.issues)
     }
 
     return

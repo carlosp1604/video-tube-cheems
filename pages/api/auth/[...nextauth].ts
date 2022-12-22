@@ -4,7 +4,6 @@ import MysqlNextAuthAdapter from '../../../modules/Auth/Infrastructure/MysqlNext
 import { bindings } from '../../../modules/Auth/Infrastructure/Bindings'
 import { UserRepositoryInterface } from '../../../modules/Auth/Domain/UserRepositoryInterface'
 export const authOptions: NextAuthOptions = {
-  // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -40,7 +39,8 @@ export const authOptions: NextAuthOptions = {
           name: domainUser.name,
           image: domainUser.imageUrl,
         }
-      }
+      },
+      type: 'credentials'
     })
   ],
   adapter: MysqlNextAuthAdapter(),
@@ -48,7 +48,25 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/signin'
   },
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
+    maxAge: 604800,
+  },
+  secret: process.env.AUTH_SECRET,
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.userId
+      }
+
+      return Promise.resolve(session)
+    },
+    async jwt ({ token, user }) {
+      if (user?.id) {
+        token.userId = user.id
+      }
+
+      return Promise.resolve(token)
+    },
   }
 }
 

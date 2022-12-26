@@ -31,6 +31,7 @@ export class UpdatePostComment {
       await this.postRepository.updateComment(request.postCommentId, request.comment)
     }
     catch (exception: unknown) {
+      console.log(exception)
       if (!(exception instanceof PostDomainException)) {
         throw exception
       }

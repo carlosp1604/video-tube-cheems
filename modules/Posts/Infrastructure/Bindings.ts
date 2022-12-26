@@ -73,7 +73,7 @@ const createComment: Provider<CreatePostComment> =
   }
 
   const deleteComment: Provider<DeletePostComment> =
-  { provide: 'CreatePostComment',
+  { provide: 'DeletePostComment',
     useClass: () => {
       return new DeletePostComment(
         bindings.get('PostRepositoryInterface'),
@@ -83,7 +83,7 @@ const createComment: Provider<CreatePostComment> =
   }
 
   const updateComment: Provider<UpdatePostComment> =
-  { provide: 'CreatePostComment',
+  { provide: 'UpdatePostComment',
     useClass: () => {
       return new UpdatePostComment(
         bindings.get('PostRepositoryInterface'),

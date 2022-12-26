@@ -31,6 +31,7 @@ export class DeletePostComment {
       await this.postRepository.deleteComment(request.postCommentId)
     }
     catch (exception: unknown) {
+      console.log(exception)
       if (!(exception instanceof PostDomainException)) {
         throw exception
       }

@@ -1,20 +1,16 @@
 import { z, ZodError } from 'zod'
 import { PostCommentApiRequestValidatorError } from './PostCommentApiRequestValidatorError'
-import { UpdatePostCommentApiRequestDto } from '../Dtos/UpdatePostCommentApiRequestDto'
+import { DeletePostCommentApiRequestDto } from '../Dtos/DeletePostCommentApiRequestDto'
 
-export class UpdatePostCommentApiRequestValidator {
+export class DeletePostCommentApiRequestValidator {
   private static createPostApiRequestSchema = z.object({
-    comment: z
-      .string()
-      .trim()
-      .min(1, { message: 'Comment cannot be empty' }),
     postId: z.string({}).uuid(),
     parentCommentId: z.string().uuid().nullable(),
+    postCommentId: z.string().uuid().nullable(),
     userId: z.string().uuid(),
-    postCommentId: z.string().uuid()
   })
 
-  public static validate(request: UpdatePostCommentApiRequestDto): PostCommentApiRequestValidatorError | void {
+  public static validate(request: DeletePostCommentApiRequestDto): PostCommentApiRequestValidatorError | void {
     try {
       this.createPostApiRequestSchema.parse(request)
     }

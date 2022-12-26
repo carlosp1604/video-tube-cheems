@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
         .inTable('users')
         .notNullable()
         .onDelete('CASCADE')
-      table.string('reaction_type', 16).index()
+      table.string('reaction_type', 16).index().notNullable()
       table.primary(['post_id', 'user_id'])
       table.timestamp('created_at')
         .defaultTo(knex.raw('CURRENT_TIMESTAMP'))

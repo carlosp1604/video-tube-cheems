@@ -7,6 +7,7 @@ export async function up(knex: Knex): Promise<void> {
         .references('id')
         .inTable('posts')
         .notNullable()
+        .onDelete('CASCADE')
       table.string('post_tag_id', 36)
         .references('id')
         .inTable('post_tags')

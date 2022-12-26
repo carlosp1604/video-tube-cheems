@@ -157,7 +157,36 @@ export class Post {
   }
 
   public addReaction(postReaction: PostReaction): void {
+    const existingReaction = this._reactions.get(postReaction.userId)
+
+    if (existingReaction) {
+      throw PostDomainException.userAlreadyReacted(postReaction.userId, this.id)
+    }
+
     this._reactions.set(postReaction.userId, postReaction)
+  }
+
+  public updateReaction(
+    userId: PostReaction['userId'],
+    reactionType: PostReaction['reactionType']
+  ): void {
+    const existingReaction = this._reactions.get(userId)
+
+    if (!existingReaction) {
+      throw PostDomainException.userHasNotReacted(userId, this.id)
+    }
+
+    existingReaction.reactionType = reactionType
+
+    this._reactions.set(userId, existingReaction)
+  }
+
+  public deleteReaction(userId: PostReaction['userId'],): void {
+    const reactionRemoved = this._reactions.delete(userId)
+
+    if (!reactionRemoved) {
+      throw PostDomainException.cannotDeleteReaction(userId, this.id)
+    }
   }
 
   get meta(): PostMeta[] {

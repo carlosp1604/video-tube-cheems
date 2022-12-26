@@ -4,7 +4,7 @@ import { PostReaction } from './PostReaction'
 
 export type RepositoryOptions =
   'meta' | 'tags' | 'actors' | 'comments' | 'reactions' | 'comments.user' |
-  'comments.childComments' | 'comments.childComments.user'
+  'reactions.user' | 'comments.childComments' | 'comments.childComments.user'
 
 export type RepositorySortingOptions = 'date' | 'views'
 export type RepositorySortingCriteria = 'asc' | 'desc'

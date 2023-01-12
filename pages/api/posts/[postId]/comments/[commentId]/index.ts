@@ -142,7 +142,9 @@ async function handlePatchMethod(request: NextApiRequest,response: NextApiRespon
   const useCase = bindings.get<UpdatePostComment>('UpdatePostComment')
 
   try {
-    await useCase.update(applicationRequest)
+    const comment = await useCase.update(applicationRequest)
+
+    return response.status(200).json(comment)
   }
   catch (exception: unknown) {
     console.error(exception)
@@ -161,8 +163,6 @@ async function handlePatchMethod(request: NextApiRequest,response: NextApiRespon
         return handleServerError(response, exception)
     }
   }
-
-  return response.status(200).json({})
 }
 
 

@@ -11,7 +11,7 @@ export class PostReaction {
   public readonly userId: string
   private _reactionType: Reaction
   public readonly createdAt: DateTime
-  public updatedAt: DateTime
+  private _updatedAt: DateTime
   public deletedAt: DateTime | null
 
   public constructor(
@@ -27,7 +27,7 @@ export class PostReaction {
     this.userId = userId
     this._reactionType = reactionType
     this.createdAt = createdAt
-    this.updatedAt = updatedAt
+    this._updatedAt = updatedAt
     this.deletedAt = deletedAt
   }
 
@@ -41,7 +41,17 @@ export class PostReaction {
     throw PostReactionDomainException.invalidReactionType(reactionType)
   }
 
-  set reactionType(value: Reaction) {
-    this._reactionType = value
+
+  get reactionType(): Reaction {
+    return this._reactionType
+  }
+
+  public setReactionType(reactionType: Reaction) {
+    PostReaction.validateReaction(reactionType)
+    this._reactionType = reactionType
+  }
+
+  public setUpdatedAt(updatedAt: DateTime) {
+    this._updatedAt = updatedAt
   }
 }

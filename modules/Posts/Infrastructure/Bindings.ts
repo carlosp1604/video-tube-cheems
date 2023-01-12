@@ -7,9 +7,6 @@ import { GetPosts } from '../Application/GetPosts'
 import { CreatePostComment } from '../Application/CreatePostComment'
 import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
 import { MysqlUserRepository } from '../../Auth/Infrastructure/MysqlUserRepository'
-import { DateServiceInterface } from '../../../helpers/Domain/DateServiceInterface'
-import { DateService } from '../../../helpers/Infrastructure/DateService'
-import { UuidGenerator } from '../../../helpers/Domain/UuidGenerator'
 import { DeletePostComment } from '../Application/DeletePostComment'
 import { UpdatePostComment } from '../Application/UpdatePostComment'
 
@@ -45,29 +42,12 @@ const userRepository: Provider<UserRepositoryInterface> =
     }
   }
 
-const dateService: Provider<DateServiceInterface> =
-  { provide: 'DateServiceInterface',
-    useClass: () => {
-      return new DateService()
-    }
-  }
-
-const idGenerator: Provider<UuidGenerator> =
-  { provide: 'IdGenerator',
-    useClass: () => {
-      return new UuidGenerator()
-    }
-  }
-
 const createComment: Provider<CreatePostComment> =
   { provide: 'CreatePostComment',
     useClass: () => {
       return new CreatePostComment(
         bindings.get('PostRepositoryInterface'),
-        bindings.get('UserRepositoryInterface'),
-        bindings.get('DateServiceInterface'),
-        bindings.get('IdGenerator')
-
+        bindings.get('UserRepositoryInterface')
       )
     }
   }
@@ -102,8 +82,6 @@ export const bindings: DependencyInjector = makeInjector([
   getPostById,
   getPosts,
   userRepository,
-  dateService,
-  idGenerator,
   createComment,
   updateComment,
   deleteComment,

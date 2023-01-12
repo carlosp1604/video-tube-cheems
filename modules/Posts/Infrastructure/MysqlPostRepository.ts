@@ -193,12 +193,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
   /**
    * Delete a new Post Reaction
-   * @param reaction PostReaction
+   * @param userId User ID
+   * @param postId Post ID
    */
-  public async deleteReaction(reaction: PostReaction): Promise<void> {
+  public async deleteReaction(userId: PostReaction['userId'], postId: PostReaction['postId']): Promise<void> {
     await ObjectionPostReactionModel.query()
       .delete()
-      .where('user_id', '=', reaction.userId)
+      .where('user_id', '=', userId)
+      .andWhere('post_id', '=', postId)
   }
 
   /**

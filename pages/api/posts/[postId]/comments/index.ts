@@ -61,7 +61,9 @@ export default async function handler(
   const useCase = bindings.get<CreatePostComment>('CreatePostComment')
 
   try {
-    await useCase.create(applicationRequest)
+    const comment = await useCase.create(applicationRequest)
+    return response.status(201).json(comment)
+
   }
   catch (exception: unknown) {
     console.error(exception)
@@ -80,8 +82,6 @@ export default async function handler(
         return handleServerError(response)
     }
   }
-
-  return response.status(200).json({})
 }
 
 function handleMethod(request: NextApiRequest,response: NextApiResponse) {

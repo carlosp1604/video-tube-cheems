@@ -7,7 +7,9 @@ export class PostDomainException extends DomainException {
   public static parentCommentNotFoundId = 'post_domain_parent_comment_not_found'
   public static cannotDeleteCommentId = 'post_domain_cannot_delete_comment'
   public static cannotAddCommentId = 'post_domain_cannot_add_comment'
-  public static cannotUpdateCommentId = 'post_domain_update_delete_comment'
+  public static cannotAddReactionId = 'post_domain_cannot_add_reaction'
+  public static cannotUpdateCommentId = 'post_domain_cannot_update_comment'
+  public static cannotUpdateReactionId = 'post_domain_cannot_update_reaction'
   public static userAlreadyReactedId = 'post_domain_user_already_reacted'
   public static userHasNotReactedId = 'post_domain_user_has_not_reacted'
   public static cannotDeleteReactionId = 'post_domain_cannot_delete_reaction'
@@ -33,10 +35,24 @@ export class PostDomainException extends DomainException {
     )
   }
 
+  public static cannotAddReaction(userId: User['id'], postId: Post['id']): PostDomainException {
+    return new PostDomainException(
+      `Cannot add reaction from user with ID ${userId} to post with ID ${postId}`,
+      this.cannotAddReactionId
+    )
+  }
+
   public static cannotUpdateComment(postCommentId: PostComment['id']): PostDomainException {
     return new PostDomainException(
       `Cannot update comment with ID ${postCommentId}`,
       this.cannotUpdateCommentId
+    )
+  }
+
+  public static cannotUpdateReaction(userId: User['id'], postId: Post['id']): PostDomainException {
+    return new PostDomainException(
+      `Cannot update reaction from user with ID ${userId} in post with ID ${postId}`,
+      this.cannotAddReactionId
     )
   }
 

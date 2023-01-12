@@ -1,25 +1,21 @@
 import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
 import { GetPostByIdApplicationException } from './GetPostByIdApplicationException'
 import { CreatePostCommentRequestDto } from './Dtos/CreatePostCommentRequestDto'
-import { DateTime } from 'luxon'
-import { DateServiceInterface } from '../../../helpers/Domain/DateServiceInterface'
-import { PostComment } from '../Domain/PostComment'
-import { UuidGenerator } from '../../../helpers/Domain/UuidGenerator'
 import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '../Domain/PostDomainException'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
+import { CommentApplicationDto } from './Dtos/CommentApplicationDto'
+import { CommentApplicationDtoTranslator } from './Translators/CommentApplicationDtoTranslator'
 
 export class CreatePostComment {
   private options: RepositoryOptions[] = ['comments', 'comments.user']
 
   constructor(
     private readonly postRepository: PostRepositoryInterface,
-    private readonly userRepository: UserRepositoryInterface,
-    private readonly dateService: DateServiceInterface,
-    private readonly idGenerator: UuidGenerator
+    private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async create(request: CreatePostCommentRequestDto): Promise<void> {
+  public async create(request: CreatePostCommentRequestDto): Promise<CommentApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
@@ -32,22 +28,12 @@ export class CreatePostComment {
       throw GetPostByIdApplicationException.userNotFound(request.userId)
     }
 
-    const nowDate = DateTime.fromJSDate(this.dateService.nowDate())
-    const comment = new PostComment(
-      this.idGenerator.get(),
-      request.comment,
-      request.postId,
-      request.userId,
-      request.parentCommentId,
-      nowDate,
-      nowDate,
-      null
-    )
-
     try {
-      post.addComment(comment)
+      const comment = post.addComment(request.comment, request.userId, request.parentCommentId)
 
       await this.postRepository.createComment(comment)
+      
+      return CommentApplicationDtoTranslator.fromDomain(comment)
     }
     catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {

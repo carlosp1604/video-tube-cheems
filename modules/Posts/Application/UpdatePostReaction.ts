@@ -1,13 +1,13 @@
 import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '../Domain/PostDomainException'
-import { CreatePostReactionRequestDto } from './Dtos/CreatePostReactionRequestDto'
-import { CreatePostReactionApplicationException } from './CreatePostReactionApplicationException'
 import { Reaction } from '../Domain/PostReaction'
 import { ReactionApplicationDto } from './Dtos/ReactionApplicationDto'
 import { ReactionApplicationDtoTranslator } from './Translators/ReactionApplicationDtoTranslator'
+import { UpdatePostReactionRequestDto } from './Dtos/UpdatePostReactionRequestDto'
+import { UpdatePostReactionApplicationException } from './UpdatePostReactionApplicationException'
 
-export class CreatePostReaction {
+export class UpdatePostReaction {
   private options: RepositoryOptions[] = ['reactions', 'reactions.user']
 
   constructor(
@@ -15,25 +15,25 @@ export class CreatePostReaction {
     private readonly userRepository: UserRepositoryInterface,
   ) {}
 
-  public async create(
-    request: CreatePostReactionRequestDto
+  public async update(
+    request: UpdatePostReactionRequestDto
   ): Promise<ReactionApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
-      throw CreatePostReactionApplicationException.postNotFound(request.postId)
+      throw UpdatePostReactionApplicationException.postNotFound(request.postId)
     }
 
     const user = await this.userRepository.findById(request.userId)
 
     if (user === null) {
-      throw CreatePostReactionApplicationException.userNotFound(request.userId)
+      throw UpdatePostReactionApplicationException.userNotFound(request.userId)
     }
 
     try {
-      const reaction = post.addReaction(request.userId, request.reactionType as Reaction)
+      const reaction = post.updateReaction(request.userId, request.reactionType as Reaction)
 
-      await this.postRepository.createReaction(reaction)
+      await this.postRepository.updateReaction(reaction)
 
       return ReactionApplicationDtoTranslator.fromDomain(reaction)
     }
@@ -43,14 +43,11 @@ export class CreatePostReaction {
       }
 
       switch (exception.id) {
-        case PostDomainException.userAlreadyReactedId:
-          throw CreatePostReactionApplicationException.userAlreadyReacted(request.userId, request.postId)
-
         case PostDomainException.userHasNotReactedId:
-          throw CreatePostReactionApplicationException.userHasNotReacted(request.userId, request.postId)
+          throw UpdatePostReactionApplicationException.userHasNotReacted(request.userId, request.postId)
 
         default:
-          throw CreatePostReactionApplicationException.cannotAddReaction(request.userId, request.postId)
+          throw UpdatePostReactionApplicationException.cannotUpdateReaction(request.userId, request.postId)
       }
     }
   }

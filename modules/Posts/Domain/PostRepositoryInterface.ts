@@ -38,9 +38,10 @@ export interface PostRepositoryInterface {
 
   /**
    * Delete a new Post Reaction
-   * @param reaction PostReaction
+   * @param userId User ID
+   * @param postId Post ID
    */
-  deleteReaction(reaction: PostReaction): Promise<void>
+  deleteReaction(userId: PostReaction['userId'], postId: PostReaction['postId']): Promise<void>
 
   /**
    * Add a new Post Comment

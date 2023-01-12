@@ -18,6 +18,8 @@
     "db:reset": "yarn db:destroy && yarn db:up && sleep 10 && yarn db:migrate && yarn db:seed"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@types/bcrypt": "^5.0.0",
     "@types/knex": "^0.16.1",
     "@types/luxon": "^3.1.0",

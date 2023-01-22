@@ -1,0 +1,18 @@
+.app-menu {
+  &__layer {
+    @apply sticky top-0 z-40;
+  }
+
+  &__container {
+    @apply mx-auto p-2 z-50 backdrop-filter backdrop-blur-2xl bg-body
+      bg-opacity-70;
+  }
+
+  &__logo-image {
+    @apply h-10 w-10;
+
+    &:hover, &:focus {
+      @apply grayscale;
+    }
+  }
+}

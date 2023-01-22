@@ -1,0 +1,112 @@
+.menu-side-bar {
+  $parentBlock: &;
+
+  &__container {
+    @apply fixed hidden top-0 left-0 z-50 font-normal border-gray-600 border-opacity-10
+      transition-all duration-1000 text-menu-main;
+
+    @screen lg {
+      @apply flex flex-col border-r;
+    }
+  }
+
+  &__aside-slide-out {
+    @apply grid h-screen bg-body overflow-hidden w-16 transition-width duration-200;
+    grid-template-areas:
+      "logo"
+      "menu-container"
+      "footer"
+      "copyright";
+    grid-template-rows: auto 1fr auto auto;
+  }
+
+  &__logo-container {
+    @apply border-b border-gray-600 border-opacity-30 px-14 py-2 opacity-0;
+    grid-area: logo;
+  }
+
+  &__logo {
+    @apply h-10 w-10;
+  }
+
+  &__menu-container {
+    @apply border-b border-gray-600 border-opacity-0;
+    grid-area: menu-container;
+  }
+
+  &__menu-item {
+    @apply font-normal;
+
+    &:hover, &:focus {
+      @apply bg-gray-600 bg-opacity-25 text-menu-highlighted;
+    }
+
+    &-active {
+      @apply bg-gray-500 bg-opacity-25;
+    }
+  }
+
+  &__menu-item-content {
+    @apply flex flex-row py-3 gap-x-7 items-center truncate mx-4 px-1 border-gray-700
+      border-opacity-0 border-b;
+  }
+
+  &__menu-item-icon {
+    @apply text-xl;
+  }
+
+  &__menu-item-text {
+    @apply text-base;
+  }
+
+  &__footer-container {
+    @apply flex flex-row gap-x-2 items-center px-8 py-3 border-opacity-0
+      border-gray-600 justify-center border-t flex-wrap;
+    grid-area: footer;
+  }
+
+  &__footer-item {
+    @apply text-transparent font-normal uppercase font-light text-sm;
+  }
+
+  &__copyright-container {
+    @apply border-t border-opacity-0 border-gray-600 text-transparent font-light text-sm
+      px-8 py-4;
+    grid-area: copyright;
+  }
+
+  &__container:hover, &__container:focus {
+    @apply border-opacity-30 transition-all duration-200;
+
+    #{$parentBlock}__aside-slide-out {
+      @apply w-64 transition-all delay-1000 duration-100 bg-opacity-60
+      backdrop-blur-2xl backdrop-filter;
+    }
+
+    #{$parentBlock}__menu-item-content {
+      @apply border-opacity-10 transition-border duration-700 delay-700;
+    }
+
+    #{$parentBlock}__footer-container {
+      @apply border-opacity-10 transition-all delay-1000 ;
+    }
+
+    #{$parentBlock}__footer-item {
+      @apply text-footer-main transition-all delay-1000 ;
+    }
+
+    #{$parentBlock}__copyright-container {
+      @apply text-footer-main border-opacity-10 transition-all delay-1000 duration-100;
+    }
+
+    #{$parentBlock}__logo-container {
+      @apply opacity-100 transition-all delay-1000 duration-500;
+    }
+  }
+
+  &__menu-item:hover, &__menu-item:focus {
+    #{$parentBlock}__menu-item-icon {
+      @apply scale-110 transition-transform duration-200;
+    }
+  }
+}

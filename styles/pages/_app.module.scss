@@ -1,0 +1,13 @@
+.app {
+  &__layout {
+    @apply flex bg-body min-h-screen font-roboto;
+  }
+
+  &__container {
+    @apply flex flex-col flex-grow;
+
+    @screen lg {
+      @apply ml-16;
+    }
+  }
+}

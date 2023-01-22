@@ -1,0 +1,41 @@
+.video-js .vjs-big-play-button {
+  display: none!important;
+  z-index: 10!important;
+}
+
+.video-js .vjs-control-bar {
+  background: transparent!important;
+}
+
+.video-js:hover .video-js:focus .vjs-control-bar {
+  display: flex!important;
+  background: transparent!important;
+}
+
+.active-vjs-control-bar {
+  display: flex!important;
+}
+
+video[poster]{
+  @apply object-cover;
+}
+
+.vjs-poster {
+  background-size: cover!important;
+  background-position: inherit!important;
+}
+
+.video-js .vjs-play-progress, .video-js  .vjs-volume-level {
+  background-color: #2c97de!important;
+}
+
+.video-js  .vjs-progress-holder {
+  font-size: 1.7em!important;
+  border-radius: 10px!important;
+}
+
+a {
+  &:hover, &:focus {
+    @apply text-gray-500 transition-colors duration-500;
+  }
+}

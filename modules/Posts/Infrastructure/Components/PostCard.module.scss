@@ -21,18 +21,22 @@
     grid-template-columns: auto 1fr;
   }
 
-  &__video-title {
-    @apply truncate text-base;
-  }
-
   &__producer-logo {
     @apply rounded-full w-10 h-10 object-cover mr-4;
     grid-area: producer-logo;
   }
 
-  &__producer-name {
-    @apply text-base truncate text-sm;
+  &__producer-title {
+    @apply flex flex-col text-base truncate text-sm;
     grid-area: producer-name;
+  }
+
+  &__video-title-link {
+    @apply truncate text-base;
+  }
+
+  &__producer-name-link {
+    @apply truncate text-xs;
   }
 
   &__extra-data {
@@ -42,7 +46,6 @@
 
   &__video-options {
     @apply self-center text-xl pl-2 hidden cursor-pointer text-gray-400 transition-transform duration-500;
-
     grid-area: video-options;
   }
 

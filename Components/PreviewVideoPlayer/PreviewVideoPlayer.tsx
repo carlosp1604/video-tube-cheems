@@ -1,11 +1,9 @@
 import * as React from 'react'
 import videojs from 'video.js'
-
-// Styles
 import 'video.js/dist/video-js.css'
 import { Dispatch, RefObject, SetStateAction, useEffect } from 'react'
 
-interface IVideoPlayerProps {
+interface VideoPlayerProps {
   options: videojs.PlayerOptions
   id: string
   playerId: string
@@ -16,14 +14,21 @@ interface IVideoPlayerProps {
 const initialOptions: videojs.PlayerOptions = {
   controls: true,
   fluid: true,
+  inactivityTimeout: 1000000,
   controlBar: {
+    playToggle: false,
+    liveDisplay: true,
+    fullscreenToggle: false,
+    pictureInPictureToggle: false,
     volumePanel: {
-      inline: false
+      volumeControl: {
+        vertical: false
+      }
     }
-  }
+  },
 }
 
-export const PreviewVideoPlayer: React.FC<IVideoPlayerProps> = ({ options, playerId, setPlayerId, id, videoNode }) => {
+export const PreviewVideoPlayer: React.FC<VideoPlayerProps> = ({ options, playerId, setPlayerId, id, videoNode }) => {
   const player = React.useRef<videojs.Player>()
   
   useEffect(() => {
@@ -46,8 +51,10 @@ export const PreviewVideoPlayer: React.FC<IVideoPlayerProps> = ({ options, playe
 
   return (
     <video
-    ref={ videoNode } className="video-js"
-    muted
-  />
+      preload={'none'}
+      ref={ videoNode }
+      className="video-js"
+      muted
+    />
   )
 }

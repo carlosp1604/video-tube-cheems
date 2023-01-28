@@ -24,17 +24,6 @@ export const PostCard: FC<Props> = ({ id, playerId, setPlayerId }) => {
       }
     ],
     poster: 'https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    inactivityTimeout: 1000000,
-    controlBar: {
-      liveDisplay: true,
-      fullscreenToggle: false,
-      pictureInPictureToggle: false,
-      volumePanel: {
-        volumeControl: {
-          vertical: false
-        }
-      }
-    },
   }
 
   useEffect(() => {
@@ -81,50 +70,42 @@ export const PostCard: FC<Props> = ({ id, playerId, setPlayerId }) => {
         </div>
       </Link>
 
-      <Link
-        href={'/'}
-        className={ styles.postCard__link }
-      >
-        <div className={ styles.postCard__videoData }>
-          <p className={ styles.postCard__videoOptions } >
-            <BsThreeDotsVertical />
-          </p>
-          <img
-            className={ styles.postCard__producerLogo }
-            src="https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-          />
-          <h1 className={ styles.postCard__producerName }>
-            <Link href={ '/auth/signin'}>
-              Productora
-            </Link>
-            <p className={ styles.postCard__videoTitle }>
-              <Link
-                href={'/'}
-                className={ styles.postCard__dataLink }
-              >
-                Titulo del video equisde jsjsjsasdasdassad asdas adsadasd
-              </Link>
-            </p>
+      <div className={ styles.postCard__videoData }>
+        <p className={ styles.postCard__videoOptions } >
+          <BsThreeDotsVertical />
+        </p>
+        <Link href={'/'}>
+        <img
+          className={ styles.postCard__producerLogo }
+          src="https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        />
+        </Link>
+        <div className={ styles.postCard__producerTitle }>
+          <Link href={'/'} className={ styles.postCard__producerNameLink }>
+            Productora
+          </Link>
+          <Link href={'/'} className={ styles.postCard__videoTitleLink }>
+            Titulo del video equisde jsjsjsasdasdassad asdas adsadasd
+          </Link>
+        </div>
 
-          </h1>
-          <div className={ styles.postCard__extraData }>
-            <span className={ styles.postCard__extraDataItem }>
-              18.4k
-            </span>
-            <span className={ styles.postCard__extraDataItem }>
-              Today
-            </span>
-            <div className={ styles.postCard__interactionSection }>
-              <BsHeart />
-              65
-            </div>
-            <div className={ styles.postCard__interactionSection }>
-              <BsChatText />
-              190
-            </div>
+        <div className={ styles.postCard__extraData }>
+          <span className={ styles.postCard__extraDataItem }>
+            18.4k
+          </span>
+          <span className={ styles.postCard__extraDataItem }>
+            Today
+          </span>
+          <div className={ styles.postCard__interactionSection }>
+            <BsHeart />
+            65
+          </div>
+          <div className={ styles.postCard__interactionSection }>
+            <BsChatText />
+            190
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   )
 }

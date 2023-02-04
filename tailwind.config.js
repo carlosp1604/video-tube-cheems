@@ -16,24 +16,36 @@ module.exports = {
     },
     extend: {
       colors: {
-        body: '#121212',
-        menu: {
-          main: '#a1a1aa',
-          highlighted: '#ffffff',
-          background: {
-            hovered: '#64748b',
-            active: '#94a3b8',
-          },
+        body: '#1d1d1d',
+        base: {
+          '900': '#1C1917',
+          '800': '#292524',
+          '700': '#44403C',
+          '600': '#57534E',
+          '500': '#78716C',
+          '400': '#A8A29E',
+          '300': '#D6D3D1',
+          '200': '#E7E5E4',
+          '100': '#F5F5F4',
+          '50': '#FAFAF9'
         },
-        border: {
-          main: '#475569',
+        brand: {
+          '900': '#164E63',
+          '800': '#155E75',
+          '700': '#0E7490',
+          '600': '#0891B2',
+          '500': '#06B6D4',
+          '400': '#22D3EE',
+          '300': '#67E8F9',
+          '200': '#A5F3FC',
+          '100': '#CFFAFE',
+          '50': '#ECFEFF'
         },
-        footer: {
-          main: '#6b7280',
-        },
-        texts: {
-          main: '#f5f5f5',
-        }
+        red: '#FF0000',
+        green: '#008000',
+        black: '#000000',
+        white: '#FFFFFF',
+        transparent: 'transparent',
       },
       fontFamily: {
         'roboto': ['Roboto', 'sans-serif']

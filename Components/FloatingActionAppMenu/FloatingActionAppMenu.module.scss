@@ -2,7 +2,7 @@
   &__container {
     @apply flex fixed items-center z-40 bottom-10 right-8 backdrop-filter backdrop-blur-2xl
       w-14 h-14 rounded-full transition-transform duration-500;;
-    background-image: radial-gradient(circle at center, theme('colors.transparent') 25%, theme('colors.green.500') 150%);
+    background-image: radial-gradient(circle at center, theme('colors.transparent') 25%, theme('colors.brand.600') 125%);
 
     @screen lg {
       @apply hidden;

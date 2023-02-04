@@ -1,0 +1,11 @@
+.video-page {
+  &__container {
+    @apply grid container px-5 mx-auto;
+    grid-template-areas:
+    "video"
+    "video-data"
+    "video-comments"
+    "related-videos"
+    "";
+  }
+}

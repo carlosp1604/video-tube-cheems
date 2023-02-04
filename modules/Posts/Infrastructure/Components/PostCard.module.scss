@@ -6,15 +6,19 @@
   }
 
   &__video-link {
-    @apply opacity-0 z-10;
+    @apply z-50;
   }
 
   &__video-wrapper {
-    @apply aspect-video overflow-hidden rounded-lg object-cover;
+    @apply aspect-video overflow-hidden rounded-lg;
+  }
+
+  &__media {
+    @apply h-full w-full object-cover;
   }
 
   &__video-data {
-    @apply relative grid text-texts-main py-3 gap-y-2;
+    @apply relative grid py-3 gap-y-2;
     grid-template-areas:
       "producer-logo producer-name video-options"
       "producer-logo extra-data extra-data";

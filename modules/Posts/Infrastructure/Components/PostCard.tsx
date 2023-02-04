@@ -1,10 +1,12 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { createRef, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import styles from './PostCard.module.scss'
 import { BsChatText, BsHeart, BsThreeDotsVertical } from 'react-icons/bs'
-import { PreviewVideoPlayer } from '../../../../Components/PreviewVideoPlayer/PreviewVideoPlayer'
-import videojs from 'video.js'
 import * as React from 'react'
 import Link from 'next/link'
+import PlayerOptions = videojs.PlayerOptions;
+import getPlayer = videojs.getPlayer;
+import videojs from 'video.js'
+import { SafePlayVideo, SafeStopVideo } from '../../../Shared/Infrastructure/SafeVideoElement'
 
 interface Props {
   id: string
@@ -13,60 +15,49 @@ interface Props {
 }
 
 export const PostCard: FC<Props> = ({ id, playerId, setPlayerId }) => {
+  const player = createRef<HTMLVideoElement>()
+  const [playPromise, setPlayPromise] = useState<Promise<void>>(Promise.resolve())
   const [playing, setPlaying] = useState<boolean>(false)
-  const videoNode = React.useRef<HTMLVideoElement>(null)
-
-  const videoJsOptions: videojs.PlayerOptions = {
-    sources: [
-      {
-        src: 'https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4',
-        type: 'video/mp4'
-      }
-    ],
-    poster: 'https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  }
 
   useEffect(() => {
-    const currentPlayer = videojs.getPlayer(videoNode.current ?? '')
-
-    if (!playing) {
-      if (playerId === id && currentPlayer) {
-        setPlaying(true)
-        currentPlayer?.play()
-        currentPlayer.controlBar.addClass('active-vjs-control-bar')
-      }
+    if (playerId === id && player.current) {
+      SafePlayVideo(player.current, setPlayPromise)
+      setPlaying(true)
+      return
     }
 
-    if (playing) {
+    if (playing && player.current) {
+      SafeStopVideo(player.current, playPromise)
       setPlaying(false)
-      currentPlayer?.load()
-      currentPlayer?.controlBar.removeClass('active-vjs-control-bar')
-
     }
-  }, [playerId])
+  })
 
   return (
     <div className={ styles.postCard__container }>
       <p className={ styles.postCard__videoTime } >
         30:25
       </p>
-      <Link
-        href={'/'}
-        className={ styles.postCard__link }
-      >
+      <Link href='/posts/videos/1'>
         <div
-          className={ styles.postCard__videoWrapper}
-          onMouseOver={ () => {
-            setPlayerId(id)
-          }}
-          onMouseLeave={ () => {
-            setPlayerId('')
-          }}
-          onTouchMove={ () => {
-            setPlayerId(id)
-          }}
+          className={ styles.postCard__videoWrapper }
+          onMouseOver={ async () =>
+            player.current ? await SafePlayVideo(player.current, setPlayPromise) : ''
+          }
+          onMouseLeave={ () =>
+            player.current ? SafeStopVideo(player.current, playPromise) : ''
+          }
+          onTouchMove={ () => setPlayerId(id) }
         >
-          <PreviewVideoPlayer options={videoJsOptions} setPlayerId={setPlayerId} id={id} playerId={playerId} videoNode={videoNode}/>
+          <video
+            className={ styles.postCard__media }
+            controls={ false }
+            src='https://assets.mixkit.co/videos/preview/mixkit-aerial-shot-of-a-small-isthmus-44399-large.mp4'
+            poster='https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            muted
+            ref={ player }
+            disableRemotePlayback={ true }
+            disablePictureInPicture={ true }
+          />
         </div>
       </Link>
 
@@ -75,10 +66,10 @@ export const PostCard: FC<Props> = ({ id, playerId, setPlayerId }) => {
           <BsThreeDotsVertical />
         </p>
         <Link href={'/'}>
-        <img
-          className={ styles.postCard__producerLogo }
-          src="https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        />
+          <img
+            className={ styles.postCard__producerLogo }
+            src="https://images.pexels.com/photos/33044/sunflower-sun-summer-yellow.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+          />
         </Link>
         <div className={ styles.postCard__producerTitle }>
           <Link href={'/'} className={ styles.postCard__producerNameLink }>

@@ -1,6 +1,6 @@
 .app {
   &__layout {
-    @apply flex bg-body min-h-screen font-roboto;
+    @apply flex bg-body min-h-screen font-roboto text-base-100;
   }
 
   &__container {

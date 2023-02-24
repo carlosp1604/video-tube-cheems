@@ -1,0 +1,52 @@
+.actor-page {
+  &__container {
+    @apply container px-5 mx-auto flex flex-col gap-y-8 my-10;
+  }
+
+  &__actor-info {
+    @apply grid gap-y-2 items-center;
+    grid-template-areas: 
+      "actor-image"
+      "actor-name"
+      "actor-description";
+  }
+
+  &__actor-image {
+    @apply place-self-center rounded-full w-20 h-20 object-cover mr-4;
+      grid-area: actor-image;
+  }
+
+  &__actor-name {
+    @apply text-center text-2xl font-black;
+  }
+
+  &__actor-page-title {
+    @apply flex items-center justify-between text-xl uppercase font-black;
+  }
+
+  &__posts-quantity {
+    @apply normal-case text-xs font-thin;
+  }
+
+  &__actor-description {
+    @apply relative p-4 rounded-lg bg-base-800 max-h-20 transition-height
+      duration-200 overflow-hidden;
+
+    &__open {
+      @apply max-h-full pb-9 transition-height duration-500;
+    }
+  }
+
+  &__actor-description-show-more {
+    @apply flex justify-center absolute bottom-0 left-0 right-0 ml-auto pb-2
+      mr-auto bg-gradient-to-b from-transparent to-base-900;
+  }
+
+  &__actor-description-show-more-button {
+    @apply font-black transition text-xs;
+
+    &:hover {
+      @apply text-base-500 transition duration-500 animate-pulse;
+    }
+  }
+}

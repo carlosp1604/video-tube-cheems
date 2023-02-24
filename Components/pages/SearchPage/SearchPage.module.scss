@@ -1,0 +1,14 @@
+.search-page {
+    &__container {
+      @apply container mx-auto px-5 scroll-smooth;
+    }
+  
+    &__title {
+      @apply flex justify-between py-5 text-base-100 text-2xl uppercase
+        items-center font-black gap-x-2; 
+    }
+  
+    &__videos-quantity {
+      @apply normal-case text-xs font-thin;
+    }
+  }

@@ -1,40 +1,37 @@
-import { ObjectionPostTagModel } from '../ObjectionModels/ObjectionPostTagModel'
 import { PostTag } from '../../Domain/PostTag'
 import { DateTime } from 'luxon'
-import { ModelObject } from 'objection'
-
-type MysqlPostTagRow = Partial<ModelObject<ObjectionPostTagModel>>
+import { PostTag as PrismaPostTagModel } from '@prisma/client'
 
 export class PostTagModelTranslator {
   public static toDomain(
-    objectionPostTagModel: ObjectionPostTagModel,
+    prismaPostTagModel: PrismaPostTagModel,
   ) {
     let deletedAt: DateTime | null = null
 
-    if (objectionPostTagModel.deleted_at !== null) {
-      deletedAt = DateTime.fromJSDate(objectionPostTagModel.deleted_at)
+    if (prismaPostTagModel.deletedAt !== null) {
+      deletedAt = DateTime.fromJSDate(prismaPostTagModel.deletedAt)
     }
 
     return new PostTag (
-      objectionPostTagModel.id,
-      objectionPostTagModel.name,
-      objectionPostTagModel.description,
-      objectionPostTagModel.image_url,
-      DateTime.fromJSDate(objectionPostTagModel.created_at),
-      DateTime.fromJSDate(objectionPostTagModel.updated_at),
+      prismaPostTagModel.id,
+      prismaPostTagModel.name,
+      prismaPostTagModel.description,
+      prismaPostTagModel.imageUrl,
+      DateTime.fromJSDate(prismaPostTagModel.createdAt),
+      DateTime.fromJSDate(prismaPostTagModel.updatedAt),
       deletedAt
     )
   }
 
-  public static toDatabase(postTag: PostTag): MysqlPostTagRow {
+  public static toDatabase(postTag: PostTag): PrismaPostTagModel {
     return {
       id: postTag.id,
-      image_url: postTag.imageUrl,
+      imageUrl: postTag.imageUrl,
       name: postTag.name,
       description: postTag.description,
-      created_at: postTag.createdAt.toJSDate(),
-      deleted_at: postTag.deletedAt?.toJSDate() ?? null,
-      updated_at: postTag.updatedAt.toJSDate(),
+      createdAt: postTag.createdAt.toJSDate(),
+      deletedAt: postTag.deletedAt?.toJSDate() ?? null,
+      updatedAt: postTag.updatedAt.toJSDate(),
     }
   }
 }

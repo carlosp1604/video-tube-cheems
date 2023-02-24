@@ -1,14 +1,25 @@
+import { RepositoryFilter, RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilter'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
 import { Post } from './Post'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
+import { PostWithCountInterface } from './PostWithCountInterface'
 
 export type RepositoryOptions =
-  'meta' | 'tags' | 'actors' | 'comments' | 'reactions' | 'comments.user' |
-  'reactions.user' | 'comments.childComments' | 'comments.childComments.user'
+  'meta' | 
+  'tags' | 
+  'actors' |
+  'producer' |
+  'comments' |
+  'reactions' |
+  'comments.user' |
+  'reactions.user' |
+  'comments.childComments' |
+  'producer.parentProducer' |
+  'comments.childComments.user'
 
-export type RepositorySortingOptions = 'date' | 'views'
-export type RepositorySortingCriteria = 'asc' | 'desc'
-export type RepositoryFilter = { type: 'title', value: string }
+export type PostRepositoryFilterOption = RepositoryFilterOption
+
 export interface PostRepositoryInterface {
   /**
    * Insert a Post in the persistence layer
@@ -68,7 +79,7 @@ export interface PostRepositoryInterface {
    * @param limit
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
-   * @param filter Post filter
+   * @param filters Post filters
    * @return Post if found or null
    */
   findWithOffsetAndLimit(
@@ -76,6 +87,15 @@ export interface PostRepositoryInterface {
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filter?: RepositoryFilter,
-  ): Promise<Post[]>
+    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+  ): Promise<PostWithCountInterface[]>
+
+  /**
+   * Count Posts based on filters
+   * @param filters Post filters
+   * @return Number of posts that accomplish with the filters
+   */
+  countPostsWithFilters(
+    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+  ): Promise<number>
 }

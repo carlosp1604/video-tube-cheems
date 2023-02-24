@@ -4,7 +4,6 @@ export class ObjectionUserModel extends Model {
   id!: string
   name!: string
   email!: string
-  views_count!: number
   image_url!: string | null
   language!: string
   password!: string

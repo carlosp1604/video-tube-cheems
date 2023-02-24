@@ -1,13 +1,10 @@
-import { FC, useState } from 'react'
-import styles from './PostCardGallery.module.scss'
-import { PostCardList } from './PostCardList'
+import { FC } from 'react'
+import { PostApplicationDto } from '../../Application/Dtos/PostApplicationDto'
 
-export const PostCardGallery: FC = () => {
-  const [playerId, setPlayerId] = useState<string>('')
+interface Props {
+  posts: PostApplicationDto[]
+}
 
-  return (
-    <div className={ styles.postCardGallery__container }>
-      <PostCardList playerId={playerId} setPlayerId={ setPlayerId } />
-    </div>
-  )
+export const PostCardGallery: FC<Props> = ({ posts }) => {
+  return (<></>)
 }

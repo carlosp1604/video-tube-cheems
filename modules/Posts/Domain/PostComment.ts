@@ -9,7 +9,7 @@ export class PostComment {
   public readonly userId: string
   public readonly parentCommentId: string | null
   public readonly createdAt: DateTime
-  private _updatedAt: DateTime
+  public updatedAt: DateTime
   public deletedAt: DateTime | null
   public _user: User | null = null
   private _childComments: Map<PostComment['id'], PostComment> =
@@ -31,7 +31,7 @@ export class PostComment {
     this.postId = postId
     this.parentCommentId = parentCommentId
     this.createdAt = createdAt
-    this._updatedAt = updatedAt
+    this.updatedAt = updatedAt
     this.deletedAt = deletedAt
   }
 
@@ -94,7 +94,7 @@ export class PostComment {
     return Array.from(this._childComments.values())
   }
 
-  public setUpdatedAt(value: PostComment['_updatedAt']) {
-    this._updatedAt = value
+  public setUpdatedAt(value: PostComment['updatedAt']) {
+    this.updatedAt = value
   }
 }

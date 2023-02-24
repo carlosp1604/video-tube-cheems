@@ -1,23 +1,19 @@
-import {
-  PostRepositoryInterface,
-  RepositoryFilter,
-  RepositoryOptions, RepositorySortingCriteria, RepositorySortingOptions
-} from '../Domain/PostRepositoryInterface'
+import { PostRepositoryFilterOption, PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
 import { Post } from '../Domain/Post'
-import knex from 'knex'
-import { Model, OrderByDirection } from 'objection'
-import * as knexConfig from '../../../knexfile'
 import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
-import { ObjectionPostModel } from './ObjectionModels/ObjectionPostModel'
-import { Actor } from '../Domain/Actor'
-import { PostTag } from '../Domain/PostTag'
-import { PostMeta } from '../Domain/PostMeta'
 import { PostComment } from '../Domain/PostComment'
 import { PostReaction } from '../Domain/PostReaction'
 import { ObjectionPostReactionModel } from './ObjectionModels/ObjectionPostReactionModel'
 import { PostReactionModelTranslator } from './ModelTranslators/PostReactionModelTranslator'
 import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
 import { ObjectionPostCommentModel } from './ObjectionModels/ObjectionPostCommentModel'
+import { prisma } from '../../../persistence/prisma'
+import { DateTime } from 'luxon'
+import { PostMetaModelTranslator } from './ModelTranslators/PostMetaModelTranslator'
+import { Prisma } from '@prisma/client'
+import { PostWithCountInterface } from '../Domain/PostWithCountInterface'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
+import { RepositoryFilter } from '../../Shared/Domain/RepositoryFilter'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -25,52 +21,92 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param post Post to persist
    */
   public async save(post: Post): Promise<void> {
-    // TODO: Find a solution for this
-    const knexInstance = knex(knexConfig)
-    Model.knex(knexInstance)
-    try {
-      await ObjectionPostModel.transaction(async (transaction) => {
-        const mysqlPostRow = PostModelTranslator.toDatabase(post)
-        const newPost = await ObjectionPostModel
-          .query(transaction)
-          .insert(mysqlPostRow)
-
-        // insert post_actors
-        await Promise.all(
-          post.actors.map((actor: Actor) => {
-            return newPost
-              .$relatedQuery('postActors', transaction)
-              .insert({ actor_id: actor.id })
+    const prismaPostModel = PostModelTranslator.toDatabase(post)
+    const comments = post.comments.map((comment) => PostCommentModelTranslator.toDatabase(comment))
+    const meta = post.meta.map((meta) => PostMetaModelTranslator.toDatabase(meta))
+    const reactions = post.reactions.map((reaction) => PostReactionModelTranslator.toDatabase(reaction))
+    
+    await prisma.post.create({
+      data: {
+        ...prismaPostModel,
+        comments: {
+          connectOrCreate: comments.map((comment) => {
+            return {
+              where: {
+               id: comment.id
+              },
+              create: {
+                ...comment
+              }
+            }
           })
-        )
-
-        // insert post_post_tags
-        await Promise.all(
-          post.tags.map(async (tag: PostTag) => {
-            return newPost
-            .$relatedQuery('postTags', transaction)
-            .insert({ tag_id: tag.id })
+        },
+        tags: {
+          connectOrCreate: post.tags.map((tag) => {
+            return {
+              where: {
+               postId_postTagId: {
+                postId: post.id,
+                postTagId: tag.id,
+               },
+              },
+              create: {
+                createdAt: DateTime.now().toJSDate(),
+                updatedAt: DateTime.now().toJSDate(),
+                postTagId: tag.id,
+              }
+            }
           })
-        )
-
-        // insert post_meta
-        await Promise.all(
-          post.meta.map(async (meta: PostMeta) => {
-            return newPost
-              .$relatedQuery('meta', transaction)
-              .insert({
-                value: meta.value,
+        },
+        actors: {
+          connectOrCreate: post.actors.map((actor) => {
+            return {
+              where: {
+               postId_actorId: {
+                postId: post.id,
+                actorId: actor.id,
+               },
+              },
+              create: {
+                createdAt: DateTime.now().toJSDate(),
+                updatedAt: DateTime.now().toJSDate(),
+                actorId: actor.id,
+              }
+            }
+          })
+        },
+        meta: {
+          connectOrCreate: meta.map((meta) => {
+            return {
+              where: {
+               type_postId: {
+                postId: post.id,
                 type: meta.type
-              })
+               }
+              },
+              create: {
+                ...meta
+              }
+            }
           })
-        )
-
-        return newPost
-      })
-    } 
-    catch (exception: unknown) {
-      console.log(exception)
-    }
+        },
+        reactions: {
+          connectOrCreate: reactions.map((reaction) => {
+            return {
+              where: {
+               postId_userId: {
+                postId: post.id,
+                userId: reaction.userId
+               }
+              },
+              create: {
+                ...reaction
+              }
+            }
+          })
+        }
+      },
+    })
   }
 
   /**
@@ -80,34 +116,58 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @return Post if found or null
    */
   public async findById(postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
-    // TODO: Find a solution for this
-    const knexInstance = knex(knexConfig)
-    Model.knex(knexInstance)
+    let includeComments: Prisma.Post$commentsArgs | boolean = options.includes('comments')
+    let includeProducer: boolean | Prisma.ProducerArgs | undefined = undefined
 
-    const post = await ObjectionPostModel.query()
-      .findById(postId)
-      .modify((queryBuilder) => {
-        queryBuilder.whereNull('deleted_at')
-        queryBuilder.andWhere('posts.id', '=', postId)
+    if (options.includes('comments.childComments') || options.includes('comments.user')) {
+      includeComments = {
+        include: {
+          childComments: {
+            include: {
+              user: options.includes('comments.childComments.user')
+            }
+          },
+          user: options.includes('comments.user')
+        }
+      }
+    }
 
-        options.forEach((option) => {
-          if (option === 'comments') {
-            const expression = '.[user, childComments'
-            const nestedExpression = `comments(filterChildren).[childComments${expression.repeat(10)}${']'.repeat(11)}`
-            queryBuilder.withGraphFetched(nestedExpression)
-              .modifiers({
-                filterChildren(builder) {
-                  builder.whereNull('parent_comment_id')
-                }
-              })
+    if (options.includes('producer') || options.includes('producer.parentProducer')) {
+      includeProducer = {
+        include: {
+          parentProducer: options.includes('producer.parentProducer')
+        }
+      }
+    }
 
-            return
+    const post = await prisma.post.findFirst({
+      where: {
+        id: postId,
+        deletedAt: null,
+        publishedAt:{
+          not: null,
+          lte: new Date(),
+        },
+      },
+      include: {
+        producer: includeProducer,
+        actors: {
+          include: {
+            actor: options.includes('actors'),
           }
-          queryBuilder.withGraphFetched(option)
-        })
-      })
+        },
+        comments: includeComments,
+        meta: options.includes('meta'),
+        reactions: options.includes('reactions'),
+        tags: {
+          include: {
+            tag: options.includes('tags')
+          }
+        }
+      },
+    })
 
-    if (!post) {
+    if (post === null) {
       return null
     }
 
@@ -120,7 +180,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param limit
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
-   * @param filter Post filter
+   * @param filters Post filters
    * @return Post if found or null
    */
   public async findWithOffsetAndLimit(
@@ -128,44 +188,94 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filter?: RepositoryFilter,
-  ): Promise<Post[]> {
-    // TODO: Find a solution for this
-    const knexInstance = knex(knexConfig)
-    Model.knex(knexInstance)
+    filters: RepositoryFilter<PostRepositoryFilterOption>[]
+  ): Promise<PostWithCountInterface[]> {
+    let sortCriteria: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> | undefined = undefined
+    let whereClause: Prisma.PostWhereInput | undefined = {
+      publishedAt: {
+        not: null,
+      },
+      deletedAt: null,
+    }
 
-    const posts = await ObjectionPostModel.query()
-      .modify((builder) => {
-        builder.whereNotNull('published_at')
-        builder.whereNull('deleted_at')
-        builder.limit(limit)
-        builder.offset(offset)
-        builder.withGraphFetched('meta')
-        builder.withGraphFetched('actors')
-        builder.withGraphFetched('reactions')
+    let includes: Prisma.PostInclude | null | undefined = {
+      meta: true,
+      producer: true,
+    }
 
-        let order: OrderByDirection = 'desc'
+    const includeFilters = this.buildIncludes(filters)
+    includes = {
+      ...includes,
+      ...includeFilters
+    }
 
-        if (sortingCriteria === 'asc') {
-          order = 'asc'
-        }
+    if (sortingOption === 'date') {
+      sortCriteria = {
+        publishedAt: sortingCriteria 
+      }
+    }
 
-        if (sortingOption === 'date') {
-          builder.orderBy('published_at', order)
-        }
+    // TODO:Support ORDER BY views
 
-        if (sortingOption === 'views') {
-          builder.orderBy('views_count', order)
-        }
+    const whereFilters = this.buildFilters(filters)
 
-        if (filter) {
-          // NOTE: At the moment we only support filter by post title
-          builder.where('title', 'like', `%${filter.value}%`)
-        }
-      })
+    whereClause = {
+      ...whereClause,
+      ...whereFilters
+    }
 
-      return posts.map((post) =>
-        PostModelTranslator.toDomain(post, ['meta', 'actors', 'reactions']))
+    const posts = await prisma.post.findMany({
+      where: whereClause,
+      include: {
+        _count: {
+          select: {
+            comments: true,
+            reactions: true,
+          }
+        },
+        ...includes
+      },
+      take: limit,
+      skip: offset,
+      orderBy: sortCriteria,
+    })
+
+    return posts.map((post) => {
+      return {
+        post: PostModelTranslator.toDomain(post, ['meta', 'producer']),
+        postReactions: post._count.reactions,
+        postComments: post._count.comments
+      }
+    })
+  }
+
+  /**
+   * Count Posts based on filter
+   * @param filters Post filters
+   * @return Number of posts that accomplish the filters
+   */
+  public async countPostsWithFilters(
+    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+  ): Promise<number> {
+    let whereClause: Prisma.PostWhereInput | undefined = {
+      publishedAt: {
+        not: null,
+      },
+      deletedAt: null,
+    }
+
+    const whereFilters = this.buildFilters(filters)
+
+    whereClause = {
+      ...whereClause,
+      ...whereFilters
+    }
+
+    const posts = await prisma.post.count({
+      where: whereClause,
+    })
+
+    return posts
   }
 
   /**
@@ -238,5 +348,105 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     await ObjectionPostCommentModel.query()
       .delete()
       .where('id', '=', commentId)
+  }
+
+  private buildFilters(
+    filters: RepositoryFilter<PostRepositoryFilterOption>[]
+  ): Prisma.PostWhereInput | undefined {
+    let whereClause: Prisma.PostWhereInput | undefined = {}
+
+    for (const filter of filters) {
+      if (filter.type === 'postTitle') {
+        whereClause = {
+          ...whereClause,
+          OR: [
+            {
+              title: {
+                contains: filter.value,
+              },
+            },
+            {
+              description: {
+                contains: filter.value
+              }
+            }
+          ]
+        }
+      }
+
+      if (filter.type.startsWith('producer')) {
+        if (filter.type === 'producerId') {
+          whereClause = {
+            ...whereClause,
+            producer: {
+              id: filter.value
+            }
+          }
+        }
+
+        if (filter.type === 'producerName') {
+          whereClause = {
+            ...whereClause,
+            producer: {
+              name: filter.value
+            }
+          }
+        }
+      }
+
+      if (filter.type.startsWith('actor')) {
+        if (filter.type === 'actorId') {
+          whereClause = {
+            ...whereClause,
+            actors: {
+              some: {
+                actor: {
+                  id: filter.value
+                }
+              }
+            }
+          }
+        }
+
+        if (filter.type === 'actorName') {
+          whereClause = {
+            ...whereClause,
+            actors: {
+              some: {
+                actor: {
+                  name: filter.value
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return whereClause
+  }
+
+  private buildIncludes(
+    filters: RepositoryFilter<PostRepositoryFilterOption>[]
+  ): Prisma.PostInclude | null | undefined {
+    let includes: Prisma.PostInclude | null | undefined = {}
+
+    for (const filter of filters) {
+      if (filter.type.startsWith('producer')) {
+        includes = {
+          ...includes,
+          producer: true,
+        }
+      }
+
+      if (filter.type.startsWith('actor')) {
+        includes = {
+          ...includes,
+          actors: true,
+        }
+      }
+    }
+
+    return includes
   }
 }

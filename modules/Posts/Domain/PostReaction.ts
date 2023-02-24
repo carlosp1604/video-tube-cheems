@@ -11,7 +11,7 @@ export class PostReaction {
   public readonly userId: string
   private _reactionType: Reaction
   public readonly createdAt: DateTime
-  private _updatedAt: DateTime
+  public updatedAt: DateTime
   public deletedAt: DateTime | null
 
   public constructor(
@@ -27,12 +27,12 @@ export class PostReaction {
     this.userId = userId
     this._reactionType = reactionType
     this.createdAt = createdAt
-    this._updatedAt = updatedAt
+    this.updatedAt = updatedAt
     this.deletedAt = deletedAt
   }
 
   private static validateReaction(reactionType: Reaction): void {
-    for (const validReaction in Reaction) {
+    for (const validReaction of Object.values(Reaction)) {
       if (validReaction === reactionType) {
         return
       }
@@ -52,6 +52,6 @@ export class PostReaction {
   }
 
   public setUpdatedAt(updatedAt: DateTime) {
-    this._updatedAt = updatedAt
+    this.updatedAt = updatedAt
   }
 }

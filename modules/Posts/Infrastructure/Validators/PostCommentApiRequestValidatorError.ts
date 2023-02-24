@@ -3,7 +3,7 @@ import { ZodApiValidationError } from '../../../Exceptions/Infrastructure/ZodApi
 
 export class PostCommentApiRequestValidatorError extends ZodApiValidationError {
   public static createCommentRequestId = 'validator_exception_create_comment_request'
-  public static updateCommentRequestId = 'validator_exception_create_comment_request'
+  public static updateCommentRequestId = 'validator_exception_update_comment_request'
   
   public static createPostCommentValidation(issues: ZodIssue[]): PostCommentApiRequestValidatorError {
     return new PostCommentApiRequestValidatorError(

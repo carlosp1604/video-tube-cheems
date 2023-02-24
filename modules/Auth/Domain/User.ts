@@ -7,7 +7,6 @@ export class User {
   public readonly name: string
   public readonly email: string
   public readonly imageUrl: string | null
-  public viewsCount: number
   public language: string
   public hashedPassword: string
   public emailVerified: DateTime | null
@@ -20,7 +19,6 @@ export class User {
     name: string,
     email: string,
     imageUrl: string | null,
-    viewsCount: number,
     language: string,
     hashedPassword: string,
     createdAt: DateTime,
@@ -33,7 +31,6 @@ export class User {
     this.email = email
     this.imageUrl = imageUrl
     this.hashedPassword = hashedPassword
-    this.viewsCount = viewsCount
     this.language = language
     this.createdAt = createdAt
     this.updatedAt = updatedAt

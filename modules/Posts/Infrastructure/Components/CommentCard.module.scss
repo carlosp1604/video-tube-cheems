@@ -1,0 +1,55 @@
+.comment-card {
+  &__container {
+    @apply grid gap-2 items-center border-b border-base-700 border-opacity-30;
+    grid-template-areas:
+      "user-logo  user-name-date"
+      "user-logo  comment"
+      "user-logo  child-comment-section";
+    grid-auto-rows: auto 1fr;
+  }
+
+  &__user-logo {
+    @apply h-8 w-8 self-start rounded-full;
+    grid-area: user-logo;
+  }
+
+  &__child-comment-user-logo {
+    @apply h-6 w-6 self-start rounded-full;
+    grid-area: user-logo;
+  }
+
+  &__user-name-date {
+    @apply flex justify-between items-center;
+    grid-area: user-name-date;
+  }
+
+  &__user-name {
+    @apply font-bold;
+  }
+
+  &__comment-date {
+    @apply text-xs font-thin;
+  }
+
+  &__comment {
+    @apply font-light p-2 rounded-lg bg-base-700;
+    grid-area: comment;
+  }
+
+  &__child-comment-section {
+    grid-area: child-comment-section;
+  }
+
+  &__child-comment {
+    @apply grid gap-2 items-center;
+    grid-template-areas:
+      "user-logo                user-name-date"
+      "user-logo                comment"
+      "child-comment-container  child-comment-container";
+    grid-auto-rows: auto 1fr;
+  }
+
+  &__replies_button {
+    @apply ml-0 mr-auto p-1 mb-2  font-bold text-brand-300;
+  }
+}

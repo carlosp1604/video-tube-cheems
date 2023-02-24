@@ -5,9 +5,10 @@ import { PostApplicationDtoTranslator } from './Translators/PostApplicationDtoTr
 import { GetPostByIdApplicationException } from './GetPostByIdApplicationException'
 
 export class GetPostById {
-  private options: RepositoryOptions[] =
-    ['comments', 'comments.user', 'reactions', 'actors', 'meta', 'tags',
-      'comments.childComments', 'comments.childComments.user']
+  private options: RepositoryOptions[] = [
+    'comments', 'comments.user', 'reactions', 'actors', 'meta', 'tags',
+    'comments.childComments', 'comments.childComments.user', 'producer', 'producer.parentProducer'
+  ]
 
   constructor(
     private readonly postRepository: PostRepositoryInterface

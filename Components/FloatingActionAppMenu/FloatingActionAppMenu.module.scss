@@ -1,19 +1,18 @@
 .floating-action-app-menu {
   &__container {
-    @apply flex fixed items-center z-40 bottom-10 right-8 backdrop-filter backdrop-blur-2xl
-      w-14 h-14 rounded-full transition-transform duration-500;;
-    background-image: radial-gradient(circle at center, theme('colors.transparent') 25%, theme('colors.brand.600') 125%);
+    @apply flex fixed items-center z-40 bottom-10 right-8 w-14 h-14
+      rounded-full transition duration-500 bg-brand-600;
 
     @screen lg {
       @apply hidden;
     }
 
-    &:hover, &:focus {
-      @apply scale-110 transition-transform duration-500 cursor-pointer;
+    &:hover {
+      @apply bg-brand-400 transition duration-500 cursor-pointer;
     }
   }
 
   &__icon {
-    @apply text-gray-300 mx-auto text-2xl;
+    @apply text-base-300 mx-auto text-2xl;
   }
 }

@@ -1,18 +1,21 @@
 import { PostMeta } from './PostMeta'
 import { PostTag } from './PostTag'
-import { Actor } from './Actor'
+import { Actor } from '../../Actors/Domain/Actor'
 import { DateTime } from 'luxon'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostDomainException } from './PostDomainException'
 import { PostCommentDomainException } from './PostCommentDomainException'
 import { randomUUID } from 'crypto'
+import { Producer } from '../../Producers/Domain/Producer'
+
+export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
 export class Post {
   public readonly id: string
   public readonly title: string
   public readonly description: string
-  public viewsCount: number
+  public readonly producerId: string | null
   public readonly createdAt: DateTime
   public updatedAt: DateTime
   public deletedAt: DateTime | null
@@ -22,12 +25,13 @@ export class Post {
   private _actors: Map<Actor['id'], Actor> = new Map<Actor['id'], Actor>()
   private _comments: Map<PostComment['id'], PostComment> = new Map<PostComment['id'], PostComment>()
   private _reactions: Map<PostReaction['userId'], PostReaction> = new Map<PostReaction['userId'], PostReaction>()
+  public producer: Producer | null = null
 
   public constructor(
     id: string,
     title: string,
     description: string,
-    viewsCount: number,
+    producerId: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null,
@@ -36,7 +40,7 @@ export class Post {
     this.id = id
     this.title = title
     this.description = description
-    this.viewsCount = viewsCount
+    this.producerId = producerId
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
@@ -45,6 +49,10 @@ export class Post {
 
   public addMeta(postMeta: PostMeta): void {
     this._meta.set(postMeta.type, postMeta)
+  }
+
+  public addPostReaction(postReaction: PostReaction): void {
+    this._reactions.set(postReaction.userId, postReaction)
   }
 
   public addTag(postTag: PostTag): void {
@@ -247,6 +255,14 @@ export class Post {
 
   get comments(): PostComment[] {
     return Array.from(this._comments.values())
+  }
+
+  public setProducer(producer: Producer): void {
+    if (this.producer !== null) {
+      throw PostDomainException.producerAlreadySet(this.id)
+    }
+
+    this.producer = producer
   }
 
   get reactions(): PostReaction[] {

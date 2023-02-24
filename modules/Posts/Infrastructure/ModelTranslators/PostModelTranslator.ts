@@ -1,91 +1,118 @@
-import { ObjectionPostModel } from '../ObjectionModels/ObjectionPostModel'
 import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
-import { Post } from '../../Domain/Post'
 import { PostMetaModelTranslator } from './PostMetaModelTranslator'
 import { PostTagModelTranslator } from './PostTagModelTranslator'
 import { ActorModelTranslator } from './ActorModelTranslator'
 import { DateTime } from 'luxon'
 import { PostCommentModelTranslator } from './PostCommentModelTranslator'
 import { PostReactionModelTranslator } from './PostReactionModelTranslator'
-import { ModelObject } from 'objection'
-
-type MysqlPostRow = Partial<ModelObject<ObjectionPostModel>>
+import { Post as PostPrismaModel } from '@prisma/client'
+import { Post } from '../../Domain/Post'
+import { PostWithActors, PostWithComments, PostWithMeta, PostWithProducer, PostWithProducerWithParent, PostWithReactions, PostWithTags } from '../PrismaModels/PostModel'
+import { ProducerModelTranslator } from '../../../Producers/Infrastructure/ProducerModelTranslator'
 
 export class PostModelTranslator {
   public static toDomain(
-    objectionPostModel: ObjectionPostModel,
+    prismaPostModel: PostPrismaModel,
     options: RepositoryOptions[] = []
   ) {
     let publishedAt: DateTime | null = null
     let deletedAt: DateTime | null = null
 
-    if (objectionPostModel.published_at !== null) {
-      publishedAt = DateTime.fromJSDate(objectionPostModel.published_at)
+    if (prismaPostModel.publishedAt !== null) {
+      publishedAt = DateTime.fromJSDate(prismaPostModel.publishedAt)
     }
 
-    if (objectionPostModel.deleted_at !== null) {
-      deletedAt = DateTime.fromJSDate(objectionPostModel.deleted_at)
+    if (prismaPostModel.deletedAt !== null) {
+      deletedAt = DateTime.fromJSDate(prismaPostModel.deletedAt)
     }
+
 
     const post = new Post(
-      objectionPostModel.id,
-      objectionPostModel.title,
-      objectionPostModel.description,
-      objectionPostModel.views_count,
-      DateTime.fromJSDate(objectionPostModel.created_at),
-      DateTime.fromJSDate(objectionPostModel.updated_at),
+      prismaPostModel.id,
+      prismaPostModel.title,
+      prismaPostModel.description,
+      prismaPostModel.producerId,
+      DateTime.fromJSDate(prismaPostModel.createdAt),
+      DateTime.fromJSDate(prismaPostModel.updatedAt),
       deletedAt,
       publishedAt
     )
 
     if (options.includes('meta')) {
-      for (let i = 0; i < objectionPostModel.meta.length; i++) {
-        const postMetaDomain = PostMetaModelTranslator.toDomain(objectionPostModel.meta[i])
+      const postWithMeta = prismaPostModel as PostWithMeta
+      for (let i = 0; i < postWithMeta.meta.length; i++) {
+        const postMetaDomain = PostMetaModelTranslator.toDomain(postWithMeta.meta[i])
         post.addMeta(postMetaDomain)
       }
     }
 
     if (options.includes('tags')) {
-      for (let i = 0; i < objectionPostModel.tags.length; i++) {
-        const postTagDomain = PostTagModelTranslator.toDomain(objectionPostModel.tags[i])
+      const postWithTags = prismaPostModel as PostWithTags
+      for (let i = 0; i < postWithTags.tags.length; i++) {
+        const postTagDomain = PostTagModelTranslator.toDomain(postWithTags.tags[i].tag)
         post.addTag(postTagDomain)
       }
     }
 
     if (options.includes('actors')) {
-      for (let i = 0; i < objectionPostModel.actors.length; i++) {
-        const actorDomain = ActorModelTranslator.toDomain(objectionPostModel.actors[i])
+      const postWithActor = prismaPostModel as PostWithActors
+      for (let i = 0; i < postWithActor.actors.length; i++) {
+        const actorDomain = ActorModelTranslator.toDomain(postWithActor.actors[i].actor)
         post.addActor(actorDomain)
       }
     }
 
     if (options.includes('comments')) {
-      for (let i = 0; i < objectionPostModel.comments.length; i++) {
-        const commentDomain = PostCommentModelTranslator.toDomain(objectionPostModel.comments[i], )
+      const postWithComments = prismaPostModel as PostWithComments
+      for (let i = 0; i < postWithComments.comments.length; i++) {
+        const commentDomain = PostCommentModelTranslator.toDomain(
+          postWithComments.comments[i],
+          ['comments.user', 'comments.childComments']
+        )
         post.createComment(commentDomain)
       }
     }
 
     if (options.includes('reactions')) {
-      for (let i = 0; i < objectionPostModel.reactions.length; i++) {
-        const reactionDomain = PostReactionModelTranslator.toDomain(objectionPostModel.reactions[i])
-        post.addReaction(reactionDomain)
+      const postWithReactions = prismaPostModel as PostWithReactions   
+      for (let i = 0; i < postWithReactions.reactions.length; i++) {
+        const reactionDomain = PostReactionModelTranslator.toDomain(postWithReactions.reactions[i])
+        post.addPostReaction(reactionDomain)
+      }
+    }
+
+    if (options.includes('producer') || options.includes('producer.parentProducer')) {
+      if (options.includes('producer.parentProducer')) {
+        const postWithProducer = prismaPostModel as PostWithProducer
+
+        if (postWithProducer.producer !== null) {
+          const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, [])
+          post.setProducer(producerDomain)
+        }
+      }
+      else {
+        const postWithProducer = prismaPostModel as PostWithProducerWithParent
+
+        if (postWithProducer.producer !== null) {
+          const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, options)
+          post.setProducer(producerDomain)
+        }
       }
     }
 
     return post
   }
 
-  public static toDatabase(post: Post): MysqlPostRow {
+  public static toDatabase(post: Post): PostPrismaModel {
     return {
       id: post.id,
       description: post.description,
       title: post.title,
-      published_at: post.publishedAt?.toJSDate() ?? null,
-      created_at: post.createdAt.toJSDate(),
-      deleted_at: post.deletedAt?.toJSDate() ?? null,
-      updated_at: post.updatedAt.toJSDate(),
-      views_count: post.viewsCount,
+      producerId: post.producerId,
+      publishedAt: post.publishedAt?.toJSDate() ?? null,
+      createdAt: post.createdAt.toJSDate(),
+      deletedAt: post.deletedAt?.toJSDate() ?? null,
+      updatedAt: post.updatedAt.toJSDate(),
     }
   }
 }

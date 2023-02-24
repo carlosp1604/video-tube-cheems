@@ -17,7 +17,6 @@ export class UserApplicationDtoTranslator {
       updatedAt: user.updatedAt.toISO(),
       email: user.email,
       language: user.language,
-      viewsCount: user.viewsCount,
       createdAt: user.createdAt.toISO()
     }
   }

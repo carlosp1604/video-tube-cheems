@@ -1,0 +1,27 @@
+.actor-card {
+  &__container {
+    @apply grid gap-y-2 items-center rounded-lg;
+    grid-template-areas: 
+      "actor-image"
+      "actor-name"
+      "actor-description";
+    
+    &:hover, &:focus {
+      @apply bg-brand2-700;
+    }
+  }
+
+  &__image-wrapper {
+    @apply aspect-square overflow-hidden;
+    grid-area: actor-image;
+  } 
+
+  &__actor-image {
+    @apply h-full w-full object-cover rounded-md;
+      
+  }
+
+  &__actor-name {
+    @apply text-sm font-semibold;
+  }
+}

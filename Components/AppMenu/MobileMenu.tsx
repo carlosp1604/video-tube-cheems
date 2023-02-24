@@ -1,8 +1,9 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
-import { BsBookmarks, BsCameraVideo, BsClock, BsHeart, BsHouse } from 'react-icons/bs'
+import { BsBookmarks, BsCameraVideo, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
 import { TbClipboardCheck } from 'react-icons/tb'
+import Link from 'next/link'
 
 interface Props {
   openMenu: boolean
@@ -74,6 +75,20 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                     Saved
                   </span>
                 </div>
+
+                <Link
+                  href={'/actors'} 
+                >
+                  <div className={ styles.mobileMenu__menuItem }>
+                    <span className={ styles.mobileMenu__menuItemContent }>
+                      <BsStar
+                        className={ styles.mobileMenu__menuIcon }
+                      />
+                      Stars
+                    </span>
+                  </div>
+                  
+                </Link>
 
                 <div className={ styles.mobileMenu__menuItem }>
                   <span className={ styles.mobileMenu__menuItemContent }>

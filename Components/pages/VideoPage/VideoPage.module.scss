@@ -1,0 +1,175 @@
+.video-page {
+  $parentBlock: &;
+
+  &__container {
+    @apply grid container px-5 mx-auto gap-y-4 transition;
+    grid-template-areas:
+      "video"
+      "video-data"
+      "related-videos";
+  }
+
+  &__video {
+    @apply pt-10;
+    grid-area: video;
+  }
+
+  &__video-data {
+    @apply grid gap-y-2;
+    grid-template-areas:
+      "video-title    video-title"
+      "video-info     video-info"
+      "video-options  video-options"
+      "actor-tags-cat actor-tags-cat"
+      "description    description";
+    grid-area: video-data;
+  }
+
+  &__video-title {
+    @apply font-black text-lg;
+    grid-area: video-title;
+  }
+
+  &__video-info {
+    @apply flex flex-row gap-x-4 ;
+    grid-area: video-info;
+  }
+
+  &__video-info-item {
+    @apply flex flex-row items-center font-light text-base-400 gap-x-1 text-sm;
+    grid-area: video-info;
+  }
+
+  &__video-options {
+    @apply flex flex-row place-self-end gap-x-1;
+    grid-area: video-options;
+  }
+
+  &__video-option-icon {
+    @apply relative h-10 w-10 rounded-full bg-base-900 p-3 cursor-pointer;
+  }
+
+  &__video-actor-tags-cat {
+    @apply flex flex-col gap-y-6 relative max-h-24 p-4
+      overflow-hidden bg-base-900 rounded-lg transition-all duration-200;
+    grid-area: actor-tags-cat;
+
+    &__open {
+      @apply max-h-full pb-9 transition-all duration-500;
+    }
+  }
+
+  &__video-actor-tags-cat-show-more {
+    @apply flex justify-center absolute bottom-0 left-0 right-0 ml-auto pb-2
+      mr-auto bg-gradient-to-b from-transparent to-base-900;
+  }
+
+  &__video-actor-tags-show-more-button {
+    @apply font-black transition text-xs;
+
+    &:hover {
+      @apply text-base-500 transition duration-500 animate-pulse;
+    }
+  }
+
+  &__data-item {
+    @apply flex flex-col gap-y-2 font-light text-sm;
+  }
+
+  &__producer-item {
+    @apply flex items-center;
+  }
+
+  &__producer-logo {
+    @apply rounded-full w-10 h-10 object-cover mr-4;
+  }
+
+  &__producer-name {
+    @apply flex flex-row flex-grow justify-between items-center font-normal text-base;
+  }
+
+  &__actor-logo {
+    @apply rounded-full w-6 h-6 object-cover mr-4;
+  }
+
+  &__actors-item {
+    @apply flex items-center;
+  }
+
+  &__actor-name {
+    @apply flex flex-row flex-grow justify-between items-center font-normal text-base;
+  }
+
+  &__profile {
+    @apply flex gap-x-2 items-center text-sm font-light text-blue;
+  }
+
+  &__video-description {
+    @apply relative p-4 rounded-lg bg-base-800 max-h-0 overflow-hidden
+      transition-all duration-500 text-xs;
+    grid-area: description;
+
+    &__open {
+      @apply max-h-full pb-9 transition-all duration-500;
+    }
+  }
+
+  &__video-description-title {
+    @apply uppercase font-bold mb-2;
+  }
+
+  &__video-description-show-more {
+    @apply flex justify-center absolute bottom-0 pt-2 pb-2 left-0
+      right-0 ml-auto mr-auto bg-base-800 bg-opacity-95;
+  }
+
+  &__video-description-show-more-button {
+    @apply font-black transition;
+
+    &:hover {
+      @apply text-base-500 transition duration-500 animate-pulse;
+    }
+  }
+
+  &__video-option-icon:hover, &__video-option-icon:focus {
+    @apply bg-base-800 transition-all;
+    #{$parentBlock}__heart-icon {
+      @apply text-red scale-125 transition-all;
+    }
+
+    #{$parentBlock}__comment-icon {
+      @apply text-blue scale-125 transition-all;
+    }
+
+    #{$parentBlock}__share-icon {
+      @apply text-green scale-125 transition-all;
+    }
+
+    #{$parentBlock}__save-icon {
+      @apply text-yellow scale-125 transition-all;
+    }
+
+    #{$parentBlock}__download-icon {
+      @apply text-green scale-125 transition-all;
+    }
+
+    #{$parentBlock}__report-icon {
+      @apply scale-125 transition-all;
+    }
+  }
+
+  &__video-option-icon:active {
+    @apply bg-base-900;
+  }
+
+  &__video-comments {
+    @apply flex max-h-0 rounded-lg overflow-hidden transition-all
+      duration-100 bg-base-900 scrollbar-hide;
+    grid-area: video-comments;
+
+    &__open {
+      @apply max-h-96 transition-all duration-500 overflow-y-scroll
+        overflow-x-hidden;
+    }
+  }
+}

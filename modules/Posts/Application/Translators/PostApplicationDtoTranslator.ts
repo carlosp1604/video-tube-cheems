@@ -1,6 +1,7 @@
+import { ProducerApplicationDtoTranslator } from '../../../Producers/Application/ProducerApplicationDtoTranslator'
 import { Post } from '../../Domain/Post'
 import { PostApplicationDto } from '../Dtos/PostApplicationDto'
-import { ActorApplicationDtoTranslator } from './ActorApplicationDtoTranslator'
+import { ActorApplicationDtoTranslator } from '../../../Actors/Application/ActorApplicationDtoTranslator'
 import { CommentApplicationDtoTranslator } from './CommentApplicationDtoTranslator'
 import { MetaApplicationDtoTranslator } from './MetaApplicationDtoTranslator'
 import { ReactionApplicationDtoTranslator } from './ReactionApplicationDtoTranslator'
@@ -10,10 +11,10 @@ export class PostApplicationDtoTranslator {
   public static fromDomain(post: Post): PostApplicationDto {
     return {
       id: post.id,
+      createdAt: post.createdAt.toISO(),
       actors: post.actors.map((actor) => {
         return ActorApplicationDtoTranslator.fromDomain(actor)
       }),
-      viewsCount: post.viewsCount,
       comments: post.comments.map((comment) => {
         return CommentApplicationDtoTranslator.fromDomain(comment)
       }),
@@ -28,7 +29,9 @@ export class PostApplicationDtoTranslator {
       tags: post.tags.map((tag) => {
         return TagApplicationDtoTranslator.fromDomain(tag)
       }),
-      title: post.title
+      title: post.title,
+      producer: post.producer !== null ? 
+        ProducerApplicationDtoTranslator.fromDomain(post.producer) : null
     }
   }
 }

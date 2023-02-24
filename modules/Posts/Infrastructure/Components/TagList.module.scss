@@ -1,0 +1,14 @@
+.tag-list {
+  &__container {
+    @apply flex gap-x-2 flex-wrap items-center;
+  }
+
+  &__tag-container {
+    @apply py-0.5 px-2 rounded-full border border-base-700 
+      transition-all;
+
+    &:hover {
+      @apply bg-base-700 transition-all;
+    }
+  }
+}

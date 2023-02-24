@@ -1,49 +1,44 @@
 import { DateTime } from 'luxon'
-import { ObjectionUserModel } from './ObjectionUserModel'
 import { User } from '../Domain/User'
-import { ModelObject } from 'objection'
-
-type MysqlUserRow = Partial<ModelObject<ObjectionUserModel>>
+import { User as PrismaUserModel } from '@prisma/client'
 
 export class UserModelTranslator {
-  public static toDomain(objectionUserModel: ObjectionUserModel) {
+  public static toDomain(prismaUserModel: PrismaUserModel) {
     let deletedAt: DateTime | null = null
     let emailVerifiedAt: DateTime | null = null
 
-    if (objectionUserModel.email_verified !== null) {
-      emailVerifiedAt = DateTime.fromJSDate(objectionUserModel.email_verified)
+    if (prismaUserModel.emailVerified !== null) {
+      emailVerifiedAt = DateTime.fromJSDate(prismaUserModel.emailVerified)
     }
 
-    if (objectionUserModel.deleted_at !== null) {
-      deletedAt = DateTime.fromJSDate(objectionUserModel.deleted_at)
+    if (prismaUserModel.deletedAt !== null) {
+      deletedAt = DateTime.fromJSDate(prismaUserModel.deletedAt)
     }
 
     return new User (
-      objectionUserModel.id,
-      objectionUserModel.name,
-      objectionUserModel.email,
-      objectionUserModel.image_url,
-      objectionUserModel.views_count,
-      objectionUserModel.language,
-      objectionUserModel.password,
-      DateTime.fromJSDate(objectionUserModel.created_at),
-      DateTime.fromJSDate(objectionUserModel.updated_at),
+      prismaUserModel.id,
+      prismaUserModel.name,
+      prismaUserModel.email,
+      prismaUserModel.imageUrl,
+      prismaUserModel.language,
+      prismaUserModel.password,
+      DateTime.fromJSDate(prismaUserModel.createdAt),
+      DateTime.fromJSDate(prismaUserModel.updatedAt),
       emailVerifiedAt,
       deletedAt,
     )
   }
 
-  public static toDatabase(user: User): MysqlUserRow {
+  public static toDatabase(user: User): PrismaUserModel {
     return {
       id: user.id,
       email: user.email,
-      email_verified: user.emailVerified?.toJSDate() ?? null,
+      emailVerified: user.emailVerified?.toJSDate() ?? null,
       name: user.name,
-      created_at: user.createdAt.toJSDate(),
-      deleted_at: user.deletedAt?.toJSDate() ?? null,
-      updated_at: user.updatedAt.toJSDate(),
-      views_count: user.viewsCount,
-      image_url: user.imageUrl,
+      createdAt: user.createdAt.toJSDate(),
+      deletedAt: user.deletedAt?.toJSDate() ?? null,
+      updatedAt: user.updatedAt.toJSDate(),
+      imageUrl: user.imageUrl,
       language: user.language,
       password: user.hashedPassword
     }

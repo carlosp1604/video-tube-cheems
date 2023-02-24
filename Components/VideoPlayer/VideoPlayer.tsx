@@ -1,100 +1,48 @@
-import { createRef, useState } from 'react'
-import './App.css'
-import { FC } from 'react'
+import * as React from 'react'
+import videojs from 'video.js'
+import 'video.js/dist/video-js.css'
+import { RefObject, useEffect } from 'react'
+import styles from './VideoPlayer.module.scss'
 
-export const VideoPlayer: FC = () => {
-  const videoRef = createRef<HTMLVideoElement>()
-  const [playing, setPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [videoTime, setVideoTime] = useState(0)
-  const [progress, setProgress] = useState(0)
+interface VideoPlayerProps {
+  options: videojs.PlayerOptions
+  videoNode: RefObject<HTMLVideoElement>
+}
 
-  const videoHandler = (control: string) => {
-    if (control === 'play') {
-      videoRef.current?.play()
-      setPlaying(true)
-      const vid = document.getElementById('video1') as HTMLVideoElement
-      setVideoTime(vid.duration)
+const initialOptions: videojs.PlayerOptions = {
+  controls: true,
+  fluid: true,
+}
+
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ options, videoNode }) => {
+  const player = React.useRef<videojs.Player>()
+
+  useEffect(() => {
+    const currentPlayer = videojs.getPlayer(videoNode.current ?? '')
+
+    if (!currentPlayer && videoNode.current) {
+      player.current = videojs(videoNode.current, {
+        ...initialOptions,
+        ...options
+      }).ready(function() {})
+
+      return () => {
+        if (player.current) {
+          player.current.dispose()
+          player.current.addClass('vjs-matrix')
+        }
+      }
     }
-    else if (control === 'pause') {
-      videoRef.current?.pause()
-      setPlaying(false)
-    }
-  }
-
-  const fastForward = () => {
-    videoRef.current?.currentTime += 5
-  }
-
-  const revert = () => {
-    // @ts-ignore
-    videoRef.current?.currentTime -= 5
-  }
-
-  window.setInterval(function () {
-    setCurrentTime(videoRef.current?.currentTime ?? 0)
-    setProgress((videoRef.current?.currentTime ?? 0 / videoTime) * 100)
-  }, 1000)
+  }, [options])
 
   return (
-    <div className="app">
-      <video
-        id="video1"
-        ref={videoRef}
-        className="video"
-        src="https://res.cloudinary.com/dssvrf9oz/video/upload/v1635662987/pexels-pavel-danilyuk-5359634_1_gmixla.mp4"
-      ></video>
-
-      <div className="controlsContainer">
-        <div className="controls">
-          <img
-            onClick={revert}
-            className="controlsIcon"
-            alt=""
-            src="/backward-5.svg"
-          />
-          {playing ? (
-            <img
-              onClick={() => videoHandler('pause')}
-              className="controlsIcon--small"
-              alt=""
-              src="/pause.svg"
-            />
-          ) : (
-            <img
-              onClick={() => videoHandler('play')}
-              className="controlsIcon--small"
-              alt=""
-              src="/play.svg"
-            />
-          )}
-          <img
-            className="controlsIcon"
-            onClick={fastForward}
-            alt=""
-            src="/forward-5.svg"
-          />
-        </div>
-      </div>
-
-      <div className="timecontrols">
-        <p className="controlsTime">
-          {Math.floor(currentTime / 60) +
-            ':' +
-            ('0' + Math.floor(currentTime % 60)).slice(-2)}
-        </p>
-        <div className="time_progressbarContainer">
-          <div
-            style={{ width: `${progress}%` }}
-            className="time_progressBar"
-          ></div>
-        </div>
-        <p className="controlsTime">
-          {Math.floor(videoTime / 60) +
-            ':' +
-            ('0' + Math.floor(videoTime % 60)).slice(-2)}
-        </p>
-      </div>
-    </div>
+    <video
+      preload='none'
+      ref={ videoNode }
+      className={` video-js
+        ${styles.videoPlayer__container}
+      `}
+      muted
+    />
   )
 }

@@ -1,7 +1,12 @@
+import { SortingApplicationCriteria, SortingApplicationOptions } from '../../../Shared/Application/ApplicationSorting'
+import { ApplicationFilter, FilterApplicationOption } from '../../../Shared/Application/FilterApplicationOption'
+
+export type GetPostsFilterOptions = FilterApplicationOption
+
 export interface GetPostsRequestDto {
-  filter: string | null
-  sortOption: 'date' | 'views'
-  sortCriteria: 'asc' | 'desc'
-  offset: number
-  limit: number
+  filters: ApplicationFilter<GetPostsFilterOptions>[]
+  sortOption: SortingApplicationOptions
+  sortCriteria: SortingApplicationCriteria
+  page: number
+  postsPerPage: number
 }

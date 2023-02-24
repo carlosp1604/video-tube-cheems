@@ -1,59 +1,59 @@
-import { PostRepositoryInterface } from '../Domain/PostRepositoryInterface'
-import { PostApplicationDto } from './Dtos/PostApplicationDto'
-import { PostApplicationDtoTranslator } from './Translators/PostApplicationDtoTranslator'
+import { PostRepositoryFilterOption, PostRepositoryInterface } from '../Domain/PostRepositoryInterface'
 import { GetPostsRequestDto } from './Dtos/GetPostsRequestDto'
 import { GetPostsApplicationException } from './GetPostsApplicationException'
-import { StringHelper } from '../../../helpers/Domain/StringHelper'
+import { maxPostsPerPage, minPostsPerPage } from '../../Shared/Application/Pagination'
+import { GetPostsApplicationResponse } from './Dtos/GetPostsApplicationDto'
+import { GetPostsApplicationDtoTranslator } from './Translators/GetPostsApplicationDtoTranslator'
+import { RepositoryFilter } from '../../Shared/Domain/RepositoryFilter'
 
 export class GetPosts {
-  private minLimit = 12
-  private maxLimit = 256
-
   constructor(
     private readonly postRepository: PostRepositoryInterface
   ) {}
 
-  public async get(request: GetPostsRequestDto): Promise<PostApplicationDto[]> {
+  public async get(request: GetPostsRequestDto): Promise<GetPostsApplicationResponse> {
     this.validateRequest(request)
+    const offset = (request.page - 1) * request.postsPerPage
 
-    // If filter (after deleting special chars) is empty we don't perform the query
-    if (
-      request.filter !== null &&
-      StringHelper.deleteNotAllowedChars(request.filter) === ''
-    ) {
-      return []
-    }
+    const filters: RepositoryFilter<PostRepositoryFilterOption>[] = 
+      request.filters.map((filter) => {
+        return {
+          type: filter.type as PostRepositoryFilterOption,
+          value: filter.value,
+        }
+      })
 
-    const posts = await this.postRepository.findWithOffsetAndLimit(
-      request.offset,
-      request.limit,
-      request.sortOption,
-      request.sortCriteria,
-      request.filter !== null
-        ? { type: 'title', value: request.filter } : undefined
+    const [posts, postsNumber] = await Promise.all([
+      await this.postRepository.findWithOffsetAndLimit(
+        offset,
+        request.postsPerPage,
+        request.sortOption,
+        request.sortCriteria,
+        filters,
+      ),
+      await this.postRepository.countPostsWithFilters(filters)
+    ])
+
+    return GetPostsApplicationDtoTranslator.fromDomain(
+      posts,
+      postsNumber
     )
-
-    console.log(posts.length)
-
-    return posts.map((post) => {
-      return PostApplicationDtoTranslator.fromDomain(post)
-    })
   }
 
   private validateRequest(request: GetPostsRequestDto): void {
     if (
-      isNaN(request.offset) ||
-      request.offset < 0
+      isNaN(request.page) ||
+      request.page <= 0
     ) {
       throw GetPostsApplicationException.invalidOffsetValue()
     }
 
     if (
-      isNaN(request.limit) ||
-      request.limit < this.minLimit ||
-      request.limit > this.maxLimit
+      isNaN(request.postsPerPage) ||
+      request.postsPerPage < minPostsPerPage ||
+      request.postsPerPage > maxPostsPerPage
     ) {
-      throw GetPostsApplicationException.invalidLimitValue(this.minLimit, this.maxLimit)
+      throw GetPostsApplicationException.invalidLimitValue(minPostsPerPage, maxPostsPerPage)
     }
   }
 }

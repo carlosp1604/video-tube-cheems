@@ -13,6 +13,7 @@ export class PostDomainException extends DomainException {
   public static userAlreadyReactedId = 'post_domain_user_already_reacted'
   public static userHasNotReactedId = 'post_domain_user_has_not_reacted'
   public static cannotDeleteReactionId = 'post_domain_cannot_delete_reaction'
+  public static producerAlreadySetId = 'post_domain_producer_already_set'
 
   public static parentCommentNotFound(parentCommentId: PostComment['id']): PostDomainException {
     return new PostDomainException(
@@ -74,6 +75,13 @@ export class PostDomainException extends DomainException {
     return new PostDomainException(
       `Cannot delete reaction from user with ID ${userId} in post with ID ${postId}`,
       this.cannotDeleteReactionId
+    )
+  }
+
+  public static producerAlreadySet(postId: Post['id']): PostDomainException {
+    return new PostDomainException(
+      `Post with ID ${postId} has already a producer setted`,
+      this.producerAlreadySetId
     )
   }
 }

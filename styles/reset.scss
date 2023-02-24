@@ -1,6 +1,14 @@
 a {
-  &:hover, &:focus {
-    @apply text-base-500 transition-colors duration-500;
+  &:hover {
+    @apply text-base-300 transition-colors duration-500;
   }
+
+  &:active {
+    @apply text-brand-500 transition-colors duration-500;
+  }
+}
+
+html {
+  @apply scrollbar-hide;
   -webkit-tap-highlight-color: transparent;
 }

@@ -4,7 +4,6 @@ export interface UserApplicationDto {
   readonly name: string
   readonly email: string
   readonly imageUrl: string | null
-  readonly viewsCount: number
   readonly language: string
   readonly emailVerified: string | null
   readonly createdAt: string

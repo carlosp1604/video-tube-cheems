@@ -1,0 +1,48 @@
+.pagination-bar {
+  &__container {
+    @apply flex flex-row mx-auto items-center justify-center gap-x-2 pb-10
+      border-t pt-2 mx-0 border-base-700;
+
+    @screen md {
+      @apply gap-x-4;
+    }
+  }
+
+  &__page-number-button {
+    @apply p-0.5 px-1 rounded-md border-2 border-transparent transition
+      text-base-600 text-sm;
+
+    @screen md {
+      @apply p-2 px-4 text-xl;
+    }
+
+    &__active {
+      @apply border-brand-400 transition-colors duration-500 font-black
+        text-base-100 bg-base-900;
+    }
+
+    &:hover {
+      @apply text-base-100 bg-base-900;
+    }
+  }
+
+  &__step-page-button {
+    @apply p-2 bg-base-900 rounded-lg opacity-100;
+
+    &:hover {
+      @apply bg-brand-600 transition;
+    }
+
+    @screen md {
+       @apply text-2xl;
+    }
+  }
+
+  &__right-page-button-hide {
+    @apply opacity-0 translate-x-full;
+  }
+
+  &__left-page-button-hide {
+    @apply opacity-0 -translate-x-full;
+  }
+}

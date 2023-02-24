@@ -85,7 +85,7 @@
   }
 
   &__logo-container {
-    @apply border-b border-gray-600 border-opacity-30 px-8 py-2 hidden;
+    @apply border-b border-gray-600 border-opacity-30 px-8 py-1.5 hidden;
     grid-area: logo;
 
     @screen md {

@@ -1,36 +1,33 @@
 import { DateTime } from 'luxon'
-import { ObjectionPostReactionModel } from '../ObjectionModels/ObjectionPostReactionModel'
 import { PostReaction, Reaction } from '../../Domain/PostReaction'
-import { ModelObject } from 'objection'
-
-type MysqlPostReactionRow = Partial<ModelObject<ObjectionPostReactionModel>>
+import { PostReaction as PrismaPostReactionModel } from '@prisma/client'
 
 export class PostReactionModelTranslator {
-  public static toDomain(objectionPostReactionModel: ObjectionPostReactionModel): PostReaction {
+  public static toDomain(prismaPostReactionModel: PrismaPostReactionModel): PostReaction {
     let deletedAt: DateTime | null = null
 
-    if (objectionPostReactionModel.deleted_at !== null) {
-      deletedAt = DateTime.fromJSDate(objectionPostReactionModel.deleted_at)
+    if (prismaPostReactionModel.deletedAt !== null) {
+      deletedAt = DateTime.fromJSDate(prismaPostReactionModel.deletedAt)
     }
 
     return new PostReaction(
-      objectionPostReactionModel.post_id,
-      objectionPostReactionModel.user_id,
-      objectionPostReactionModel.reaction_type as Reaction,
-      DateTime.fromJSDate(objectionPostReactionModel.created_at),
-      DateTime.fromJSDate(objectionPostReactionModel.updated_at),
+      prismaPostReactionModel.postId,
+      prismaPostReactionModel.userId,
+      prismaPostReactionModel.reactionType as Reaction,
+      DateTime.fromJSDate(prismaPostReactionModel.createdAt),
+      DateTime.fromJSDate(prismaPostReactionModel.updatedAt),
       deletedAt
     )
   }
 
-  public static toDatabase(postReaction: PostReaction): MysqlPostReactionRow {
+  public static toDatabase(postReaction: PostReaction): PrismaPostReactionModel {
     return {
-      reaction_type: postReaction.reactionType,
-      user_id: postReaction.userId,
-      created_at: postReaction.createdAt.toJSDate(),
-      deleted_at: postReaction.deletedAt?.toJSDate() ?? null,
-      updated_at: postReaction.updatedAt.toJSDate(),
-      post_id: postReaction.postId
+      reactionType: postReaction.reactionType,
+      userId: postReaction.userId,
+      createdAt: postReaction.createdAt.toJSDate(),
+      deletedAt: postReaction.deletedAt?.toJSDate() ?? null,
+      updatedAt: postReaction.updatedAt.toJSDate(),
+      postId: postReaction.postId
     }
   }
 }

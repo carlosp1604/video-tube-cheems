@@ -30,6 +30,18 @@ module.exports = {
           '50': '#FAFAF9'
         },
         brand: {
+          '900': '#623307',
+          '800': '#6d3c11',
+          '700': '#78451a',
+          '600': '#834f23',
+          '500': '#8e582c',
+          '400': '#a06c3f',
+          '300': '#b88b5c',
+          '200': '#d0ab7a',
+          '100': '#e8cb92',
+          '50': '#ffedba'
+        },
+        brand2: {
           '900': '#164E63',
           '800': '#155E75',
           '700': '#0E7490',
@@ -42,7 +54,9 @@ module.exports = {
           '50': '#ECFEFF'
         },
         red: '#FF0000',
+        blue: '#00BFFF',
         green: '#008000',
+        yellow: '#FFFF00',
         black: '#000000',
         white: '#FFFFFF',
         transparent: 'transparent',
@@ -52,6 +66,7 @@ module.exports = {
       },
       transitionProperty: {
         'width': 'width',
+        'height': 'height',
         'border': 'border',
         'opacity': 'opacity'
       }

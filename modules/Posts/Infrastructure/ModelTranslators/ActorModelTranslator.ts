@@ -1,23 +1,22 @@
-import { ObjectionActorModel } from '../ObjectionModels/ObjectionActorModel'
-import { Actor } from '../../Domain/Actor'
+import { Actor } from '../../../Actors/Domain/Actor'
+import { Actor as PrismaActorModel } from '@prisma/client'
 import { DateTime } from 'luxon'
 
 export class ActorModelTranslator {
-  public static toDomain(objectionActorModel: ObjectionActorModel) {
+  public static toDomain(prismaActorModel: PrismaActorModel) {
     let deletedAt: DateTime | null = null
 
-    if (objectionActorModel.deleted_at !== null) {
-      deletedAt = DateTime.fromJSDate(objectionActorModel.deleted_at)
+    if (prismaActorModel.deletedAt !== null) {
+      deletedAt = DateTime.fromJSDate(prismaActorModel.deletedAt)
     }
 
     return new Actor(
-      objectionActorModel.id,
-      objectionActorModel.name,
-      objectionActorModel.description,
-      objectionActorModel.image_url,
-      objectionActorModel.views_count,
-      DateTime.fromJSDate(objectionActorModel.created_at),
-      DateTime.fromJSDate(objectionActorModel.updated_at),
+      prismaActorModel.id,
+      prismaActorModel.name,
+      prismaActorModel.description,
+      prismaActorModel.imageUrl,
+      DateTime.fromJSDate(prismaActorModel.createdAt),
+      DateTime.fromJSDate(prismaActorModel.updatedAt),
       deletedAt
     )
   }

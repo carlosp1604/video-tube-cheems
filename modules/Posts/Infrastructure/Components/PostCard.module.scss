@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply relative container mx-auto block overflow-hidden;
+    @apply relative mx-auto block overflow-hidden;
   }
 
   &__video-link {
@@ -49,8 +49,20 @@
   }
 
   &__video-options {
-    @apply self-center text-xl pl-2 hidden cursor-pointer text-gray-400 transition-transform duration-500;
+    @apply hidden translate-x-full cursor-pointer text-gray-400 transition rounded-full h-10 w-10;
     grid-area: video-options;
+
+    &:hover, &:focus {
+      @apply bg-base-800 text-base-700 transition;
+    }
+
+    &:active {
+      @apply bg-base-700 text-base-100 transition;
+    }
+  }
+
+  &__options-icon {
+    @apply text-xl;
   }
 
   &__interaction-section {
@@ -67,7 +79,7 @@
     }
 
     #{$parentBlock}__video-options {
-      @apply block transition-colors duration-1000;
+      @apply flex translate-x-0 items-center justify-center transition;
     }
   }
 }

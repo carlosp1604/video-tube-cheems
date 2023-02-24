@@ -1,12 +1,7 @@
 import { UserRepositoryInterface } from '../Domain/UserRepositoryInterface'
 import { UserModelTranslator } from './UserModelTranslator'
-import knex from 'knex'
-import { Model } from 'objection'
-import * as knexConfig from '../../../knexfile'
 import { User } from '../Domain/User'
-import { ObjectionUserModel } from './ObjectionUserModel'
-import { mockSession } from 'next-auth/client/__tests__/helpers/mocks'
-import user = mockSession.user;
+import { prisma } from '../../../persistence/prisma'
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
@@ -14,15 +9,13 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @param user User to insert
    */
   public async insert(user: User): Promise<void> {
-    // TODO: Find a solution for this
-    const knexInstance = knex(knexConfig)
-    Model.knex(knexInstance)
+    const prismaUserRow = UserModelTranslator.toDatabase(user)
 
-    const userRow = UserModelTranslator.toDatabase(user)
-
-    // TODO: Handle errors correctly
-    await ObjectionUserModel.query()
-      .insert(userRow)
+    await prisma.user.create({
+      data: {
+        ...prismaUserRow
+      }
+    })
   }
 
   /**
@@ -31,18 +24,18 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return User if found or null
    */
   public async findByEmail(userEmail: User['email']): Promise<User | null> {
-    // TODO: Find a solution for this
-    const knexInstance = knex(knexConfig)
-    Model.knex(knexInstance)
-    const user = await ObjectionUserModel.query()
-      .whereNull('deleted_at')
-      .andWhere('email', '=', userEmail)
+    const user = await prisma.user.findFirst({
+      where: {
+        deletedAt: null,
+        email: userEmail
+      }
+    })
 
-    if (user.length === 0) {
+    if (user === null) {
       return null
     }
 
-    return UserModelTranslator.toDomain(user[0])
+    return UserModelTranslator.toDomain(user)
   }
 
   /**
@@ -51,11 +44,14 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return User if found or null
    */
   public async findById(userId: User['id']): Promise<User | null> {
-    const user = await ObjectionUserModel.query()
-      .findById(userId)
-      .whereNull('deleted_at')
+    const user = await prisma.user.findFirst({
+      where: {
+        deletedAt: null,
+        id: userId
+      }
+    })
 
-    if (!user) {
+    if (user === null) {
       return null
     }
 
@@ -67,6 +63,7 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @param user User to update
    */
   public async update(user: User): Promise<void> {
+    // TODO: Implement this
     return Promise.resolve()
   }
 }

@@ -6,24 +6,38 @@ import { FloatingActionAppMenu } from '../Components/FloatingActionAppMenu/Float
 import { MenuSideBar } from '../Components/MenuSideBar/MenuSideBar'
 import { useState } from 'react'
 import { MobileMenu } from '../Components/AppMenu/MobileMenu'
+import { AppFooter } from '../Components/AppFooter/AppFooter'
+import { SessionProvider } from 'next-auth/react'
+import UserProvider from '../modules/Auth/Infrastructure/Components/UserProvider'
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: {
+    session,
+    ...pageProps
+  } 
+}: AppProps) {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
+  
   return (
-    <>
-      <main className={ styles.app__layout } >
-        <MenuSideBar />
+    <SessionProvider session={ session }>
+      <UserProvider>
+        <main className={ styles.app__layout } >
+          <MenuSideBar />
 
-        <div className={ styles.app__container }>
-          <AppMenu />
+          <div className={ styles.app__container }>
+            <AppMenu />
 
-          <MobileMenu openMenu={ openMenu } setOpenMenu={ setOpenMenu } />
+            <MobileMenu openMenu={ openMenu } setOpenMenu={ setOpenMenu } />
 
-          <FloatingActionAppMenu openMenu={ openMenu } setOpenMenu={ setOpenMenu }/>
+            <FloatingActionAppMenu openMenu={ openMenu } setOpenMenu={ setOpenMenu }/>
 
-          <Component {...pageProps} />
-        </div>
-      </main>
-    </>
+            <Component {...pageProps} />
+
+            <AppFooter />
+          </div>
+        </main>
+      </UserProvider>
+    </SessionProvider>
   )
 }

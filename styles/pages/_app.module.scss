@@ -4,7 +4,7 @@
   }
 
   &__container {
-    @apply bg-body h-full;
+    @apply min-h-screen bg-body h-full;
     @screen lg {
       @apply ml-16;
     }

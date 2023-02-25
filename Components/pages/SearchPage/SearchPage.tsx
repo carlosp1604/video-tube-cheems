@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { PostCardComponentDto } from '../../../modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { PostFilter } from '../../../modules/Posts/Infrastructure/PostFilters'
+import { FetchPostsFilter } from '../../../modules/Shared/Infrastructure/InfrastructureFilter'
 import { PaginatedPostCardGallery } from '../../PaginatedPostCardGallery/PaginatedPostCardGallery'
 import styles from './SearchPage.module.scss'
 
@@ -14,7 +14,7 @@ export interface SearchPageProps {
 
 export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumber }) => {
   const [totalPosts, setTotalPosts] = useState<number>(postsNumber)
-  const [titleFilter, setTitleFilter] = useState<PostFilter>({
+  const [titleFilter, setTitleFilter] = useState<FetchPostsFilter>({
     type: 'postTitle',
     value: title
   })

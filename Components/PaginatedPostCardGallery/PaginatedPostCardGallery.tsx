@@ -69,17 +69,24 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   }
 
   useEffect(() => {
-    if (pageNumber === 1 && !firstRender) {
+    if (firstRender) {
+      return
+    }
+
+    if (pageNumber === 1) {
       updatePosts()
+      return
     }
 
     setPageNumber(1)
-  }, [filters])
+  }, [JSON.stringify(filters)])
 
   useEffect(() => {
-    if (!firstRender) {
-      updatePosts()
-    } 
+    if (firstRender) {
+      return 
+    }
+    
+    updatePosts()
   }, [pageNumber])
 
   return (

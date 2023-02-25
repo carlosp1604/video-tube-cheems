@@ -1,7 +1,7 @@
 .app-menu {
   &__layer {
     @apply sticky top-0 z-40 border-b border-base-700 border-opacity-30
-      transition duration-500;
+      transition duration-500 backdrop-filter backdrop-blur-2xl bg-opacity-90 bg-body;
 
     &:hover {
       @apply border-opacity-100 transition duration-500;
@@ -9,7 +9,7 @@
   }
 
   &__container {
-    @apply container flex justify-between items-center mx-auto px-5 py-0.5 z-50 bg-body;
+    @apply container flex justify-between items-center mx-auto px-5 py-0.5 z-50;
   }
 
   &__logo-image {
@@ -21,10 +21,10 @@
   }
 
   &__right-container {
-    @apply flex flex-row gap-x-2 items-center;
+    @apply flex flex-row gap-x-4 items-center;
   }
 
-  &__menu-link {
+  &__menu-button {
     @apply p-3 rounded-full;
 
     &:hover {
@@ -62,6 +62,19 @@
       @screen md {
         @apply w-64;
       }
+    }
+  }
+
+  &__user-avatar-button {
+    @apply h-9 w-9 rounded-full overflow-hidden transition-transform;
+
+  }
+
+  &__user-avatar-image {
+    @apply h-full w-full object-cover;
+
+    &:hover, &:focus {
+      @apply scale-125 transition-transform;
     }
   }
 }

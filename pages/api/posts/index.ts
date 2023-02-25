@@ -37,7 +37,7 @@ export default async function handler(
   try {
     const posts = await useCase.get(applicationRequest)
 
-    return response.status(201).json(posts)
+    return response.status(200).json(posts)
   }
   catch (exception: unknown) {
     console.error(exception)

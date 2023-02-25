@@ -16,7 +16,7 @@ import { FetchPostsFilter } from '../modules/Shared/Infrastructure/Infrastructur
 const defaultProducer: ProducerComponentDto = {
   id: '',
   name: 'Latest videos',
-  brandHexColor: ''
+  brandHexColor: '#44403C'
 } 
 
 interface Props {
@@ -73,7 +73,6 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
     type: 'producerId',
     value: null,
   })
-
 
   useEffect(() => {
     setProducerFilter({

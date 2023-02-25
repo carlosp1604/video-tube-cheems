@@ -1,0 +1,9 @@
+.signin-page {
+  &__container {
+    @apply container mx-auto items-center;
+  }
+
+  &__login {
+    @apply max-w-sm border mx-auto border-base-700  rounded-lg mt-20;
+  }
+}

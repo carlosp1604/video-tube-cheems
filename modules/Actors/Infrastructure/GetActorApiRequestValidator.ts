@@ -3,7 +3,7 @@ import { PostCommentApiRequestValidatorError } from '../../Posts/Infrastructure/
 import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
 
 export class GetActorApiRequestValidator {
-  private static getActorApiRequestSchema = z.string({}).uuid()
+  private static getActorApiRequestSchema = z.string().uuid()
 
   public static validate(actorId: string): PostCommentApiRequestValidatorError | void {
     try {

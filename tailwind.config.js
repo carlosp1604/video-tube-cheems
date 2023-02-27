@@ -68,8 +68,9 @@ module.exports = {
         'width': 'width',
         'height': 'height',
         'border': 'border',
-        'opacity': 'opacity'
-      }
+        'opacity': 'opacity',
+        'visibility': 'visibility' 
+      },
     },
   },
   plugins: [

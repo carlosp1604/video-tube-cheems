@@ -6,9 +6,9 @@ import { FloatingActionAppMenu } from '../Components/FloatingActionAppMenu/Float
 import { MenuSideBar } from '../Components/MenuSideBar/MenuSideBar'
 import { useState } from 'react'
 import { MobileMenu } from '../Components/AppMenu/MobileMenu'
-import { AppFooter } from '../Components/AppFooter/AppFooter'
 import { SessionProvider } from 'next-auth/react'
 import UserProvider from '../modules/Auth/Infrastructure/Components/UserProvider'
+import { AppFooter } from '../Components/AppFooter/AppFooter'
 
 export default function App({
   Component,

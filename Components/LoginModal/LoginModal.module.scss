@@ -1,0 +1,18 @@
+.login-modal {
+  &__register-forgot-container {
+    @apply flex flex-col;
+  }
+
+  &__back-section {
+    @apply flex gap-x-2 font-light items-center text-sm border-b
+      border-base-700;
+  }
+
+  &__back-icon {
+    @apply w-8 h-8 transition-colors p-2 rounded-full cursor-pointer;
+
+    &:hover, &:focus {
+      @apply text-base-700 transition-colors bg-base-900;
+    }
+  }
+}

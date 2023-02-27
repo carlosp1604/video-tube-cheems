@@ -45,7 +45,8 @@ export const authOptions: NextAuthOptions = {
   ],
   adapter: MysqlNextAuthAdapter(),
   pages: {
-    signIn: '/auth/signin'
+    signIn: '/auth/signin',
+    newUser: 'auth/register', 
   },
   session: {
     strategy: 'jwt',

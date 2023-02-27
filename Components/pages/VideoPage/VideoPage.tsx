@@ -5,6 +5,8 @@ import { useState, useRef } from 'react'
 import {
   BsArrowUpRight,
   BsBookmarks,
+  BsChatSquareText,
+  BsCursor,
   BsDownload,
   BsHeart,
   BsMegaphone
@@ -12,15 +14,18 @@ import {
 import { PostComponentDto } from '../../../modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { VideoPlayer } from '../../VideoPlayer/VideoPlayer'
 import { TagList } from '../../../modules/Posts/Infrastructure/Components/TagList'
+import { CommentApplicationDto } from '../../../modules/Posts/Application/Dtos/CommentApplicationDto'
+import { VideoComments } from '../../../modules/Posts/Infrastructure/Components/VideoComments'
 
 export interface VideoPageProps {
   post: PostComponentDto
+  comments: CommentApplicationDto[]
 }
 
-export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
+export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
   const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false)
   const [producerOpen, setProducerOpen] = useState<boolean>(false)
-  //const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
+  const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
 
   const videoNode = useRef<HTMLVideoElement>(null)
 
@@ -83,6 +88,12 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
   }
 
   return (
+    <>
+    <VideoComments
+      comments={comments}
+      isOpen={commentsOpen}
+      setIsOpen={setCommentsOpen}
+    />
     <div className={ styles.videoPage__container }>
       <div className={ styles.videoPage__video}>
         <VideoPlayer
@@ -96,14 +107,12 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
           { post.title }
         </h1>
 
-        {/** 
-          <div
+        <div
           className={`
           ${styles.videoPage__videoComments}
           ${commentsOpen ? styles.videoPage__videoComments__open : ''}
           `}>
         </div>
-      */}
 
         <div className={ styles.videoPage__videoInfo}>
             <span className={ styles.videoPage__videoInfoItem}>
@@ -116,9 +125,9 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
               { post.reactions } <BsHeart />
             </span>
             {
-            //<span className={ styles.videoPage__videoInfoItem}>
-              // 124 <BsChatSquareText />
-            //</span>
+            <span className={ styles.videoPage__videoInfoItem}>
+              124 <BsChatSquareText />
+            </span>
             }
         </div>
 
@@ -126,19 +135,15 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
           <span className={ styles.videoPage__videoOptionIcon}>
             <BsHeart className={ styles.videoPage__heartIcon}/>
           </span>
-          {
-          //<span
-           // className={ styles.videoPage__videoOptionIcon}
-           // onClick={() => setCommentsOpen(!commentsOpen)}
-          //>
-           //</div> <BsChatSquareText className={ styles.videoPage__commentIcon}/>
-          // </span>
-          }
-          {
-          //<span className={ styles.videoPage__videoOptionIcon}>
-           // <BsCursor className={ styles.videoPage__shareIcon}/>
-          //</span>
-          }
+          <span
+            className={ styles.videoPage__videoOptionIcon}
+            onClick={() => setCommentsOpen(!commentsOpen)}
+          >
+          <BsChatSquareText className={ styles.videoPage__commentIcon}/>
+           </span>
+          <span className={ styles.videoPage__videoOptionIcon}>
+            <BsCursor className={ styles.videoPage__shareIcon}/>
+          </span>
 
           <span className={ styles.videoPage__videoOptionIcon}>
             <BsBookmarks className={ styles.videoPage__saveIcon}/>
@@ -202,15 +207,9 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
             </button>
           </span>
         </div>
-      </div>
-      {
-        //<VideoComments
-        //comments={post.comments}
-        //isOpen={commentsOpen}
-        //setIsOpen={setCommentsOpen}
-        ///>
-      }
-      
+      </div>    
     </div>
+    </>
+
   )
 }

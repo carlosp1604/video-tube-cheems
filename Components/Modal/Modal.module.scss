@@ -1,0 +1,98 @@
+.modal {
+  &__container {
+    @apply max-w-sm border border-base-700 rounded-lg bg-body hidden
+      opacity-0 scale-50 backdrop-filter backdrop-blur-3xl bg-opacity-90;
+
+    &-enter {
+      @apply block;
+    }
+
+    &-enter-active {
+      @apply block opacity-80 scale-100 transition-all;
+    }
+
+    &-enter-done {
+      @apply block opacity-100 scale-100;
+    }
+
+    &-exit {
+      @apply block opacity-100 scale-100;
+    }
+
+    &-exit-active {
+      @apply block scale-50 opacity-0 transition-all;
+    }
+
+    &-exit-done {
+      @apply hidden;
+    }
+
+    @screen md {
+      @apply max-w-md;
+    }
+
+    @screen lg {
+      @apply max-w-lg;
+    }
+  }
+
+  &__message-title {
+    @apply py-5 px-6 border-b border-base-300 uppercase text-base-100 text-5xl font-semibold;
+
+    @screen md {
+      @apply px-8;
+    }
+  }
+
+  &__message-text {
+    @apply py-5 px-6 w-full text-base-100 text-xl font-medium;
+
+    @screen md {
+      @apply px-8;
+    }
+  }
+
+  &__modal-backdrop {
+    @apply hidden place-items-center fixed inset-0 bg-transparent z-50;
+
+    &-enter {
+      @apply grid;
+    }
+
+    &-enter-active {
+      @apply grid bg-body/50 transition-colors;
+    }
+
+    &-enter-done {
+      @apply grid bg-body/50;
+    }
+
+    &-exit {
+      @apply grid bg-body/50;
+    }
+
+    &-exit-active {
+      @apply grid bg-transparent transition-colors;
+    }
+
+    &-exit-done {
+      @apply hidden;
+    }
+
+    @screen md {
+      @apply p-16;
+    }
+
+    @screen lg {
+      @apply p-24;
+    }
+  }
+
+  &__link {
+    @apply text-base-300;
+
+    &:hover, &:focus {
+      @apply text-brand-500;
+    }
+  }
+}

@@ -29,6 +29,7 @@ export const CommentCard: FC<Props> = ({ comment, setCommentToReply }) => {
       <img
         className={styles.commentCard__userLogo}
         src={comment.user.imageUrl ?? ''}
+        alt={comment.user.name}
       />
 
       <div className={styles.commentCard__userNameDate}>

@@ -1,17 +1,16 @@
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
-import styles from './Login.module.scss'
+import styles from './Register.module.scss'
 import { z } from 'zod'
 
 export interface Props {
   modal: {
     setOpenModal: Dispatch<SetStateAction<boolean>>
-    setOpenRegisterModal: Dispatch<SetStateAction<boolean>>
   } | null
 }
 
-export const Login: FC<Props> = ({ modal }) => {
+export const Register: FC<Props> = ({ modal }) => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loginError, setLoginError] = useState<boolean>(false)
@@ -23,9 +22,8 @@ export const Login: FC<Props> = ({ modal }) => {
   const router = useRouter()
   const query = router.query
   const callbackUrl = query.callbackUrl ?? '/'
-  
+
   const handleSignUpButton = () => {
-    modal?.setOpenRegisterModal(true)
   }
 
   const handleForgotPasswordButton = () => {
@@ -49,7 +47,6 @@ export const Login: FC<Props> = ({ modal }) => {
     if (result?.error) {
       setLoginError(true)
     }
-
     else {
       if (modal !== null) {
         modal.setOpenModal(false)
@@ -98,91 +95,134 @@ export const Login: FC<Props> = ({ modal }) => {
 
   return (
     <form
-      className={styles.login__container}
+      className={styles.register__container}
       onSubmit={onSubmit}
     >
-      <h1 className={styles.login__title}>
-        Login
+      <h1 className={styles.register__title}>
+        Registo
 
-        <small className={styles.login__subtitle}>
-          Inicia sesión con tu correo y contraseña.
+        <small className={styles.register__subtitle}>
+          Crea una cuenta en la plataforma   asda asdasdas.
         </small>
       </h1>
 
       <p className={`
-          ${styles.login__error}
-          ${loginError ? styles.login__error__open : ''}
+          ${styles.register__error}
+          ${loginError ? styles.register__error__open : ''}
         `}
       >
         User/password incorrectos
       </p>
 
-      <div className={styles.login__inputSection}>
-        <label className={styles.login__inputLabel}>
-          Email
+      <div className={styles.register__inputSection}>
+        <label className={styles.register__inputLabel}>
+          Username
         </label>
         <input
-          type={'email'}
+          type={'text'}
           className={`
-            ${styles.login__input}
-            ${invalidEmail ? styles.login__input__error : ''}
+            ${styles.register__input}
+            ${invalidEmail ? styles.register__input__error : ''}
           `}
           placeholder={'Email'}
           onChange={handleEmailChange}
         />
         <label className={`
-          ${styles.login__inputErrorMessage}
-          ${invalidEmail ? styles.login__inputErrorMessage__open : ''}
+          ${styles.register__inputErrorMessage}
+          ${invalidEmail ? styles.register__inputErrorMessage__open : ''}
         `}>
-          El email no es válido
+          Username no válido
         </label>
       </div>
 
-      <div className={styles.login__inputSection}>
-        <label className={styles.login__inputLabel}>
+      <div className={styles.register__inputSection}>
+        <label className={styles.register__inputLabel}>
+          Email
+        </label>
+        <input
+          type={'email'}
+          className={`
+            ${styles.register__input}
+            ${invalidEmail ? styles.register__input__error : ''}
+          `}
+          placeholder={'Email'}
+          onChange={handleEmailChange}
+        />
+        <label className={`
+          ${styles.register__inputErrorMessage}
+          ${invalidEmail ? styles.register__inputErrorMessage__open : ''}
+        `}>
+          Username no válido
+        </label>
+      </div>
+
+      <div className={styles.register__inputSection}>
+        <label className={styles.register__inputLabel}>
           Password
         </label>
         <input
           className={`
-            ${styles.login__input}
-            ${invalidPassword ? styles.login__input__error : ''}
+            ${styles.register__input}
+            ${invalidPassword ? styles.register__input__error : ''}
           `}
           placeholder={'Password'}
           type={'password'}
           onChange={handlePasswordChange}
         />
         <label className={`
-          ${styles.login__inputErrorMessage}
-          ${invalidPassword ? styles.login__inputErrorMessage__open : ''}
+          ${styles.register__inputErrorMessage}
+          ${invalidPassword ? styles.register__inputErrorMessage__open : ''}
         `}>
           La contraseña no es válida
         </label>
       </div>
+
+      <div className={styles.register__inputSection}>
+        <label className={styles.register__inputLabel}>
+          Repetir Password
+        </label>
+        <input
+          className={`
+            ${styles.register__input}
+            ${invalidPassword ? styles.register__input__error : ''}
+          `}
+          placeholder={'Repetir Password'}
+          type={'password'}
+          onChange={handlePasswordChange}
+        />
+        <label className={`
+          ${styles.register__inputErrorMessage}
+          ${invalidPassword ? styles.register__inputErrorMessage__open : ''}
+        `}>
+          Las contraseñas no coinciden
+        </label>
+      </div>
+
       <button 
         type="submit" 
         className={`
-          ${styles.login__submit}
+          ${styles.register__submit}
           ${!invalidEmail && 
             !invalidPassword &&
             email !== '' &&
             password !== '' 
-            ? styles.login__submit__enabled : ''}
+            ? styles.register__submit__enabled : ''}
         `}
         disabled={invalidEmail || invalidPassword}
       >
         {'Iniciar sesión'}
       </button>
 
-      <div className={styles.login__registerRecoverSection}>
+      <div className={styles.register__registerRecoverSection}>
         <button 
-          className={styles.login__signupButton}
+          className={styles.register__signupButton}
           onClick={handleSignUpButton}
         >
           Registrate aquí
         </button>
         
         <button 
-          className={styles.login__forgotPasswordButton}
+          className={styles.register__forgotPasswordButton}
           onClick={handleForgotPasswordButton}
         >
           Recupera tu contraseña

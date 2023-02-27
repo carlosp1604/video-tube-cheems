@@ -4,10 +4,14 @@ import Link from 'next/link'
 import { CiSearch, CiUser } from 'react-icons/ci'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
+import { LoginModal } from '../LoginModal/LoginModal'
 
 export const AppMenu: FC = () => {
   const [openSearchBar, setOpenSearchBar] = useState<boolean>(false)
   const [title, setTitle] = useState<string>('')
+  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false)
+  const [registerModalOpen, setRegisterModalOpen] = useState<boolean>(false)
+
   const [userAvatar, setUserAvatar] = useState<ReactElement>(( 
     <button
       className={ styles.appMenu__menuButton }
@@ -30,7 +34,10 @@ export const AppMenu: FC = () => {
     if (session.status === 'authenticated') {
       console.log('authenticated')
       setUserAvatar(
-        <button className={styles.appMenu__userAvatarButton}>
+        <button 
+          className={styles.appMenu__userAvatarButton}
+          onClick={() => setLoginModalOpen(true)}
+        >
           <img className={styles.appMenu__userAvatarImage}
             src={session.data.user.image ?? 'https://s.alamy.com/kdawwlsweh27/2LtummpjO849eQ83yGGiUN/b33c73279163c84b65241cdfcc1c8844/Fresh_Stock_Content.jpg?fm=jpg&q=100'}
           />
@@ -65,42 +72,45 @@ export const AppMenu: FC = () => {
   }
 
   return (
-    <nav className={ styles.appMenu__layer }>
-      <div className={ styles.appMenu__container }>
-        <Link href='/'>
-          <img
-            className={ styles.appMenu__logoImage }
-            src='/img/cheems-logo.png'
-          />
-        </Link>
-
-        <div className={ styles.appMenu__rightContainer}>
-          <button
-            className={ styles.appMenu__searchButton }
-            onClick={ () => setOpenSearchBar(!openSearchBar) }
-          >
-            <CiSearch
-              className={ styles.appMenu__menuIcon }
-              rotate={ openSearchBar ? '90' : '0'}
+    <>
+      <LoginModal isOpen={loginModalOpen} setIsOpen={setLoginModalOpen}/>
+      <nav className={ styles.appMenu__layer }>
+        <div className={ styles.appMenu__container }>
+          <Link href='/'>
+            <img
+              className={ styles.appMenu__logoImage }
+              src='/img/cheems-logo.png'
             />
-          </button>
+          </Link>
 
-          <input
-            className={ ` 
-              ${styles.appMenu__searchInput}
-              ${openSearchBar ? styles.appMenu__searchInput__open : ''}
-            `}
-            placeholder={ 'Buscar vídeos' }
-            onKeyDown={ async (event: KeyboardEvent<HTMLInputElement>) => {
-              await handleKeyDown(event)
-            }}
-            onChange={ (event: ChangeEvent<HTMLInputElement>) => {
-              handleChange(event)
-            }}
-          />
-          {userAvatar}
+          <div className={ styles.appMenu__rightContainer}>
+            <button
+              className={ styles.appMenu__searchButton }
+              onClick={ () => setOpenSearchBar(!openSearchBar) }
+            >
+              <CiSearch
+                className={ styles.appMenu__menuIcon }
+                rotate={ openSearchBar ? '90' : '0'}
+              />
+            </button>
+
+            <input
+              className={ ` 
+                ${styles.appMenu__searchInput}
+                ${openSearchBar ? styles.appMenu__searchInput__open : ''}
+              `}
+              placeholder={ 'Buscar vídeos' }
+              onKeyDown={ async (event: KeyboardEvent<HTMLInputElement>) => {
+                await handleKeyDown(event)
+              }}
+              onChange={ (event: ChangeEvent<HTMLInputElement>) => {
+                handleChange(event)
+              }}
+            />
+            {userAvatar}
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   )
 }

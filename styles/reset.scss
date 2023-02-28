@@ -9,6 +9,6 @@ a {
 }
 
 html {
-  @apply scrollbar-hide;
+  @apply overscroll-auto scrollbar-hide;
   -webkit-tap-highlight-color: transparent;
 }

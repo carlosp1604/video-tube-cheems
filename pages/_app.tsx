@@ -23,10 +23,11 @@ export default function App({
     <SessionProvider session={ session }>
       <UserProvider>
         <main className={ styles.app__layout } >
+        <AppMenu />
           <MenuSideBar />
 
           <div className={ styles.app__container }>
-            <AppMenu />
+            
 
             <MobileMenu openMenu={ openMenu } setOpenMenu={ setOpenMenu } />
 

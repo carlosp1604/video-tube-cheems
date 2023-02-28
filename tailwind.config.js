@@ -1,3 +1,11 @@
+function classNamesToZIndex (classNames) {
+  return classNames.reduce((zIndexes, className, index) => {
+    zIndexes[className] = index + 1
+
+    return zIndexes
+  }, {})
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -71,6 +79,17 @@ module.exports = {
         'opacity': 'opacity',
         'visibility': 'visibility' 
       },
+      zIndex: classNamesToZIndex([
+        'post-card-time',
+        'card-link',
+        'floating-action-app-menu',
+        'sidebar-menu',
+        'app-menu',
+        'mobile-menu',
+        'video-comments',
+        'comment-replies',
+        'modal-backdrop',
+      ])
     },
   },
   plugins: [

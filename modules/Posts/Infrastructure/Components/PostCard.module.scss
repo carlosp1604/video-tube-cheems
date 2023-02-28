@@ -6,7 +6,7 @@
   }
 
   &__video-link {
-    @apply z-50;
+    @apply z-card-link;
   }
 
   &__video-wrapper {
@@ -70,7 +70,7 @@
   }
 
   &__video-time {
-    @apply z-10 absolute top-2 right-2 text-sm font-normal text-white;
+    @apply z-post-card-time absolute top-2 right-2 text-sm font-normal text-white;
   }
 
   &__container:hover, &__container:focus {

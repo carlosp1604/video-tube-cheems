@@ -1,6 +1,6 @@
 .floating-action-app-menu {
   &__container {
-    @apply flex fixed items-center z-40 bottom-10 right-8 w-14 h-14
+    @apply flex fixed items-center z-floating-action-app-menu bottom-10 right-8 w-14 h-14
       rounded-full transition duration-500 bg-brand-600;
 
     @screen lg {

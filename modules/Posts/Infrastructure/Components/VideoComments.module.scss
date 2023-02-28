@@ -1,25 +1,63 @@
 .video-comments {
   &__backdrop {
-    @apply fixed inset-0 bg-transparent z-50
+    @apply fixed inset-0 bg-body/50 z-video-comments
       translate-y-full transition-all;
 
     &__open {
-      @apply translate-y-0 transition-all bg-body/50;
+      @apply translate-y-0 transition-all;
+    }
+
+    @screen lg {
+      @apply -translate-y-0 translate-x-full;
+
+      &__open {
+        @apply translate-x-0;
+      }
     }
   }
 
-  &__container {
-    @apply fixed bottom-0 overflow-y-scroll bg-base-800 transition 
-      rounded-t-lg w-screen scrollbar-hide h-2/3;
+  &__replies-backdrop {
+    @apply fixed inset-0 bg-transparent z-comment-replies
+      translate-x-full transition-all;
 
     &__open {
       @apply translate-x-0;
     }
+
+    @screen lg {
+      @apply -translate-y-0 translate-x-full;
+
+      &__open {
+        @apply translate-x-0;
+      }
+    }
+  }
+
+  &__replied-comment {
+    @apply bg-base-900 px-5 pt-2 border-b border-base-700;
+    grid-area: replied-comment;
+  }
+
+  &__container {
+    @apply fixed grid bottom-0 overflow-y-scroll bg-base-800 transition 
+      rounded-t-lg w-screen scrollbar-hide h-2/3;
+      grid-template-areas:
+      "title"
+      "replied-comment"
+      "comments"
+      "add-comment-button"
+      "add-comment";
+      grid-template-rows: auto auto 1fr auto auto;
+
+      @screen lg {
+        @apply w-1/3 h-full right-0 rounded-r-none border-l border-base-700; 
+      }
   }
 
   &__comments-title-bar {
-    @apply flex items-center justify-between sticky top-0 bg-base-800 pt-4 p-2 border-b
-      border-base-700 mx-2;
+    @apply flex items-center justify-between sticky top-0 
+      bg-base-800 pt-4 pb-2 border-b border-base-700 px-4;
+    grid-area: title;
   }
 
   &__comments-title {
@@ -39,8 +77,9 @@
   }
 
   &__add-comment-section {
-    @apply flex items-start gap-x-2 bg-base-900 p-2
-      border border-base-700 rounded-lg fixed w-screen bottom-0 hidden;
+    @apply items-start gap-x-2 bg-base-900 p-2 left-0 right-0
+      border-t border-base-700 hidden;
+    grid-area: add-comment;
 
     &__open {
       @apply flex;
@@ -48,11 +87,11 @@
   }
 
   &__comment-input {
-    @apply px-2 rounded-lg h-16 text-black w-full;
+    @apply flex-grow px-2 rounded-sm h-8 text-black ;
   }
 
   &__add-comment-button {
-    @apply rounded-full bg-base-700 h-8 w-8;
+    @apply rounded-full bg-base-900 h-8 w-8;
   }
 
   &__add-comment-icon {
@@ -60,15 +99,26 @@
   }
 
   &__open-comment-input-button {
-    @apply flex justify-center fixed bottom-0 hidden p-1 -mt-6 w-full
-      font-bold uppercase text-sm bg-base-900 bg-opacity-95 pb-2;
+    @apply justify-center hidden p-1 font-bold uppercase text-sm 
+      bg-base-900 pb-2;
+      grid-area: add-comment-button;
 
     &__open {
-      @apply flex;
+      @apply block;
     }
   }
 
   &__comments {
     @apply flex flex-col gap-y-6 px-4 py-4 scrollbar-hide;
+    grid-area: comments;
+  }
+
+  &__replies {
+    @apply flex flex-col gap-y-6 pr-4 pl-12 py-4 scrollbar-hide;
+    grid-area: comments;
+  }
+
+  &__user-logo {
+    @apply h-6 w-6 self-start rounded-full;
   }
 }

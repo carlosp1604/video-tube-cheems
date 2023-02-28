@@ -1,6 +1,6 @@
 .comment-card {
   &__container {
-    @apply grid gap-2 items-center border-b border-base-700 border-opacity-30;
+    @apply grid gap-2 items-center border-b border-base-700 border-opacity-50;
     grid-template-areas:
       "user-logo  user-name-date"
       "user-logo  comment"
@@ -19,20 +19,20 @@
   }
 
   &__user-name-date {
-    @apply flex justify-between items-center;
+    @apply flex gap-x-2 justify-start items-center;
     grid-area: user-name-date;
   }
 
   &__user-name {
-    @apply font-bold;
+    @apply font-light text-xs;
   }
 
   &__comment-date {
-    @apply text-xs font-thin;
+    @apply text-xs font-light
   }
 
   &__comment {
-    @apply font-light p-2 rounded-lg bg-base-700;
+    @apply text-sm font-light;
     grid-area: comment;
   }
 
@@ -50,7 +50,7 @@
   }
 
   &__replies_button {
-    @apply ml-0 mr-auto p-1 mb-2  font-bold text-brand-300 cursor-pointer;
+    @apply text-xs mr-auto mb-2 font-semibold text-brand-300 cursor-pointer;
 
     &:hover, &:focus {
       @apply text-brand-900;

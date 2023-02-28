@@ -6,7 +6,16 @@
     grid-template-areas:
       "video"
       "video-data"
-      "related-videos";
+      "video-comments";
+
+
+    @screen lg {
+      @apply gap-x-4;
+      grid-template-areas:
+        "video            related-videos"
+        "video-data       related-videos"
+        "video-comments   related-videos";
+    }
   }
 
   &__video {
@@ -163,13 +172,6 @@
   }
 
   &__video-comments {
-    @apply flex max-h-0 rounded-lg overflow-hidden transition-all
-      duration-100 bg-base-900 scrollbar-hide;
     grid-area: video-comments;
-
-    &__open {
-      @apply max-h-96 transition-all duration-500 overflow-y-scroll
-        overflow-x-hidden;
-    }
   }
 }

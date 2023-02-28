@@ -2,7 +2,7 @@
   $parentBlock: &;
   
   &__backdrop {
-    @apply fixed inset-0 hidden z-50;
+    @apply fixed inset-0 hidden z-mobile-menu;
 
     &-enter {
       @apply block;
@@ -30,7 +30,7 @@
   }
 
   &__slide-out {
-    @apply grid z-50 fixed bottom-0 leading-none bg-body translate-y-full
+    @apply grid z-mobile-menu fixed bottom-0 leading-none bg-body translate-y-full
       w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden border-base-700;
     grid-template-areas:
       "menu"

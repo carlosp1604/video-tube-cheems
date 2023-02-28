@@ -53,7 +53,8 @@
   }
 
   &__modal-backdrop {
-    @apply hidden place-items-center fixed inset-0 bg-transparent z-50;
+    @apply overflow-y-scroll hidden place-items-center fixed inset-0 bg-transparent 
+      z-modal-backdrop scrollbar-hide;
 
     &-enter {
       @apply grid;

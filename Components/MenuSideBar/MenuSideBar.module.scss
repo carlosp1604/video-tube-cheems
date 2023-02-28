@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply fixed hidden top-0 left-0 z-50 font-normal border-base-700 border-opacity-30
+    @apply fixed hidden top-0 left-0 z-sidebar-menu font-normal border-base-700 border-opacity-30
       transition-all duration-1000 text-base-400;
 
     @screen lg {

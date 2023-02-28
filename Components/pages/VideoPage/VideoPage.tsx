@@ -88,12 +88,6 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
   }
 
   return (
-    <>
-    <VideoComments
-      comments={comments}
-      isOpen={commentsOpen}
-      setIsOpen={setCommentsOpen}
-    />
     <div className={ styles.videoPage__container }>
       <div className={ styles.videoPage__video}>
         <VideoPlayer
@@ -179,8 +173,6 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
             <TagList tags={post.tags} />
           </div>
 
-
-
           <div className={styles.videoPage__videoActorTagsCatShowMore}>
             <button
               className={styles.videoPage__videoActorTagsShowMoreButton}
@@ -207,9 +199,15 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
             </button>
           </span>
         </div>
-      </div>    
-    </div>
-    </>
+      </div>
+      <div className={styles.videoPage__videoComments}>
+        <VideoComments
+          comments={comments}
+          isOpen={commentsOpen}
+          setIsOpen={setCommentsOpen}
+        />   
+      </div>
 
+    </div>
   )
 }

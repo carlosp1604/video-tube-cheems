@@ -6,24 +6,26 @@ import { DateTime } from 'luxon'
 interface Props {
   comment: CommentApplicationDto
   setCommentToReply: Dispatch<SetStateAction<CommentApplicationDto | null>>
+  showRepliesLink: boolean
 }
 
-export const CommentCard: FC<Props> = ({ comment, setCommentToReply }) => {
+export const CommentCard: FC<Props> = ({ comment, setCommentToReply, showRepliesLink }) => {
   let responseLink: ReactElement | string = ''
 
-  if (comment.childComments.length !== 0) {
+  if (showRepliesLink) {
     responseLink = (
       <div
         className={styles.commentCard__replies_button}
         onClick={() => {
-          console.log('COme')
           setCommentToReply(comment)
         }}
       >
-        {comment.childComments.length} replies
+        {comment.childComments.length > 0 ? `${comment.childComments.length} ` : ''}
+        {comment.childComments.length > 0 ? 'replies' : 'reply'}
       </div>
     )
   }
+
   return (
     <div className={ styles.commentCard__container }>
       <img
@@ -43,7 +45,6 @@ export const CommentCard: FC<Props> = ({ comment, setCommentToReply }) => {
       <div
         className={styles.commentCard__comment}
         onClick={() => {
-          console.log('asdasdas')
           setCommentToReply(comment)
         }}
       >

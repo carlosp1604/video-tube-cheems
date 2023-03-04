@@ -14,7 +14,7 @@ import {
 import { PostComponentDto } from '../../../modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { VideoPlayer } from '../../VideoPlayer/VideoPlayer'
 import { TagList } from '../../../modules/Posts/Infrastructure/Components/TagList'
-import { VideoComments } from '../../../modules/Posts/Infrastructure/Components/VideoComments'
+import { PostComments } from '../../../modules/Posts/Infrastructure/Components/PostComments'
 
 export interface VideoPageProps {
   post: PostComponentDto
@@ -204,7 +204,7 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
         </div>
       </div>
       <div className={styles.videoPage__videoComments}>
-        <VideoComments
+        <PostComments
           postId={post.id}
           isOpen={commentsOpen}
           setIsOpen={setCommentsOpen}

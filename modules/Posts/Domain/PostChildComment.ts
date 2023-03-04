@@ -15,7 +15,6 @@ export class PostChildComment {
   public constructor(
     id: string,
     comment: string,
-    postId: string,
     userId: string,
     parentCommentId: string,
     createdAt: DateTime,

@@ -208,9 +208,8 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
           postId={post.id}
           isOpen={commentsOpen}
           setIsOpen={setCommentsOpen}
-          modifyCommentsNumber={(variation: number) => 
-            setCommentsNumber(commentsNumber + variation)
-          }
+          setCommentsNumber={setCommentsNumber}
+          commentsNumber={commentsNumber}
         />   
       </div>
 

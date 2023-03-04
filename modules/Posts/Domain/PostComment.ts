@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { DateTime } from 'luxon'
 import { User } from '../../Auth/Domain/User'
 import { PostChildComment } from './PostChildComment'
@@ -33,12 +34,15 @@ export class PostComment {
     this.deletedAt = deletedAt
   }
 
-  public addChildComment(postChildComment: PostChildComment): void {
-    if (postChildComment.parentCommentId !== this.id) {
-      throw PostCommentDomainException.cannotAddChildComment(this.id, postChildComment.id)
-    }
+  public addChildComment(
+    comment: PostChildComment['comment'],
+    userId: PostChildComment['userId']
+  ): PostChildComment {
+    const newChildComment = this.buildChildComment(comment, userId)
 
-    this._childComments.set(postChildComment.id, postChildComment)
+    this._childComments.set(newChildComment.id, newChildComment)
+
+    return newChildComment
   }
 
   public deleteChildComment(childCommentId: PostChildComment['id']): void {
@@ -53,6 +57,7 @@ export class PostComment {
     postCommentId: PostComment['id'],
     comment: PostComment['comment']
   ): PostChildComment {
+    // TODO: Fix this method
     const childComment = this._childComments.get(postCommentId)
 
     if (!childComment) {
@@ -92,5 +97,21 @@ export class PostComment {
 
   public setUpdatedAt(value: PostComment['updatedAt']) {
     this.updatedAt = value
+  }
+
+  private buildChildComment(
+    comment: PostComment['comment'],
+    userId: PostComment['userId'],
+  ): PostChildComment {
+    const nowDate = DateTime.now()
+    return new PostChildComment(
+      randomUUID(),
+      comment,
+      userId,
+      this.id,
+      nowDate,
+      nowDate,
+      null
+    )
   }
 }

@@ -9,21 +9,26 @@ import { PostCommentComponentDto } from '../Dtos/PostCommentComponentDto'
 import { PostCommentComponentDtoTranslator } from '../Translators/PostCommentComponentDtoTranslator'
 import { useRouter } from 'next/router'
 import { CommentApplicationDto } from '../../Application/Dtos/CommentApplicationDto'
+import { GetPostPostChildCommentsRespondeDto } from '../../Application/Dtos/GetPostPostChildCommentsResponseDto'
+import { PostChildCommentComponentDto } from '../Dtos/PostChildCommentComponentDto'
+import { ChildCommentApplicationDto } from '../../Application/Dtos/ChildCommentApplicationDto'
+import { PostChildCommentComponentDtoTranslator } from '../Translators/PostChildCommentComponentTranslator'
 
 interface VideoCommentsProps {
   postId: string,
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
-  modifyCommentsNumber: (variation: number) => void
+  setCommentsNumber: Dispatch<SetStateAction<number>>
+  commentsNumber: number
 }
 
 interface CommentRepliesProps {
+  postId: string,
   setCommentToReply: Dispatch<SetStateAction<PostCommentComponentDto | null>>
   setCommentsOpen: Dispatch<SetStateAction<boolean>>
   isOpen: boolean
   commentToReply: PostCommentComponentDto | null
   setIsOpen: Dispatch<SetStateAction<boolean>>
-  modifyCommentsNumber: (variation: number) => void
 }
 
 interface AutoSizableTextAreaProps {
@@ -81,7 +86,7 @@ export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({
 }
 
 export const CommentReplies: FC<CommentRepliesProps> = ({ 
-  modifyCommentsNumber,
+  postId,
   setCommentToReply,
   setCommentsOpen,
   commentToReply,
@@ -89,7 +94,7 @@ export const CommentReplies: FC<CommentRepliesProps> = ({
   isOpen,
 }) => {
   const [repliedComment, setRepliedComment] = useState<ReactElement | string>('')
-  const [replies, setReplies] = useState<PostCommentComponentDto[]>([])
+  const [replies, setReplies] = useState<PostChildCommentComponentDto[]>([])
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const [comment, setComment] = useState<string>('')
@@ -103,8 +108,8 @@ export const CommentReplies: FC<CommentRepliesProps> = ({
 
   const createReply = async () => {
     try {
-      const response: CommentApplicationDto = await
-        (await fetch(`/api/posts/${commentToReply?.postId}/comments`, {
+      const response: ChildCommentApplicationDto = await
+        (await fetch(`/api/posts/${postId}/comments`, {
           method: 'POST',
           body: JSON.stringify({
             comment: comment,
@@ -112,16 +117,11 @@ export const CommentReplies: FC<CommentRepliesProps> = ({
           })
       })).json()
 
-      const componentResponse = PostCommentComponentDtoTranslator
-        .fromApplication({ childComments: 0, postComment: response }, locale)
-
-      if (commentToReply !== null) {
-        commentToReply.repliesNumber = commentToReply.repliesNumber + 1
-      }
+      const componentResponse = PostChildCommentComponentDtoTranslator
+        .fromApplication(response, locale)
 
       setReplies([componentResponse, ...replies])
       setComment('')
-      modifyCommentsNumber(1)
 
       if (commentToReply !== null) {
         setCommentToReply({
@@ -135,7 +135,7 @@ export const CommentReplies: FC<CommentRepliesProps> = ({
     }
   }
 
-  const fetchReplies = async (): Promise<GetPostPostCommentsRespondeDto> => {
+  const fetchReplies = async (): Promise<GetPostPostChildCommentsRespondeDto> => {
     const params = new URLSearchParams()
     params.append('page', pageNumber.toString())
     params.append('perPage', defaultPerPage.toString())
@@ -146,25 +146,22 @@ export const CommentReplies: FC<CommentRepliesProps> = ({
   const updateReplies = async () => {
     const newReplies = await fetchReplies()
 
-    const componentDtos = newReplies.commentwithChildComment.map((applicationDto) => {
-      return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
+    const componentDtos = newReplies.childComments.map((applicationDto) => {
+      return PostChildCommentComponentDtoTranslator.fromApplication(
+        applicationDto, locale
+      )
     })
 
     setReplies([...replies, ...componentDtos])
 
     if (commentToReply !== null) {
-      console.log(commentToReply.repliesNumber)
-      console.log(newReplies.postPostComments)
-      const commentsNumberVariation = commentToReply.repliesNumber - newReplies.postPostComments
-      modifyCommentsNumber(commentsNumberVariation)
-
       setCommentToReply({
         ...commentToReply,
-        repliesNumber: newReplies.postPostComments
+        repliesNumber: newReplies.childCommentsCount
       })
     }
 
-    const pagesNumber = calculatePagesNumber(newReplies.postPostComments, defaultPerPage)
+    const pagesNumber = calculatePagesNumber(newReplies.childCommentsCount, defaultPerPage)
 
     if (pageNumber < pagesNumber) {
       setCanLoadMore(true)
@@ -274,14 +271,13 @@ export const CommentReplies: FC<CommentRepliesProps> = ({
   )
 }
 
-export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpen, modifyCommentsNumber }) => {
+export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpen, setCommentsNumber, commentsNumber }) => {
   const [repliesOpen, setRepliesOpen] = useState<boolean>(false)
   const [commentToReply, setCommentToReply] = useState<PostCommentComponentDto | null>(null)
   const [comments, setComments] = useState<PostCommentComponentDto[]>([])
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [comment, setComment] = useState<string>('')
-  const [commentsNumber, setCommentsNumber] = useState<number>(0)
   const commentsAreaRef = useRef<HTMLDivElement>(null)
 
   const router = useRouter()
@@ -307,7 +303,6 @@ export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpe
 
       setComments([componentResponse, ...comments])
       setCommentsNumber(commentsNumber + 1)
-      modifyCommentsNumber(1)
       setComment('')
 
       if (commentsAreaRef.current) {
@@ -341,12 +336,12 @@ export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpe
   const updatePostComments = async () => {
     const newComments = await fetchPostComments()
 
-    const componentDtos = newComments.commentwithChildComment.map((applicationDto) => {
+    const componentDtos = newComments.commentwithChildCount.map((applicationDto) => {
       return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
     })
 
     setComments([...comments, ...componentDtos])
-    const pagesNumber = calculatePagesNumber(newComments.postPostComments, defaultPerPage)
+    const pagesNumber = calculatePagesNumber(newComments.postPostCommentsCount, defaultPerPage)
 
     if (pageNumber < pagesNumber) {
       setCanLoadMore(true)
@@ -356,7 +351,7 @@ export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpe
     }
 
     setPageNumber(pageNumber+1)
-    setCommentsNumber(newComments.postPostComments)
+    setCommentsNumber(newComments.postPostCommentsCount)
   }
 
   useEffect(() => {
@@ -382,12 +377,12 @@ export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpe
   return (
     <>
       <CommentReplies 
+        postId={postId}
         setCommentToReply={setCommentToReply}
         setCommentsOpen={setIsOpen}
         commentToReply={commentToReply}
         isOpen={repliesOpen}
         setIsOpen={setRepliesOpen}
-        modifyCommentsNumber={modifyCommentsNumber}
       />
 
     <div className={ `

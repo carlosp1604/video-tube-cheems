@@ -120,8 +120,8 @@ model PostReaction {
 model PostComment {
   id              String          @id
   comment         String
-  post            Post            @relation(fields: [postId], references: [id])
-  postId          String          @map("post_id")
+  post            Post?           @relation(fields: [postId], references: [id])
+  postId          String?         @map("post_id")
   parentComment   PostComment?    @relation("Replies", fields: [parentCommentId], references: [id])
   parentCommentId String?         @map("parent_comment_id")
   user            User            @relation(fields: [userId], references: [id])

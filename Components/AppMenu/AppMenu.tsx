@@ -32,7 +32,6 @@ export const AppMenu: FC = () => {
 
   useEffect(() => {
     if (session.status === 'authenticated') {
-      console.log('authenticated')
       setUserAvatar(
         <button 
           className={styles.appMenu__userAvatarButton}

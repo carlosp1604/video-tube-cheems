@@ -1,6 +1,7 @@
 import { RepositoryFilter, RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilter'
 import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
 import { Post } from './Post'
+import { PostChildComment } from './PostChildComment'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostWithCountInterface } from './PostWithCountInterface'
@@ -66,6 +67,12 @@ export interface PostRepositoryInterface {
    * @param comment Post Comment
    */
   createComment(comment: PostComment): Promise<void>
+
+  /**
+   * Add a new Post Child Comment
+   * @param comment Post Child Comment
+   */
+  createChildComment(childComment: PostChildComment): Promise<void>
 
   /**
    * Update a Post Comment

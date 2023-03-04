@@ -6,7 +6,7 @@ import { bindings } from '../../../../../modules/Posts/Infrastructure/Bindings'
 import {
   PostCommentApiRequestValidatorError
 } from '../../../../../modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
-import { CreatePostRequestDtoTranslator } from '../../../../../modules/Posts/Infrastructure/CreatePostRequestDtoTranslator'
+import { CreatePostCommentRequestDtoTranslator } from '../../../../../modules/Posts/Infrastructure/CreatePostCommentRequestDtoTranslator'
 import { CreatePostComment } from '../../../../../modules/Posts/Application/CreatePostComment'
 import {
   CreatePostCommentApplicationException
@@ -22,6 +22,13 @@ import {
 import { GetPostPostCommentsApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/GetPostPostCommentsApiRequestDto'
 import { GetPostPostCommentsApiRequestValidator } from '../../../../../modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
 import { GetPostPostComments } from '../../../../../modules/Posts/Application/GetPostPostComments'
+import { CreatePostChildCommentApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'
+import { CreatePostChildCommentRequestSanitizer } from '../../../../../modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
+import { CreatePostChildCommentRequestDtoTranslator } from '../../../../../modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
+import { CreatePostChildComment } from '../../../../../modules/Posts/Application/CreatePostChildComment'
+import { GetPostPostChildCommentsApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/GetPostPostChildCommentsApiRequestDto'
+import { GetPostPostChildCommentsApiRequestValidator } from '../../../../../modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
+import { GetPostPostChildComments } from '../../../../../modules/Posts/Application/GetPostPostChildComments'
 
 export default async function handler(
   request: NextApiRequest,
@@ -41,61 +48,116 @@ export default async function handler(
 async function handleGET(request: NextApiRequest, response: NextApiResponse) {
   const { postId, page, perPage, parentCommentId } = request.query
 
-  console.log(request.query)
-
   if (!postId || !page || !perPage) {
     return handleBadRequest(response)
   }
 
-  let apiRequest: GetPostPostCommentsApiRequestDto = {
-    postId: postId.toString(), 
-    page: parseInt(page.toString()), 
-    perPage: parseInt(perPage.toString()),
-    parentCommentId: parentCommentId ? parentCommentId.toString() : null
-  }
-
-  const validationError = GetPostPostCommentsApiRequestValidator.validate(apiRequest)
-
-  if (validationError) {
-    return handleValidationError(request, response, validationError)
-  }
-
-  const useCase = bindings.get<GetPostPostComments>('GetPostPostComments')
-
-  try {
-    const comments = await useCase.get(
-      apiRequest.postId,
-      apiRequest.page,
-      apiRequest.perPage,
-      apiRequest.parentCommentId
-    )
-
-    return response
-      .setHeader('Cache-Control', 'no-cache')
-      .status(200).json(comments)
-
-  }
-  catch (exception: unknown) {
-    console.error(exception)
-    if (!(exception instanceof CreatePostCommentApplicationException)) {
-      return handleServerError(response)
+  const handleGetPostComments = async () => {
+    let apiRequest: GetPostPostCommentsApiRequestDto = {
+      postId: postId.toString(), 
+      page: parseInt(page.toString()), 
+      perPage: parseInt(perPage.toString()),
     }
-
-    switch (exception.id) {
-      case CreatePostCommentApplicationException.postNotFoundId:
-        return handleNotFound(response)
-
-      case CreatePostCommentApplicationException.cannotAddCommentId:
-        return handleConflict(response)
-
-      default:
+  
+    const validationError = GetPostPostCommentsApiRequestValidator.validate(apiRequest)
+  
+    if (validationError) {
+      return handleValidationError(request, response, validationError)
+    }
+  
+    const useCase = bindings.get<GetPostPostComments>('GetPostPostComments')
+  
+    try {
+      const comments = await useCase.get(
+        apiRequest.postId,
+        apiRequest.page,
+        apiRequest.perPage,
+      )
+  
+      console.log(comments)
+  
+      return response
+        .setHeader('Cache-Control', 'no-cache')
+        .status(200).json(comments)
+  
+    }
+    catch (exception: unknown) {
+      console.error(exception)
+      if (!(exception instanceof CreatePostCommentApplicationException)) {
         return handleServerError(response)
+      }
+  
+      switch (exception.id) {
+        case CreatePostCommentApplicationException.postNotFoundId:
+          return handleNotFound(response)
+  
+        case CreatePostCommentApplicationException.cannotAddCommentId:
+          return handleConflict(response)
+  
+        default:
+          return handleServerError(response)
+      }
     }
+  }
+
+  const handleGetPostChildComments = async () => {
+    let apiRequest: GetPostPostChildCommentsApiRequestDto = {
+      postId: postId.toString(), 
+      page: parseInt(page.toString()), 
+      perPage: parseInt(perPage.toString()),
+      parentCommentId: parentCommentId ? parentCommentId.toString() : ''
+    }
+  
+    const validationError = GetPostPostChildCommentsApiRequestValidator.validate(apiRequest)
+  
+    if (validationError) {
+      return handleValidationError(request, response, validationError)
+    }
+  
+    const useCase = bindings.get<GetPostPostChildComments>('GetPostPostChildComments')
+  
+    try {
+      const comments = await useCase.get(
+        apiRequest.parentCommentId,
+        apiRequest.page,
+        apiRequest.perPage
+      )
+  
+      console.log(comments)
+  
+      return response
+        .setHeader('Cache-Control', 'no-cache')
+        .status(200).json(comments)
+  
+    }
+    catch (exception: unknown) {
+      console.error(exception)
+      if (!(exception instanceof CreatePostCommentApplicationException)) {
+        return handleServerError(response)
+      }
+  
+      switch (exception.id) {
+        case CreatePostCommentApplicationException.postNotFoundId:
+          return handleNotFound(response)
+  
+        case CreatePostCommentApplicationException.cannotAddCommentId:
+          return handleConflict(response)
+  
+        default:
+          return handleServerError(response)
+      }
+    }
+  }
+
+  if (!parentCommentId) {
+    return handleGetPostComments()
+  }
+  else {
+    return handleGetPostChildComments()
   }
 }
 
 async function handlePOST(request: NextApiRequest, response: NextApiResponse) {
-
   const session = await UnstableGetServerSession(request, response, authOptions)
 
   if (session === null) {
@@ -104,54 +166,115 @@ async function handlePOST(request: NextApiRequest, response: NextApiResponse) {
 
   const { postId } = request.query
 
-  let apiRequest: CreatePostCommentApiRequestDto
-  try {
-    apiRequest = JSON.parse(request.body) as CreatePostCommentApiRequestDto
-    apiRequest = CreatePostCommentRequestSanitizer.sanitize({
-      ...apiRequest,
-      userId: session.user.id,
-      postId: String(postId)
-    })
-  }
-  catch (exception: unknown) {
-    console.log(exception)
-    return handleServerError(response)
+  if (!postId) {
+    return handleBadRequest(response)
   }
 
-console.log(apiRequest)
-
-  const validationError = CreatePostCommentApiRequestValidator.validate(apiRequest)
-
-  if (validationError) {
-    return handleValidationError(request, response, validationError)
-  }
-
-  const applicationRequest = CreatePostRequestDtoTranslator.fromApiDto(apiRequest)
-
-  const useCase = bindings.get<CreatePostComment>('CreatePostComment')
-
-  try {
-    const comment = await useCase.create(applicationRequest)
-    return response.status(201).json(comment)
-
-  }
-  catch (exception: unknown) {
-    console.error(exception)
-    if (!(exception instanceof CreatePostCommentApplicationException)) {
+  const handleCreateComment = async (apiRequest: CreatePostCommentApiRequestDto) => {
+    try {
+      apiRequest = JSON.parse(request.body) as CreatePostCommentApiRequestDto
+      apiRequest = CreatePostCommentRequestSanitizer.sanitize({
+        ...apiRequest,
+        userId: session.user.id,
+        postId: String(postId)
+      })
+    }
+    catch (exception: unknown) {
+      console.log(exception)
       return handleServerError(response)
     }
-
-    switch (exception.id) {
-      case CreatePostCommentApplicationException.postNotFoundId:
-        return handleNotFound(response)
-
-      case CreatePostCommentApplicationException.cannotAddCommentId:
-        return handleConflict(response)
-
-      default:
+    
+    const validationError = CreatePostCommentApiRequestValidator.validate(apiRequest)
+  
+    if (validationError) {
+      return handleValidationError(request, response, validationError)
+    }
+  
+    const applicationRequest = CreatePostCommentRequestDtoTranslator.fromApiDto(apiRequest)
+  
+    const useCase = bindings.get<CreatePostComment>('CreatePostComment')
+  
+    try {
+      const comment = await useCase.create(applicationRequest)
+      return response.status(201).json(comment)
+  
+    }
+    catch (exception: unknown) {
+      console.error(exception)
+      if (!(exception instanceof CreatePostCommentApplicationException)) {
         return handleServerError(response)
+      }
+  
+      switch (exception.id) {
+        case CreatePostCommentApplicationException.postNotFoundId:
+          return handleNotFound(response)
+  
+        case CreatePostCommentApplicationException.cannotAddCommentId:
+          return handleConflict(response)
+  
+        default:
+          return handleServerError(response)
+      }
     }
   }
+
+  const handleCreateChildComment = async (apiRequest: CreatePostChildCommentApiRequestDto) => {
+    try {
+      apiRequest = JSON.parse(request.body) as CreatePostChildCommentApiRequestDto
+      apiRequest = CreatePostChildCommentRequestSanitizer.sanitize({
+        ...apiRequest,
+        userId: session.user.id,
+        postId: String(postId)
+      })
+    }
+    catch (exception: unknown) {
+      console.log(exception)
+      return handleServerError(response)
+    }
+    
+    const validationError = CreatePostCommentApiRequestValidator.validate(apiRequest)
+  
+    if (validationError) {
+      return handleValidationError(request, response, validationError)
+    }
+  
+    const applicationRequest = CreatePostChildCommentRequestDtoTranslator.fromApiDto(apiRequest)
+  
+    const useCase = bindings.get<CreatePostChildComment>('CreatePostChildComment')
+  
+    try {
+      const childComment = await useCase.create(applicationRequest)
+      return response.status(201).json(childComment)
+  
+    }
+    catch (exception: unknown) {
+      console.error(exception)
+      if (!(exception instanceof CreatePostCommentApplicationException)) {
+        return handleServerError(response)
+      }
+  
+      switch (exception.id) {
+        case CreatePostCommentApplicationException.postNotFoundId:
+          return handleNotFound(response)
+  
+        case CreatePostCommentApplicationException.cannotAddCommentId:
+          return handleConflict(response)
+  
+        default:
+          return handleServerError(response)
+      }
+    }
+  }
+
+  const body = JSON.parse(request.body)
+  
+  if (!body.parentCommentId) {
+    return handleCreateComment(body)
+  } 
+  else {
+    return handleCreateChildComment(body)
+  }
+
 }
 
 function handleBadRequest(response: NextApiResponse) {

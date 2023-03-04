@@ -1,10 +1,10 @@
 import { FC, ReactElement } from 'react'
 import styles from './CommentCard.module.scss'
-import { PostCommentComponentDto } from '../Dtos/PostCommentComponentDto'
 import { BsDot } from 'react-icons/bs'
+import { PostCommentCardComponentDto } from '../Dtos/PostCommentCardComponentDto'
 
 interface Props {
-  comment: PostCommentComponentDto
+  comment: PostCommentCardComponentDto
 }
 
 export const CommentCard: FC<Props> = ({

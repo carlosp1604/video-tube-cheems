@@ -5,9 +5,9 @@ import { DateTime } from 'luxon'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostDomainException } from './PostDomainException'
-import { PostCommentDomainException } from './PostCommentDomainException'
 import { randomUUID } from 'crypto'
 import { Producer } from '../../Producers/Domain/Producer'
+import { PostChildComment } from './PostChildComment'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -63,69 +63,33 @@ export class Post {
     this._actors.set(postActor.id, postActor)
   }
 
+  public addChildComment(
+    parentCommentId: PostComment['id'],
+    comment: PostComment['comment'],
+    userId: PostComment['userId'],
+  ): PostChildComment {
+    const parentComment = this._comments.get(parentCommentId)
+
+    if (!parentComment) {
+      throw PostDomainException.parentCommentNotFound(parentCommentId)
+    }
+
+    return parentComment.addChildComment(comment, userId)
+  }
+
   public addComment(
     comment: PostComment['comment'],
     userId: PostComment['userId'],
-    parentCommentId: PostComment['parentCommentId'],
   ): PostComment {
-    const commentToAdd = this.buildComment(comment, userId, parentCommentId)
+    const commentToAdd = this.buildComment(comment, userId)
 
-    if (parentCommentId !== null) {
-      const parentComment = this._comments.get(parentCommentId)
-
-      if (!parentComment) {
-        throw PostDomainException.parentCommentNotFound(parentCommentId)
-      }
-
-      try {
-        parentComment.addChildComment(commentToAdd)
-        return commentToAdd
-      }
-      catch (exception: unknown) {
-        if (!(exception instanceof PostCommentDomainException)) {
-          throw exception
-        }
-
-        if (exception.id === PostCommentDomainException.cannotAddChildCommentId) {
-          throw PostDomainException.cannotAddComment(commentToAdd.id)
-        }
-
-        throw exception
-      }
-    }
-    else {
-      this._comments.set(commentToAdd.id, commentToAdd)
-      return commentToAdd
-    }
+    this._comments.set(commentToAdd.id, commentToAdd)
+    return commentToAdd
   }
 
   public deleteComment(
     postCommentId: PostComment['id'],
-    parentCommentId: PostComment['parentCommentId'] | null  
   ): void {
-    if (parentCommentId !== null) {
-      const parentComment = this._comments.get(parentCommentId)
-
-      if (!parentComment) {
-        throw PostDomainException.parentCommentNotFound(parentCommentId)
-      }
-
-      try {
-        parentComment.deleteChildComment(postCommentId)
-
-        return 
-      } 
-      catch (exception: unknown) {
-        if (!(exception instanceof PostCommentDomainException)) {
-          throw exception
-        }
-
-        if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
-          throw PostDomainException.cannotDeleteComment(postCommentId)
-        }
-      }
-    }
-
     const commentRemoved = this._comments.delete(postCommentId)
 
     if (!commentRemoved) {
@@ -136,29 +100,8 @@ export class Post {
   public updateComment(
     postCommentId: PostComment['id'],
     comment: PostComment['comment'],
-    parentCommentId: PostComment['parentCommentId'] | null
   ): PostComment {
-    if (parentCommentId !== null) {
-      const parentComment = this._comments.get(parentCommentId)
-
-      if (!parentComment) {
-        throw PostDomainException.parentCommentNotFound(parentCommentId)
-      }
-
-      try {
-        return parentComment.updateChild(postCommentId, comment)
-      }
-      catch (exception: unknown) {
-        if (!(exception instanceof PostCommentDomainException)) {
-          throw exception
-        }
-
-        if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
-          throw PostDomainException.cannotUpdateComment(postCommentId)
-        }
-      }
-    }
-
+    // TODO: Fix this method
     const commentToUpdate = this._comments.get(postCommentId)
 
     if (!commentToUpdate) {
@@ -272,7 +215,6 @@ export class Post {
   private buildComment(
     comment: PostComment['comment'],
     userId: PostComment['userId'],
-    parentCommentId: PostComment['parentCommentId'],
   ): PostComment {
     const nowDate = DateTime.now()
     return new PostComment(
@@ -280,7 +222,6 @@ export class Post {
       comment,
       this.id,
       userId,
-      parentCommentId,
       nowDate,
       nowDate,
       null

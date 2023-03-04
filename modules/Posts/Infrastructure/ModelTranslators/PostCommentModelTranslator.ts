@@ -4,6 +4,7 @@ import { UserModelTranslator } from '../../../Auth/Infrastructure/UserModelTrans
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
 import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
 import { PostCommentWithChilds, PostCommentWithUser } from '../PrismaModels/PostCommentModel'
+import { PostChildCommentModelTranslator } from './PostChildCommentModelTranslator'
 
 export class PostCommentModelTranslator {
   public static toDomain(
@@ -19,9 +20,9 @@ export class PostCommentModelTranslator {
     const postComment = new PostComment(
       prismaPostCommentModel.id,
       prismaPostCommentModel.comment,
-      prismaPostCommentModel.postId,
+      // if it's a comment we are sure the postId is not null
+      prismaPostCommentModel.postId as string,
       prismaPostCommentModel.userId,
-      prismaPostCommentModel.parentCommentId,
       DateTime.fromJSDate(prismaPostCommentModel.createdAt),
       DateTime.fromJSDate(prismaPostCommentModel.updatedAt),
       deletedAt
@@ -36,7 +37,7 @@ export class PostCommentModelTranslator {
     if (options.includes('comments.childComments')) {
       const postCommentWithChilds = prismaPostCommentModel as PostCommentWithChilds
       postCommentWithChilds.childComments.forEach((childComment) => {
-        postComment.addChildComment(PostCommentModelTranslator.toDomain(childComment, ['comments.user']))
+        postComment.addChildComment(PostChildCommentModelTranslator.toDomain(childComment, ['comments.user']))
       })
     }
 
@@ -48,7 +49,7 @@ export class PostCommentModelTranslator {
       id: postComment.id,
       comment: postComment.comment,
       userId: postComment.userId,
-      parentCommentId: postComment.parentCommentId,
+      parentCommentId: null,
       createdAt: postComment.createdAt.toJSDate(),
       deletedAt: postComment.deletedAt?.toJSDate() ?? null,
       updatedAt: postComment.updatedAt.toJSDate(),

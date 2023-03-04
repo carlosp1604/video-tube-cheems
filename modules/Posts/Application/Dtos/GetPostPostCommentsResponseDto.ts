@@ -1,11 +1,11 @@
 import { CommentApplicationDto } from './CommentApplicationDto'
 
-export interface PostWithChildComment {
+export interface PostWithChildCommentCount {
   postComment: CommentApplicationDto,
   childComments: number
 }
 
 export interface GetPostPostCommentsRespondeDto {
-  readonly commentwithChildComment: PostWithChildComment[]
-  readonly postPostComments: number
+  readonly commentwithChildCount: PostWithChildCommentCount[]
+  readonly postPostCommentsCount: number
 }

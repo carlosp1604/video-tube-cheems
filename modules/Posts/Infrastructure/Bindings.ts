@@ -12,6 +12,8 @@ import { UpdatePostComment } from '../Application/UpdatePostComment'
 import { GetPostPostComments } from '../Application/GetPostPostComments'
 import { PostCommentRepositoryInterface } from '../Domain/PostCommentRepositoryInterface'
 import { MysqlPostCommentRepository } from './MysqlPostCommentRepository'
+import { CreatePostChildComment } from '../Application/CreatePostChildComment'
+import { GetPostPostChildComments } from '../Application/GetPostPostChildComments'
 
 const postRepository: Provider<PostRepositoryInterface> =
   { provide: 'PostRepositoryInterface',
@@ -62,6 +64,16 @@ const createComment: Provider<CreatePostComment> =
     }
   }
 
+const createChildComment: Provider<CreatePostChildComment> =
+  { provide: 'CreatePostChildComment',
+    useClass: () => {
+      return new CreatePostChildComment(
+        bindings.get('PostRepositoryInterface'),
+        bindings.get('UserRepositoryInterface')
+      )
+    }
+  }
+
   const deleteComment: Provider<DeletePostComment> =
   { provide: 'DeletePostComment',
     useClass: () => {
@@ -91,6 +103,15 @@ const getPostPostComments: Provider<GetPostPostComments> =
     }
   }
 
+const getPostPostChildComments: Provider<GetPostPostChildComments> =
+  { provide: 'GetPostPostChildComments',
+    useClass: () => {
+      return new GetPostPostChildComments(
+        bindings.get('PostCommentRepositoryInterface'),
+      )
+    }
+  }
+
 const baseUrl: Provider<string> =
   { provide: 'BaseUrl',
     useValue: process.env.BASE_URL
@@ -100,9 +121,11 @@ export const bindings: DependencyInjector = makeInjector([
   postRepository,
   postCommentRepository,
   getPostPostComments,
+  getPostPostChildComments,
   getPostById,
   getPosts,
   userRepository,
+  createChildComment,
   createComment,
   updateComment,
   deleteComment,

@@ -14,6 +14,8 @@ import { Prisma } from '@prisma/client'
 import { PostWithCountInterface } from '../Domain/PostWithCountInterface'
 import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
 import { RepositoryFilter } from '../../Shared/Domain/RepositoryFilter'
+import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCommentModelTranslator'
+import { PostChildComment } from '../Domain/PostChildComment'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -421,6 +423,28 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         }
       }
     })
+  }
+
+  /**
+   * Add a new Post Child Comment
+   * @param comment Post Child Comment
+   */
+  public async createChildComment(childComment: PostChildComment): Promise<void> {
+    const prismaChildCommentModel = PostChildCommentModelTranslator.toDatabase(childComment)
+
+    await prisma.postComment.update({
+      where: {
+        id: childComment.parentCommentId
+      },
+      data: {
+        parentComment: {
+          create: {
+            ...prismaChildCommentModel,
+          }
+        }
+      }
+    })
+
   }
 
   /**

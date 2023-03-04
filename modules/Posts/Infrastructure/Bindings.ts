@@ -9,11 +9,21 @@ import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterfa
 import { MysqlUserRepository } from '../../Auth/Infrastructure/MysqlUserRepository'
 import { DeletePostComment } from '../Application/DeletePostComment'
 import { UpdatePostComment } from '../Application/UpdatePostComment'
+import { GetPostPostComments } from '../Application/GetPostPostComments'
+import { PostCommentRepositoryInterface } from '../Domain/PostCommentRepositoryInterface'
+import { MysqlPostCommentRepository } from './MysqlPostCommentRepository'
 
 const postRepository: Provider<PostRepositoryInterface> =
   { provide: 'PostRepositoryInterface',
     useClass: () => {
       return new MysqlPostRepository()
+    }
+  }
+
+const postCommentRepository: Provider<PostCommentRepositoryInterface> =
+  { provide: 'PostCommentRepositoryInterface',
+    useClass: () => {
+      return new MysqlPostCommentRepository()
     }
   }
 
@@ -72,6 +82,15 @@ const createComment: Provider<CreatePostComment> =
     }
   }
 
+const getPostPostComments: Provider<GetPostPostComments> =
+  { provide: 'GetPostPostComments',
+    useClass: () => {
+      return new GetPostPostComments(
+        bindings.get('PostCommentRepositoryInterface'),
+      )
+    }
+  }
+
 const baseUrl: Provider<string> =
   { provide: 'BaseUrl',
     useValue: process.env.BASE_URL
@@ -79,6 +98,8 @@ const baseUrl: Provider<string> =
   
 export const bindings: DependencyInjector = makeInjector([
   postRepository,
+  postCommentRepository,
+  getPostPostComments,
   getPostById,
   getPosts,
   userRepository,

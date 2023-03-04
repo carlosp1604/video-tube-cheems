@@ -1,123 +1,395 @@
-import { Dispatch, FC, ReactElement, SetStateAction, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, FC, ReactElement, SetStateAction, useEffect, useRef, useState } from 'react'
 import styles from './VideoComments.module.scss'
-import { CommentApplicationDto } from '../../Application/Dtos/CommentApplicationDto'
-import { BsChatDots, BsX } from 'react-icons/bs'
+import { BsArrowLeftShort, BsChatDots, BsX } from 'react-icons/bs'
 import { CommentCard } from './CommentCard'
 import { useUserContext } from '../../../../hooks/UserContext'
+import { GetPostPostCommentsRespondeDto } from '../../Application/Dtos/GetPostPostCommentsResponseDto'
+import { calculatePagesNumber, defaultPerPage } from '../../../Shared/Infrastructure/Pagination'
+import { PostCommentComponentDto } from '../Dtos/PostCommentComponentDto'
+import { PostCommentComponentDtoTranslator } from '../Translators/PostCommentComponentDtoTranslator'
+import { useRouter } from 'next/router'
+import { CommentApplicationDto } from '../../Application/Dtos/CommentApplicationDto'
 
-interface Props {
-  comments: CommentApplicationDto[]
+interface VideoCommentsProps {
+  postId: string,
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
+  modifyCommentsNumber: (variation: number) => void
 }
 
-export const VideoComments: FC<Props> = ({ comments, isOpen, setIsOpen }) => {
-  const [openCommentInput, setOpenCommentInput] = useState<boolean>(false)
-  const [repliesOpen, setRepliesOpen] = useState<boolean>(false)
-  const [commentToReply, setCommentToReply] = useState<CommentApplicationDto | null>(null)
+interface CommentRepliesProps {
+  setCommentToReply: Dispatch<SetStateAction<PostCommentComponentDto | null>>
+  setCommentsOpen: Dispatch<SetStateAction<boolean>>
+  isOpen: boolean
+  commentToReply: PostCommentComponentDto | null
+  setIsOpen: Dispatch<SetStateAction<boolean>>
+  modifyCommentsNumber: (variation: number) => void
+}
+
+interface AutoSizableTextAreaProps {
+  setComment: Dispatch<SetStateAction<string>>
+  comment: string
+}
+
+const usePostCommentable = () => {
+  const { status } = useUserContext()
+  const commentable = useRef(true)
+
+  useEffect(() => {
+    if (status === 'SIGNED_IN') {
+      commentable.current = true
+    }
+    else {
+      commentable.current = false
+    }
+  }, [status])
+
+  return commentable.current
+}
+
+export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({ 
+  setComment,
+  comment 
+}) => {
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
+  const handleOnChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(event.target.value)
+  }
+
+  useEffect(() => {
+    if (textAreaRef !== null && textAreaRef.current !== null) {
+      textAreaRef.current.style.height = '0px'
+      let scrollHeight = textAreaRef.current.scrollHeight
+      if (scrollHeight === 0) {
+        scrollHeight = 40
+      }
+      textAreaRef.current.style.height = Math.min(scrollHeight, 90) + 'px'
+    }
+ 
+  }, [comment])
+
+  return (
+    <textarea
+      className={styles.videoComments__commentInput}
+      placeholder={ 'Escribe tu comentario'}
+      onChange={handleOnChange}
+      value={comment}
+      ref={textAreaRef}
+    />
+  )
+}
+
+export const CommentReplies: FC<CommentRepliesProps> = ({ 
+  modifyCommentsNumber,
+  setCommentToReply,
+  setCommentsOpen,
+  commentToReply,
+  setIsOpen,
+  isOpen,
+}) => {
   const [repliedComment, setRepliedComment] = useState<ReactElement | string>('')
-  const [commentable, setCommentable] = useState<boolean>(false)
-  const { status, user } = useUserContext()
+  const [replies, setReplies] = useState<PostCommentComponentDto[]>([])
+  const [pageNumber, setPageNumber] = useState<number>(1)
+  const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
+  const [comment, setComment] = useState<string>('')
+
+  const commentable = usePostCommentable()
+
+  const router = useRouter()
+  const locale = router.locale ?? 'en'
+
+  const { user } = useUserContext()
+
+  const createReply = async () => {
+    try {
+      const response: CommentApplicationDto = await
+        (await fetch(`/api/posts/${commentToReply?.postId}/comments`, {
+          method: 'POST',
+          body: JSON.stringify({
+            comment: comment,
+            parentCommentId: commentToReply?.id,
+          })
+      })).json()
+
+      const componentResponse = PostCommentComponentDtoTranslator
+        .fromApplication({ childComments: 0, postComment: response }, locale)
+
+      if (commentToReply !== null) {
+        commentToReply.repliesNumber = commentToReply.repliesNumber + 1
+      }
+
+      setReplies([componentResponse, ...replies])
+      setComment('')
+      modifyCommentsNumber(1)
+
+      if (commentToReply !== null) {
+        setCommentToReply({
+          ...commentToReply,
+          repliesNumber: commentToReply.repliesNumber + 1
+        })
+      }
+    }
+    catch (exception: unknown) {
+      console.log(exception)
+    }
+  }
+
+  const fetchReplies = async (): Promise<GetPostPostCommentsRespondeDto> => {
+    const params = new URLSearchParams()
+    params.append('page', pageNumber.toString())
+    params.append('perPage', defaultPerPage.toString())
+    params.append('parentCommentId', commentToReply?.id ?? '')
+    return ((await fetch(`/api/posts/${commentToReply?.postId}/comments?${params}`)).json())
+  }
+
+  const updateReplies = async () => {
+    const newReplies = await fetchReplies()
+
+    const componentDtos = newReplies.commentwithChildComment.map((applicationDto) => {
+      return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
+    })
+
+    setReplies([...replies, ...componentDtos])
+
+    if (commentToReply !== null) {
+      console.log(commentToReply.repliesNumber)
+      console.log(newReplies.postPostComments)
+      const commentsNumberVariation = commentToReply.repliesNumber - newReplies.postPostComments
+      modifyCommentsNumber(commentsNumberVariation)
+
+      setCommentToReply({
+        ...commentToReply,
+        repliesNumber: newReplies.postPostComments
+      })
+    }
+
+    const pagesNumber = calculatePagesNumber(newReplies.postPostComments, defaultPerPage)
+
+    if (pageNumber < pagesNumber) {
+      setCanLoadMore(true)
+    } 
+    else {
+      setCanLoadMore(false)
+    }
+
+    setPageNumber(pageNumber+1)
+  }
 
   useEffect(() => {
     if (!isOpen) {
-      setOpenCommentInput(false)
+      setPageNumber(1)
+      setReplies([])
+    }
+    else {
+      if (commentToReply !== null) {
+        updateReplies()
+        setRepliedComment(
+          <CommentCard
+            comment={commentToReply}
+            key={commentToReply?.id}
+          />
+        )
+      }
+    }
+  }, [isOpen])
+
+  return (
+    <div className={ `
+      ${styles.videoComments__repliesBackdrop}
+      ${isOpen ? styles.videoComments__repliesBackdrop__open : ''}
+    `}
+      onClick={() => {
+        setIsOpen(false)
+      }}
+    >
+    <div 
+      className={`
+        ${styles.videoComments__container}
+        ${isOpen ? styles.videoComments__container : ''}
+      `}
+      onClick={(event) => event.stopPropagation()} 
+    >
+      <div className={styles.videoComments__commentsTitleBar}>
+        <div className={styles.videoComments__commentsTitle}>
+          <span className={styles.videoComments__commentsQuantity}>
+            <BsArrowLeftShort 
+              className={styles.videoComments__commentsCloseIcon}
+              onClick={() => setIsOpen(false)}
+            />
+          </span>
+          Respuestas
+        </div>
+        
+        <BsX 
+          className={styles.videoComments__commentsCloseIcon}
+          onClick={() => {
+            setIsOpen(false)
+            setCommentsOpen(false)
+          }}
+        /> 
+      </div>
+      <div className={styles.videoComments__repliedComment}>
+        {repliedComment}
+      </div>
+      
+      <div className={styles.videoComments__replies}>
+        { replies.map((reply) => {
+          return (
+            <CommentCard
+              comment={reply}
+              key={reply.id}
+            />
+          )
+        })}
+        <button className={`
+          ${styles.videoComments__loadMore}
+          ${canLoadMore ? styles.videoComments__loadMore__open : ''}
+        `}>
+          Load more
+        </button>
+      </div>
+      <div className={`
+          ${styles.videoComments__addCommentSection}
+          ${commentable ? styles.videoComments__addCommentSection__open : ''}
+        `}>
+          <img
+            className={styles.videoComments__userLogo}
+            src={user?.image ?? ''}
+            alt={user?.name}
+          />
+          <AutoSizableTextArea
+            comment={comment}
+            setComment={setComment}
+          />
+          <button className={styles.videoComments__addCommentButton}>
+            <BsChatDots 
+              className={styles.videoComments__addCommentIcon}
+              onClick={createReply}
+            />
+          </button>
+        </div>
+    </div>
+  </div>
+  )
+}
+
+export const VideoComments: FC<VideoCommentsProps> = ({ postId, isOpen, setIsOpen, modifyCommentsNumber }) => {
+  const [repliesOpen, setRepliesOpen] = useState<boolean>(false)
+  const [commentToReply, setCommentToReply] = useState<PostCommentComponentDto | null>(null)
+  const [comments, setComments] = useState<PostCommentComponentDto[]>([])
+  const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
+  const [pageNumber, setPageNumber] = useState<number>(1)
+  const [comment, setComment] = useState<string>('')
+  const [commentsNumber, setCommentsNumber] = useState<number>(0)
+  const commentsAreaRef = useRef<HTMLDivElement>(null)
+
+  const router = useRouter()
+  const locale = router.locale ?? 'en'
+
+  const { user } = useUserContext()
+
+  const commentable = usePostCommentable()
+
+  const createComment = async () => {
+    try {
+      const response: CommentApplicationDto = await
+        (await fetch(`/api/posts/${postId}/comments`, {
+          method: 'POST',
+          body: JSON.stringify({
+            comment: comment,
+            parentCommentId: null,
+          })
+      })).json()
+
+      const componentResponse = PostCommentComponentDtoTranslator
+        .fromApplication({ childComments: 0, postComment: response }, locale)
+
+      setComments([componentResponse, ...comments])
+      setCommentsNumber(commentsNumber + 1)
+      modifyCommentsNumber(1)
+      setComment('')
+
+      if (commentsAreaRef.current) {
+        commentsAreaRef.current.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        })
+      }
+    }
+    catch (exception: unknown) {
+      console.log(exception)
+    }
+  }
+
+  const fetchPostComments = async (): Promise<GetPostPostCommentsRespondeDto> => {
+    const params = new URLSearchParams()
+    params.append('page', pageNumber.toString())
+    params.append('perPage', defaultPerPage.toString())
+    return (await fetch(`/api/posts/${postId}/comments?${params}`)).json()
+  }
+
+  const updateComment = () => {
+    if (commentToReply !== null) {
+      setComments(comments.map((comment) => {
+        return (comment.id === commentToReply?.id ? commentToReply : comment)
+      }))
+    }
+  }
+
+  const updatePostComments = async () => {
+    const newComments = await fetchPostComments()
+
+    const componentDtos = newComments.commentwithChildComment.map((applicationDto) => {
+      return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
+    })
+
+    setComments([...comments, ...componentDtos])
+    const pagesNumber = calculatePagesNumber(newComments.postPostComments, defaultPerPage)
+
+    if (pageNumber < pagesNumber) {
+      setCanLoadMore(true)
+    }
+    else {
+      setCanLoadMore(false)
+    }
+
+    setPageNumber(pageNumber+1)
+    setCommentsNumber(newComments.postPostComments)
+  }
+
+  useEffect(() => {
+    if (isOpen) {
+      if (comments.length === 0) {
+        updatePostComments()
+      }
+
+      document.body.style.overflow = 'hidden'
+    } 
+    else {
+      document.body.style.overflow = 'auto'
     }
   }, [isOpen])
 
   useEffect(() => {
-    if (status === 'SIGNED_IN') {
-      setCommentable(true)
+    if (!repliesOpen) {
+      updateComment()
+      setCommentToReply(null)
     }
-  }, [status])
-
-  useEffect(() => {
-    if (commentToReply !== null) {
-      setRepliesOpen(true)
-      setRepliedComment(
-        <CommentCard
-          comment={commentToReply as CommentApplicationDto}
-          setCommentToReply={setCommentToReply}
-          key={commentToReply?.id}
-          showRepliesLink={false}
-        />
-      )
-    }
-  }, [commentToReply])
+  }, [repliesOpen])
 
   return (
     <>
-    <div className={ `
-      ${styles.videoComments__repliesBackdrop}
-      ${repliesOpen ? styles.videoComments__repliesBackdrop__open : ''}
-    `}
-      onClick={() => {
-        setCommentToReply(null) 
-        setRepliesOpen(false)
-      }}
-    >
-      <div 
-        className={`
-          ${styles.videoComments__container}
-          ${repliesOpen ? styles.videoComments__container : ''}
-        `}
-        onClick={(event) => event.stopPropagation()} 
-      >
-        <div className={styles.videoComments__commentsTitleBar}>
-          <div className={styles.videoComments__commentsTitle}>
-            Respuestas
-            <span className={styles.videoComments__commentsQuantity}>
-              24
-            </span>
-          </div>
-          
-          <BsX 
-            className={styles.videoComments__commentsCloseIcon}
-            onClick={() => {
-              setCommentToReply(null)
-              setRepliesOpen(false)
-            }}
-          /> 
-        </div>
-        <div className={styles.videoComments__repliedComment}>
-          {repliedComment}
-        </div>
-        
-        <div className={styles.videoComments__replies}>
-          { commentToReply?.childComments.map((childComment) => {
-            return (
-              <CommentCard
-                comment={childComment}
-                setCommentToReply={setCommentToReply}
-                key={childComment.id}
-                showRepliesLink={false}
-              />
-            )
-          })}
-        </div>
-        <div className={`
-          ${styles.videoComments__addCommentSection}
-          ${openCommentInput ? styles.videoComments__addCommentSection__open : ''}
-        `}>
-          <button className={styles.videoComments__addCommentButton}>
-            <BsChatDots className={styles.videoComments__addCommentIcon}/>
-          </button>
-          <textarea
-            className={styles.videoComments__commentInput}
-            placeholder={ 'message'}
-          />
-        </div>
-        <button
-          className={`
-            ${styles.videoComments__openCommentInputButton}
-            ${openCommentInput ? '' : styles.videoComments__openCommentInputButton__open}
-          `}
-          onClick={() => setOpenCommentInput(!openCommentInput)}
-        >
-          Add comment
-        </button>
-      </div>
-    </div>
+      <CommentReplies 
+        setCommentToReply={setCommentToReply}
+        setCommentsOpen={setIsOpen}
+        commentToReply={commentToReply}
+        isOpen={repliesOpen}
+        setIsOpen={setRepliesOpen}
+        modifyCommentsNumber={modifyCommentsNumber}
+      />
+
     <div className={ `
       ${styles.videoComments__backdrop}
       ${isOpen ? styles.videoComments__backdrop__open : ''}
@@ -132,53 +404,69 @@ export const VideoComments: FC<Props> = ({ comments, isOpen, setIsOpen }) => {
           <div className={styles.videoComments__commentsTitle}>
             Comentarios
             <span className={styles.videoComments__commentsQuantity}>
-              24
+            {commentsNumber}
             </span>
           </div>
           
           <BsX 
             className={styles.videoComments__commentsCloseIcon}
             onClick={() => setIsOpen(false)}
-            /> 
+          /> 
         </div>
-        <div className={styles.videoComments__comments}>
+        <div 
+          className={styles.videoComments__comments}
+          ref={commentsAreaRef}
+        >
           { comments.map((comment) => {
             return (
-              <CommentCard
-                comment={comment}
-                key={comment.id}
-                setCommentToReply={setCommentToReply}
-                showRepliesLink={true}
-              />
+              <div className={styles.videoComments__commentWithReplies}>
+                <CommentCard
+                  comment={comment}
+                  key={comment.id}
+                />
+                <button
+                  className={styles.videoComments__replies_button}
+                  onClick={() => {
+                    setCommentToReply(comment)
+                    setRepliesOpen(true)
+                  }}
+                >
+                  {comment.repliesNumber > 0 ? `${comment.repliesNumber} ` : ''}
+                  {comment.repliesNumber > 0 ? 'replies' : 'reply'}
+                </button>
+              </div>
             )
-          })}
+        })}
+          <button className={`
+            ${styles.videoComments__loadMore}
+            ${canLoadMore ? styles.videoComments__loadMore__open : ''}
+            `}
+            onClick={() => updatePostComments()}
+          >
+            Load more
+          </button>
         </div>
+
         <div className={`
           ${styles.videoComments__addCommentSection}
-          ${openCommentInput && commentable ? styles.videoComments__addCommentSection__open : ''}
+          ${commentable ? styles.videoComments__addCommentSection__open : ''}
         `}>
           <img
             className={styles.videoComments__userLogo}
             src={user?.image ?? ''}
             alt={user?.name}
           />
-          <textarea
-            className={styles.videoComments__commentInput}
-            placeholder={ 'message'}
+          <AutoSizableTextArea
+            comment={comment}
+            setComment={setComment}
           />
           <button className={styles.videoComments__addCommentButton}>
-            <BsChatDots className={styles.videoComments__addCommentIcon}/>
+            <BsChatDots 
+              className={styles.videoComments__addCommentIcon}
+              onClick={createComment}
+            />
           </button>
         </div>
-        <button
-          className={`
-            ${styles.videoComments__openCommentInputButton}
-            ${openCommentInput && commentable ? '' : styles.videoComments__openCommentInputButton__open}
-          `}
-          onClick={() => setOpenCommentInput(!openCommentInput)}
-        >
-          Add comment
-        </button>
       </div>
     </div>
     </>

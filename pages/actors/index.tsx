@@ -4,7 +4,7 @@ import { GetActors } from '../../modules/Actors/Application/GetActors'
 import { ActorComponentDtoTranslator } from '../../modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { bindings } from '../../modules/Actors/Infrastructure/Bindings'
 import { SortingInfrastructureCriteria, SortingInfrastructureOptions } from '../../modules/Shared/Infrastructure/InfrastructureSorting'
-import { maxPostsPerPage } from '../../modules/Shared/Infrastructure/Pagination'
+import { maxPerPage } from '../../modules/Shared/Infrastructure/Pagination'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async () => {
   const props: ActorsPageProps = {
@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async () 
 
   try {
     const actors = await getActors.get({
-      actorsPerPage: maxPostsPerPage,
+      actorsPerPage: maxPerPage,
       page: 1,
       sortCriteria: SortingInfrastructureCriteria.desc,
       sortOption: SortingInfrastructureOptions.date,

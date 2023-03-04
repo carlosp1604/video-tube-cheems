@@ -8,11 +8,13 @@ import { PostAnimationDtoTranslator } from './PostAnimationDtoTranslator'
 export class PostCardComponentDtoTranslator {
   public static fromApplication(
     applicationDto: PostApplicationDto,
-    reactionsNumber: number  
+    reactionsNumber: number,
+    locale: string
   ): PostCardComponentDto {
     const animation: PostAnimationDto | null = PostAnimationDtoTranslator.fromApplication(applicationDto)
 
-    const date = new DateService().formatAgoLike(DateTime.fromISO(applicationDto.publishedAt))
+    const date = new DateService()
+      .formatAgoLike(DateTime.fromISO(applicationDto.publishedAt), locale)
 
     const thumb = applicationDto.meta.find((meta) => {
       return meta.type === 'thumb'

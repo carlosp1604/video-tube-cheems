@@ -12,7 +12,10 @@ export const TagList: FC<Props> = ({ tags }) => {
     <div className={ styles.tagList__container }>
       { tags.map((tag) => {
         return (
-          <Link href={`/tags/${tag.id}`}>
+          <Link 
+            href={`/tags/${tag.id}`}
+            key={tag.id}
+          >
             <div 
               className={ styles.tagList__tagContainer }
               key={ tag.id }  

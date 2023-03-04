@@ -1,6 +1,6 @@
 .comment-card {
   &__container {
-    @apply grid gap-2 items-center border-b border-base-700 border-opacity-50;
+    @apply grid gap-2 items-center border-opacity-50;
     grid-template-areas:
       "user-logo  user-name-date"
       "user-logo  comment"
@@ -19,33 +19,32 @@
   }
 
   &__user-name-date {
-    @apply flex gap-x-2 justify-start items-center;
+    @apply flex gap-x-1 justify-start items-center;
     grid-area: user-name-date;
   }
 
   &__user-name {
-    @apply font-light text-xs;
+    @apply text-xs text-base-400;
   }
 
   &__comment-date {
-    @apply text-xs font-light
+    @apply text-xs text-base-400 leading-snug font-thin;
+  }
+
+  &__separator-icon {
+    @apply text-base-600;
   }
 
   &__comment {
-    @apply text-sm font-light;
+    @apply text-sm font-light whitespace-pre-line;
     grid-area: comment;
-  }
-
-  &__child-comment-section {
-    grid-area: child-comment-section;
   }
 
   &__child-comment {
     @apply grid gap-2 items-center;
     grid-template-areas:
-      "user-logo                user-name-date"
-      "user-logo                comment"
-      "child-comment-container  child-comment-container";
+      "user-logo  user-name-date"
+      "user-logo  comment";
     grid-auto-rows: auto 1fr;
   }
 

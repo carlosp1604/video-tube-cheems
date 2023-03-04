@@ -6,7 +6,7 @@ import { bindings as ActorBindings } from '../../../modules/Actors/Infrastructur
 import { GetPosts } from '../../../modules/Posts/Application/GetPosts'
 import { bindings as PostBindings } from '../../../modules/Posts/Infrastructure/Bindings'
 import { PostCardComponentDtoTranslator } from '../../../modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { defaultPostsPerPage } from '../../../modules/Shared/Infrastructure/Pagination'
+import { defaultPerPage } from '../../../modules/Shared/Infrastructure/Pagination'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   let actorId = context.query.actorId
@@ -16,6 +16,8 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
       notFound: true
     }
   }
+
+  const locale = context.locale ?? 'en'
 
   const getPosts = PostBindings.get<GetPosts>('GetPosts')
   const getActor = ActorBindings.get<GetActor>('GetActor')  
@@ -27,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
         { type: 'actorId', value: actorId.toString() }
       ],
       page: 1,
-      postsPerPage: defaultPostsPerPage,
+      postsPerPage: defaultPerPage,
       sortCriteria: 'desc',
       sortOption: 'date'
     })
@@ -36,7 +38,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
       props: {
         actor: ActorPageComponentDtoTranslator.fromApplicationDto(actor),
         posts: posts.posts.map((post) => {
-          return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions)
+          return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
         }),
         postsNumber: posts.postsNumber
       }

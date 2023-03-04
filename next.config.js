@@ -1,5 +1,3 @@
-const knex = require('knex')
-const { Model } = require('objection')
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
@@ -29,7 +27,7 @@ const nextConfig = {
   i18n: {
     // These are all the locales you want to support in
     // your application
-    locales: ['en-US', 'es-ES'],
+    locales: ['en-US', 'es-ES', 'en-GB'],
     // This is the default locale you want to be used when visiting
     // a non-locale prefixed path e.g. `/hello`
     defaultLocale: 'en-US',

@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next'
 import { SearchPage, SearchPageProps } from '../../../Components/pages/SearchPage/SearchPage'
 import { GetPosts } from '../../../modules/Posts/Application/GetPosts'
 import { bindings } from '../../../modules/Posts/Infrastructure/Bindings'
-import { GetPostsFilterOptions } from '../../../modules/Posts/Application/Dtos/GetPostsRequestDto'
 import { PostCardComponentDtoTranslator } from '../../../modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
@@ -14,6 +13,8 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
+  const locale = context.locale ?? 'en'
+
   const getPosts = bindings.get<GetPosts>('GetPosts')
 
   try {
@@ -23,14 +24,14 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
       sortCriteria: 'desc',
       sortOption: 'date',
       filters: [
-        { type: GetPostsFilterOptions.TITLE , value: search.toLocaleString() }
+        { type: 'postTitle', value: search.toLocaleString() }
       ]
     })
 
     return {
       props: {
         posts: posts.posts.map((post) => 
-          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions)
+          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
         ),
         title: search.toLocaleString(),
         postsNumber: posts.postsNumber,

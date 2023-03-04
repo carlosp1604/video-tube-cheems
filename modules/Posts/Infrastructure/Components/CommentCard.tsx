@@ -1,30 +1,16 @@
-import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './CommentCard.module.scss'
-import { CommentApplicationDto } from '../../Application/Dtos/CommentApplicationDto'
-import { DateTime } from 'luxon'
+import { PostCommentComponentDto } from '../Dtos/PostCommentComponentDto'
+import { BsDot } from 'react-icons/bs'
 
 interface Props {
-  comment: CommentApplicationDto
-  setCommentToReply: Dispatch<SetStateAction<CommentApplicationDto | null>>
-  showRepliesLink: boolean
+  comment: PostCommentComponentDto
 }
 
-export const CommentCard: FC<Props> = ({ comment, setCommentToReply, showRepliesLink }) => {
+export const CommentCard: FC<Props> = ({
+  comment,
+}) => {
   let responseLink: ReactElement | string = ''
-
-  if (showRepliesLink) {
-    responseLink = (
-      <div
-        className={styles.commentCard__replies_button}
-        onClick={() => {
-          setCommentToReply(comment)
-        }}
-      >
-        {comment.childComments.length > 0 ? `${comment.childComments.length} ` : ''}
-        {comment.childComments.length > 0 ? 'replies' : 'reply'}
-      </div>
-    )
-  }
 
   return (
     <div className={ styles.commentCard__container }>
@@ -38,16 +24,12 @@ export const CommentCard: FC<Props> = ({ comment, setCommentToReply, showReplies
         <span className={styles.commentCard__userName}>
           {comment.user.name}
         </span>
+        <BsDot className={styles.commentCard__separatorIcon}/> 
         <span className={styles.commentCard__commentDate}>
-          {DateTime.fromISO(comment.createdAt).toFormat('dd-LL-yyyy')}
+          {comment.createdAt}
         </span>
       </div>
-      <div
-        className={styles.commentCard__comment}
-        onClick={() => {
-          setCommentToReply(comment)
-        }}
-      >
+      <div className={styles.commentCard__comment}>
         {comment.comment}
       </div>
       {responseLink}

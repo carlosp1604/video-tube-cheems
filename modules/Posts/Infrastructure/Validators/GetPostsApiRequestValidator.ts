@@ -1,7 +1,7 @@
 import { z, ZodError } from 'zod'
 import { PostCommentApiRequestValidatorError } from './PostCommentApiRequestValidatorError'
 import { GetPostsApiRequestDto } from '../Dtos/GetPostsApiRequestDto'
-import { minPostsPerPage, maxPostsPerPage } from '../../../Shared/Infrastructure/Pagination'
+import { minPerPage, maxPerPage } from '../../../Shared/Infrastructure/Pagination'
 import { SortingInfrastructureCriteria, SortingInfrastructureOptions } from '../../../Shared/Infrastructure/InfrastructureSorting'
 import { PostFilterOptions } from '../PostFilters'
 import { PostsApiRequestValidatorError } from './PostsApiRequestValidatorError'
@@ -9,7 +9,7 @@ import { PostsApiRequestValidatorError } from './PostsApiRequestValidatorError'
 export class GetPostsApiRequestValidator {
   private static getPostsApiRequestSchema = z.object({
     page: z.number().positive().min(0),
-    postsPerPage: z.number().positive().min(minPostsPerPage).max(maxPostsPerPage),
+    postsPerPage: z.number().positive().min(minPerPage).max(maxPerPage),
     filters: z.array(z.object({
       type: z.nativeEnum(PostFilterOptions),
       value: z.string().min(1),

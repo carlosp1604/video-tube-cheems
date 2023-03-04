@@ -23,13 +23,15 @@ export class CreatePostComment {
     }
 
     const user = await this.userRepository.findById(request.userId)
-
+    
     if (user === null) {
       throw GetPostByIdApplicationException.userNotFound(request.userId)
     }
 
     try {
       const comment = post.addComment(request.comment, request.userId, request.parentCommentId)
+
+      comment.setUser(user)
 
       await this.postRepository.createComment(comment)
       

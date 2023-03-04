@@ -4,11 +4,13 @@ import { TagComponentDto } from './TagComponentDto'
 import { VideoComponentDto } from './VideoComponentDto'
 
 export interface PostComponentDto {
+  readonly id: string
   readonly title: string
   readonly video: VideoComponentDto,
   readonly date: string
   readonly views: number
   readonly reactions: number
+  readonly comments: number
   readonly description: string
   readonly actors: ActorComponentDto[],
   readonly tags: TagComponentDto[],

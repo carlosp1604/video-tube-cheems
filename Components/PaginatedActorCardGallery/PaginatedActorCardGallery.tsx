@@ -4,7 +4,7 @@ import { ActorComponentDto } from '../../modules/Actors/Infrastructure/ActorComp
 import { ActorComponentDtoTranslator } from '../../modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { ActorCardList } from '../../modules/Actors/Infrastructure/Components/ActorCardList'
 import { FetchPostsFilter } from '../../modules/Shared/Infrastructure/InfrastructureFilter'
-import { calculatePagesNumber, defaultPostsPerPage } from '../../modules/Shared/Infrastructure/Pagination'
+import { calculatePagesNumber, defaultPerPage } from '../../modules/Shared/Infrastructure/Pagination'
 import { PaginationBar } from '../PaginationBar/PaginationBar'
 import styles from './PaginatedActorCardGallery.module.scss'
 
@@ -32,7 +32,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
   filters,
 }) => {
   const [pagesNumber, setPagesNumber] = useState<number>(
-    calculatePagesNumber(actorsNumber, defaultPostsPerPage)
+    calculatePagesNumber(actorsNumber, defaultPerPage)
   )
   const [pageNumber, setPageNumber] = useState(1)
   const [currentActors, setCurrentActors] = useState<ActorComponentDto[]>(actors)
@@ -41,7 +41,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
   const buildSearchParams = (): URLSearchParams => {
     let params = new URLSearchParams()
     params.append('page', pageNumber.toString())
-    params.append('perPage', defaultPostsPerPage.toString())
+    params.append('perPage', defaultPerPage.toString())
     
     for (const filter of filters) {
       if (filter.value !== null) {
@@ -64,7 +64,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
       return ActorComponentDtoTranslator.fromApplicationDto(actor)
     }))
     setActorsNumber(actors.actorsNumber)
-    setPagesNumber(calculatePagesNumber(actors.actorsNumber, defaultPostsPerPage))
+    setPagesNumber(calculatePagesNumber(actors.actorsNumber, defaultPerPage))
   }
 
   useEffect(() => {

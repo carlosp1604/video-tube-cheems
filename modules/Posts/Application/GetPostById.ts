@@ -1,26 +1,25 @@
-import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
-import { PostApplicationDto } from './Dtos/PostApplicationDto'
+import { PostRepositoryInterface } from '../Domain/PostRepositoryInterface'
 import { Post } from '../Domain/Post'
 import { PostApplicationDtoTranslator } from './Translators/PostApplicationDtoTranslator'
 import { GetPostByIdApplicationException } from './GetPostByIdApplicationException'
+import { GetPostByIdApplicationResponseDto } from './Dtos/GetPostByIdApplicationResponseDto'
 
 export class GetPostById {
-  private options: RepositoryOptions[] = [
-    'comments', 'comments.user', 'reactions', 'actors', 'meta', 'tags',
-    'comments.childComments', 'comments.childComments.user', 'producer', 'producer.parentProducer'
-  ]
-
   constructor(
     private readonly postRepository: PostRepositoryInterface
   ) {}
 
-  public async get(postId: Post['id']): Promise<PostApplicationDto> {
-    const post = await this.postRepository.findById(postId, this.options)
+  public async get(postId: Post['id']): Promise<GetPostByIdApplicationResponseDto> {
+    const postWithCount = await this.postRepository.findByIdWithCount(postId)
 
-    if (post === null) {
+    if (postWithCount === null) {
       throw GetPostByIdApplicationException.postNotFound(postId)
     }
 
-    return PostApplicationDtoTranslator.fromDomain(post)
+    return {
+      post: PostApplicationDtoTranslator.fromDomain(postWithCount.post),
+      reactions: postWithCount.postReactions,
+      comments: postWithCount.postComments
+    }
   }
 }

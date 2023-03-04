@@ -8,7 +8,12 @@ import { TagComponentDtoTranslator } from './TagComponentDtoTranslator'
 import { VideoComponentDtoTranslator } from './VideoComponentDtoTranslator'
 
 export class PostComponentDtoTranslator {
-  public static fromApplicationDto(applicationDto: PostApplicationDto): PostComponentDto {
+  public static fromApplicationDto(
+    applicationDto: PostApplicationDto,
+    commentsNumber: number,
+    reactionsNumber: number,
+    locale: string
+  ): PostComponentDto {
     const actors = applicationDto.actors.map((actor) => ActorComponentDtoTranslator.fromApplicationDto(actor))
     const tags = applicationDto.tags.map((tag) => TagComponentDtoTranslator.fromApplicationDto(tag))
     let producer: PostComponentProducerDto | null = null
@@ -19,19 +24,21 @@ export class PostComponentDtoTranslator {
 
     const video = VideoComponentDtoTranslator.fromApplicationDto(applicationDto)
 
-    const date = DateTime.fromISO(applicationDto.publishedAt).toLocaleString(DateTime.DATE_FULL)
+    const date = DateTime.fromISO(applicationDto.publishedAt).setLocale(locale).toLocaleString(DateTime.DATE_MED)
 
     return {
+      id: applicationDto.id,
       actors,
       video,
       tags,
       producer,
       description: applicationDto.description,
       date,
-      reactions: applicationDto.reactions.length,
+      reactions: reactionsNumber,
       title: applicationDto.title,
       // TODO: Support views
       views: 0,
+      comments: commentsNumber
     }
   }
 }

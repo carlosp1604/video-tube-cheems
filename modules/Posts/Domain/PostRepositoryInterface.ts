@@ -36,6 +36,13 @@ export interface PostRepositoryInterface {
   findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | null>
 
   /**
+   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its ID
+   * @param postId Post ID
+   * @return PostWithCount if found or null
+   */
+  findByIdWithCount(postId: Post['id']): Promise<PostWithCountInterface | null>
+
+  /**
    * Add a new Post Reaction
    * @param reaction Post Reaction
    */
@@ -80,7 +87,7 @@ export interface PostRepositoryInterface {
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
    * @param filters Post filters
-   * @return Post if found or null
+   * @return PostWithCount if found or null
    */
   findWithOffsetAndLimit(
     offset: number,

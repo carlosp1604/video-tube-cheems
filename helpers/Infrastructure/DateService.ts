@@ -6,7 +6,7 @@ export class DateService implements DateServiceInterface {
     return new Date()
   }
 
-  public formatAgoLike(date: DateTime): string {
+  public formatAgoLike(date: DateTime, locale: string): string {
     const units: Intl.RelativeTimeFormatUnit[] = [
       'year',
       'month',
@@ -20,7 +20,7 @@ export class DateService implements DateServiceInterface {
     const diff = date.diffNow().shiftTo(...units)
     const unit = units.find((unit) => diff.get(unit) !== 0) || 'second'
 
-    const relativeFormatter = new Intl.RelativeTimeFormat('en', {
+    const relativeFormatter = new Intl.RelativeTimeFormat(locale, {
       numeric: 'auto',
     })
 

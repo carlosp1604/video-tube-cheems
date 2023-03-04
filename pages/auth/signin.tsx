@@ -6,7 +6,9 @@ const SignInPage: NextPage = () => {
   return (
     <section className={styles.signinPage__container}>
       <div className={styles.signinPage__login}>
-        <Login />
+        <Login
+          modal={null}
+        />
       </div>
     </section>
   )

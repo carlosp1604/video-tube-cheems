@@ -57,8 +57,8 @@ export const AppMenu: FC = () => {
         })
       } 
       else {
-        router.push({
-          pathname: 'posts/search/',
+        router.replace({
+          pathname: '/posts/search/',
           query: {
             search: title
           },

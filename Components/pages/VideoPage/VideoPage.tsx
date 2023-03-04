@@ -14,15 +14,15 @@ import {
 import { PostComponentDto } from '../../../modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { VideoPlayer } from '../../VideoPlayer/VideoPlayer'
 import { TagList } from '../../../modules/Posts/Infrastructure/Components/TagList'
-import { CommentApplicationDto } from '../../../modules/Posts/Application/Dtos/CommentApplicationDto'
 import { VideoComments } from '../../../modules/Posts/Infrastructure/Components/VideoComments'
 
 export interface VideoPageProps {
   post: PostComponentDto
-  comments: CommentApplicationDto[]
 }
 
-export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
+export const VideoPage: NextPage<VideoPageProps> = ({ post }) => {
+  const [reactionsNumber, setReactionsNumber] = useState<number>(post.reactions)
+  const [commentsNumber, setCommentsNumber] = useState<number>(post.comments)
   const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false)
   const [producerOpen, setProducerOpen] = useState<boolean>(false)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
@@ -66,7 +66,10 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
   if (post.actors.length > 0) {
     actorsSection = post.actors.map((actor) => {
       return (
-        <div className={styles.videoPage__actorsItem}>
+        <div 
+          className={styles.videoPage__actorsItem}
+          key={actor.id}
+        >
           <img
             className={ styles.videoPage__actorLogo}
             src={actor.imageUrl}
@@ -116,11 +119,11 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
               { `${post.views} views` }
             </span>
             <span className={ styles.videoPage__videoInfoItem}>
-              { post.reactions } <BsHeart />
+              { reactionsNumber } <BsHeart />
             </span>
             {
             <span className={ styles.videoPage__videoInfoItem}>
-              124 <BsChatSquareText />
+              { commentsNumber } <BsChatSquareText />
             </span>
             }
         </div>
@@ -202,9 +205,12 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, comments }) => {
       </div>
       <div className={styles.videoPage__videoComments}>
         <VideoComments
-          comments={comments}
+          postId={post.id}
           isOpen={commentsOpen}
           setIsOpen={setCommentsOpen}
+          modifyCommentsNumber={(variation: number) => 
+            setCommentsNumber(commentsNumber + variation)
+          }
         />   
       </div>
 

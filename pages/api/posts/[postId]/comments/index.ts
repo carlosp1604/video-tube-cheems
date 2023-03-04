@@ -19,14 +19,82 @@ import { authOptions } from '../../../auth/[...nextauth]'
 import {
   CreatePostCommentRequestSanitizer
 } from '../../../../../modules/Posts/Infrastructure/Sanitizers/CreatePostCommentRequestSanitizer'
+import { GetPostPostCommentsApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/GetPostPostCommentsApiRequestDto'
+import { GetPostPostCommentsApiRequestValidator } from '../../../../../modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
+import { GetPostPostComments } from '../../../../../modules/Posts/Application/GetPostPostComments'
 
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  if (request.method !== 'POST') {
-    return handleMethod(request, response)
+  if (request.method === 'POST') {
+    return handlePOST(request, response)
   }
+
+  if (request.method === 'GET') {
+    return handleGET(request, response)
+  }
+
+  return handleMethod(request, response)
+}
+
+async function handleGET(request: NextApiRequest, response: NextApiResponse) {
+  const { postId, page, perPage, parentCommentId } = request.query
+
+  console.log(request.query)
+
+  if (!postId || !page || !perPage) {
+    return handleBadRequest(response)
+  }
+
+  let apiRequest: GetPostPostCommentsApiRequestDto = {
+    postId: postId.toString(), 
+    page: parseInt(page.toString()), 
+    perPage: parseInt(perPage.toString()),
+    parentCommentId: parentCommentId ? parentCommentId.toString() : null
+  }
+
+  const validationError = GetPostPostCommentsApiRequestValidator.validate(apiRequest)
+
+  if (validationError) {
+    return handleValidationError(request, response, validationError)
+  }
+
+  const useCase = bindings.get<GetPostPostComments>('GetPostPostComments')
+
+  try {
+    const comments = await useCase.get(
+      apiRequest.postId,
+      apiRequest.page,
+      apiRequest.perPage,
+      apiRequest.parentCommentId
+    )
+
+    return response
+      .setHeader('Cache-Control', 'no-cache')
+      .status(200).json(comments)
+
+  }
+  catch (exception: unknown) {
+    console.error(exception)
+    if (!(exception instanceof CreatePostCommentApplicationException)) {
+      return handleServerError(response)
+    }
+
+    switch (exception.id) {
+      case CreatePostCommentApplicationException.postNotFoundId:
+        return handleNotFound(response)
+
+      case CreatePostCommentApplicationException.cannotAddCommentId:
+        return handleConflict(response)
+
+      default:
+        return handleServerError(response)
+    }
+  }
+}
+
+async function handlePOST(request: NextApiRequest, response: NextApiResponse) {
 
   const session = await UnstableGetServerSession(request, response, authOptions)
 
@@ -38,7 +106,7 @@ export default async function handler(
 
   let apiRequest: CreatePostCommentApiRequestDto
   try {
-    apiRequest = request.body as CreatePostCommentApiRequestDto
+    apiRequest = JSON.parse(request.body) as CreatePostCommentApiRequestDto
     apiRequest = CreatePostCommentRequestSanitizer.sanitize({
       ...apiRequest,
       userId: session.user.id,
@@ -49,6 +117,8 @@ export default async function handler(
     console.log(exception)
     return handleServerError(response)
   }
+
+console.log(apiRequest)
 
   const validationError = CreatePostCommentApiRequestValidator.validate(apiRequest)
 
@@ -84,12 +154,21 @@ export default async function handler(
   }
 }
 
+function handleBadRequest(response: NextApiResponse) {
+  return response
+    .status(400)
+    .json({
+      code: 'get-actor-bad-request',
+      message: 'Post ID, page number and perPage parameters are needed'
+    })
+}
+
 function handleMethod(request: NextApiRequest,response: NextApiResponse) {
   return response
     .status(405)
-    .setHeader('Allow', 'POST')
+    .setHeader('Allow', ['POST', 'GET'])
     .json({
-      code: 'create-post-comment-method-not-allowed',
+      code: 'post-comment-method-not-allowed',
       message: `Cannot ${request.method} ${request.url?.toString()}`
     })
 }

@@ -2,12 +2,11 @@
   $parentBlock: &;
 
   &__container {
-    @apply grid container px-5 mx-auto gap-y-4 transition;
+    @apply grid container px-5 mx-auto gap-y-4 transition h-full;
     grid-template-areas:
       "video"
       "video-data"
       "video-comments";
-
 
     @screen lg {
       @apply gap-x-4;

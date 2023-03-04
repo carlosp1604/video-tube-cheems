@@ -1,10 +1,11 @@
+import { useRouter } from 'next/router'
 import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
 import { GetPostsApplicationResponse } from '../../modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import { PostCardList } from '../../modules/Posts/Infrastructure/Components/PostCardList'
 import { PostCardComponentDto } from '../../modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardComponentDtoTranslator } from '../../modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { FetchPostsFilter } from '../../modules/Shared/Infrastructure/InfrastructureFilter'
-import { calculatePagesNumber, defaultPostsPerPage } from '../../modules/Shared/Infrastructure/Pagination'
+import { calculatePagesNumber, defaultPerPage } from '../../modules/Shared/Infrastructure/Pagination'
 import { PaginationBar } from '../PaginationBar/PaginationBar'
 import styles from './PaginatedPostCardGallery.module.scss'
 
@@ -33,16 +34,20 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   filters,
   fetchEndpoint
 }) => {
-  const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(postsNumber, defaultPostsPerPage))
+  const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(postsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
   const [currentPosts, setCurrentPosts] = useState<PostCardComponentDto[]>(posts)
   const [playerId, setPlayerId] = useState<string>('')
   const firstRender = useFirstRender()
 
+  const router = useRouter()
+
+  const locale = router.locale ?? 'en'
+
   const buildSearchParams = (): URLSearchParams => {
     let params = new URLSearchParams()
     params.append('page', pageNumber.toString())
-    params.append('perPage', defaultPostsPerPage.toString())
+    params.append('perPage', defaultPerPage.toString())
     
     for (const filter of filters) {
       if (filter.value !== null) {
@@ -62,10 +67,10 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     const posts = await fetchPosts()
 
     setCurrentPosts(posts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions)
+      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
     }))
     setPostsNumber(posts.postsNumber)
-    setPagesNumber(calculatePagesNumber(posts.postsNumber, defaultPostsPerPage))
+    setPagesNumber(calculatePagesNumber(posts.postsNumber, defaultPerPage))
   }
 
   useEffect(() => {

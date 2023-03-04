@@ -25,9 +25,11 @@ interface Props {
   postsNumber: number
 }
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
+export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const getPosts = PostBindings.get<GetPosts>('GetPosts')
   const getProducers = ProducerBindings.get<GetAllProducers>('GetAllProducers')
+
+  const locale = context.locale ?? 'en'
 
   const props: Props = {
     posts: [],
@@ -52,7 +54,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     producerComponents.unshift(defaultProducer)
     
     props.posts = posts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions)
+      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
     })
     props.postsNumber = posts.postsNumber
     props.producers = producerComponents

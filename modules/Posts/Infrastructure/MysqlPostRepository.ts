@@ -473,6 +473,81 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       .where('id', '=', commentId)
   }
 
+  /**
+   * Get posts related to another post given its ID
+   * @param postId Post ID
+   * @return Post array with the related posts
+   */
+  public async getRelatedPosts(postId: Post['id']): Promise<PostWithCountInterface[]> {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId
+      },
+      include: {
+        actors: true,
+        producer: true,
+      }
+    })
+
+    if (post === null) {
+      return []
+    }
+
+    let whereProducerId: string | Prisma.StringNullableFilter | null | undefined = undefined
+    let whereActors: Prisma.PostActorListRelationFilter | undefined = undefined
+
+    if (post.producerId !== null) {
+      whereProducerId = post.producerId
+    }
+
+    if (post.actors.length > 0) {
+      whereActors = {
+        some: {
+          actorId: {
+            in: post.actors.map(
+              (actor) => { 
+                return actor.actorId
+              }
+            )
+          }
+        }
+      }
+    }
+
+    const posts = await prisma.post.findMany({
+      where: {
+        deletedAt: null,
+        publishedAt:{
+          not: null,
+          lte: new Date(),
+        },
+        OR: [
+          { producerId: whereProducerId },
+          { actors: whereActors },
+        ],
+      },
+      include: {
+        _count: {
+          select: {
+            comments: true,
+            reactions: true,
+          }
+        },
+        meta: true,
+        producer: true,
+      },
+      take: 50
+    })
+
+    return posts.map((post) => {
+      return {
+        post: PostModelTranslator.toDomain(post, ['meta', 'producer']),
+        postReactions: post._count.reactions,
+        postComments: post._count.comments
+      }
+    }) 
+  }
+
   private buildFilters(
     filters: RepositoryFilter<PostRepositoryFilterOption>[]
   ): Prisma.PostWhereInput | undefined {

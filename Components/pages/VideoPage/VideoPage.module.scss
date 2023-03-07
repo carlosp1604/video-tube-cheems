@@ -2,24 +2,24 @@
   $parentBlock: &;
 
   &__container {
-    @apply grid container px-5 mx-auto gap-y-4 transition h-full;
-    grid-template-areas:
-      "video"
-      "video-data"
-      "video-comments";
+    @apply grid gap-y-4 container px-5 mx-auto transition pt-10;
 
-    @screen lg {
-      @apply gap-x-4;
-      grid-template-areas:
-        "video            related-videos"
-        "video-data       related-videos"
-        "video-comments   related-videos";
-    }
+    grid-template-areas: 
+      "left-container"
+      "right-container";
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
   }
 
-  &__video {
-    @apply pt-10;
-    grid-area: video;
+  &__left-container {
+    @apply flex flex-col gap-y-4;
+    grid-area: left-container;
+  }
+
+  &__right-container {
+    @apply flex flex-col gap-y-4 overflow-x-scroll whitespace-nowrap scrollbar-hide;
+    grid-area: right-container;
   }
 
   &__video-data {
@@ -170,7 +170,7 @@
     @apply bg-base-900;
   }
 
-  &__video-comments {
-    grid-area: video-comments;
+  &__related-videos-title {
+    @apply uppercase text-xl font-black;
   }
 }

@@ -16,4 +16,5 @@ export interface PostCardComponentDto {
 	readonly reactions: number
 	readonly producer: ProducerPostCardComponentDto | null
 	readonly duration: string
+	readonly comments: number
 }

@@ -112,4 +112,12 @@ export interface PostRepositoryInterface {
   countPostsWithFilters(
     filters: RepositoryFilter<PostRepositoryFilterOption>[],
   ): Promise<number>
+
+
+  /**
+   * Get posts related to another post given its ID
+   * @param postId Post ID
+   * @return Post array with the related posts
+   */
+  getRelatedPosts(postId: Post['id']): Promise<PostWithCountInterface[]>
 }

@@ -1,6 +1,6 @@
 import { createRef, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import styles from './PostCard.module.scss'
-import { BsHeart, BsThreeDotsVertical } from 'react-icons/bs'
+import { BsChatSquareText, BsHeart, BsThreeDotsVertical } from 'react-icons/bs'
 import { ReactElement } from 'react'
 import Link from 'next/link'
 import { SafePlayVideo, SafeStopVideo } from '../../../Shared/Infrastructure/SafeVideoElement'
@@ -112,12 +112,10 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
             <BsHeart />
             { post.reactions }
           </div>
-          { // TODO: Support comments
-            //<div className={ styles.postCard__interactionSection }>
-              //<BsChatText />
-              //190
-            //</div>
-          }
+            <div className={ styles.postCard__interactionSection }>
+              <BsChatSquareText />
+              { post.comments}
+            </div>
         </div>
       </div>
     </div>

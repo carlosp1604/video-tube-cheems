@@ -1,4 +1,4 @@
-import { createRef, CSSProperties, Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { createRef, CSSProperties, Dispatch, FC, SetStateAction, useState } from 'react'
 import styles from './ProducerList.module.scss'
 import { BsCaretLeft, BsCaretRight } from 'react-icons/bs'
 import { ProducerComponentDto } from '../Dtos/ProducerComponentDto'
@@ -14,13 +14,6 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer, setActivePr
   const [scrollXBottom, setScrollXBottom] = useState(false)
   const [showScrollButtons, setShowScrollButtons] = useState(false)
   const scrollElement = createRef<HTMLDivElement>()
-
-  useEffect(() => {
-    if (scrollElement.current) {
-      setScrollX(scrollElement.current.scrollLeft)
-      checkIfEndIsReached()
-    }
-  })
 
   const checkIfEndIsReached = () => {
     if (scrollElement.current) {
@@ -48,12 +41,6 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer, setActivePr
       }}
       onMouseLeave={ () => {
         setShowScrollButtons(false)
-      }}
-      onChange={ () => {
-        if (scrollElement.current) {
-          setScrollX(scrollElement.current?.scrollLeft)
-          checkIfEndIsReached()
-        }
       }}
     >
       <BsCaretLeft

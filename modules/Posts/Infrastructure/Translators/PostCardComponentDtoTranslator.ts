@@ -9,6 +9,7 @@ export class PostCardComponentDtoTranslator {
   public static fromApplication(
     applicationDto: PostApplicationDto,
     reactionsNumber: number,
+    commentsNumber: number,
     locale: string
   ): PostCardComponentDto {
     const animation: PostAnimationDto | null = PostAnimationDtoTranslator.fromApplication(applicationDto)
@@ -51,7 +52,8 @@ export class PostCardComponentDtoTranslator {
       title: applicationDto.title,
       // TODO: Support views
       views: 0,
-      duration : formattedDuration
+      duration: formattedDuration,
+      comments: commentsNumber
     }
   }
 

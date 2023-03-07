@@ -54,7 +54,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
     producerComponents.unshift(defaultProducer)
     
     props.posts = posts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
+      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, post.postComments, locale)
     })
     props.postsNumber = posts.postsNumber
     props.producers = producerComponents

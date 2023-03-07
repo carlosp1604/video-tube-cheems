@@ -67,7 +67,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     const posts = await fetchPosts()
 
     setCurrentPosts(posts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
+      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, post.postComments, locale)
     }))
     setPostsNumber(posts.postsNumber)
     setPagesNumber(calculatePagesNumber(posts.postsNumber, defaultPerPage))

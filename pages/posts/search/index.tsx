@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     return {
       props: {
         posts: posts.posts.map((post) => 
-          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, locale)
+          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, post.postComments, locale)
         ),
         title: search.toLocaleString(),
         postsNumber: posts.postsNumber,

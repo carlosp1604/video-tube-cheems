@@ -50,7 +50,7 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
       )
 
       if (!result.ok) {
-        if (result.status === 409) {
+        if (result.status === 409 || result.status === 400) {
           setErrorMessage(t('user_signup_signup_duplicated_user_message') ?? '')
           setUserCreationError(true)
 

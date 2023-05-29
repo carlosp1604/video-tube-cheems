@@ -55,6 +55,14 @@ export default async function handler (
             message: 'Token is not valid to perform this action',
           })
 
+      case CreateUserApplicationException.invalidUsernameId:
+      case CreateUserApplicationException.invalidEmailId:
+        return response.status(400)
+          .json({
+            code: 'create-user-invalid-request',
+            message: exception.message,
+          })
+
       default:
         return handleInternalError(response)
     }

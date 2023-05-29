@@ -5,9 +5,9 @@ import {
 } from '~/modules/Auth/Application/VerificationTokenApplicationTranslator'
 import {
   ValidateTokenApplicationRequestInterface
-} from '~/modules/Auth/Application/ ValidateTokenApplicationRequestInterface'
-import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/ VerificationTokenApplicationDto'
-import { ValidateTokenApplicationException } from '~/modules/Auth/Application/ ValidateTokenApplicationException'
+} from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationRequestInterface'
+import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/VerificationTokenApplicationDto'
+import { ValidateTokenApplicationException } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
 
 export class ValidateToken {
   // eslint-disable-next-line no-useless-constructor

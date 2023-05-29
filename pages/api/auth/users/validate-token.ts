@@ -2,15 +2,15 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
   VerifyEmailAddressApplicationException
-} from '~/modules/Auth/Application/VerifyEmailAddressApplicationException'
+} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
 import { ValidateTokenApiRequestValidator } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestValidator'
 import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestInterface'
-import { ValidateToken } from '~/modules/Auth/Application/ValidateToken'
+import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import {
   ValidateTokenApplicationRequestTranslator
 } from '~/modules/Auth/Infrastructure/ValidateTokenApplicationRequestTranslator'
 import { container } from '~/awailix.container'
-import { ValidateTokenApplicationException } from '~/modules/Auth/Application/ ValidateTokenApplicationException'
+import { ValidateTokenApplicationException } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
 
 export default async function handler (
   request: NextApiRequest,

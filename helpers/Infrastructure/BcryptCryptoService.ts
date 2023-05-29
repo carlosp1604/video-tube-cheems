@@ -1,6 +1,6 @@
-import { CryptoServiceInterface } from '../Domain/CryptoServiceInterface'
 import { hash, compare, genSaltSync } from 'bcrypt'
 import * as crypto from 'crypto'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 
 export class BcryptCryptoService implements CryptoServiceInterface {
   // TODO: Take salt rounds from .env file

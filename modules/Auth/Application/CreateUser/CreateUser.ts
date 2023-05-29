@@ -1,12 +1,13 @@
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { CreateUserApplicationRequestInterface } from '~/modules/Auth/Application/CreateUserApplicationRequestInterface'
+import { CreateUserApplicationRequestInterface } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationRequestInterface'
 import { User } from '~/modules/Auth/Domain/User'
 import { DateTime } from 'luxon'
-import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUserApplicationException'
+import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationException'
 import * as crypto from 'crypto'
 import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
 import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
+import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 
 export class CreateUser {
   // eslint-disable-next-line no-useless-constructor
@@ -19,22 +20,11 @@ export class CreateUser {
   public async create (request: CreateUserApplicationRequestInterface): Promise<void> {
     const token = await this.getVerificationToken(request.email, request.token)
 
-    const [emailExists, usernameExists] = await Promise.all([
-      this.userRepository.existsByEmail(request.email),
-      this.userRepository.existsByUsername(request.username),
-    ])
+    await this.checkIfEmailOrUsernameAreBeignUsed(request.email, request.username)
 
-    if (emailExists) {
-      throw CreateUserApplicationException.emailAlreadyRegistered(request.email)
-    }
-
-    if (usernameExists) {
-      throw CreateUserApplicationException.usernameAlreadyRegistered(request.username)
-    }
+    const user = await this.buildUser(request)
 
     try {
-      const user = await this.buildUser(request)
-
       await this.userRepository.save(user)
     } catch (exception: unknown) {
       console.error(exception)
@@ -42,7 +32,6 @@ export class CreateUser {
       throw CreateUserApplicationException.cannotCreateUser(request.email)
     }
 
-    // TODO: Handle possible errors?
     await this.verificationTokenRepository.delete(token)
   }
 
@@ -64,6 +53,24 @@ export class CreateUser {
     return verificationToken
   }
 
+  private async checkIfEmailOrUsernameAreBeignUsed (
+    email: CreateUserApplicationRequestInterface['email'],
+    username: CreateUserApplicationRequestInterface['username']
+  ): Promise<void> {
+    const [emailExists, usernameExists] = await Promise.all([
+      this.userRepository.existsByEmail(email),
+      this.userRepository.existsByUsername(username),
+    ])
+
+    if (emailExists) {
+      throw CreateUserApplicationException.emailAlreadyRegistered(email)
+    }
+
+    if (usernameExists) {
+      throw CreateUserApplicationException.usernameAlreadyRegistered(username)
+    }
+  }
+
   private async buildUser (request: CreateUserApplicationRequestInterface): Promise<User> {
     const userId = crypto.randomUUID()
 
@@ -71,18 +78,37 @@ export class CreateUser {
 
     const nowDate = DateTime.now()
 
-    return new User(
-      userId,
-      request.name,
-      request.username,
-      request.email,
-      null, // when a user is created it has not a imageUrl
-      request.language,
-      hashedPassword,
-      nowDate,
-      nowDate,
-      nowDate,
-      null
-    )
+    try {
+      return new User(
+        userId,
+        request.name,
+        request.username,
+        request.email,
+        null, // when a user is created it has not a imageUrl
+        request.language,
+        hashedPassword,
+        nowDate,
+        nowDate,
+        nowDate,
+        null
+      )
+    } catch (exception: unknown) {
+      if (!(exception instanceof ValidationException)) {
+        throw exception
+      }
+
+      switch (exception.id) {
+        case ValidationException.invalidEmailId:
+          throw CreateUserApplicationException.invalidEmail(request.email)
+
+        case ValidationException.invalidUsernameId:
+          throw CreateUserApplicationException.invalidUsername(request.username)
+
+        default: {
+          console.error(exception)
+          throw exception
+        }
+      }
+    }
   }
 }

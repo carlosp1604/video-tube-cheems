@@ -1,5 +1,5 @@
 import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
-import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/ VerificationTokenApplicationDto'
+import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/VerificationTokenApplicationDto'
 
 export class VerificationTokenApplicationTranslator {
   public static fromDomain (verificationToken: VerificationToken): VerificationTokenApplicationDto {

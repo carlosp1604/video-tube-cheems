@@ -1,6 +1,8 @@
 import { DateTime } from 'luxon'
 import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 import { container } from '~/awailix.container'
+import { EmailValidator } from '~/modules/Shared/Domain/EmailValidator'
+import { UsernameValidator } from '~/modules/Shared/Domain/UsernameValidator'
 
 export class User {
   public readonly id: string
@@ -30,8 +32,8 @@ export class User {
   ) {
     this.id = id
     this.name = name
-    this.email = email
-    this.username = username
+    this.email = (new EmailValidator()).validate(email)
+    this.username = (new UsernameValidator()).validate(username)
     this.imageUrl = imageUrl
     this.password = hashedPassword
     this.language = language

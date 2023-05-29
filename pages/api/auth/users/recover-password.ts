@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
   VerifyEmailAddressApplicationException
-} from '~/modules/Auth/Application/VerifyEmailAddressApplicationException'
+} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
 import { RecoverPasswordApiRequestInterface } from '~/modules/Auth/Infrastructure/RecoverPasswordApiRequestInterface'
 import { RecoverPasswordApiRequestValidator } from '~/modules/Auth/Infrastructure/RecoverPasswordApiRequestValidator'
 import { RecoverPassword } from '~/modules/Auth/Application/RecoverPassword'

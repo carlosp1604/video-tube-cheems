@@ -1,10 +1,10 @@
-import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
+import { asClass, asFunction, AwilixContainer, createContainer, InjectionMode, Lifetime } from 'awilix'
 import { BcryptCryptoService } from '~/helpers/Infrastructure/BcryptCryptoService'
 import { MysqlUserRepository } from '~/modules/Auth/Infrastructure/MysqlUserRepository'
 import { Login } from '~/modules/Auth/Application/Login'
-import { CreateUser } from '~/modules/Auth/Application/CreateUser'
-import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress'
-import { ValidateToken } from '~/modules/Auth/Application/ValidateToken'
+import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
+import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
+import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { RecoverPassword } from '~/modules/Auth/Application/RecoverPassword'
 import { ChangeUserPassword } from '~/modules/Auth/Application/ChangeUserPassword'
 import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
@@ -66,7 +66,14 @@ container.register('producerRepository', asClass(MysqlProducerRepository))
  * Use-cases
  */
 container.register('LoginUseCase', asClass(Login))
-container.register('createUserUseCase', asClass(CreateUser))
+// FIXME: This was the only way to make it works...
+container.register('createUserUseCase', asFunction(() => {
+  return new CreateUser(
+    container.resolve('userRepository'),
+    container.resolve('verificationTokenRepository'),
+    container.resolve('cryptoService')
+  )
+}))
 container.register('verifyEmailAddressUseCase', asClass(VerifyEmailAddress))
 container.register('validateTokenUseCase', asClass(ValidateToken))
 container.register('recoverPasswordUseCase', asClass(RecoverPassword))

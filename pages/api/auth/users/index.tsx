@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { CreateUser } from '~/modules/Auth/Application/CreateUser'
+import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { CreateUserApiRequestValidator } from '~/modules/Auth/Infrastructure/CreateUserApiRequestValidator'
 import {
   CreateUserApplicationRequestTranslator
 } from '~/modules/Auth/Infrastructure/CreateUserApplicationRequestTranslator'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
-import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUserApplicationException'
+import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationException'
 import { CreateUserApiRequestInterface } from '~/modules/Auth/Infrastructure/CreateUserApiRequestInterface'
 import { container } from '~/awailix.container'
 

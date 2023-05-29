@@ -1,7 +1,7 @@
 import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestInterface'
 import {
   ValidateTokenApplicationRequestInterface
-} from '~/modules/Auth/Application/ ValidateTokenApplicationRequestInterface'
+} from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationRequestInterface'
 
 export class ValidateTokenApplicationRequestTranslator {
   public static fromApi (

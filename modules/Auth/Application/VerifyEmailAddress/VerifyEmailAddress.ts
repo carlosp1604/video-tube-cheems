@@ -6,11 +6,11 @@ import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import {
   VerifyEmailAddressApplicationException
-} from '~/modules/Auth/Application/VerifyEmailAddressApplicationException'
+} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
 import * as crypto from 'crypto'
 import {
   VerifyEmailAddressApplicationRequestInterface
-} from '~/modules/Auth/Application/VerifyEmailAddressApplicationRequestInterface'
+} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationRequestInterface'
 import { RecoverPasswordApplicationRequest } from '~/modules/Auth/Application/RecoverPasswordApplicationRequest'
 import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 

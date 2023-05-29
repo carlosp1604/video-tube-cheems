@@ -3,13 +3,13 @@ import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserAp
 import {
   VerifyEmailAddressApiRequestValidator
 } from '~/modules/Auth/Infrastructure/VerifyEmailAddressApiRequestValidator'
-import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress'
+import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
 import {
   VerifyEmailAddressApiRequestInterface
 } from '~/modules/Auth/Infrastructure/VerifyEmailAddressApiRequestInterface'
 import {
   VerifyEmailAddressApplicationException
-} from '~/modules/Auth/Application/VerifyEmailAddressApplicationException'
+} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
 import {
   VerifyEmailAddressApplicationRequestTranslator
 } from '~/modules/Auth/Infrastructure/VerifyEmailAddressApplicationRequestTranslator'

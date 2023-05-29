@@ -6,6 +6,8 @@ export class CreateUserApplicationException extends ApplicationException {
   public static emailAlreadyRegisteredId = 'create_user_email_already_registered'
   public static cannotCreateUserId = 'create_user_cannot_create_user'
   public static verificationTokenIsNotValidId = 'create_user_verification_token_is_not_valid'
+  public static invalidUsernameId = 'create_user_invalid_username'
+  public static invalidEmailId = 'create_user_invalid_email'
 
   constructor (message: string, id: string) {
     super(message, id)
@@ -38,6 +40,20 @@ export class CreateUserApplicationException extends ApplicationException {
     return new CreateUserApplicationException(
       `Verification token associated to email ${userEmail} is not valid.`,
       this.verificationTokenIsNotValidId
+    )
+  }
+
+  public static invalidEmail (userEmail: User['email']): CreateUserApplicationException {
+    return new CreateUserApplicationException(
+      `Invalid email ${userEmail}`,
+      this.invalidEmailId
+    )
+  }
+
+  public static invalidUsername (username: User['username']): CreateUserApplicationException {
+    return new CreateUserApplicationException(
+      `Invalid email ${username}`,
+      this.invalidUsernameId
     )
   }
 }

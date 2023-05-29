@@ -1,18 +1,24 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react'
 import styles from './Register.module.scss'
-import { z } from 'zod'
+import { useTranslation } from 'next-i18next'
+import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
+import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 
 export interface Props {
   onConfirm: (email: string) => void
 }
 
 export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
+  const { t } = useTranslation('user-auth')
+
   const [email, setEmail] = useState<string>('')
-  const [errorMessage, setErrorMessage] = useState<string>('Email no disponible')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [verificationError, setVerificationError] = useState<boolean>(false)
   const [resendEmail, setResendEmail] = useState<boolean>(false)
-  const emailValidator = z.string().email()
+  const [errorMessage, setErrorMessage] =
+    useState<string>(t('user_signup_verify_email_email_not_available_message') ?? '')
+
+  const authApiService = new AuthApiService()
 
   const onSubmit = async (event: FormEvent) => {
     setVerificationError(false)
@@ -23,13 +29,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
-      const result = await fetch('/api/auth/users/verify-email', {
-        method: 'POST',
-        body: JSON.stringify({
-          email,
-          sendNewToken: resendEmail,
-        }),
-      })
+      const result = await authApiService.verifyEmail(email, resendEmail)
 
       if (!result.ok) {
         if (result.status === 409) {
@@ -37,9 +37,9 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
 
           if (jsonResponse.code === 'verify-email-address-conflict-token-already-issued') {
             setResendEmail(true)
-            setErrorMessage('Email ya enviado. Revisa tu bandeja de entrada.')
+            setErrorMessage(t('user_signup_verify_email_email_already_sent_message') ?? '')
           } else {
-            setErrorMessage('Email no disponible')
+            setErrorMessage(t('user_signup_verify_email_email_not_available_message') ?? '')
           }
           setVerificationError(true)
 
@@ -47,20 +47,20 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         }
 
         if (result.status === 400) {
-          setErrorMessage('Email inválido')
+          setErrorMessage(t('user_signup_verify_email_email_error_message') ?? '')
           setVerificationError(true)
 
           return
         }
 
         if (result.status === 422) {
-          setErrorMessage('No se pudo enviar el email')
+          setErrorMessage(t('user_signup_verify_email_email_could_not_be_sent_message') ?? '')
           setVerificationError(true)
 
           return
         }
 
-        setErrorMessage('Servicio no disponible. Inténtalo más tarde')
+        setErrorMessage(t('user_signup_verify_email_server_error_message') ?? '')
         setVerificationError(true)
 
         return
@@ -69,7 +69,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       onConfirm(email)
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage('Servicio no disponible. Inténtalo más tarde')
+      setErrorMessage(t('user_signup_verify_email_server_error_message') ?? '')
       setVerificationError(true)
     }
   }
@@ -93,30 +93,34 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
   }
 
+  const onClickSubmit = () => {
+    if (email !== '' && !invalidEmail) {
+      onConfirm(email)
+    }
+  }
+
   return (
     <form
       className={ styles.register__container }
       onSubmit={ onSubmit }
     >
-      <h1 className={ styles.register__title }>
-        Registro
-
+      <div className={ styles.register__title }>
+        { t('user_signup_verify_email_title') }
         <small className={ styles.register__subtitle }>
-          Introduce un email válido. Será necesario para activar la cuenta y recuperar tu contraseña.
+          { t('user_signup_verify_email_subtitle') }
         </small>
-      </h1>
+      </div>
 
       <p className={ `
-          ${styles.register__error}
-          ${verificationError ? styles.register__error__open : ''}
-        ` }
-      >
+        ${styles.register__error}
+        ${verificationError ? styles.register__error__open : ''}
+      ` }>
         { errorMessage }
       </p>
 
       <div className={ styles.register__inputSection }>
         <label className={ styles.register__inputLabel }>
-          Email
+          { t('user_signup_verify_email_email_input_label') }
         </label>
         <input
           type={ 'email' }
@@ -124,14 +128,14 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
             ${styles.register__input}
             ${invalidEmail ? styles.register__input_error : ''}
           ` }
-          placeholder={ 'Email' }
+          placeholder={ t('user_signup_verify_email_email_input_placeholder') ?? '' }
           onChange={ handleEmailChange }
         />
         <label className={ `
           ${styles.register__inputErrorMessage}
           ${invalidEmail ? styles.register__inputErrorMessage__open : ''}
         ` }>
-          { 'Invalid email' }
+          { t('user_signup_verify_email_email_error_message') }
         </label>
       </div>
 
@@ -139,28 +143,19 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         type="submit"
         className={ `
           ${styles.register__submit}
-          ${!invalidEmail && email !== ''
-          ? styles.register__submit__enabled
-          : ''}
+          ${!invalidEmail && email !== '' ? styles.register__submit__enabled : ''}
           ${resendEmail ? styles.register__submit_resendEmail : ''}
-        ` }
-      >
-        { resendEmail ? '¿No recibido? Reenviar email' : 'Enviar email' }
+        ` }>
+        { resendEmail ? t('user_signup_verify_email_resend_email') : t('user_signup_verify_email_submit_button') }
       </button>
       <button className={ `
         ${styles.register__verificationCodeLink}
-        ${!invalidEmail && email !== ''
-          ? styles.register__verificationCodeLink_active
-          : ''}
+        ${!invalidEmail && email !== '' ? styles.register__verificationCodeLink_active : ''}
       ` }
-        onClick={ () => {
-          if (email !== '' && !invalidEmail) {
-            onConfirm(email)
-          }
-        } }
+        onClick={ onClickSubmit }
         disabled={ invalidEmail }
       >
-        Tengo un código de verificación
+        { t('user_signup_verify_email_already_has_a_code_button_title') }
       </button>
     </form>
   )

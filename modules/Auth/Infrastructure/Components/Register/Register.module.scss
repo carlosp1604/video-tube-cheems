@@ -5,10 +5,18 @@
 
   &__title {
     @apply text-xl font-black mb-1.5;
+
+    @screen md {
+      @apply text-2xl;
+    }
   }
 
   &__subtitle {
     @apply block text-sm font-normal;
+
+    @screen md {
+      @apply text-base;
+    }
   }
 
   &__input-section {
@@ -16,7 +24,11 @@
   }
 
   &__input-label {
-    @apply text-xs font-light outline-0;
+    @apply text-xs font-light text-base-300;
+
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__input-error-message {
@@ -25,13 +37,18 @@
     &__open {
       @apply opacity-100;
     }
+
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__input {
-    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm;
+    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm
+      transition-colors;
 
-    &:focus {
-      @apply border-brand-700;
+    &:focus, &:hover {
+      @apply border-brand-700 transition-colors;
     }
 
     &_error {
@@ -40,6 +57,10 @@
       &:focus {
         @apply border-red;
       }
+    }
+
+    @screen md {
+      @apply text-base;
     }
   }
 
@@ -51,13 +72,21 @@
       @apply text-base-300 bg-transparent border-brand-500
         transition-colors duration-500;
 
-      &:active {
+      &:active, &:focus, &:hover {
         @apply bg-brand-500;
       }
     }
 
     &_resend-email {
       @apply border-blue bg-blue;
+
+      &:active, &:focus, &:hover {
+        @apply bg-blue;
+      }
+    }
+
+    @screen md {
+      @apply text-base font-black;
     }
   }
 
@@ -67,26 +96,40 @@
     &__open {
       @apply opacity-100;
     }
-  }
 
-  &__register-recover-section {
-    @apply flex gap-x-4 justify-center mt-5 items-center;
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__verification-code-link {
-    @apply text-xs font-bold text-base-500 mt-4 text-center w-full;
+    @apply text-xs font-bold text-base-500 mt-4 text-center w-full
+      transition-colors;
 
     &_active {
       @apply text-base-300;
+
+      &:hover, &:focus, &:active {
+        @apply text-blue transition-colors;
+      }
+    }
+
+    @screen md {
+      @apply text-sm;
     }
   }
 
   &__confirming-register {
-    @apply flex flex-col gap-y-4 justify-center items-center p-5;
+    @apply flex flex-col gap-y-4 justify-center items-center p-5
+      text-center;
   }
 
   &__confirming-register-icon {
-    @apply h-12 w-12 text-blue;
+    @apply h-12 w-12 text-green;
+
+    @screen md {
+      @apply h-20 w-20;
+    }
   }
 
   &__confirming-register-button {
@@ -96,6 +139,10 @@
     &:active, &:focus, &:hover {
       @apply bg-brand-500;
     }
+
+    @screen md {
+      @apply text-base font-black;
+    }
   }
 
   &__register-container {
@@ -103,14 +150,18 @@
   }
 
   &__back-section {
-    @apply flex gap-x-3 font-light items-center text-sm px-4 pt-2 -mb-4
+    @apply flex gap-x-3 font-light items-center text-xs px-4 pt-2 -mb-4
     text-sm text-base-400;
+
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__back-icon {
     @apply w-10 h-10 p-2 transition-colors rounded-full cursor-pointer;
 
-    &:hover, &:focus {
+    &:hover, &:focus, &:active {
       @apply text-base-700 transition-colors bg-base-900;
     }
   }

@@ -3,18 +3,18 @@ import styles from '~/components/pages/HomePage/HomePage.module.scss'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import {
-  ProducerListComponentDtoTranslator
-} from '~/modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
 import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
+  ProducerListComponentDtoTranslator
+} from '~/modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
+import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { useState } from 'react'
 import {
   PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
+import { useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'user_menu',
     'carousel',
     'post_card',
+    'user-auth',
   ])
 
   const props: Props = {
@@ -100,9 +101,9 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
   return (
     <div className={ styles.home__container }>
       <ProducerList
-          producers={ producers }
-          setActiveProducer={ setActiveProducer }
-          activeProducer={ activeProducer }
+        producers={ producers }
+        setActiveProducer={ setActiveProducer }
+        activeProducer={ activeProducer }
       />
 
       <PaginatedPostCardGallery

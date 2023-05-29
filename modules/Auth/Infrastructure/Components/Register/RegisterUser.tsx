@@ -1,14 +1,20 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react'
 import styles from './Register.module.scss'
-import { z } from 'zod'
+import { useTranslation } from 'next-i18next'
+import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
+import {
+  nameValidator,
+  passwordValidator,
+  usernameValidator
+} from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 
 export interface Props {
   email: string
-  token: string
+  code: string
   onConfirm: () => void
 }
 
-export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
+export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
   const [errorMessage, setErrorMessage] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [name, setName] = useState<string>('')
@@ -20,51 +26,45 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
   const [passwordDoesNotMatch, setPasswordDoesNotMatch] = useState<boolean>(false)
   const [userCreationError, setUserCreationError] = useState<boolean>(false)
 
-  const usernameValidator = z.string().min(4).max(36).regex(/^[a-zA-Z0-9_]+$/)
-  const passwordValidator = z.string().min(8)
-  const nameValidator = z.string().min(1)
+  const authApiService = new AuthApiService()
+
+  const { t } = useTranslation('user-auth')
 
   const onSubmit = async (event: FormEvent) => {
     setUserCreationError(false)
     event.preventDefault()
 
-    if (token === '') {
+    if (code === '') {
       return
     }
 
     try {
-      const result = await fetch('/api/auth/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          username,
-          // FIXME: -----
-          language: 'es',
-          token,
-        }),
-      })
+      const result = await authApiService.createUser(
+        name,
+        email,
+        password,
+        username,
+        // FIXME: -----
+        'es',
+        code
+      )
 
       if (!result.ok) {
         if (result.status === 409) {
-          setErrorMessage('Usuario ya existe. Comprueba tu email/nombre de usuario.')
+          setErrorMessage(t('user_signup_signup_duplicated_user_message') ?? '')
           setUserCreationError(true)
 
           return
         }
 
         if (result.status === 422) {
-          setErrorMessage('El token no es válido')
+          setErrorMessage(t('user_signup_signup_invalid_code_message') ?? '')
           setUserCreationError(true)
 
           return
         }
 
-        setErrorMessage('Servicio no disponible. Inténtalo más tarde')
+        setErrorMessage(t('user_signup_signup_server_error_message') ?? '')
         setUserCreationError(true)
 
         return
@@ -73,7 +73,7 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
       onConfirm()
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage('Servicio no disponible. Inténtalo más tarde')
+      setErrorMessage(t('user_signup_signup_server_error_message') ?? '')
       setUserCreationError(true)
     }
   }
@@ -149,30 +149,35 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
     }
   }
 
+  const canSubmit = (): boolean => {
+    return !invalidName && name !== '' &&
+      !invalidUsername && username !== '' &&
+      !invalidPassword && password !== '' &&
+      !passwordDoesNotMatch && passwordRepeat !== ''
+  }
+
   return (
     <form
       className={ styles.register__container }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.register__title }>
-        Registro
-
+        { t('user_signup_signup_title') }
         <small className={ styles.register__subtitle }>
-          Introduce tus datos de usuario para la cuenta { email }
+          { t('user_signup_signup_subtitle', { email }) }
         </small>
       </h1>
 
       <p className={ `
-          ${styles.register__error}
-          ${userCreationError ? styles.register__error__open : ''}
-        ` }
-      >
+        ${styles.register__error}
+        ${userCreationError ? styles.register__error__open : ''}
+      ` }>
         { errorMessage }
       </p>
 
       <div className={ styles.register__inputSection }>
         <label className={ styles.register__inputLabel }>
-          Name
+          { t('user_signup_signup_name_input_label') }
         </label>
         <input
           type={ 'text' }
@@ -180,20 +185,20 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
             ${styles.register__input}
             ${invalidName ? styles.register__input__error : ''}
           ` }
-          placeholder={ 'Name' }
+          placeholder={ t('user_signup_signup_name_input_placeholder') ?? '' }
           onChange={ handleNameChange }
         />
         <label className={ `
           ${styles.register__inputErrorMessage}
           ${invalidName ? styles.register__inputErrorMessage__open : ''}
         ` }>
-          Invalid name
+          { t('user_signup_signup_name_error_message') }
         </label>
       </div>
 
       <div className={ styles.register__inputSection }>
         <label className={ styles.register__inputLabel }>
-          Username
+          { t('user_signup_signup_username_input_label') }
         </label>
         <input
           type={ 'text' }
@@ -201,20 +206,20 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
             ${styles.register__input}
             ${invalidUsername ? styles.register__input__error : ''}
           ` }
-          placeholder={ 'Username' }
+          placeholder={ t('user_signup_signup_username_input_placeholder') ?? '' }
           onChange={ handleUsernameChange }
         />
         <label className={ `
           ${styles.register__inputErrorMessage}
           ${invalidUsername ? styles.register__inputErrorMessage__open : ''}
         ` }>
-          Invalid username
+          { t('user_signup_signup_username_error_message') }
         </label>
       </div>
 
       <div className={ styles.register__inputSection }>
         <label className={ styles.register__inputLabel }>
-          Password
+          { t('user_signup_signup_password_input_label') }
         </label>
         <input
           type={ 'password' }
@@ -222,20 +227,20 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
             ${styles.register__input}
             ${invalidPassword ? styles.register__input__error : ''}
           ` }
-          placeholder={ 'Password' }
+          placeholder={ t('user_signup_signup_password_input_placeholder') ?? '' }
           onChange={ handlePasswordChange }
         />
         <label className={ `
           ${styles.register__inputErrorMessage}
           ${invalidPassword ? styles.register__inputErrorMessage__open : ''}
         ` }>
-          Invalid password
+          { t('user_signup_signup_password_error_message') }
         </label>
       </div>
 
       <div className={ styles.register__inputSection }>
         <label className={ styles.register__inputLabel }>
-          Retype password
+          { t('user_signup_signup_retype_password_input_label') }
         </label>
         <input
           type={ 'password' }
@@ -243,31 +248,24 @@ export const RegisterUser: FC<Props> = ({ email, token, onConfirm }) => {
             ${styles.register__input}
             ${passwordDoesNotMatch ? styles.register__input__error : ''}
           ` }
-          placeholder={ 'Password' }
+          placeholder={ t('user_signup_signup_retype_password_input_placeholder') ?? '' }
           onChange={ handlePasswordRepeatChange }
         />
         <label className={ `
           ${styles.register__inputErrorMessage}
           ${passwordDoesNotMatch ? styles.register__inputErrorMessage__open : ''}
         ` }>
-          Password does not match
+          { t('user_signup_signup_retype_password_error_message') }
         </label>
       </div>
 
       <button
-        type="submit"
+        type={ 'submit' }
         className={ `
           ${styles.register__submit}
-          ${
-            !invalidName && name !== '' &&
-            !invalidUsername && username !== '' &&
-            !invalidPassword && password !== '' &&
-            !passwordDoesNotMatch && passwordRepeat !== ''
-          ? styles.register__submit__enabled
-          : ''}
-        ` }
-      >
-        { 'Registro' }
+          ${canSubmit() ? styles.register__submit__enabled : ''}
+        ` }>
+        { t('user_signup_signup_submit_button') }
       </button>
     </form>
   )

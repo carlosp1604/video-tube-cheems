@@ -25,9 +25,7 @@ export default async function handler (
     return handleMethod(response)
   }
 
-  console.log(request.body)
-
-  const apiRequest = JSON.parse(request.body) as VerifyEmailAddressApiRequestInterface
+  const apiRequest = request.body as VerifyEmailAddressApiRequestInterface
 
   const validationExceptions = VerifyEmailAddressApiRequestValidator.validate(apiRequest)
 

@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { Login } from '~/components/Login/Login'
-import { Register } from '~/components/Register/Register'
+import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
 import { RetrievePassword } from '~/components/RetrievePassword/RetrievePassword'
 
 export interface Props {

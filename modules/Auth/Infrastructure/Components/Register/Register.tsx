@@ -1,10 +1,11 @@
 import { FC, ReactElement, useState } from 'react'
-import { VerifyEmail } from '~/components/Register/VerifyEmail'
-import { ValidateToken } from '~/components/Register/ValidateToken'
-import { RegisterUser } from '~/components/Register/RegisterUser'
+import { VerifyEmail } from '~/modules/Auth/Infrastructure/Components/Register/VerifyEmail'
+import { ValidateCode } from '~/modules/Auth/Infrastructure/Components/Register/ValidateCode'
+import { RegisterUser } from '~/modules/Auth/Infrastructure/Components/Register/RegisterUser'
 import styles from './Register.module.scss'
 import { BsArrowLeft } from 'react-icons/bs'
-import { ConfirmingRegister } from '~/components/Register/ConfirmingRegister'
+import { ConfirmingRegister } from '~/modules/Auth/Infrastructure/Components/Register/ConfirmingRegister'
+import { useTranslation } from 'next-i18next'
 
 type RegistrationSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'signup_completed'
 
@@ -15,8 +16,10 @@ interface Props {
 
 export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
   const [email, setEmail] = useState<string>('')
-  const [token, setToken] = useState<string>('')
+  const [code, setCode] = useState<string>('')
   const [registrationStep, setRegistrationStep] = useState<RegistrationSteps>('verifying_email')
+
+  const { t } = useTranslation('user-auth')
 
   let onClickCancel = onCancel
 
@@ -34,8 +37,8 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
   if (registrationStep === 'validating_token') {
     onClickCancel = () => { setRegistrationStep('verifying_email') }
     content = (
-      <ValidateToken email={ email } onConfirm={ (token: string) => {
-        setToken(token)
+      <ValidateCode email={ email } onConfirm={ (token: string) => {
+        setCode(token)
         setRegistrationStep('validated_token')
       } }/>
     )
@@ -43,7 +46,7 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
 
   if (registrationStep === 'validated_token') {
     content = (
-      <RegisterUser email={ email } token={ token } onConfirm={ () => {
+      <RegisterUser email={ email } code={ code } onConfirm={ () => {
         setRegistrationStep('signup_completed')
       } }/>
     )
@@ -63,8 +66,9 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
         <BsArrowLeft
           className={ styles.register__backIcon }
           onClick={ () => onClickCancel() }
+          title={ t('user_signup_back_button_title') ?? '' }
         />
-        { 'Regresar' }
+        { t('user_signup_back_button_title') ?? '' }
       </span>
       { content }
     </div>

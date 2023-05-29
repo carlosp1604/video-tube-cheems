@@ -1,15 +1,19 @@
 import { DateTime } from 'luxon'
-import { DateService } from '../../../../helpers/Infrastructure/DateService'
-import { PostApplicationDto } from '../../Application/Dtos/PostApplicationDto'
-import { PostAnimationDto } from '../Dtos/PostAnimationDto'
-import { PostCardComponentDto, ProducerPostCardComponentDto } from '../Dtos/PostCardComponentDto'
 import { PostAnimationDtoTranslator } from './PostAnimationDtoTranslator'
+import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
+import {
+  PostCardComponentDto,
+  ProducerPostCardComponentDto
+} from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import { PostAnimationDto } from '~/modules/Posts/Infrastructure/Dtos/PostAnimationDto'
+import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostCardComponentDtoTranslator {
-  public static fromApplication(
+  public static fromApplication (
     applicationDto: PostApplicationDto,
     reactionsNumber: number,
     commentsNumber: number,
+    postViews: number,
     locale: string
   ): PostCardComponentDto {
     const animation: PostAnimationDto | null = PostAnimationDtoTranslator.fromApplication(applicationDto)
@@ -31,7 +35,6 @@ export class PostCardComponentDtoTranslator {
       formattedDuration = this.toHoursAndMinutes(parseInt(duration.value))
     }
 
-
     let producer: ProducerPostCardComponentDto | null = null
 
     if (applicationDto.producer !== null) {
@@ -40,26 +43,23 @@ export class PostCardComponentDtoTranslator {
         imageUrl: applicationDto.producer.imageUrl,
         name: applicationDto.producer.name,
       }
-    } 
+    }
 
     return {
       id: applicationDto.id,
       animation,
       date,
       producer,
-      reactions: reactionsNumber,
       thumb: thumb ? thumb.value : '',
       title: applicationDto.title,
-      // TODO: Support views
-      views: 0,
+      views: postViews,
       duration: formattedDuration,
-      comments: commentsNumber
     }
   }
 
-  private static toHoursAndMinutes(totalSeconds: number): string {
+  private static toHoursAndMinutes (totalSeconds: number): string {
     const totalMinutes = Math.floor(totalSeconds / 60)
-  
+
     const seconds = totalSeconds % 60
     const hours = Math.floor(totalMinutes / 60)
     const minutes = totalMinutes % 60
@@ -70,12 +70,12 @@ export class PostCardComponentDtoTranslator {
       }
 
       return `${value}`
-    } 
+    }
 
-    let formattedHours = hours === 0 ? '' : `${addZeroPadding(hours)}:`
-    let formattedMinutes = addZeroPadding(minutes)
-    let formattedSeconds = addZeroPadding(seconds)
-  
+    const formattedHours = hours === 0 ? '' : `${addZeroPadding(hours)}:`
+    const formattedMinutes = addZeroPadding(minutes)
+    const formattedSeconds = addZeroPadding(seconds)
+
     return `${formattedHours}${formattedMinutes}:${formattedSeconds}`
   }
 }

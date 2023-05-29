@@ -3,8 +3,8 @@ import { DateTime } from 'luxon'
 import { PostTag as PrismaPostTagModel } from '@prisma/client'
 
 export class PostTagModelTranslator {
-  public static toDomain(
-    prismaPostTagModel: PrismaPostTagModel,
+  public static toDomain (
+    prismaPostTagModel: PrismaPostTagModel
   ) {
     let deletedAt: DateTime | null = null
 
@@ -12,7 +12,7 @@ export class PostTagModelTranslator {
       deletedAt = DateTime.fromJSDate(prismaPostTagModel.deletedAt)
     }
 
-    return new PostTag (
+    return new PostTag(
       prismaPostTagModel.id,
       prismaPostTagModel.name,
       prismaPostTagModel.description,
@@ -23,7 +23,7 @@ export class PostTagModelTranslator {
     )
   }
 
-  public static toDatabase(postTag: PostTag): PrismaPostTagModel {
+  public static toDatabase (postTag: PostTag): PrismaPostTagModel {
     return {
       id: postTag.id,
       imageUrl: postTag.imageUrl,

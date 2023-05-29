@@ -1,13 +1,13 @@
 import { NextPage } from 'next'
-import { Login } from '../../Components/Login/Login'
-import styles from '../../Components/pages/SigninPage/SigninPage.module.scss'
+import { Login } from '../../components/Login/Login'
+import styles from '../../components/pages/SigninPage/SigninPage.module.scss'
 
 const SignInPage: NextPage = () => {
   return (
-    <section className={styles.signinPage__container}>
-      <div className={styles.signinPage__login}>
+    <section className={ styles.signinPage__container }>
+      <div className={ styles.signinPage__login }>
         <Login
-          modal={null}
+          modal={ null }
         />
       </div>
     </section>

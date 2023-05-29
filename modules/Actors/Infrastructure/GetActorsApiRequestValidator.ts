@@ -1,5 +1,5 @@
 import { z, ZodError } from 'zod'
-import { SortingInfrastructureCriteria, SortingInfrastructureOptions } from '../../Shared/Infrastructure/InfrastructureSorting'
+import { InfrastructureSortingCriteria, InfrastructureSortingOptions } from '../../Shared/Infrastructure/InfrastructureSorting'
 import { maxPerPage, minPerPage } from '../../Shared/Infrastructure/Pagination'
 import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
 import { ActorFilterOptions } from './ActorFilter'
@@ -13,22 +13,19 @@ export class GetActorsApiRequestValidator {
       type: z.nativeEnum(ActorFilterOptions),
       value: z.string().min(1),
     })),
-    sortOption: z.nativeEnum(SortingInfrastructureOptions),
-    sortCriteria: z.nativeEnum(SortingInfrastructureCriteria)
+    sortOption: z.nativeEnum(InfrastructureSortingOptions),
+    sortCriteria: z.nativeEnum(InfrastructureSortingCriteria),
   })
 
-  public static validate(request: GetActorsApiRequestDto): ActorApiRequestValidatorError | void {
+  public static validate (request: GetActorsApiRequestDto): ActorApiRequestValidatorError | void {
     try {
       this.getActorsApiRequestSchema.parse(request)
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {
         throw exception
       }
 
       return ActorApiRequestValidatorError.getActorsValidation(exception.issues)
     }
-
-    return
   }
 }

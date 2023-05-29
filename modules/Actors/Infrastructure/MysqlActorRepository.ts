@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client'
 import { prisma } from '../../../persistence/prisma'
-import { RepositoryFilter } from '../../Shared/Domain/RepositoryFilter'
+import { RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilterOption'
 import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
 import { Actor } from '../Domain/Actor'
 import { ActorRepositoryFilterOption, ActorRepositoryInterface } from '../Domain/ActorRepositoryInterface'
@@ -12,12 +12,12 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param actorId Actor ID
    * @return Actor if found or null
    */
-  public async findById(actorId: Actor['id']): Promise<Actor | null> {
+  public async findById (actorId: Actor['id']): Promise<Actor | null> {
     const actor = await prisma.actor.findFirst({
       where: {
         id: actorId,
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     })
 
     if (actor === null) {
@@ -35,12 +35,12 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param sortingCriteria Post sorting criteria
    * @return Post if found or null
    */
-  public async findWithOffsetAndLimit(
+  public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilter<ActorRepositoryFilterOption>[],
+    filters: RepositoryFilterOption<ActorRepositoryFilterOption>[]
   ): Promise<Actor[]> {
     let whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
@@ -50,13 +50,13 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
 
     whereClause = {
       ...whereClause,
-      ...whereFilters
+      ...whereFilters,
     }
 
     const actors = await prisma.actor.findMany({
       where: whereClause,
       take: limit,
-      skip: offset
+      skip: offset,
     })
 
     return actors.map((actor) => ActorModelTranslator.toDomain(actor))
@@ -67,8 +67,8 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param filters Actor filters
    * @return Number of actors that accomplish with the filters
    */
-  public async countPostsWithFilters(
-    filters: RepositoryFilter<ActorRepositoryFilterOption>[],
+  public async countPostsWithFilters (
+    filters: RepositoryFilterOption<ActorRepositoryFilterOption>[]
   ): Promise<number> {
     let whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
@@ -78,7 +78,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
 
     whereClause = {
       ...whereClause,
-      ...whereFilters
+      ...whereFilters,
     }
 
     const actorsNumber = await prisma.actor.count({
@@ -88,8 +88,8 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
     return actorsNumber
   }
 
-  private buildFilters(
-    filters: RepositoryFilter<ActorRepositoryFilterOption>[]
+  private buildFilters (
+    filters: RepositoryFilterOption<ActorRepositoryFilterOption>[]
   ): Prisma.PostWhereInput | undefined {
     let whereClause: Prisma.ActorWhereInput | undefined = {}
 
@@ -104,7 +104,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
       if (filter.type === 'actorId') {
         whereClause = {
           ...whereClause,
-          id: filter.value
+          id: filter.value,
         }
       }
     }

@@ -1,0 +1,10 @@
+{
+  "add_comment_placeholder": "Escribe tu comentario",
+  "add_reply_placeholder": "Escribe tu respuesta",
+  "comment_replies_button": "{{replies}} Respuestas",
+  "comment_reply_button": "Responder",
+  "comment_section_load_more": "Cargar más comentarios",
+  "comment_section_title": "Comentarios",
+  "replies_section_load_more": "Cargar más respuestas",
+  "replies_section_title": "Respuestas"
+}

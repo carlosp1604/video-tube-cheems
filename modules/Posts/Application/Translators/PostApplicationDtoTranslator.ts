@@ -1,14 +1,14 @@
-import { ProducerApplicationDtoTranslator } from '../../../Producers/Application/ProducerApplicationDtoTranslator'
-import { Post } from '../../Domain/Post'
-import { PostApplicationDto } from '../Dtos/PostApplicationDto'
-import { ActorApplicationDtoTranslator } from '../../../Actors/Application/ActorApplicationDtoTranslator'
 import { CommentApplicationDtoTranslator } from './CommentApplicationDtoTranslator'
 import { MetaApplicationDtoTranslator } from './MetaApplicationDtoTranslator'
 import { ReactionApplicationDtoTranslator } from './ReactionApplicationDtoTranslator'
 import { TagApplicationDtoTranslator } from './TagApplicationDtoTranslator'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
+import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
+import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Application/ProducerApplicationDtoTranslator'
 
 export class PostApplicationDtoTranslator {
-  public static fromDomain(post: Post): PostApplicationDto {
+  public static fromDomain (post: Post): PostApplicationDto {
     return {
       id: post.id,
       createdAt: post.createdAt.toISO(),
@@ -30,8 +30,9 @@ export class PostApplicationDtoTranslator {
         return TagApplicationDtoTranslator.fromDomain(tag)
       }),
       title: post.title,
-      producer: post.producer !== null ? 
-        ProducerApplicationDtoTranslator.fromDomain(post.producer) : null
+      producer: post.producer !== null
+        ? ProducerApplicationDtoTranslator.fromDomain(post.producer)
+        : null,
     }
   }
 }

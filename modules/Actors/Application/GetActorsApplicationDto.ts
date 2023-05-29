@@ -1,6 +1,6 @@
 import { ActorApplicationDto } from './ActorApplicationDto'
 
 export interface GetActorsApplicationDto {
-  actors: ActorApplicationDto[],
+  actors: ActorApplicationDto[]
   actorsNumber: number
 }

@@ -1,20 +1,21 @@
-import { maxPostsPerPage, minPostsPerPage } from '../../Shared/Application/Pagination'
-import { PostComment } from '../Domain/PostComment'
-import { PostCommentRepositoryInterface } from '../Domain/PostCommentRepositoryInterface'
 import { ChildCommentApplicationDto } from './Dtos/ChildCommentApplicationDto'
 import { GetPostPostChildCommentsRespondeDto } from './Dtos/GetPostPostChildCommentsResponseDto'
 import { GetPostPostCommentsApplicationException } from './GetPostPostCommentsApplicationException'
 import { ChildCommentApplicationDtoTranslator } from './Translators/ChildCommentApplicationDtoTranslator'
+import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
+import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostCommentRepositoryInterface'
 
 export class GetPostPostChildComments {
-  constructor(private repository: PostCommentRepositoryInterface) {}
+  // eslint-disable-next-line no-useless-constructor
+  constructor (private repository: PostCommentRepositoryInterface) {}
 
-  public async get(
+  public async get (
     parentCommentId: PostComment['id'],
     page: number,
-    perPage: number,
+    perPage: number
   ): Promise<GetPostPostChildCommentsRespondeDto> {
-    this.validateRequest(page, perPage)
+    GetPostPostChildComments.validateRequest(page, perPage)
 
     const offset = (page - 1) * perPage
 
@@ -24,7 +25,7 @@ export class GetPostPostChildComments {
         offset,
         perPage
       ),
-      await this.repository.countPostChildComments(parentCommentId)
+      await this.repository.countPostChildComments(parentCommentId),
     ])
 
     const commentApplicationDtos: ChildCommentApplicationDto[] = postComments.map((comment) => {
@@ -33,21 +34,21 @@ export class GetPostPostChildComments {
 
     return {
       childComments: commentApplicationDtos,
-      childCommentsCount: childCommentsCount,
+      childCommentsCount,
     }
   }
 
-  private validateRequest(page: number, perPage: number): void {
+  private static validateRequest (page: number, perPage: number): void {
     if (isNaN(page) || page <= 0) {
       throw GetPostPostCommentsApplicationException.invalidOffsetValue()
     }
 
     if (
       isNaN(perPage) ||
-      perPage < minPostsPerPage ||
-      perPage > maxPostsPerPage
+      perPage < minPerPage ||
+      perPage > maxPerPage
     ) {
-      throw GetPostPostCommentsApplicationException.invalidLimitValue(minPostsPerPage, maxPostsPerPage)
+      throw GetPostPostCommentsApplicationException.invalidLimitValue(minPerPage, maxPerPage)
     }
   }
 }

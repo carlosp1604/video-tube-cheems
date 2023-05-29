@@ -1,0 +1,10 @@
+{
+  "add_comment_placeholder": "Type your comment",
+  "add_reply_placeholder": "Type your reply",
+  "comment_replies_button": "{{replies}} replies",
+  "comment_reply_button": "Responder",
+  "comment_section_load_more": "Load more comments",
+  "comment_section_title": "Comments",
+  "replies_section_load_more": "Load more replies",
+  "replies_section_title": "Replies"
+}

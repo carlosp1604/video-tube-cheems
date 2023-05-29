@@ -1,33 +1,33 @@
 import { PostRepositoryFilterOption, PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
-import { Post } from '../Domain/Post'
 import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
-import { PostComment } from '../Domain/PostComment'
-import { PostReaction } from '../Domain/PostReaction'
-import { ObjectionPostReactionModel } from './ObjectionModels/ObjectionPostReactionModel'
 import { PostReactionModelTranslator } from './ModelTranslators/PostReactionModelTranslator'
 import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
-import { ObjectionPostCommentModel } from './ObjectionModels/ObjectionPostCommentModel'
-import { prisma } from '../../../persistence/prisma'
 import { DateTime } from 'luxon'
 import { PostMetaModelTranslator } from './ModelTranslators/PostMetaModelTranslator'
 import { Prisma } from '@prisma/client'
-import { PostWithCountInterface } from '../Domain/PostWithCountInterface'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
-import { RepositoryFilter } from '../../Shared/Domain/RepositoryFilter'
 import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCommentModelTranslator'
-import { PostChildComment } from '../Domain/PostChildComment'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { prisma } from '~/persistence/prisma'
+import { PostWithCountInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { PostReaction } from '~/modules/Posts/Domain/PostReaction'
+import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { PostView } from '~/modules/Posts/Domain/PostView'
+import { PostViewModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostViewModelTranslator'
+import { User } from '~/modules/Auth/Domain/User'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
    * Insert a Post in the persistence layer
    * @param post Post to persist
    */
-  public async save(post: Post): Promise<void> {
+  public async save (post: Post): Promise<void> {
     const prismaPostModel = PostModelTranslator.toDatabase(post)
     const comments = post.comments.map((comment) => PostCommentModelTranslator.toDatabase(comment))
     const meta = post.meta.map((meta) => PostMetaModelTranslator.toDatabase(meta))
     const reactions = post.reactions.map((reaction) => PostReactionModelTranslator.toDatabase(reaction))
-    
+
     await prisma.post.create({
       data: {
         ...prismaPostModel,
@@ -35,78 +35,78 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           connectOrCreate: comments.map((comment) => {
             return {
               where: {
-               id: comment.id
+                id: comment.id,
               },
               create: {
-                ...comment
-              }
+                ...comment,
+              },
             }
-          })
+          }),
         },
         tags: {
           connectOrCreate: post.tags.map((tag) => {
             return {
               where: {
-               postId_postTagId: {
-                postId: post.id,
-                postTagId: tag.id,
-               },
+                postId_postTagId: {
+                  postId: post.id,
+                  postTagId: tag.id,
+                },
               },
               create: {
                 createdAt: DateTime.now().toJSDate(),
                 updatedAt: DateTime.now().toJSDate(),
                 postTagId: tag.id,
-              }
+              },
             }
-          })
+          }),
         },
         actors: {
           connectOrCreate: post.actors.map((actor) => {
             return {
               where: {
-               postId_actorId: {
-                postId: post.id,
-                actorId: actor.id,
-               },
+                postId_actorId: {
+                  postId: post.id,
+                  actorId: actor.id,
+                },
               },
               create: {
                 createdAt: DateTime.now().toJSDate(),
                 updatedAt: DateTime.now().toJSDate(),
                 actorId: actor.id,
-              }
+              },
             }
-          })
+          }),
         },
         meta: {
           connectOrCreate: meta.map((meta) => {
             return {
               where: {
-               type_postId: {
-                postId: post.id,
-                type: meta.type
-               }
+                type_postId: {
+                  postId: post.id,
+                  type: meta.type,
+                },
               },
               create: {
-                ...meta
-              }
+                ...meta,
+              },
             }
-          })
+          }),
         },
         reactions: {
           connectOrCreate: reactions.map((reaction) => {
             return {
               where: {
-               postId_userId: {
-                postId: post.id,
-                userId: reaction.userId
-               }
+                postId_userId: {
+                  postId: post.id,
+                  userId: reaction.userId,
+                },
               },
               create: {
-                ...reaction
-              }
+                ...reaction,
+              },
             }
-          })
-        }
+          }),
+        },
       },
     })
   }
@@ -116,12 +116,12 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param postId Post ID
    * @return PostWithCount if found or null
    */
-  public async findByIdWithCount(postId: Post['id']): Promise<PostWithCountInterface | null> {
+  public async findByIdWithCount (postId: Post['id']): Promise<PostWithCountInterface | null> {
     const post = await prisma.post.findFirst({
       where: {
         id: postId,
         deletedAt: null,
-        publishedAt:{
+        publishedAt: {
           not: null,
           lte: new Date(),
         },
@@ -131,39 +131,40 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           select: {
             comments: true,
             reactions: true,
-          }
+            views: true,
+          },
         },
         producer: true,
         actors: {
           include: {
             actor: true,
-          }
+          },
         },
         meta: true,
         tags: {
           include: {
-            tag: true
-          }
-        }
+            tag: true,
+          },
+        },
       },
     })
 
     if (post === null) {
       return null
     }
-    
+
     return {
       post: PostModelTranslator.toDomain(post, [
         'meta',
         'producer',
         'actors',
-        'tags'
+        'tags',
       ]),
       postReactions: post._count.reactions,
-      postComments: post._count.comments
+      postComments: post._count.comments,
+      postViews: post._count.views,
     }
   }
-
 
   /**
    * Find a Post given its ID
@@ -171,15 +172,15 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param options Post relations to load
    * @return Post if found or null
    */
-  public async findById(postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
+  public async findById (postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
     let includeComments: Prisma.Post$commentsArgs | boolean = options.includes('comments')
     let includeProducer: boolean | Prisma.ProducerArgs | undefined = false
 
     if (options.includes('comments.user')) {
       includeComments = {
         include: {
-          user: options.includes('comments.user')
-        }
+          user: options.includes('comments.user'),
+        },
       }
     }
 
@@ -188,19 +189,19 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         include: {
           childComments: {
             include: {
-              user: options.includes('comments.childComments.user')
-            }
+              user: options.includes('comments.childComments.user'),
+            },
           },
-          user: options.includes('comments.user')
-        }
+          user: options.includes('comments.user'),
+        },
       }
     }
 
     if (options.includes('producer') || options.includes('producer.parentProducer')) {
       includeProducer = {
         include: {
-          parentProducer: options.includes('producer.parentProducer')
-        }
+          parentProducer: options.includes('producer.parentProducer'),
+        },
       }
     }
 
@@ -208,7 +209,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       where: {
         id: postId,
         deletedAt: null,
-        publishedAt:{
+        publishedAt: {
           not: null,
           lte: new Date(),
         },
@@ -218,22 +219,22 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           select: {
             comments: true,
             reactions: true,
-          }
+          },
         },
         producer: includeProducer,
         actors: {
           include: {
             actor: options.includes('actors'),
-          }
+          },
         },
         comments: includeComments,
         meta: options.includes('meta'),
         reactions: options.includes('reactions'),
         tags: {
           include: {
-            tag: options.includes('tags')
-          }
-        }
+            tag: options.includes('tags'),
+          },
+        },
       },
     })
 
@@ -244,7 +245,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     return PostModelTranslator.toDomain(post, options)
   }
 
-
   /**
    * Find Posts based on filter and order criteria
    * @param offset Post offset
@@ -254,14 +254,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param filters Post filters
    * @return PostWithCount if found or null
    */
-  public async findWithOffsetAndLimit(
+  public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilter<PostRepositoryFilterOption>[]
+    filters: PostRepositoryFilterOption[]
   ): Promise<PostWithCountInterface[]> {
-    let sortCriteria: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> | undefined = undefined
+    let sortCriteria: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> | undefined
     let whereClause: Prisma.PostWhereInput | undefined = {
       publishedAt: {
         not: null,
@@ -274,25 +274,26 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       producer: true,
     }
 
-    const includeFilters = this.buildIncludes(filters)
+    const includeFilters = MysqlPostRepository.buildIncludes(filters)
+
     includes = {
       ...includes,
-      ...includeFilters
+      ...includeFilters,
     }
 
     if (sortingOption === 'date') {
       sortCriteria = {
-        publishedAt: sortingCriteria 
+        publishedAt: sortingCriteria,
       }
     }
 
     // TODO:Support ORDER BY views
 
-    const whereFilters = this.buildFilters(filters)
+    const whereFilters = MysqlPostRepository.buildFilters(filters)
 
     whereClause = {
       ...whereClause,
-      ...whereFilters
+      ...whereFilters,
     }
 
     const posts = await prisma.post.findMany({
@@ -302,9 +303,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           select: {
             comments: true,
             reactions: true,
-          }
+            views: true,
+          },
         },
-        ...includes
+        ...includes,
       },
       take: limit,
       skip: offset,
@@ -315,7 +317,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       return {
         post: PostModelTranslator.toDomain(post, ['meta', 'producer']),
         postReactions: post._count.reactions,
-        postComments: post._count.comments
+        postComments: post._count.comments,
+        postViews: post._count.views,
       }
     })
   }
@@ -325,8 +328,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param filters Post filters
    * @return Number of posts that accomplish the filters
    */
-  public async countPostsWithFilters(
-    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+  public async countPostsWithFilters (
+    filters: PostRepositoryFilterOption[]
   ): Promise<number> {
     let whereClause: Prisma.PostWhereInput | undefined = {
       publishedAt: {
@@ -335,42 +338,41 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       deletedAt: null,
     }
 
-    const whereFilters = this.buildFilters(filters)
+    const whereFilters = MysqlPostRepository.buildFilters(filters)
 
     whereClause = {
       ...whereClause,
-      ...whereFilters
+      ...whereFilters,
     }
 
-    const posts = await prisma.post.count({
+    return await prisma.post.count({
       where: whereClause,
     })
-
-    return posts
   }
 
   /**
    * Add a new Post Reaction
    * @param reaction PostReaction
    */
-  public async createReaction(reaction: PostReaction): Promise<void> {
-    const prismaPostREactionModel = PostReactionModelTranslator.toDatabase(reaction)
+  public async createReaction (reaction: PostReaction): Promise<void> {
+    console.log(reaction)
+    const prismaPostReactionModel = PostReactionModelTranslator.toDatabase(reaction)
 
     await prisma.post.update({
       where: {
-        id: reaction.postId
+        id: reaction.postId,
       },
       data: {
         reactions: {
-          create: { 
-            reactionType: prismaPostREactionModel.reactionType,
-            createdAt: prismaPostREactionModel.createdAt,
-            updatedAt: prismaPostREactionModel.updatedAt,
-            deletedAt: prismaPostREactionModel.deletedAt,
-            userId: prismaPostREactionModel.userId
-          }
-        }
-      }
+          create: {
+            reactionType: prismaPostReactionModel.reactionType,
+            createdAt: prismaPostReactionModel.createdAt,
+            updatedAt: prismaPostReactionModel.updatedAt,
+            deletedAt: prismaPostReactionModel.deletedAt,
+            userId: prismaPostReactionModel.userId,
+          },
+        },
+      },
     })
   }
 
@@ -378,12 +380,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * Update a new Post Reaction
    * @param reaction PostReaction
    */
-  public async updateReaction(reaction: PostReaction): Promise<void> {
-    await ObjectionPostReactionModel.query()
-      .patch({
-        reaction_type: reaction.reactionType
-      })
-      .where('user_id', '=', reaction.userId)
+  public async updateReaction (reaction: PostReaction): Promise<void> {
+    throw Error()
   }
 
   /**
@@ -391,27 +389,24 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param userId User ID
    * @param postId Post ID
    */
-  public async deleteReaction(userId: PostReaction['userId'], postId: PostReaction['postId']): Promise<void> {
-    await ObjectionPostReactionModel.query()
-      .delete()
-      .where('user_id', '=', userId)
-      .andWhere('post_id', '=', postId)
+  public async deleteReaction (userId: PostReaction['userId'], postId: PostReaction['postId']): Promise<void> {
+    throw Error()
   }
 
   /**
    * Add a new Post Comment
    * @param comment PostComment
    */
-  public async createComment(comment: PostComment): Promise<void> {
+  public async createComment (comment: PostComment): Promise<void> {
     const prismaPostCommentModel = PostCommentModelTranslator.toDatabase(comment)
 
     await prisma.post.update({
       where: {
-        id: comment.postId
+        id: comment.postId,
       },
       data: {
         comments: {
-          create: { 
+          create: {
             id: prismaPostCommentModel.id,
             comment: prismaPostCommentModel.comment,
             userId: prismaPostCommentModel.userId,
@@ -419,32 +414,31 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             createdAt: prismaPostCommentModel.createdAt,
             deletedAt: prismaPostCommentModel.deletedAt,
             updatedAt: prismaPostCommentModel.updatedAt,
-          }
-        }
-      }
+          },
+        },
+      },
     })
   }
 
   /**
    * Add a new Post Child Comment
-   * @param comment Post Child Comment
+   * @param childComment Post Child Comment
    */
-  public async createChildComment(childComment: PostChildComment): Promise<void> {
+  public async createChildComment (childComment: PostChildComment): Promise<void> {
     const prismaChildCommentModel = PostChildCommentModelTranslator.toDatabase(childComment)
 
     await prisma.postComment.update({
       where: {
-        id: childComment.parentCommentId
+        id: childComment.parentCommentId,
       },
       data: {
         parentComment: {
           create: {
             ...prismaChildCommentModel,
-          }
-        }
-      }
+          },
+        },
+      },
     })
-
   }
 
   /**
@@ -452,25 +446,19 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param commentId Post Comment ID
    * @param comment Post Comment comment
    */
-  public async updateComment(
+  public async updateComment (
     commentId: PostComment['id'],
     comment: PostComment['comment']
   ): Promise<void> {
-    await ObjectionPostCommentModel.query()
-      .patch({
-        comment: comment
-      })
-      .where('id', '=', commentId)
+    throw Error()
   }
 
   /**
    * Delete a Post Comment
    * @param commentId Post Comment ID
    */
-  public async deleteComment(commentId: PostComment['id']): Promise<void> {
-    await ObjectionPostCommentModel.query()
-      .delete()
-      .where('id', '=', commentId)
+  public async deleteComment (commentId: PostComment['id']): Promise<void> {
+    throw Error()
   }
 
   /**
@@ -478,23 +466,23 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param postId Post ID
    * @return Post array with the related posts
    */
-  public async getRelatedPosts(postId: Post['id']): Promise<PostWithCountInterface[]> {
+  public async getRelatedPosts (postId: Post['id']): Promise<PostWithCountInterface[]> {
     const post = await prisma.post.findUnique({
       where: {
-        id: postId
+        id: postId,
       },
       include: {
         actors: true,
         producer: true,
-      }
+      },
     })
 
     if (post === null) {
       return []
     }
 
-    let whereProducerId: string | Prisma.StringNullableFilter | null | undefined = undefined
-    let whereActors: Prisma.PostActorListRelationFilter | undefined = undefined
+    let whereProducerId: string | Prisma.StringNullableFilter | null | undefined
+    let whereActors: Prisma.PostActorListRelationFilter | undefined
 
     if (post.producerId !== null) {
       whereProducerId = post.producerId
@@ -505,19 +493,19 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         some: {
           actorId: {
             in: post.actors.map(
-              (actor) => { 
+              (actor) => {
                 return actor.actorId
               }
-            )
-          }
-        }
+            ),
+          },
+        },
       }
     }
 
     const posts = await prisma.post.findMany({
       where: {
         deletedAt: null,
-        publishedAt:{
+        publishedAt: {
           not: null,
           lte: new Date(),
         },
@@ -531,25 +519,72 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           select: {
             comments: true,
             reactions: true,
-          }
+            views: true,
+          },
         },
         meta: true,
         producer: true,
       },
-      take: 50
+      take: 50,
     })
 
     return posts.map((post) => {
       return {
         post: PostModelTranslator.toDomain(post, ['meta', 'producer']),
         postReactions: post._count.reactions,
-        postComments: post._count.comments
+        postComments: post._count.comments,
+        postViews: post._count.views,
       }
-    }) 
+    })
   }
 
-  private buildFilters(
-    filters: RepositoryFilter<PostRepositoryFilterOption>[]
+  /**
+   * Create a new post view for a post given its ID
+   * @param postId Post ID
+   * @param postView Post View
+   */
+  public async createPostView (postId: Post['id'], postView: PostView): Promise<void> {
+    const prismaPostView = PostViewModelTranslator.toDatabase(postView)
+
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        views: {
+          create: {
+            id: prismaPostView.id,
+            userId: prismaPostView.userId,
+            createdAt: prismaPostView.createdAt,
+          },
+        },
+      },
+    })
+  }
+
+  /**
+   * Find a user reaction for a post given its IDs
+   * @param postId Post ID
+   * @param userId User ID
+   * @return Post Reaction if found or null
+   */
+  public async findUserReaction (postId: Post['id'], userId: User['id']): Promise<PostReaction | null> {
+    const postReaction = await prisma.postReaction.findFirst({
+      where: {
+        postId,
+        userId,
+      },
+    })
+
+    if (postReaction === null) {
+      return null
+    }
+
+    return PostReactionModelTranslator.toDomain(postReaction)
+  }
+
+  private static buildFilters (
+    filters: PostRepositoryFilterOption[]
   ): Prisma.PostWhereInput | undefined {
     let whereClause: Prisma.PostWhereInput | undefined = {}
 
@@ -565,10 +600,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             },
             {
               description: {
-                contains: filter.value
-              }
-            }
-          ]
+                contains: filter.value,
+              },
+            },
+          ],
         }
       }
 
@@ -577,8 +612,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           whereClause = {
             ...whereClause,
             producer: {
-              id: filter.value
-            }
+              id: filter.value,
+            },
           }
         }
 
@@ -586,8 +621,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           whereClause = {
             ...whereClause,
             producer: {
-              name: filter.value
-            }
+              name: filter.value,
+            },
           }
         }
       }
@@ -599,10 +634,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             actors: {
               some: {
                 actor: {
-                  id: filter.value
-                }
-              }
-            }
+                  id: filter.value,
+                },
+              },
+            },
           }
         }
 
@@ -612,10 +647,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             actors: {
               some: {
                 actor: {
-                  name: filter.value
-                }
-              }
-            }
+                  name: filter.value,
+                },
+              },
+            },
           }
         }
       }
@@ -624,8 +659,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     return whereClause
   }
 
-  private buildIncludes(
-    filters: RepositoryFilter<PostRepositoryFilterOption>[]
+  private static buildIncludes (
+    filters: PostRepositoryFilterOption[]
   ): Prisma.PostInclude | null | undefined {
     let includes: Prisma.PostInclude | null | undefined = {}
 

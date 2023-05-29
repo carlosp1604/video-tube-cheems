@@ -1,13 +1,13 @@
 import { Prisma } from '@prisma/client'
 
 export type PostCommentWithUser = Prisma.PostCommentGetPayload<{
-  include: { 
-    user: true,
+  include: {
+    user: true
   }
 }>
 
 export type PostCommentWithChilds = Prisma.PostCommentGetPayload<{
-  include: { 
-    childComments: true,
+  include: {
+    childComments: true
   }
 }>

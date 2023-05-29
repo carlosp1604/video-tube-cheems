@@ -1,7 +1,8 @@
-import { createRef, CSSProperties, Dispatch, FC, SetStateAction, useState } from 'react'
+import { CSSProperties, Dispatch, FC, SetStateAction, useState } from 'react'
 import styles from './ProducerList.module.scss'
-import { BsCaretLeft, BsCaretRight } from 'react-icons/bs'
-import { ProducerComponentDto } from '../Dtos/ProducerComponentDto'
+import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
+import { useTranslation } from 'next-i18next'
+import { Carousel } from '~/components/Carousel/Carousel'
 
 interface Props {
   producers: ProducerComponentDto[]
@@ -10,89 +11,27 @@ interface Props {
 }
 
 export const ProducerList: FC<Props> = ({ producers, activeProducer, setActiveProducer }) => {
-  const [scrollX, setScrollX] = useState(0)
-  const [scrollXBottom, setScrollXBottom] = useState(false)
-  const [showScrollButtons, setShowScrollButtons] = useState(false)
-  const scrollElement = createRef<HTMLDivElement>()
-
-  const checkIfEndIsReached = () => {
-    if (scrollElement.current) {
-      setScrollXBottom(scrollElement.current.scrollLeft + scrollElement.current.offsetWidth + 1 >= scrollElement.current.scrollWidth)
-    }
-  }
-
-  const handleScrollXRightClick = () => {
-    if (scrollElement.current) {
-      scrollElement.current.scrollLeft += scrollElement.current.offsetWidth
-    }
-  }
-
-  const handleScrollXLeftClick = () => {
-    if (scrollElement.current) {
-      scrollElement.current.scrollLeft -= scrollElement.current.offsetWidth
-    }
-  }
+  const { t } = useTranslation('all_producers')
 
   return (
-    <div
-      className={ styles.categoryList__container }
-      onMouseOver={ () => {
-        setShowScrollButtons(true)
-      }}
-      onMouseLeave={ () => {
-        setShowScrollButtons(false)
-      }}
-    >
-      <BsCaretLeft
-        className={ `
-          ${styles.categoryList__leftScrollButton}
-          ${scrollX === 0 ? styles.categoryList__leftScrollButton__hidden : ''}        
-          ${showScrollButtons && scrollX !== 0 ? styles.categoryList__leftScrollButton__active : ''}
-        ` }
-        onClick={ () => {
-          handleScrollXLeftClick()
-        }}
-      />
-      <BsCaretRight
-        className={`
-          ${styles.categoryList__rightScrollButton}
-          ${scrollXBottom ? styles.categoryList__rightScrollButton__hidden : ''}        
-          ${showScrollButtons && !scrollXBottom ? styles.categoryList__rightScrollButton__active : ''}
-        `}
-        onClick={ () => {
-          handleScrollXRightClick()
-        }}
-      />
-      <div
-        className={ styles.categoryList__slider }
-        ref={ scrollElement }
-        onScroll={() => {
-          if (scrollElement.current) {
-            setScrollX(scrollElement.current?.scrollLeft)
-            checkIfEndIsReached()
-          }
-        }}
-      >
-          { producers.map((producer) => {
-            return (
-            <button
-            className={ `
-              ${styles.categoryList__category}
-              ${activeProducer.id === producer.id ? styles.categoryList__categoryActive : ''}
-            ` }
-            key={ producer.id }
-            onClick={ () => {
-              setActiveProducer(producer)
-            } }
-            style={{
-              '--category-color': producer.brandHexColor,
-            } as CSSProperties}
-          >
-            { producer.name }
-          </button>
+    <Carousel onEndReached={ undefined }>
+      { producers.map((producer) => {
+        return (
+          <button
+          className={ `
+            ${styles.producerList__category}
+            ${activeProducer.id === producer.id ? styles.producerList__categoryActive : ''}
+          ` }
+          key={ producer.id }
+          onClick={ () => setActiveProducer(producer) }
+          style={ {
+            '--category-color': producer.brandHexColor,
+          } as CSSProperties }
+        >
+          { producer.id === '' ? t('all_producers_title') : producer.name }
+        </button>
         )
-        })}
-      </div>
-    </div>
+      }) }
+    </Carousel>
   )
 }

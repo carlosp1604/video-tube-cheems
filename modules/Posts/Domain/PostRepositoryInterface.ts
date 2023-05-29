@@ -1,14 +1,16 @@
-import { RepositoryFilter, RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilter'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
 import { Post } from './Post'
 import { PostChildComment } from './PostChildComment'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostWithCountInterface } from './PostWithCountInterface'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
+import { PostView } from '~/modules/Posts/Domain/PostView'
+import { User } from '~/modules/Auth/Domain/User'
 
 export type RepositoryOptions =
-  'meta' | 
-  'tags' | 
+  'meta' |
+  'tags' |
   'actors' |
   'producer' |
   'comments' |
@@ -19,7 +21,7 @@ export type RepositoryOptions =
   'producer.parentProducer' |
   'comments.childComments.user'
 
-export type PostRepositoryFilterOption = RepositoryFilterOption
+export type PostRepositoryFilterOption = RepositoryFilterOptionInterface
 
 export interface PostRepositoryInterface {
   /**
@@ -76,14 +78,14 @@ export interface PostRepositoryInterface {
 
   /**
    * Update a Post Comment
-   * @param commentId Post Comment ID 
+   * @param commentId Post Comment ID
    * @param comment Post Comment comment
    */
   updateComment(commentId: PostComment['id'], comment: PostComment['comment']): Promise<void>
 
   /**
    * Delete a Post Comment
-   * @param commentId Post Comment ID 
+   * @param commentId Post Comment ID
    */
   deleteComment(commentId: PostComment['id']): Promise<void>
 
@@ -101,7 +103,7 @@ export interface PostRepositoryInterface {
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+    filters: PostRepositoryFilterOption[],
   ): Promise<PostWithCountInterface[]>
 
   /**
@@ -110,9 +112,8 @@ export interface PostRepositoryInterface {
    * @return Number of posts that accomplish with the filters
    */
   countPostsWithFilters(
-    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+    filters: PostRepositoryFilterOption[],
   ): Promise<number>
-
 
   /**
    * Get posts related to another post given its ID
@@ -120,4 +121,19 @@ export interface PostRepositoryInterface {
    * @return Post array with the related posts
    */
   getRelatedPosts(postId: Post['id']): Promise<PostWithCountInterface[]>
+
+  /**
+   * Create a new post view for a post given its ID
+   * @param postId Post ID
+   * @param postView Post View
+   */
+  createPostView (postId: Post['id'], postView: PostView): Promise<void>
+
+  /**
+   * Find a user reaction for a post given its IDs
+   * @param postId Post ID
+   * @param userId User ID
+   * @return Post Reaction if found or null
+   */
+  findUserReaction (postId: Post['id'], userId: User['id']): Promise<PostReaction | null>
 }

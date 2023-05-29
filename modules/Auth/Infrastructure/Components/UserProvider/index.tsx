@@ -1,10 +1,10 @@
 import { useSession } from 'next-auth/react'
 import { FC, ReactElement, useEffect, useMemo, useState } from 'react'
-import { UserContext } from '../../../../../hooks/UserContext'
-import { UserStatus } from '../../../../../types/UserProviderInstance'
 import { UserApplicationDto } from '../../../Application/UserApplicationDto'
 import { UserProviderUserDto } from '../../UserProviderUserDto'
 import { UserProviderUserDtoTranslator } from '../../UserProviderUserDtoTranslator'
+import { UserContext } from '~/hooks/UserContext'
+import { UserStatus } from '~/types/UserProviderInstance'
 
 const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [status, setStatus] = useState<UserStatus>('SIGNED_OUT')

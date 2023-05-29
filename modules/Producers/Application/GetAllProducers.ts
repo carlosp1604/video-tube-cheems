@@ -3,14 +3,13 @@ import { ProducerApplicationDto } from './ProducerApplicationDto'
 import { ProducerApplicationDtoTranslator } from './ProducerApplicationDtoTranslator'
 
 export class GetAllProducers {
-  public constructor(
-    private producerRepository: ProducerRepositoryInterface
-  ) {}
+  // eslint-disable-next-line no-useless-constructor
+  public constructor (private producerRepository: ProducerRepositoryInterface) {}
 
-  public async get(): Promise<ProducerApplicationDto[]> {
+  public async get (): Promise<ProducerApplicationDto[]> {
     const producers = await this.producerRepository.get([])
 
-    return producers.map((producer) => 
+    return producers.map((producer) =>
       ProducerApplicationDtoTranslator.fromDomain(producer)
     )
   }

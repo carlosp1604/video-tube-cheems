@@ -1,7 +1,9 @@
-export type RepositorySortingOptions = 
-  'date' |
-  'views'
-  
-export type RepositorySortingCriteria = 
-  'asc' |
-  'desc'
+export enum RepositorySortingOptions {
+  DATE = 'date',
+  VIEWS = 'views'
+}
+
+export enum RepositorySortingCriteria {
+  ASC = 'asc',
+  DESC = 'desc'
+}

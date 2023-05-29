@@ -1,5 +1,5 @@
 import { Post } from '@prisma/client'
-import { RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilter'
+import { RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilterOption'
 import { PostChildComment } from './PostChildComment'
 import { PostCommentWithCount } from './PostCommentWithCountInterface'
 

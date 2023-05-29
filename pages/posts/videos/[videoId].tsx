@@ -1,10 +1,15 @@
 import { GetServerSideProps } from 'next'
-import { bindings } from '../../../modules/Posts/Infrastructure/Bindings'
-import { GetPostById } from '../../../modules/Posts/Application/GetPostById'
-import { PostComponentDtoTranslator } from '../../../modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
-import { VideoPage, VideoPageProps } from '../../../Components/pages/VideoPage/VideoPage'
-import { PostCardComponentDtoTranslator } from '../../../modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { GetRelatedPosts } from '../../../modules/Posts/Application/GetRelatedPosts'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { container } from '~/awailix.container'
+import { VideoPage, VideoPageProps } from '~/components/pages/VideoPage/VideoPage'
+import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
+import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
+import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
+import {
+  PostCardComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
 
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
   let videoId = context.query.videoId
@@ -13,18 +18,24 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
 
   if (!videoId) {
     return {
-      notFound: true
+      notFound: true,
     }
   }
 
   videoId = videoId.toString()
+  const session = await UnstableGetServerSession(context.req, context.res, authOptions)
 
-  const useCase = bindings.get<GetPostById>('GetPostById')
-  const getRelatedPosts = bindings.get<GetRelatedPosts>('GetRelatedPosts')
+  const useCase = container.resolve<GetPostById>('getPostById')
+  const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPosts')
 
   try {
-    const postWithCount = await useCase.get(videoId)
+    const postWithCount = await useCase.get({
+      postId: videoId,
+      userId: session ? session.user.id : null,
+    })
     const relatedPosts = await getRelatedPosts.get(videoId)
+
+    console.log(postWithCount.userReaction)
 
     return {
       props: {
@@ -32,19 +43,38 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
           postWithCount.post,
           postWithCount.comments,
           postWithCount.reactions,
+          postWithCount.views,
+          postWithCount.userReaction,
           locale
         ),
         relatedPosts: relatedPosts.posts.map((relatedPost) => {
-          return PostCardComponentDtoTranslator.fromApplication(relatedPost.post, 0, 0, locale)
-        })
-      }
+          return PostCardComponentDtoTranslator.fromApplication(
+            relatedPost.post,
+            relatedPost.postReactions,
+            relatedPost.postComments,
+            relatedPost.postViews,
+            locale
+          )
+        }),
+        ...await serverSideTranslations(
+          locale,
+          [
+            'user_menu',
+            'app_menu',
+            'menu_options',
+            'post_comments',
+            'video_page',
+            'carousel',
+            'post_card',
+          ]
+        ),
+      },
     }
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
 
     return {
-      notFound: true
+      notFound: true,
     }
   }
 }

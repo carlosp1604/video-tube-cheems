@@ -1,0 +1,45 @@
+.sorting-menu-dropdown {
+  &__container {
+    @apply relative inline-block text-left;
+  }
+
+  &__dropdown-button-icon {
+    @apply h-5 w-5;
+  }
+
+  &__dropdown-button {
+    @apply flex flex-row justify-center items-center truncate justify-center rounded-lg bg-body
+      px-3 py-2 text-sm font-semibold border border-base-700 gap-x-1.5
+      text-base-100 transition-colors;
+
+    &:hover, &:focus {
+      @apply bg-base-700 transition-colors;
+    }
+  }
+
+  &__dropdown-container {
+    @apply absolute right-0 z-sort-menu-dropdown mt-2 origin-top-right rounded-md bg-body
+      w-32 border border-base-700 backdrop-blur-3xl backdrop-filter bg-opacity-90
+      scale-0 opacity-0 transition-all overflow-hidden;
+
+    &:focus {
+      @apply outline-none;
+    }
+
+    &_open {
+      @apply scale-100 opacity-100 transition-all;
+    }
+  }
+
+  &__dropdown-item {
+    @apply text-base-100 block px-4 py-3 text-sm font-medium transition-colors;
+
+    &:hover, &:focus {
+      @apply bg-base-700 transition-colors cursor-pointer;
+    }
+
+    &_active {
+      @apply bg-brand-300;
+    }
+  }
+}

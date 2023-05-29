@@ -14,44 +14,42 @@ export class PostReaction {
   public updatedAt: DateTime
   public deletedAt: DateTime | null
 
-  public constructor(
+  public constructor (
     postId: string,
     userId: string,
-    reactionType: Reaction,
+    reactionType: string,
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt:DateTime | null
   ) {
-    PostReaction.validateReaction(reactionType)
     this.postId = postId
     this.userId = userId
-    this._reactionType = reactionType
+    this._reactionType = PostReaction.validateReaction(reactionType)
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
   }
 
-  private static validateReaction(reactionType: Reaction): void {
+  private static validateReaction (reactionType: string): Reaction {
     for (const validReaction of Object.values(Reaction)) {
       if (validReaction === reactionType) {
-        return
+        return validReaction
       }
     }
 
     throw PostReactionDomainException.invalidReactionType(reactionType)
   }
 
-
-  get reactionType(): Reaction {
+  get reactionType (): Reaction {
     return this._reactionType
   }
 
-  public setReactionType(reactionType: Reaction) {
+  public setReactionType (reactionType: Reaction) {
     PostReaction.validateReaction(reactionType)
     this._reactionType = reactionType
   }
 
-  public setUpdatedAt(updatedAt: DateTime) {
+  public setUpdatedAt (updatedAt: DateTime) {
     this.updatedAt = updatedAt
   }
 }

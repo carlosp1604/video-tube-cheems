@@ -35,7 +35,7 @@ import {
   DeletePostCommentApplicationException
 } from '../../../../../../modules/Posts/Application/DeletePostCommentApplicationException'
 
-export default async function handler(
+export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
@@ -51,7 +51,7 @@ export default async function handler(
   }
 }
 
-async function handleDeleteMethod(request: NextApiRequest,response: NextApiResponse) {
+async function handleDeleteMethod (request: NextApiRequest, response: NextApiResponse) {
   const session = await UnstableGetServerSession(request, response, authOptions)
 
   if (session === null) {
@@ -61,16 +61,16 @@ async function handleDeleteMethod(request: NextApiRequest,response: NextApiRespo
   const { postId, commentId } = request.query
 
   let apiRequest: DeletePostCommentApiRequestDto
+
   try {
     apiRequest = request.body as DeletePostCommentApiRequestDto
     apiRequest = {
       ...apiRequest,
       userId: session.user.id,
       postCommentId: String(commentId),
-      postId: String(postId)
+      postId: String(postId),
     }
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     return handleServerError(response, exception)
   }
 
@@ -86,8 +86,7 @@ async function handleDeleteMethod(request: NextApiRequest,response: NextApiRespo
 
   try {
     await useCase.delete(applicationRequest)
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
     if (!(exception instanceof DeletePostCommentApplicationException)) {
       return handleServerError(response, exception)
@@ -106,10 +105,9 @@ async function handleDeleteMethod(request: NextApiRequest,response: NextApiRespo
   }
 
   return response.status(200).json({})
-
 }
 
-async function handlePatchMethod(request: NextApiRequest,response: NextApiResponse) {
+async function handlePatchMethod (request: NextApiRequest, response: NextApiResponse) {
   const session = await UnstableGetServerSession(request, response, authOptions)
 
   if (session === null) {
@@ -119,16 +117,16 @@ async function handlePatchMethod(request: NextApiRequest,response: NextApiRespon
   const { postId, commentId } = request.query
 
   let apiRequest: UpdatePostCommentApiRequestDto
+
   try {
     apiRequest = request.body as UpdatePostCommentApiRequestDto
     apiRequest = UpdatePostCommentRequestSanitizer.sanitize({
       ...apiRequest,
       userId: session.user.id,
       postCommentId: String(commentId),
-      postId: String(postId)
+      postId: String(postId),
     })
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     return handleServerError(response, exception)
   }
   const validationError = UpdatePostCommentApiRequestValidator.validate(apiRequest)
@@ -145,8 +143,7 @@ async function handlePatchMethod(request: NextApiRequest,response: NextApiRespon
     const comment = await useCase.update(applicationRequest)
 
     return response.status(200).json(comment)
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
     if (!(exception instanceof UpdatePostCommentApplicationException)) {
       return handleServerError(response, exception)
@@ -165,18 +162,17 @@ async function handlePatchMethod(request: NextApiRequest,response: NextApiRespon
   }
 }
 
-
-function handleMethod(request: NextApiRequest,response: NextApiResponse) {
+function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
     .setHeader('Allow', 'PATCH, DELETE')
     .json({
       code: 'post-comment-method-not-allowed',
-      message: `Cannot ${request.method} ${request.url?.toString()}`
+      message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
 
-function handleAuthentication(request: NextApiRequest, response: NextApiResponse) {
+function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
   const baseUrl = bindings.get<string>('BaseUrl')
 
   response.setHeader(
@@ -192,7 +188,7 @@ function handleAuthentication(request: NextApiRequest, response: NextApiResponse
     })
 }
 
-function handleValidationError(
+function handleValidationError (
   request: NextApiRequest,
   response: NextApiResponse,
   validationError: PostCommentApiRequestValidatorError
@@ -201,31 +197,32 @@ function handleValidationError(
     .json({
       code: 'post-comment-validation-exception',
       message: 'Invalid request body',
-      errors: validationError.exceptions
+      errors: validationError.exceptions,
     })
 }
 
-function handleServerError(response: NextApiResponse, exception: unknown) {
+function handleServerError (response: NextApiResponse, exception: unknown) {
   console.log(exception)
+
   return response.status(500)
     .json({
       code: 'post-comment-server-error',
-      message: 'Something went wrong while processing the request'
+      message: 'Something went wrong while processing the request',
     })
 }
 
-function handleNotFound(response: NextApiResponse, message: string) {
+function handleNotFound (response: NextApiResponse, message: string) {
   return response.status(404)
     .json({
       code: 'post-comment-resource-not-found',
-      message: message
+      message,
     })
 }
 
-function handleConflict(response: NextApiResponse, message: string) {
+function handleConflict (response: NextApiResponse, message: string) {
   return response.status(409)
     .json({
       code: 'post-comment-resource-conflict',
-      message: message
+      message,
     })
 }

@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
-import { GetUserByIdApplicationException } from '../../../modules/Auth/Application/GetUseByIdApplicationException'
-import { GetUserById } from '../../../modules/Auth/Application/GetUserById'
-import { bindings } from '../../../modules/Auth/Infrastructure/Bindings'
 import { authOptions } from './[...nextauth]'
+import { container } from '~/awailix.container'
+import { GetUserById } from '~/modules/Auth/Application/GetUserById'
+import { GetUserByIdApplicationException } from '~/modules/Auth/Application/GetUseByIdApplicationException'
 
 export default async function handler (
   request: NextApiRequest,
@@ -25,14 +25,13 @@ export default async function handler (
     return handleAuthorizationRequired(response)
   }
 
-  const getUser = bindings.get<GetUserById>('GetUserById')
+  const getUser = container.resolve<GetUserById>('getUserById')
 
   try {
     const user = await getUser.get(session.user.id)
 
     return response.status(200).json(user)
-  }
- catch (exception: unknown) {
+  } catch (exception: unknown) {
     if (!(exception instanceof GetUserByIdApplicationException)) {
       return handleServerError(response)
     }
@@ -52,18 +51,18 @@ function handleAuthorizationRequired (response: NextApiResponse) {
     })
 }
 
-function handleServerError(response: NextApiResponse,) {
+function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
       code: 'get-user-by-id-server-error',
-      message: 'Something went wrong while processing the request'
+      message: 'Something went wrong while processing the request',
     })
 }
 
-function handleNotFound(response: NextApiResponse, message: string) {
+function handleNotFound (response: NextApiResponse, message: string) {
   return response.status(404)
     .json({
       code: 'get-user-by-id-resource-not-found',
-      message: message
+      message,
     })
 }

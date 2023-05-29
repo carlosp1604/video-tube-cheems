@@ -9,12 +9,13 @@ import { CommentApplicationDtoTranslator } from './Translators/CommentApplicatio
 export class CreatePostComment {
   private options: RepositoryOptions[] = ['comments', 'comments.user']
 
-  constructor(
+  // eslint-disable-next-line no-useless-constructor
+  constructor (
     private readonly postRepository: PostRepositoryInterface,
     private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async create(request: CreatePostCommentRequestDto): Promise<CommentApplicationDto> {
+  public async create (request: CreatePostCommentRequestDto): Promise<CommentApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
@@ -22,7 +23,7 @@ export class CreatePostComment {
     }
 
     const user = await this.userRepository.findById(request.userId)
-    
+
     if (user === null) {
       throw CreatePostCommentApplicationException.userNotFound(request.userId)
     }
@@ -33,10 +34,9 @@ export class CreatePostComment {
       comment.setUser(user)
 
       await this.postRepository.createComment(comment)
-      
+
       return CommentApplicationDtoTranslator.fromDomain(comment)
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {
         throw exception
       }

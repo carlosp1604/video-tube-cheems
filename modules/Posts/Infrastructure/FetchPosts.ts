@@ -1,13 +1,14 @@
 import { ProducerComponentDto } from '../../Producers/Infrastructure/Dtos/ProducerComponentDto'
 import { FetchPostsFilter } from '../../Shared/Infrastructure/InfrastructureFilter'
-import { GetPostsApplicationResponse } from '../Application/Dtos/GetPostsApplicationDto'
+import { GetPostsApplicationResponse } from '../Application/GetPosts/GetPostsApplicationDto'
 
 const buildSearchParams = (
   pageNumber: number,
   perPage: number,
   postFilters: FetchPostsFilter[]
 ): URLSearchParams => {
-  let params = new URLSearchParams()
+  const params = new URLSearchParams()
+
   params.append('page', pageNumber.toString())
   params.append('perPage', perPage.toString())
 
@@ -27,15 +28,17 @@ export const fetchPosts = async (
   titleFilter: string | null
 ): Promise<GetPostsApplicationResponse> => {
   const filters: FetchPostsFilter[] = []
-  filters.push({ 
+
+  filters.push({
     type: 'producerName',
-    value: producer !== null ? producer.id : null 
+    value: producer !== null ? producer.id : null,
   })
   filters.push({
     type: 'postTitle',
-    value: titleFilter !== null ? titleFilter : null 
+    value: titleFilter !== null ? titleFilter : null,
   })
 
   const params = buildSearchParams(pageNumber, perPage, filters).toString()
+
   return ((await fetch(`/api/posts?${params}`)).json())
 }

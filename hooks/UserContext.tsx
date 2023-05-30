@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo } from 'react'
-import { UserInstance, UserProviderInstanceData } from '../types/UserProviderInstance'
+import { UserInstance, UserProviderInstanceData } from '~/types/UserProviderInstance'
 
 export const UserContext = createContext<UserProviderInstanceData>(null)
 

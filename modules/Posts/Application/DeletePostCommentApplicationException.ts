@@ -8,9 +8,9 @@ export class DeletePostCommentApplicationException extends ApplicationException 
   public static postNotFoundId = 'delete_post_comment_post_not_found'
   public static userNotFoundId = 'delete_post_comment_user_not_found'
 
-  public static cannotDeleteComment(
+  public static cannotDeleteComment (
     postCommentId: PostComment['id'],
-    postId: Post['id'],
+    postId: Post['id']
   ): DeletePostCommentApplicationException {
     return new DeletePostCommentApplicationException(
       `Cannot delete comment with ID ${postCommentId} from post with ID ${postId}`,
@@ -18,14 +18,14 @@ export class DeletePostCommentApplicationException extends ApplicationException 
     )
   }
 
-  public static postNotFound(postId: Post['id']): DeletePostCommentApplicationException {
+  public static postNotFound (postId: Post['id']): DeletePostCommentApplicationException {
     return new DeletePostCommentApplicationException(
       `Post with ID ${postId} was not found`,
       this.postNotFoundId
     )
   }
 
-  public static userNotFound(userId: User['id']): DeletePostCommentApplicationException {
+  public static userNotFound (userId: User['id']): DeletePostCommentApplicationException {
     return new DeletePostCommentApplicationException(
       `User with ID ${userId} was not found`,
       this.userNotFoundId

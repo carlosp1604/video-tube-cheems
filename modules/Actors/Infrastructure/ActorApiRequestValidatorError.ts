@@ -1,7 +1,7 @@
 import { ZodIssue } from 'zod'
-import { ZodApiValidationError } from '../../Exceptions/Infrastructure/ZodApiValidationError'
+import { ZodApiValidationException } from '../../Exceptions/Infrastructure/ZodApiValidationException'
 
-export class ActorApiRequestValidatorError extends ZodApiValidationError {
+export class ActorApiRequestValidatorError extends ZodApiValidationException {
   public static getActorRequestId = 'validator_exception_get_actor_request'
   public static getActorsRequestId = 'validator_exception_get_actors_request'
   

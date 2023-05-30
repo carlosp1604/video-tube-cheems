@@ -1,14 +1,9 @@
-export enum SortingInfrastructureOptions {
-  'date' = 'date',
-  'views' = 'views'
+export enum InfrastructureSortingOptions {
+  DATE = 'date',
+  VIEWS = 'views'
 }
 
-export type SortingInfrastructureOptionsType = keyof typeof SortingInfrastructureOptions
-  
-export enum SortingInfrastructureCriteria {
-  'asc' = 'asc',
-  'desc' = 'desc'
-} 
-
-export type SortingInfrastructureCriteriaType = keyof typeof SortingInfrastructureCriteria
-  
+export enum InfrastructureSortingCriteria {
+  ASC = 'asc',
+  DESC = 'desc'
+}

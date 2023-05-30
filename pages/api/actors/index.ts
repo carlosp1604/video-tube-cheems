@@ -1,18 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { NextApiRequestQuery } from 'next/dist/server/api-utils'
-import { GetActors } from '../../../modules/Actors/Application/GetActors'
-import { GetActorsApplicationException } from '../../../modules/Actors/Application/GetActorsApplicationException'
-import { GetActorsFilterOptions } from '../../../modules/Actors/Application/GetActorsRequestDto'
-import { ActorApiRequestValidatorError } from '../../../modules/Actors/Infrastructure/ActorApiRequestValidatorError'
-import { ActorFilterOptions } from '../../../modules/Actors/Infrastructure/ActorFilter'
-import { bindings } from '../../../modules/Actors/Infrastructure/Bindings'
-import { GetActorsApiRequestDto } from '../../../modules/Actors/Infrastructure/GetActorsApiRequestDto'
-import { GetActorsApiRequestValidator } from '../../../modules/Actors/Infrastructure/GetActorsApiRequestValidator'
-import { GetActorsRequestDtoTranslator } from '../../../modules/Actors/Infrastructure/GetActorsRequestDtoTranslator'
-import { InfrastructureFilter } from '../../../modules/Shared/Infrastructure/InfrastructureFilter'
-import { SortingInfrastructureCriteriaType, SortingInfrastructureOptionsType } from '../../../modules/Shared/Infrastructure/InfrastructureSorting'
+import { GetActorsApiRequestValidator } from '~/modules/Actors/Infrastructure/GetActorsApiRequestValidator'
+import { container } from '~/awailix.container'
+import { GetActors } from '~/modules/Actors/Application/GetActors'
+import { GetActorsRequestDtoTranslator } from '~/modules/Actors/Infrastructure/GetActorsRequestDtoTranslator'
+import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
+import { GetPostsApiFilterRequestDto } from '~/modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { ActorApiRequestValidatorError } from '~/modules/Actors/Infrastructure/ActorApiRequestValidatorError'
+import { GetActorsApiRequestDto } from '~/modules/Actors/Infrastructure/GetActorsApiRequestDto'
 
-export default async function handler(
+export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
@@ -22,14 +20,14 @@ export default async function handler(
 
   const apiRequest = parseQuery(request.query)
 
-  const validationError = 
+  const validationError =
     GetActorsApiRequestValidator.validate(apiRequest)
 
   if (validationError) {
     return handleValidationError(response, validationError)
   }
 
-  const useCase = bindings.get<GetActors>('GetActors')
+  const useCase = container.resolve<GetActors>('getActors')
 
   const applicationRequest = GetActorsRequestDtoTranslator.fromApiDto(apiRequest)
 
@@ -37,8 +35,7 @@ export default async function handler(
     const actors = await useCase.get(applicationRequest)
 
     return response.status(201).json(actors)
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
     if (!(exception instanceof GetActorsApplicationException)) {
       return handleServerError(response)
@@ -48,16 +45,17 @@ export default async function handler(
   }
 }
 
-function parseQuery(query: NextApiRequestQuery): GetActorsApiRequestDto {
+function parseQuery (query: NextApiRequestQuery): GetActorsApiRequestDto {
   const { page, perPage, order, orderBy } = query
-  const filters: InfrastructureFilter<GetActorsFilterOptions>[] = []
-  for (const filter of Object.keys(ActorFilterOptions)) {
+  const filters: GetPostsApiFilterRequestDto[] = []
+
+  for (const filter of Object.values(PostFilterOptions)) {
     const queryFilter = query[`${filter}`]
 
     if (queryFilter) {
       filters.push({
-        type: filter as GetActorsFilterOptions,
-        value: queryFilter.toString()
+        type: filter,
+        value: queryFilter.toString(),
       })
     }
   }
@@ -69,48 +67,48 @@ function parseQuery(query: NextApiRequestQuery): GetActorsApiRequestDto {
 
   return {
     page: pageNumber,
-    actorsPerPage: actorsPerPage,
-    sortCriteria: sortCriteria as SortingInfrastructureCriteriaType,
-    sortOption: sortOption as SortingInfrastructureOptionsType,
-    filters
+    actorsPerPage,
+    sortCriteria,
+    sortOption,
+    filters,
   }
 }
 
-function handleMethod(request: NextApiRequest,response: NextApiResponse) {
+function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
     .setHeader('Allow', 'GET')
     .json({
-      code: 'get-actor-method-not-allowed',
-      message: `Cannot ${request.method} ${request.url?.toString()}`
+      code: 'get-actors-method-not-allowed',
+      message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
 
-function handleBadRequest(exception: GetActorsApplicationException, response: NextApiResponse) {
+function handleBadRequest (exception: GetActorsApplicationException, response: NextApiResponse) {
   return response
     .status(400)
     .json({
-      code: 'get-actor-bad-request',
-      message: exception.message
+      code: 'get-actors-bad-request',
+      message: exception.message,
     })
 }
 
-function handleValidationError(
+function handleValidationError (
   response: NextApiResponse,
   validationError: ActorApiRequestValidatorError
 ) {
   return response.status(400)
     .json({
-      code: 'get-actor-validation-exception',
+      code: 'get-actors-validation-exception',
       message: 'Passed Actor ID is not valid',
-      errors: validationError.exceptions
+      errors: validationError.exceptions,
     })
 }
 
-function handleServerError(response: NextApiResponse,) {
+function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'get-actor-server-error',
-      message: 'Something went wrong while processing the request'
+      code: 'get-actors-server-error',
+      message: 'Something went wrong while processing the request',
     })
 }

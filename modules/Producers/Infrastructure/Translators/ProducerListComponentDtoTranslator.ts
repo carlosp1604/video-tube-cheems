@@ -1,12 +1,12 @@
-import { ProducerApplicationDto } from '../../Application/ProducerApplicationDto'
-import { ProducerComponentDto } from '../Dtos/ProducerComponentDto'
+import { ProducerApplicationDto } from '~/modules/Producers/Application/ProducerApplicationDto'
+import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 
 export class ProducerListComponentDtoTranslator {
-  public static fromApplication(applicationDto: ProducerApplicationDto): ProducerComponentDto {
+  public static fromApplication (applicationDto: ProducerApplicationDto): ProducerComponentDto {
     return {
       id: applicationDto.id,
       name: applicationDto.name,
-      brandHexColor: applicationDto.brandHexColor
+      brandHexColor: applicationDto.brandHexColor,
     }
   }
 }

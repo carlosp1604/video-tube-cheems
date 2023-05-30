@@ -18,6 +18,7 @@ export class UserModelTranslator {
     return new User (
       prismaUserModel.id,
       prismaUserModel.name,
+      prismaUserModel.username,
       prismaUserModel.email,
       prismaUserModel.imageUrl,
       prismaUserModel.language,
@@ -35,12 +36,13 @@ export class UserModelTranslator {
       email: user.email,
       emailVerified: user.emailVerified?.toJSDate() ?? null,
       name: user.name,
+      username: user.username,
       createdAt: user.createdAt.toJSDate(),
       deletedAt: user.deletedAt?.toJSDate() ?? null,
       updatedAt: user.updatedAt.toJSDate(),
       imageUrl: user.imageUrl,
       language: user.language,
-      password: user.hashedPassword
+      password: user.password,
     }
   }
 }

@@ -1,15 +1,12 @@
-import { SortingApplicationCriteria, SortingApplicationOptions } from '../../Shared/Application/ApplicationSorting'
-import { ApplicationFilter, FilterApplicationOption } from '../../Shared/Application/FilterApplicationOption'
-
-export type GetActorsFilterOptions = Extract<FilterApplicationOption,
- 'actorName' |
- 'actorId'
->
+export interface GetActorsRequestFilterDto {
+  type: string
+  value: string
+}
 
 export interface GetActorsRequestDto {
-  filters: ApplicationFilter<GetActorsFilterOptions>[]
-  sortOption: SortingApplicationOptions
-  sortCriteria: SortingApplicationCriteria
+  filters: GetActorsRequestFilterDto[]
+  sortOption: string
+  sortCriteria: string
   page: number
   actorsPerPage: number
 }

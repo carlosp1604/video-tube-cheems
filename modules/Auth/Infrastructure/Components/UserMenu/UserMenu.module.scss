@@ -1,0 +1,57 @@
+.user-menu {
+  &__container {
+    @apply flex flex-col gap-y-4 p-5 pt-7;
+  }
+
+  &__user-data {
+    @apply flex flex-row gap-x-4 justify-center items-center;
+  }
+
+  &__user-data-text {
+    @apply flex flex-col items-start justify-center text-lg uppercase
+      font-black;
+
+    @screen md {
+      @apply text-2xl;
+    }
+  }
+
+  &__user-email {
+    @apply text-xs font-thin normal-case;
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__user-avatar {
+    @apply h-12 w-12 rounded-full object-cover overflow-hidden;
+
+    @screen md {
+      @apply h-14 w-14;
+    }
+  }
+
+  &__sign-out-button {
+    @apply flex flex-row justify-center items-center gap-x-4 p-2 rounded-lg
+      transition-colors uppercase text-sm font-bold border border-red
+      border-opacity-50 text-red;
+
+    &:hover, &:focus {
+      @apply border-opacity-50 transition-colors bg-red bg-opacity-50
+        text-base-100;
+    }
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__icon {
+    @apply h-5 w-5;
+  }
+
+  &__menu-options-container {
+    @apply -mx-5;
+  }
+}

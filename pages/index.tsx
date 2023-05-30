@@ -1,23 +1,30 @@
-import { GetStaticProps, NextPage } from 'next'
-import styles from '../Components/pages/HomePage/HomePage.module.scss'
-import { bindings as PostBindings } from '../modules/Posts/Infrastructure/Bindings'
-import { GetPosts } from '../modules/Posts/Application/GetPosts'
-import { GetAllProducers } from '../modules/Producers/Application/GetAllProducers'
-import { bindings as ProducerBindings } from '../modules/Producers/Infrastructure/Bindings'
-import { ProducerComponentDto } from '../modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { ProducerListComponentDtoTranslator } from '../modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
-import { ProducerList } from '../modules/Producers/Infrastructure/Components/ProducerList'
-import { PostCardComponentDto } from '../modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { PostCardComponentDtoTranslator } from '../modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { useEffect, useState } from 'react'
-import { PaginatedPostCardGallery } from '../Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
-import { FetchPostsFilter } from '../modules/Shared/Infrastructure/InfrastructureFilter'
-
-const defaultProducer: ProducerComponentDto = {
-  id: '',
-  name: 'Latest videos',
-  brandHexColor: '#44403C'
-} 
+import { GetServerSideProps, NextPage } from 'next'
+import styles from '~/components/pages/HomePage/HomePage.module.scss'
+import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
+import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
+import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
+import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList'
+import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import {
+  ProducerListComponentDtoTranslator
+} from '~/modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
+import {
+  PostCardComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import {
+  PaginatedPostCardGallery
+} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
+import { useState } from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import {
+  InfrastructureSortingCriteria,
+  InfrastructureSortingOptions
+} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
+import { container } from '~/awailix.container'
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -25,23 +32,37 @@ interface Props {
   postsNumber: number
 }
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const getPosts = PostBindings.get<GetPosts>('GetPosts')
-  const getProducers = ProducerBindings.get<GetAllProducers>('GetAllProducers')
+export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+  const getPosts = container.resolve<GetPosts>('getPosts')
+  const getProducers = container.resolve<GetAllProducers>('getAllProducers')
+
+  const locale = context.locale ?? 'en'
+
+  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
+    'all_producers',
+    'app_menu',
+    'menu_options',
+    'sorting_menu_dropdown',
+    'user_menu',
+    'carousel',
+    'post_card',
+    'user-auth',
+  ])
 
   const props: Props = {
     posts: [],
     producers: [],
     postsNumber: 0,
+    ...i18nSSRConfig,
   }
 
   try {
     const posts = await getPosts.get({
       page: 1,
       filters: [],
-      sortCriteria: 'desc',
-      sortOption: 'date',
-      postsPerPage: 20,
+      sortCriteria: InfrastructureSortingCriteria.DESC,
+      sortOption: InfrastructureSortingOptions.DATE,
+      postsPerPage: defaultPerPage,
     })
 
     const producers = await getProducers.get()
@@ -49,64 +70,53 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
       return ProducerListComponentDtoTranslator.fromApplication(producer)
     })
 
-    producerComponents.unshift(defaultProducer)
-    
+    // Add default producer
+    producerComponents.unshift(allPostsProducerDto)
+
     props.posts = posts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions)
+      return PostCardComponentDtoTranslator.fromApplication(
+        post.post,
+        post.postReactions,
+        post.postComments,
+        post.postViews,
+        locale
+      )
     })
     props.postsNumber = posts.postsNumber
     props.producers = producerComponents
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
   }
 
   return {
-    props
+    props,
   }
 }
 
 const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
-  const [activeProducer, setActiveProducer] = useState<ProducerComponentDto>(defaultProducer)
-  const [totalPosts, setTotalPosts] = useState<number>(postsNumber)
-  const [producerFilter, setProducerFilter] = useState<FetchPostsFilter>({
-    type: 'producerId',
-    value: null,
-  })
+  const [activeProducer, setActiveProducer] = useState<ProducerComponentDto>(allPostsProducerDto)
+  const { t } = useTranslation('all_producers')
 
-  useEffect(() => {
-    setProducerFilter({
-      ...producerFilter,
-      value: activeProducer.id === '' ? null: activeProducer.id
-    })
-  }, [activeProducer])
-
+  // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
     <div className={ styles.home__container }>
       <ProducerList
-        producers={producers}
+        producers={ producers }
         setActiveProducer={ setActiveProducer }
         activeProducer={ activeProducer }
       />
 
-      <h1 className={ styles.home__title }>
-        { activeProducer.name }
-        <span className={ styles.home__videosQuantity }>
-          {`${totalPosts} Videos`}
-        </span>
-      </h1>
-
-      <PaginatedPostCardGallery 
-        posts={ posts }
-        postsNumber={ totalPosts }
-        setPostsNumber={ setTotalPosts}
-        fetchEndpoint={'/api/posts'}
-        filters={[producerFilter]}
+      <PaginatedPostCardGallery
+        title={ activeProducer.id === '' ? t('all_producers_title') : activeProducer.name }
+        initialPosts={ posts }
+        initialPostsNumber={ postsNumber }
+        filters={ [{
+          type: PostFilterOptions.PRODUCER_ID,
+          value: activeProducer.id === '' ? null : activeProducer.id,
+        }] }
       />
     </div>
   )
 }
 
 export default HomePage
-
-

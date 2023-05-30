@@ -1,9 +1,9 @@
 import { MetaApplicationDto } from './MetaApplicationDto'
-import { ActorApplicationDto } from '../../../Actors/Application/ActorApplicationDto'
 import { TagApplicationDto } from './TagApplicationDto'
 import { CommentApplicationDto } from './CommentApplicationDto'
 import { ReactionApplicationDto } from './ReactionApplicationDto'
-import { ProducerApplicationDto } from '../../../Producers/Application/ProducerApplicationDto'
+import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
+import { ProducerApplicationDto } from '~/modules/Producers/Application/ProducerApplicationDto'
 
 export interface PostApplicationDto {
   readonly id: string

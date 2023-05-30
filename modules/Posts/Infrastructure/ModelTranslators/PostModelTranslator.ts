@@ -66,8 +66,7 @@ export class PostModelTranslator {
       const postWithComments = prismaPostModel as PostWithComments
       for (let i = 0; i < postWithComments.comments.length; i++) {
         const commentDomain = PostCommentModelTranslator.toDomain(
-          postWithComments.comments[i],
-          ['comments.user', 'comments.childComments']
+          postWithComments.comments[i], options
         )
         post.createComment(commentDomain)
       }

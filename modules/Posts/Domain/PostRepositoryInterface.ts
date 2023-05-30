@@ -1,13 +1,16 @@
-import { RepositoryFilter, RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilter'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
 import { Post } from './Post'
+import { PostChildComment } from './PostChildComment'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostWithCountInterface } from './PostWithCountInterface'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
+import { PostView } from '~/modules/Posts/Domain/PostView'
+import { User } from '~/modules/Auth/Domain/User'
 
 export type RepositoryOptions =
-  'meta' | 
-  'tags' | 
+  'meta' |
+  'tags' |
   'actors' |
   'producer' |
   'comments' |
@@ -18,7 +21,7 @@ export type RepositoryOptions =
   'producer.parentProducer' |
   'comments.childComments.user'
 
-export type PostRepositoryFilterOption = RepositoryFilterOption
+export type PostRepositoryFilterOption = RepositoryFilterOptionInterface
 
 export interface PostRepositoryInterface {
   /**
@@ -34,6 +37,13 @@ export interface PostRepositoryInterface {
    * @return Post if found or null
    */
   findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | null>
+
+  /**
+   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its ID
+   * @param postId Post ID
+   * @return PostWithCount if found or null
+   */
+  findByIdWithCount(postId: Post['id']): Promise<PostWithCountInterface | null>
 
   /**
    * Add a new Post Reaction
@@ -61,15 +71,21 @@ export interface PostRepositoryInterface {
   createComment(comment: PostComment): Promise<void>
 
   /**
+   * Add a new Post Child Comment
+   * @param comment Post Child Comment
+   */
+  createChildComment(childComment: PostChildComment): Promise<void>
+
+  /**
    * Update a Post Comment
-   * @param commentId Post Comment ID 
+   * @param commentId Post Comment ID
    * @param comment Post Comment comment
    */
   updateComment(commentId: PostComment['id'], comment: PostComment['comment']): Promise<void>
 
   /**
    * Delete a Post Comment
-   * @param commentId Post Comment ID 
+   * @param commentId Post Comment ID
    */
   deleteComment(commentId: PostComment['id']): Promise<void>
 
@@ -80,14 +96,14 @@ export interface PostRepositoryInterface {
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
    * @param filters Post filters
-   * @return Post if found or null
+   * @return PostWithCount if found or null
    */
   findWithOffsetAndLimit(
     offset: number,
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+    filters: PostRepositoryFilterOption[],
   ): Promise<PostWithCountInterface[]>
 
   /**
@@ -96,6 +112,28 @@ export interface PostRepositoryInterface {
    * @return Number of posts that accomplish with the filters
    */
   countPostsWithFilters(
-    filters: RepositoryFilter<PostRepositoryFilterOption>[],
+    filters: PostRepositoryFilterOption[],
   ): Promise<number>
+
+  /**
+   * Get posts related to another post given its ID
+   * @param postId Post ID
+   * @return Post array with the related posts
+   */
+  getRelatedPosts(postId: Post['id']): Promise<PostWithCountInterface[]>
+
+  /**
+   * Create a new post view for a post given its ID
+   * @param postId Post ID
+   * @param postView Post View
+   */
+  createPostView (postId: Post['id'], postView: PostView): Promise<void>
+
+  /**
+   * Find a user reaction for a post given its IDs
+   * @param postId Post ID
+   * @param userId User ID
+   * @return Post Reaction if found or null
+   */
+  findUserReaction (postId: Post['id'], userId: User['id']): Promise<PostReaction | null>
 }

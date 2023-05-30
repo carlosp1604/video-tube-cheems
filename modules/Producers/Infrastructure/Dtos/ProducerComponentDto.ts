@@ -1,5 +1,5 @@
 export interface ProducerComponentDto {
   readonly id: string
-  readonly name: string
+  name: string
   readonly brandHexColor: string
 }

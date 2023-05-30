@@ -3,19 +3,18 @@ import { CreatePostCommentApiRequestDto } from '../Dtos/CreatePostCommentApiRequ
 import { PostCommentApiRequestValidatorError } from './PostCommentApiRequestValidatorError'
 
 export class CreatePostCommentApiRequestValidator {
-  private static createPostApiRequestSchema = z.object({
+  private static createPostCommentApiRequestSchema = z.object({
     comment: z
       .string()
       .trim()
       .min(1, { message: 'Comment cannot be empty' }),
     postId: z.string({}).uuid(),
-    parentCommentId: z.string().uuid().nullable(),
     userId: z.string().uuid(),
   })
 
   public static validate(request: CreatePostCommentApiRequestDto): PostCommentApiRequestValidatorError | void {
     try {
-      this.createPostApiRequestSchema.parse(request)
+      this.createPostCommentApiRequestSchema.parse(request)
     }
     catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {

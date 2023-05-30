@@ -1,22 +1,22 @@
 import { Prisma } from '@prisma/client'
 
 export type PostWithActors = Prisma.PostGetPayload<{
-  include: { 
+  include: {
     actors: {
       include: {
         actor: true
       }
-    }  
+    }
   }
 }>
 
 export type PostWithTags = Prisma.PostGetPayload<{
-  include: { 
+  include: {
     tags: {
       include: {
         tag: true
       }
-    }  
+    }
   }
 }>
 
@@ -25,10 +25,10 @@ export type PostWithMeta = Prisma.PostGetPayload<{
 }>
 
 export type PostWithComments = Prisma.PostGetPayload<{
-  include: { 
+  include: {
     comments: {
       include: {
-        childComments: true,
+        childComments: true
         user: true
       }
     }

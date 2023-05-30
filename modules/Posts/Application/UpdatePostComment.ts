@@ -1,20 +1,21 @@
 import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
-import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '../Domain/PostDomainException'
 import { UpdatePostCommentRequestDto } from './Dtos/UpdatePostCommentRequestDto'
 import { UpdatePostCommentApplicationException } from './UpdatePostCommentApplicationException'
 import { CommentApplicationDtoTranslator } from './Translators/CommentApplicationDtoTranslator'
 import { CommentApplicationDto } from './Dtos/CommentApplicationDto'
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 
 export class UpdatePostComment {
   private options: RepositoryOptions[] = ['comments', 'comments.user']
 
-  constructor(
+  // eslint-disable-next-line no-useless-constructor
+  constructor (
     private readonly postRepository: PostRepositoryInterface,
-    private readonly userRepository: UserRepositoryInterface,
+    private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async update(
+  public async update (
     request: UpdatePostCommentRequestDto
   ): Promise<CommentApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
@@ -28,17 +29,14 @@ export class UpdatePostComment {
     if (user === null) {
       throw UpdatePostCommentApplicationException.userNotFound(request.userId)
     }
-    
+
     try {
-      const updatedComment =
-        post.updateComment(request.postCommentId, request.comment, request.postParentId)
+      const updatedComment = post.updateComment(request.postCommentId, request.comment)
 
       await this.postRepository.updateComment(request.postCommentId, request.comment)
 
       return CommentApplicationDtoTranslator.fromDomain(updatedComment)
-    }
-    catch (exception: unknown) {
-      console.log(exception)
+    } catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {
         throw exception
       }

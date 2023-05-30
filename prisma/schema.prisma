@@ -87,9 +87,10 @@ model PostMeta {
 }
 
 model User {
-  id              String        @id
+  id              String          @id
   name            String
-  email           String
+  username        String          @unique
+  email           String          @unique
   imageUrl        String?         @map("image_url")
   language        String
   password        String
@@ -101,6 +102,17 @@ model User {
   comments        PostComment[]
   views           PostView[]
   @@map("users")
+}
+
+model VerificationToken {
+  id                              String                    @id
+  token                           String
+  userEmail                       String                    @map("user_email") @unique
+  type                            String
+  expiresAt                       DateTime                  @map("expires_at")
+  createdAt                       DateTime                  @map("created_at")
+
+  @@map("verification_tokens")
 }
 
 model PostReaction {
@@ -120,8 +132,8 @@ model PostReaction {
 model PostComment {
   id              String          @id
   comment         String
-  post            Post            @relation(fields: [postId], references: [id])
-  postId          String          @map("post_id")
+  post            Post?           @relation(fields: [postId], references: [id])
+  postId          String?         @map("post_id")
   parentComment   PostComment?    @relation("Replies", fields: [parentCommentId], references: [id])
   parentCommentId String?         @map("parent_comment_id")
   user            User            @relation(fields: [userId], references: [id])
@@ -164,11 +176,9 @@ model PostView {
   id              String          @id
   postId          String          @map("post_id")     
   post            Post            @relation(fields: [postId], references: [id])  
-  userId          String          @map("user_id")
-  user            User            @relation(fields: [userId], references: [id])
-  ipAddress       String          @map("ip_address")
+  userId          String?         @map("user_id")
+  user            User?           @relation(fields: [userId], references: [id])
   createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
 
   @@map("post_views")
 }

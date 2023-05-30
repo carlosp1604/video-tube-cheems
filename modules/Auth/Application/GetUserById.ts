@@ -1,16 +1,17 @@
-import { UserRepositoryInterface } from '../Domain/UserRepositoryInterface'
-import { User } from '../Domain/User'
 import { UserApplicationDto } from './UserApplicationDto'
 import { UserApplicationDtoTranslator } from './UserApplicationDtoTranslator'
 import { GetUserByIdApplicationException } from './GetUseByIdApplicationException'
+import { User } from '~/modules/Auth/Domain/User'
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 
 export class GetUserById {
-  constructor(
-    private readonly userReposiory: UserRepositoryInterface
+  // eslint-disable-next-line no-useless-constructor
+  constructor (
+    private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async get(userId: User['id']): Promise<UserApplicationDto> {
-    const actor = await this.userReposiory.findById(userId)
+  public async get (userId: User['id']): Promise<UserApplicationDto> {
+    const actor = await this.userRepository.findById(userId)
 
     if (actor === null) {
       throw GetUserByIdApplicationException.userNotFound(userId)

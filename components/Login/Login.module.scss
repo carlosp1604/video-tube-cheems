@@ -1,0 +1,123 @@
+.login {
+  &__container {
+    @apply mx-auto p-5 max-w-sm;
+  }
+
+  &__title {
+    @apply text-xl font-black;
+
+    @screen md {
+      @apply text-2xl;
+    }
+  }
+
+  &__subtitle {
+    @apply block text-sm font-normal;
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__input-section {
+    @apply flex flex-col gap-y-0.5 mb-2;
+  }
+
+  &__input-label {
+    @apply text-xs font-light text-base-300;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__input-error-message {
+    @apply text-xs font-light text-red opacity-0;
+    
+    &__open {
+      @apply opacity-100;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__input {
+    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm;
+
+    &:focus {
+      @apply border-brand-700;
+    }
+
+    &_error {
+      @apply border-red;
+
+      &:focus {
+        @apply border-red;
+      }
+    }
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__submit {
+    @apply w-full px-4 py-2 border-2 border-base-700 rounded-lg
+      text-sm font-bold text-base-700 transition-colors duration-100;
+
+    &__enabled {
+      @apply text-base-300 bg-transparent border-brand-500
+        transition-colors duration-500;
+
+      &:active, &:focus, &:hover {
+        @apply bg-brand-500;
+      }
+    }
+
+    @screen md {
+      @apply text-base font-black;
+    }
+  }
+
+  &__error {
+    @apply text-xs font-light text-red opacity-0 mb-2;
+    
+    &__open {
+      @apply opacity-100;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__register-recover-section {
+    @apply flex flex-col gap-y-1 justify-center mt-5 items-center;
+  }
+
+  &__signup-button {
+    @apply text-xs font-bold;
+
+    &:hover, &:focus {
+      @apply text-brand-300 transition-colors;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__forgot-password-button {
+    @apply text-xs font-bold text-base-500;
+
+    &:hover, &:focus {
+      @apply text-base-300 transition-colors;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+}

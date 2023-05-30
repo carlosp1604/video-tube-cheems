@@ -1,0 +1,41 @@
+.menu-options {
+  $parentBlock: &;
+
+  &__menu-container {
+    @apply flex flex-col;
+  }
+
+  &__menu-item {
+    @apply text-base-400;
+
+    &:hover, &:focus {
+      @apply bg-base-900 transition-colors duration-500 text-base-100
+        cursor-pointer;
+    }
+
+    &-active {
+      @apply bg-base-700 text-base-100;
+    }
+  }
+
+  &__menu-item-content {
+    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6 border-t border-base-700
+    border-opacity-30;
+  }
+
+  &__menu-icon {
+    @apply text-xl;
+  }
+
+  &__menu-item:hover, &__menu-item:focus {
+    #{$parentBlock}__menu-icon {
+      @apply scale-110 transition-transform duration-200;
+    }
+  }
+
+  &__menu-item:last-of-type {
+    #{$parentBlock}__menu-item-content {
+      @apply border-b;
+    }
+  }
+}

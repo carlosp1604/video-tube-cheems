@@ -5,7 +5,7 @@ import { ActorApiRequestValidatorError } from '../../../../modules/Actors/Infras
 import { bindings } from '../../../../modules/Actors/Infrastructure/Bindings'
 import { GetActorApiRequestValidator } from '../../../../modules/Actors/Infrastructure/GetActorApiRequestValidator'
 
-export default async function handler(
+export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
@@ -19,7 +19,7 @@ export default async function handler(
     return handleBadRequest(response)
   }
 
-  const validationError = 
+  const validationError =
     GetActorApiRequestValidator.validate(actorId.toString())
 
   if (validationError) {
@@ -32,8 +32,7 @@ export default async function handler(
     const actor = await useCase.get(actorId.toString())
 
     return response.status(201).json(actor)
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
     if (!(exception instanceof GetActorApplicationException)) {
       return handleServerError(response)
@@ -44,39 +43,40 @@ export default async function handler(
     }
 
     console.error(exception)
+
     return handleServerError(response)
   }
 }
 
-function handleMethod(request: NextApiRequest,response: NextApiResponse) {
+function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
     .setHeader('Allow', 'GET')
     .json({
       code: 'get-actor-method-not-allowed',
-      message: `Cannot ${request.method} ${request.url?.toString()}`
+      message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
 
-function handleBadRequest(response: NextApiResponse) {
+function handleBadRequest (response: NextApiResponse) {
   return response
     .status(400)
     .json({
       code: 'get-actor-bad-request',
-      message: 'Actor ID required'
+      message: 'Actor ID required',
     })
 }
 
-function handleNotFound(response: NextApiResponse) {
+function handleNotFound (response: NextApiResponse) {
   return response
     .status(404)
     .json({
       code: 'get-actor-actor-not-found',
-      message: 'Actor not found'
+      message: 'Actor not found',
     })
 }
 
-function handleValidationError(
+function handleValidationError (
   response: NextApiResponse,
   validationError: ActorApiRequestValidatorError
 ) {
@@ -84,14 +84,14 @@ function handleValidationError(
     .json({
       code: 'get-actor-validation-exception',
       message: 'Passed Actor ID is not valid',
-      errors: validationError.exceptions
+      errors: validationError.exceptions,
     })
 }
 
-function handleServerError(response: NextApiResponse,) {
+function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
       code: 'get-actor-server-error',
-      message: 'Something went wrong while processing the request'
+      message: 'Something went wrong while processing the request',
     })
 }

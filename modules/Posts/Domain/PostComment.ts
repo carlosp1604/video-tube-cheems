@@ -1,5 +1,7 @@
+import { randomUUID } from 'crypto'
 import { DateTime } from 'luxon'
 import { User } from '../../Auth/Domain/User'
+import { PostChildComment } from './PostChildComment'
 import { PostCommentDomainException } from './PostCommentDomainException'
 
 export class PostComment {
@@ -7,20 +9,18 @@ export class PostComment {
   public comment: string
   public readonly postId: string
   public readonly userId: string
-  public readonly parentCommentId: string | null
   public readonly createdAt: DateTime
   public updatedAt: DateTime
   public deletedAt: DateTime | null
   public _user: User | null = null
-  private _childComments: Map<PostComment['id'], PostComment> =
-    new Map<PostComment['id'], PostComment>()
+  private _childComments: Map<PostChildComment['id'], PostChildComment> =
+    new Map<PostChildComment['id'], PostChildComment>()
 
   public constructor(
     id: string,
     comment: string,
     postId: string,
     userId: string,
-    parentCommentId: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null
@@ -29,34 +29,35 @@ export class PostComment {
     this.comment = comment
     this.userId = userId
     this.postId = postId
-    this.parentCommentId = parentCommentId
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
   }
 
-  public addChildComment(postComment: PostComment): void {
-    if (
-      postComment.parentCommentId === null ||
-      postComment.parentCommentId !== this.id
-    ) {
-      throw PostCommentDomainException.cannotAddChildComment(this.id, postComment.id)
-    }
-    this._childComments.set(postComment.id, postComment)
+  public addChildComment(
+    comment: PostChildComment['comment'],
+    userId: PostChildComment['userId']
+  ): PostChildComment {
+    const newChildComment = this.buildChildComment(comment, userId)
+
+    this._childComments.set(newChildComment.id, newChildComment)
+
+    return newChildComment
   }
 
-  public deleteChildComment(postCommentId: PostComment['id']): void {
-    const childRemoved = this._childComments.delete(postCommentId)
+  public deleteChildComment(childCommentId: PostChildComment['id']): void {
+    const childRemoved = this._childComments.delete(childCommentId)
 
     if (!childRemoved) {
-      throw PostCommentDomainException.childCommentNotFound(this.id, postCommentId)
+      throw PostCommentDomainException.childCommentNotFound(this.id, childCommentId)
     }
   }
 
   public updateChild(
     postCommentId: PostComment['id'],
     comment: PostComment['comment']
-  ): PostComment {
+  ): PostChildComment {
+    // TODO: Fix this method
     const childComment = this._childComments.get(postCommentId)
 
     if (!childComment) {
@@ -90,11 +91,27 @@ export class PostComment {
     return this._user
   }
 
-  get childComments(): PostComment[] {
+  get childComments(): PostChildComment[] {
     return Array.from(this._childComments.values())
   }
 
   public setUpdatedAt(value: PostComment['updatedAt']) {
     this.updatedAt = value
+  }
+
+  private buildChildComment(
+    comment: PostComment['comment'],
+    userId: PostComment['userId'],
+  ): PostChildComment {
+    const nowDate = DateTime.now()
+    return new PostChildComment(
+      randomUUID(),
+      comment,
+      userId,
+      this.id,
+      nowDate,
+      nowDate,
+      null
+    )
   }
 }

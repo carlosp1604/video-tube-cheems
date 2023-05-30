@@ -5,9 +5,10 @@ import { ActorApplicationDtoTranslator } from './ActorApplicationDtoTranslator'
 import { GetActorApplicationException } from './GetActorApplicationException'
 
 export class GetActor {
-  public constructor(readonly actorRepository: ActorRepositoryInterface) {}
-  
-  public async get(actorId: Actor['id']): Promise<ActorApplicationDto> {
+  // eslint-disable-next-line no-useless-constructor
+  public constructor (readonly actorRepository: ActorRepositoryInterface) {}
+
+  public async get (actorId: Actor['id']): Promise<ActorApplicationDto> {
     const actor = await this.actorRepository.findById(actorId)
 
     if (actor === null) {

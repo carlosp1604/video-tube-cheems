@@ -1,13 +1,14 @@
 import { PostMeta } from './PostMeta'
 import { PostTag } from './PostTag'
-import { Actor } from '../../Actors/Domain/Actor'
 import { DateTime } from 'luxon'
 import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostDomainException } from './PostDomainException'
-import { PostCommentDomainException } from './PostCommentDomainException'
 import { randomUUID } from 'crypto'
-import { Producer } from '../../Producers/Domain/Producer'
+import { PostChildComment } from './PostChildComment'
+import { Producer } from '~/modules/Producers/Domain/Producer'
+import { Actor } from '~/modules/Actors/Domain/Actor'
+import { PostView } from '~/modules/Posts/Domain/PostView'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -27,7 +28,7 @@ export class Post {
   private _reactions: Map<PostReaction['userId'], PostReaction> = new Map<PostReaction['userId'], PostReaction>()
   public producer: Producer | null = null
 
-  public constructor(
+  public constructor (
     id: string,
     title: string,
     description: string,
@@ -36,7 +37,7 @@ export class Post {
     updatedAt: DateTime,
     deletedAt: DateTime | null,
     publishedAt: DateTime | null
-) {
+  ) {
     this.id = id
     this.title = title
     this.description = description
@@ -47,118 +48,62 @@ export class Post {
     this.publishedAt = publishedAt
   }
 
-  public addMeta(postMeta: PostMeta): void {
+  public addMeta (postMeta: PostMeta): void {
     this._meta.set(postMeta.type, postMeta)
   }
 
-  public addPostReaction(postReaction: PostReaction): void {
+  public addPostReaction (postReaction: PostReaction): void {
     this._reactions.set(postReaction.userId, postReaction)
   }
 
-  public addTag(postTag: PostTag): void {
+  public addTag (postTag: PostTag): void {
     this._tags.set(postTag.id, postTag)
   }
 
-  public addActor(postActor: Actor): void {
+  public addActor (postActor: Actor): void {
     this._actors.set(postActor.id, postActor)
   }
 
-  public addComment(
+  public addChildComment (
+    parentCommentId: PostComment['id'],
     comment: PostComment['comment'],
-    userId: PostComment['userId'],
-    parentCommentId: PostComment['parentCommentId'],
-  ): PostComment {
-    const commentToAdd = this.buildComment(comment, userId, parentCommentId)
+    userId: PostComment['userId']
+  ): PostChildComment {
+    const parentComment = this._comments.get(parentCommentId)
 
-    if (parentCommentId !== null) {
-      const parentComment = this._comments.get(parentCommentId)
-
-      if (!parentComment) {
-        throw PostDomainException.parentCommentNotFound(parentCommentId)
-      }
-
-      try {
-        parentComment.addChildComment(commentToAdd)
-        return commentToAdd
-      }
-      catch (exception: unknown) {
-        if (!(exception instanceof PostCommentDomainException)) {
-          throw exception
-        }
-
-        if (exception.id === PostCommentDomainException.cannotAddChildCommentId) {
-          throw PostDomainException.cannotAddComment(commentToAdd.id)
-        }
-
-        throw exception
-      }
+    if (!parentComment) {
+      throw PostDomainException.parentCommentNotFound(parentCommentId)
     }
-    else {
-      this._comments.set(commentToAdd.id, commentToAdd)
-      return commentToAdd
-    }
+
+    return parentComment.addChildComment(comment, userId)
   }
 
-  public deleteComment(
-    postCommentId: PostComment['id'],
-    parentCommentId: PostComment['parentCommentId'] | null  
+  public addComment (
+    comment: PostComment['comment'],
+    userId: PostComment['userId']
+  ): PostComment {
+    const commentToAdd = this.buildComment(comment, userId)
+
+    this._comments.set(commentToAdd.id, commentToAdd)
+
+    return commentToAdd
+  }
+
+  public deleteComment (
+    postCommentId: PostComment['id']
   ): void {
-    if (parentCommentId !== null) {
-      const parentComment = this._comments.get(parentCommentId)
-
-      if (!parentComment) {
-        throw PostDomainException.parentCommentNotFound(parentCommentId)
-      }
-
-      try {
-        parentComment.deleteChildComment(postCommentId)
-
-        return 
-      } 
-      catch (exception: unknown) {
-        if (!(exception instanceof PostCommentDomainException)) {
-          throw exception
-        }
-
-        if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
-          throw PostDomainException.cannotDeleteComment(postCommentId)
-        }
-      }
-    }
-
     const commentRemoved = this._comments.delete(postCommentId)
 
     if (!commentRemoved) {
       throw PostDomainException.cannotDeleteComment(postCommentId)
-    } 
+    }
   }
 
-  public updateComment(
+  public updateComment (
     postCommentId: PostComment['id'],
-    comment: PostComment['comment'],
-    parentCommentId: PostComment['parentCommentId'] | null
+    comment: PostComment['comment']
   ): PostComment {
-    if (parentCommentId !== null) {
-      const parentComment = this._comments.get(parentCommentId)
-
-      if (!parentComment) {
-        throw PostDomainException.parentCommentNotFound(parentCommentId)
-      }
-
-      try {
-        return parentComment.updateChild(postCommentId, comment)
-      }
-      catch (exception: unknown) {
-        if (!(exception instanceof PostCommentDomainException)) {
-          throw exception
-        }
-
-        if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
-          throw PostDomainException.cannotUpdateComment(postCommentId)
-        }
-      }
-    }
-
+    // TODO: Fix this method
     const commentToUpdate = this._comments.get(postCommentId)
 
     if (!commentToUpdate) {
@@ -172,27 +117,27 @@ export class Post {
     commentToUpdate.setComment(comment)
     commentToUpdate.setUpdatedAt(DateTime.now())
     this._comments.set(commentToUpdate.id, commentToUpdate)
+
     return commentToUpdate
   }
 
-  public createComment(postComment: PostComment): void {
+  public createComment (postComment: PostComment): void {
     this._comments.set(postComment.id, postComment)
   }
 
-  public createReaction(postReaction: PostReaction): void {
+  public createReaction (postReaction: PostReaction): void {
     this._reactions.set(postReaction.userId, postReaction)
   }
 
-  public addReaction(
+  public addReaction (
     userId: PostReaction['userId'],
-    reactionType: PostReaction['reactionType'],
+    reactionType: string
   ): PostReaction {
     let postReaction
 
     try {
       postReaction = this.buildReaction(userId, reactionType)
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       throw PostDomainException.cannotAddReaction(userId, this.id)
     }
 
@@ -203,10 +148,11 @@ export class Post {
     }
 
     this._reactions.set(postReaction.userId, postReaction)
+
     return postReaction
   }
 
-  public updateReaction(
+  public updateReaction (
     userId: PostReaction['userId'],
     reactionType: PostReaction['reactionType']
   ): PostReaction {
@@ -223,8 +169,7 @@ export class Post {
     try {
       existingReaction.setReactionType(reactionType)
       existingReaction.setUpdatedAt(DateTime.now())
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       throw PostDomainException.cannotUpdateReaction(userId, this.id)
     }
 
@@ -233,7 +178,7 @@ export class Post {
     return existingReaction
   }
 
-  public deleteReaction(userId: PostReaction['userId'],): void {
+  public deleteReaction (userId: PostReaction['userId']): void {
     const reactionRemoved = this._reactions.delete(userId)
 
     if (!reactionRemoved) {
@@ -241,23 +186,23 @@ export class Post {
     }
   }
 
-  get meta(): PostMeta[] {
+  get meta (): PostMeta[] {
     return Array.from(this._meta.values())
   }
 
-  get tags(): PostTag[] {
+  get tags (): PostTag[] {
     return Array.from(this._tags.values())
   }
 
-  get actors(): Actor[] {
+  get actors (): Actor[] {
     return Array.from(this._actors.values())
   }
 
-  get comments(): PostComment[] {
+  get comments (): PostComment[] {
     return Array.from(this._comments.values())
   }
 
-  public setProducer(producer: Producer): void {
+  public setProducer (producer: Producer): void {
     if (this.producer !== null) {
       throw PostDomainException.producerAlreadySet(this.id)
     }
@@ -265,33 +210,33 @@ export class Post {
     this.producer = producer
   }
 
-  get reactions(): PostReaction[] {
+  get reactions (): PostReaction[] {
     return Array.from(this._reactions.values())
   }
 
-  private buildComment(
+  private buildComment (
     comment: PostComment['comment'],
-    userId: PostComment['userId'],
-    parentCommentId: PostComment['parentCommentId'],
+    userId: PostComment['userId']
   ): PostComment {
     const nowDate = DateTime.now()
+
     return new PostComment(
       randomUUID(),
       comment,
       this.id,
       userId,
-      parentCommentId,
       nowDate,
       nowDate,
       null
     )
   }
 
-  private buildReaction(
+  private buildReaction (
     userId: PostReaction['userId'],
-    reactionType: PostReaction['reactionType'],
+    reactionType: string
   ): PostReaction {
     const nowDate = DateTime.now()
+
     return new PostReaction(
       this.id,
       userId,

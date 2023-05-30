@@ -1,60 +1,54 @@
-import NextAuth, { NextAuthOptions, RequestInternal, User } from 'next-auth'
+import NextAuth, { NextAuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import MysqlNextAuthAdapter from '../../../modules/Auth/Infrastructure/MysqlNextAuthAdapter'
-import { bindings } from '../../../modules/Auth/Infrastructure/Bindings'
-import { UserRepositoryInterface } from '../../../modules/Auth/Domain/UserRepositoryInterface'
+import { container } from '~/awailix.container'
+import { Login } from '~/modules/Auth/Application/Login'
+import { NextApiRequest, NextApiResponse } from 'next'
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'credentials',
       credentials: {
         email: { label: 'email', type: 'text', placeholder: 'name@example.com' },
-        password: { label: 'Password', type: 'password ' }
+        password: { label: 'Password', type: 'password' },
       },
 
-      async authorize(
-        credentials: Record<'email' | 'password', string> | undefined,
-        req: Pick<RequestInternal, 'body' | 'query' | 'headers' | 'method'>
+      async authorize (
+        credentials: Record<'email' | 'password', string> | undefined
       ): Promise<User | null> {
         const email = credentials?.email as string
         const password = credentials?.password as string
 
-        // TODO: Find a way to handle this correctly using the adapter
-        const userRepository = bindings.get<UserRepositoryInterface>('UserRepositoryInterface')
+        const loginUseCase = container.resolve<Login>('LoginUseCase')
 
-        const domainUser = await (
-          userRepository.findByEmail(email)
-        )
+        try {
+          const domainUser = await loginUseCase.login({
+            email,
+            password,
+          })
 
-        if (
-          domainUser === null ||
-          ! (await domainUser.matchPassword(password))
-        ) {
+          return {
+            id: domainUser.id,
+            email: domainUser.email,
+            name: domainUser.name,
+            image: domainUser.imageUrl,
+          }
+        } catch (exception: unknown) {
+          console.error(exception)
+
+          // TODO: Handle every possible case. At the moment we dont need to handle current cases
           return null
         }
-
-        return {
-          id: domainUser.id,
-          email: domainUser.email,
-          name: domainUser.name,
-          image: domainUser.imageUrl,
-        }
       },
-      type: 'credentials'
-    })
+      type: 'credentials',
+    }),
   ],
-  adapter: MysqlNextAuthAdapter(),
-  pages: {
-    signIn: '/auth/signin',
-    newUser: 'auth/register', 
-  },
   session: {
     strategy: 'jwt',
     maxAge: 604800,
   },
-  secret: process.env.AUTH_SECRET,
   callbacks: {
-    async session({ session, token }) {
+    async session ({ session, token }) {
       if (session.user) {
         session.user.id = token.userId
       }
@@ -68,7 +62,9 @@ export const authOptions: NextAuthOptions = {
 
       return Promise.resolve(token)
     },
-  }
+  },
 }
 
-export default NextAuth(authOptions)
+export default async function auth (request: NextApiRequest, response: NextApiResponse) {
+  return await NextAuth(request, response, authOptions)
+}

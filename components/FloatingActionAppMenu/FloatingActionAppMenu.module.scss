@@ -1,0 +1,19 @@
+.floating-action-app-menu {
+  &__container {
+    @apply flex fixed items-center z-floating-action-app-menu bottom-10
+      right-8 w-14 h-14 rounded-full transition duration-500 bg-brand-600
+      backdrop-filter backdrop-blur-3xl bg-opacity-70;
+
+    @screen lg {
+      @apply hidden;
+    }
+
+    &:hover {
+      @apply bg-brand-400 transition duration-500 cursor-pointer;
+    }
+  }
+
+  &__icon {
+    @apply text-base-300 mx-auto text-2xl;
+  }
+}

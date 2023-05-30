@@ -1,20 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostsApiRequestDto } from '../../../modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
-import {
-  GetPostsApiRequestValidator
-} from '../../../modules/Posts/Infrastructure/Validators/GetPostsApiRequestValidator'
-import { GetPostsRequestDtoTranslator } from '../../../modules/Posts/Infrastructure/GetPostsRequestDtoTranslator'
-import { GetPosts } from '../../../modules/Posts/Application/GetPosts'
-import { bindings } from '../../../modules/Posts/Infrastructure/Bindings'
-import { GetPostsApplicationException } from '../../../modules/Posts/Application/GetPostsApplicationException'
+import { GetPostsApiRequestValidator } from '~/modules/Posts/Infrastructure/Validators/GetPostsApiRequestValidator'
+import { GetPostsRequestDtoTranslator } from '~/modules/Posts/Infrastructure/GetPostsRequestDtoTranslator'
+import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
+import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import { NextApiRequestQuery } from 'next/dist/server/api-utils'
-import { SortingInfrastructureCriteriaType, SortingInfrastructureOptionsType } from '../../../modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostFilterOptions } from '../../../modules/Posts/Infrastructure/PostFilters'
-import { InfrastructureFilter } from '../../../modules/Shared/Infrastructure/InfrastructureFilter'
-import { GetPostsFilterOptions } from '../../../modules/Posts/Application/Dtos/GetPostsRequestDto'
-import { PostsApiRequestValidatorError } from '../../../modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import {
+  GetPostsApiFilterRequestDto,
+  GetPostsApiRequestDto
+} from '~/modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import { container } from '~/awailix.container'
 
-export default async function handler(
+export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
@@ -27,39 +25,49 @@ export default async function handler(
   const validationError = GetPostsApiRequestValidator.validate(apiRequest)
 
   if (validationError) {
-    return handleValidationError(request, response, validationError)
+    return handleValidationError(response, validationError)
   }
 
   const applicationRequest = GetPostsRequestDtoTranslator.fromApiDto(apiRequest)
 
-  const useCase = bindings.get<GetPosts>('GetPosts')
+  const useCase = container.resolve<GetPosts>('getPosts')
 
   try {
     const posts = await useCase.get(applicationRequest)
 
     return response.status(200).json(posts)
-  }
-  catch (exception: unknown) {
+  } catch (exception: unknown) {
     console.error(exception)
     if (!(exception instanceof GetPostsApplicationException)) {
       return handleServerError(response)
     }
 
-    console.error(exception)
-    return handleServerError(response)
+    switch (exception.id) {
+      case GetPostsApplicationException.invalidSortingCriteriaId:
+      case GetPostsApplicationException.invalidSortingOptionId:
+      case GetPostsApplicationException.invalidFilterTypeId:
+      case GetPostsApplicationException.invalidFilterValueId:
+        return handleBadRequest(response, exception)
+
+      default:
+        console.error(exception)
+
+        return handleServerError(response)
+    }
   }
 }
 
-function parseQuery(query: NextApiRequestQuery): GetPostsApiRequestDto {
+function parseQuery (query: NextApiRequestQuery): GetPostsApiRequestDto {
   const { page, perPage, order, orderBy } = query
-  const filters: InfrastructureFilter<GetPostsFilterOptions>[] = []
-  for (const filter of Object.keys(PostFilterOptions)) {
+  const filters: GetPostsApiFilterRequestDto[] = []
+
+  for (const filter of Object.values(PostFilterOptions)) {
     const queryFilter = query[`${filter}`]
 
     if (queryFilter) {
       filters.push({
-        type: filter as GetPostsFilterOptions,
-        value: queryFilter.toString()
+        type: filter,
+        value: queryFilter.toString(),
       })
     }
   }
@@ -71,40 +79,50 @@ function parseQuery(query: NextApiRequestQuery): GetPostsApiRequestDto {
 
   return {
     page: pageNumber,
-    postsPerPage: postsPerPage,
-    sortCriteria: sortCriteria as SortingInfrastructureCriteriaType,
-    sortOption: sortOption as SortingInfrastructureOptionsType,
-    filters
+    postsPerPage,
+    sortCriteria,
+    sortOption,
+    filters,
   }
 }
 
-function handleMethod(request: NextApiRequest,response: NextApiResponse) {
+function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
     .setHeader('Allow', 'GET')
     .json({
       code: 'get-posts-method-not-allowed',
-      message: `Cannot ${request.method} ${request.url?.toString()}`
+      message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
 
-function handleValidationError(
-  request: NextApiRequest,
+function handleValidationError (
   response: NextApiResponse,
   validationError: PostsApiRequestValidatorError
 ) {
   return response.status(400)
     .json({
-      code: 'get-posts-validation-exception',
+      code: 'get-posts-bad-request',
       message: 'Invalid request body',
-      errors: validationError.exceptions
+      errors: validationError.exceptions,
     })
 }
 
-function handleServerError(response: NextApiResponse,) {
+function handleBadRequest (
+  response: NextApiResponse,
+  exception: GetPostsApplicationException
+) {
+  return response.status(400)
+    .json({
+      code: 'get-posts-bad-request',
+      message: exception.message,
+    })
+}
+
+function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'get-posts-comment-server-error',
-      message: 'Something went wrong while processing the request'
+      code: 'get-posts-server-error',
+      message: 'Something went wrong while processing the request',
     })
 }

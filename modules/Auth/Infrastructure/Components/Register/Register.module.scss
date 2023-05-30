@@ -1,0 +1,168 @@
+.register {
+  &__container {
+    @apply mx-auto p-5 max-w-xs;
+  }
+
+  &__title {
+    @apply text-xl font-black mb-1.5;
+
+    @screen md {
+      @apply text-2xl;
+    }
+  }
+
+  &__subtitle {
+    @apply block text-sm font-normal;
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__input-section {
+    @apply flex flex-col gap-y-0.5 mb-1.5;
+  }
+
+  &__input-label {
+    @apply text-xs font-light text-base-300;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__input-error-message {
+    @apply text-xs font-light text-red opacity-0;
+    
+    &__open {
+      @apply opacity-100;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__input {
+    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm
+      transition-colors;
+
+    &:focus, &:hover {
+      @apply border-brand-700 transition-colors;
+    }
+
+    &_error {
+      @apply border-red;
+
+      &:focus {
+        @apply border-red;
+      }
+    }
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__submit {
+    @apply w-full px-4 py-2 border-2 border-base-700 rounded-lg
+      text-sm font-bold text-base-700 transition-colors duration-500;
+
+    &__enabled {
+      @apply text-base-300 bg-transparent border-brand-500
+        transition-colors duration-500;
+
+      &:active, &:focus, &:hover {
+        @apply bg-brand-500;
+      }
+    }
+
+    &_resend-email {
+      @apply border-blue bg-blue;
+
+      &:active, &:focus, &:hover {
+        @apply bg-blue;
+      }
+    }
+
+    @screen md {
+      @apply text-base font-black;
+    }
+  }
+
+  &__error {
+    @apply text-xs font-light text-red opacity-0 mb-2;
+    
+    &__open {
+      @apply opacity-100;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__verification-code-link {
+    @apply text-xs font-bold text-base-500 mt-4 text-center w-full
+      transition-colors;
+
+    &_active {
+      @apply text-base-300;
+
+      &:hover, &:focus, &:active {
+        @apply text-blue transition-colors;
+      }
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__confirming-register {
+    @apply flex flex-col gap-y-4 justify-center items-center p-5
+      text-center;
+  }
+
+  &__confirming-register-icon {
+    @apply h-12 w-12 text-green;
+
+    @screen md {
+      @apply h-20 w-20;
+    }
+  }
+
+  &__confirming-register-button {
+    @apply p-2 border-2 border-brand-500 text-sm font-bold w-full rounded-lg
+      transition-colors duration-100;
+
+    &:active, &:focus, &:hover {
+      @apply bg-brand-500;
+    }
+
+    @screen md {
+      @apply text-base font-black;
+    }
+  }
+
+  &__register-container {
+    @apply flex flex-col;
+  }
+
+  &__back-section {
+    @apply flex gap-x-3 font-light items-center text-xs px-4 pt-2 -mb-4
+    text-sm text-base-400;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__back-icon {
+    @apply w-10 h-10 p-2 transition-colors rounded-full cursor-pointer;
+
+    &:hover, &:focus, &:active {
+      @apply text-base-700 transition-colors bg-base-900;
+    }
+  }
+}

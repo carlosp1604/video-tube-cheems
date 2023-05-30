@@ -1,0 +1,54 @@
+.user-profile {
+  &__container {
+    @apply flex flex-col items-center justify-center p-5 gap-y-4;
+  }
+
+  &__user-data {
+    @apply flex flex-col gap-y-2 justify-center items-center text-lg font-medium;
+  }
+
+  &__user-info {
+    @apply flex flex-col border border-base-600 rounded-lg bg-base-900;
+  }
+
+  &__user-info-item {
+    @apply flex flex-row gap-x-4 justify-start items-center border-b p-3
+      border-base-600 font-bold;
+
+    &:last-child {
+      @apply border-b-0;
+    }
+  }
+
+  &__user-info-item-title {
+    @apply flex flex-row gap-x-4 font-light text-sm;
+  }
+
+  &__user-info-item-icon {
+    @apply h-6 w-6 text-base-400;
+  }
+
+  &__user-activities {
+    @apply flex flex-row gap-x-6 items-center justify-center;
+  }
+
+  &__activity-item {
+    @apply flex flex-col items-center justify-center gap-y-1 font-black;
+  }
+
+  &__activity-item-activity {
+    @apply font-light text-base-400;
+  }
+
+  &__options {
+  }
+
+  &__edit-profile-button {
+    @apply flex flex-row gap-x-2 items-center p-2.5 border rounded-lg
+      text-base-100 border-base-500 transition-colors text-base-300;
+
+    &:focus, &:hover {
+      @apply bg-brand-900 transition-colors;
+    }
+  }
+}

@@ -2,6 +2,7 @@ import { signIn } from 'next-auth/react'
 import { ChangeEvent, FC, FormEvent, useState } from 'react'
 import styles from './Login.module.scss'
 import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import { useTranslation } from 'next-i18next'
 
 export interface Props {
   onClickSignup: () => void
@@ -15,6 +16,8 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
   const [loginError, setLoginError] = useState<boolean>(false)
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
+
+  const { t } = useTranslation('user_login')
 
   const onSubmit = async (event: FormEvent) => {
     setLoginError(false)
@@ -69,16 +72,22 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
     }
   }
 
+  const canEnableSubmitButton = () => {
+    return !invalidEmail &&
+      !invalidPassword &&
+      email !== '' &&
+      password !== ''
+  }
+
   return (
     <form
       className={ styles.login__container }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.login__title }>
-        Login
-
+        { t('user_login_title') }
         <small className={ styles.login__subtitle }>
-          Inicia sesión con tu correo y contraseña.
+          { t('user_login_subtitle') }
         </small>
       </h1>
 
@@ -86,12 +95,12 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
         ${styles.login__error}
         ${loginError ? styles.login__error__open : ''}
       ` }>
-        User/password incorrectos
+        { t('user_login_sign_in_error_message') }
       </p>
 
       <div className={ styles.login__inputSection }>
         <label className={ styles.login__inputLabel }>
-          Email
+          { t('user_login_email_input_label') }
         </label>
         <input
           type={ 'email' }
@@ -99,27 +108,27 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
             ${styles.login__input}
             ${invalidEmail ? styles.login__input_error : ''}
           ` }
-          placeholder={ 'Email' }
+          placeholder={ t('user_login_email_input_placeholder') ?? '' }
           onChange={ handleEmailChange }
         />
         <label className={ `
           ${styles.login__inputErrorMessage}
           ${invalidEmail ? styles.login__inputErrorMessage__open : ''}
         ` }>
-          El email no es válido
+          { t('user_login_email_input_error_message') }
         </label>
       </div>
 
       <div className={ styles.login__inputSection }>
         <label className={ styles.login__inputLabel }>
-          Password
+          { t('user_login_password_input_label') }
         </label>
         <input
           className={ `
             ${styles.login__input}
             ${invalidPassword ? styles.login__input_error : ''}
           ` }
-          placeholder={ 'Password' }
+          placeholder={ t('user_login_password_input_placeholder') ?? '' }
           type={ 'password' }
           onChange={ handlePasswordChange }
         />
@@ -127,23 +136,18 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
           ${styles.login__inputErrorMessage}
           ${invalidPassword ? styles.login__inputErrorMessage__open : ''}
         ` }>
-          La contraseña no es válida
+          { t('user_login_password_input_error_message') }
         </label>
       </div>
       <button
         type="submit"
         className={ `
           ${styles.login__submit}
-          ${!invalidEmail &&
-            !invalidPassword &&
-            email !== '' &&
-            password !== ''
-            ? styles.login__submit__enabled
-              : ''}
+          ${canEnableSubmitButton() ? styles.login__submit__enabled : ''}
         ` }
         disabled={ invalidEmail || invalidPassword }
       >
-        { 'Iniciar sesión' }
+        { t('user_login_submit_button_title') }
       </button>
 
       <div className={ styles.login__registerRecoverSection }>
@@ -151,14 +155,14 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
           className={ styles.login__signupButton }
           onClick={ onClickSignup }
         >
-          Registrate aquí
+          { t('user_login_sign_in_button_title') }
         </button>
 
         <button
           className={ styles.login__forgotPasswordButton }
           onClick={ onClickForgotPassword }
         >
-          Recupera tu contraseña
+          { t('user_login_forgot_password_button_title') }
         </button>
       </div>
     </form>

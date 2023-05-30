@@ -16,11 +16,11 @@ export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
   let onClose: (() => void) | null = () => setIsOpen(false)
 
   let modalContent = (
-    <Login modal={ {
-      setOpenModal: setIsOpen,
-      setOpenRegisterModal,
-      setOpenRetrievePasswordModal,
-    } }/>
+    <Login
+      onClickForgotPassword={ () => setOpenRetrievePasswordModal(true) }
+      onClickSignup={ () => setOpenRegisterModal(true) }
+      onSuccessLogin={ () => setIsOpen(false) }
+    />
   )
 
   if (openRegisterModal) {

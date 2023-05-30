@@ -9,7 +9,7 @@ export interface Props {
 }
 
 export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
-  const { t } = useTranslation('user-signup')
+  const { t } = useTranslation('user_signup')
 
   const [email, setEmail] = useState<string>('')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)

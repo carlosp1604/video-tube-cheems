@@ -39,7 +39,7 @@ export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
       <RetrievePassword
         onConfirm={ () => setOpenRetrievePasswordModal(false) }
         onCancel={ () => setOpenRetrievePasswordModal(false) }
-        />
+      />
     )
   }
 

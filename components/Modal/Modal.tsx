@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, ReactNode, useEffect, useState } from 'react'
+import React, { FC, ReactNode } from 'react'
 import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { BsX } from 'react-icons/bs'

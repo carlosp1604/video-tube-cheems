@@ -10,7 +10,7 @@ export interface Props {
 }
 
 export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
-  const { t } = useTranslation('user-auth')
+  const { t } = useTranslation('user-signup')
 
   const [code, setCode] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState<string>(t('user_signup_validate_code_invalid_code_message') ?? '')

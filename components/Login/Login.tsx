@@ -1,37 +1,20 @@
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import { ChangeEvent, Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
+import { ChangeEvent, FC, FormEvent, useState } from 'react'
 import styles from './Login.module.scss'
-import { z } from 'zod'
+import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 
 export interface Props {
-  modal: {
-    setOpenModal: Dispatch<SetStateAction<boolean>>
-    setOpenRegisterModal: Dispatch<SetStateAction<boolean>>
-    setOpenRetrievePasswordModal: Dispatch<SetStateAction<boolean>>
-  } | null
+  onClickSignup: () => void
+  onClickForgotPassword: () => void
+  onSuccessLogin: () => void
 }
 
-export const Login: FC<Props> = ({ modal }) => {
+export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSuccessLogin }) => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loginError, setLoginError] = useState<boolean>(false)
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
-  const passwordValidator = z.string().min(6)
-  const emailValidator = z.string().email()
-
-  const router = useRouter()
-  const query = router.query
-  const callbackUrl = query.callbackUrl ?? '/'
-
-  const handleSignUpButton = () => {
-    modal?.setOpenRegisterModal(true)
-  }
-
-  const handleForgotPasswordButton = () => {
-    modal?.setOpenRetrievePasswordModal(true)
-  }
 
   const onSubmit = async (event: FormEvent) => {
     setLoginError(false)
@@ -43,16 +26,10 @@ export const Login: FC<Props> = ({ modal }) => {
 
     const result = await signIn('credentials', { redirect: false, password, email })
 
-    console.log(result)
-
     if (result?.error) {
       setLoginError(true)
     } else {
-      if (modal !== null) {
-        modal.setOpenModal(false)
-      } else {
-        await router.push(`${callbackUrl}`)
-      }
+      onSuccessLogin()
     }
   }
 
@@ -106,10 +83,9 @@ export const Login: FC<Props> = ({ modal }) => {
       </h1>
 
       <p className={ `
-          ${styles.login__error}
-          ${loginError ? styles.login__error__open : ''}
-        ` }
-      >
+        ${styles.login__error}
+        ${loginError ? styles.login__error__open : ''}
+      ` }>
         User/password incorrectos
       </p>
 
@@ -173,14 +149,14 @@ export const Login: FC<Props> = ({ modal }) => {
       <div className={ styles.login__registerRecoverSection }>
         <button
           className={ styles.login__signupButton }
-          onClick={ handleSignUpButton }
+          onClick={ onClickSignup }
         >
           Registrate aquí
         </button>
 
         <button
           className={ styles.login__forgotPasswordButton }
-          onClick={ handleForgotPasswordButton }
+          onClick={ onClickForgotPassword }
         >
           Recupera tu contraseña
         </button>

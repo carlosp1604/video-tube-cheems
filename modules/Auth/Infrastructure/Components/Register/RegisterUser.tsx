@@ -28,7 +28,7 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
 
   const authApiService = new AuthApiService()
 
-  const { t } = useTranslation('user-auth')
+  const { t } = useTranslation('user-signup')
 
   const onSubmit = async (event: FormEvent) => {
     setUserCreationError(false)

@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { Login } from '../../components/Login/Login'
+import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 import styles from '../../components/pages/SigninPage/SigninPage.module.scss'
 
 const SignInPage: NextPage = () => {

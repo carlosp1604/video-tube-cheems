@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react'
 import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
 import { useUserContext } from '~/hooks/UserContext'
 import Avatar from 'react-avatar'
-import { LoginModal } from '~/components/LoginModal/LoginModal'
+import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useTranslation } from 'next-i18next'
 

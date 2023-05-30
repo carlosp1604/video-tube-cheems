@@ -140,7 +140,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
         </label>
       </div>
       <button
-        type="submit"
+        type={ 'submit' }
         className={ `
           ${styles.login__submit}
           ${canEnableSubmitButton() ? styles.login__submit__enabled : ''}

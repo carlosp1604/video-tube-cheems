@@ -1,14 +1,17 @@
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { User } from '~/modules/Auth/Domain/User'
 import { mock, mockReset } from 'jest-mock-extended'
-import { Login } from '~/modules/Auth/Application/Login'
-import { LoginApplicationException } from '~/modules/Auth/Application/LoginApplicationException'
+import { Login } from '~/modules/Auth/Application/Login/Login'
+import { LoginApplicationException } from '~/modules/Auth/Application/Login/LoginApplicationException'
+import { DateTime } from 'luxon'
 
 describe('~/modules/Auth/Application/Login/Login.ts', () => {
-  const user = mock<User>()
+  const user = mock<User>({
+    emailVerified: null,
+    updatedAt: DateTime.now(),
+    createdAt: DateTime.now(),
+  })
   const userRepository = mock<UserRepositoryInterface>()
-  const verificationTokenRepository = mock<VerificationTokenRepositoryInterface>()
 
   const buildUseCase = () => {
     return new Login(userRepository)

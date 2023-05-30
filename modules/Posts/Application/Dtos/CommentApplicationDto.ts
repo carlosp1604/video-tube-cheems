@@ -1,4 +1,4 @@
-import { UserApplicationDto } from '../../../Auth/Application/UserApplicationDto'
+import { UserApplicationDto } from '../../../Auth/Application/Dtos/UserApplicationDto'
 import { ChildCommentApplicationDto } from './ChildCommentApplicationDto'
 
 export interface CommentApplicationDto {

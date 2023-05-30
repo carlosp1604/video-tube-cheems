@@ -70,7 +70,7 @@ export class TestUserBuilder {
     return this
   }
 
-  public withImageUrl (imageUrl: string): TestUserBuilder {
+  public withImageUrl (imageUrl: string | null): TestUserBuilder {
     this.imageUrl = imageUrl
 
     return this

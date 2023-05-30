@@ -1,5 +1,5 @@
-import { UserApplicationDto } from './UserApplicationDto'
-import { UserApplicationDtoTranslator } from './UserApplicationDtoTranslator'
+import { UserApplicationDto } from './Dtos/UserApplicationDto'
+import { UserApplicationDtoTranslator } from './Translators/UserApplicationDtoTranslator'
 import { GetUserByIdApplicationException } from './GetUseByIdApplicationException'
 import { User } from '~/modules/Auth/Domain/User'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'

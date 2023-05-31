@@ -1,5 +1,5 @@
-import { UserApplicationDto } from '../../../Auth/Application/Dtos/UserApplicationDto'
-import { UserPostCommentComponentDto } from '../Dtos/UserPostCommentComponentDto'
+import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
+import { UserPostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/UserPostCommentComponentDto'
 
 export class UserPostCommentComponentDtoTranslator {
   public static fromApplication (application: UserApplicationDto): UserPostCommentComponentDto {

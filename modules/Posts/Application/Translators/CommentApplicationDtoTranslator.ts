@@ -1,7 +1,7 @@
-import { PostComment } from '../../Domain/PostComment'
-import { CommentApplicationDto } from '../Dtos/CommentApplicationDto'
-import { UserApplicationDtoTranslator } from '../../../Auth/Application/Translators/UserApplicationDtoTranslator'
 import { ChildCommentApplicationDtoTranslator } from './ChildCommentApplicationDtoTranslator'
+import { CommentApplicationDto } from '~/modules/Posts/Application/Dtos/CommentApplicationDto'
+import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 
 export class CommentApplicationDtoTranslator {
   public static fromDomain (comment: PostComment): CommentApplicationDto {

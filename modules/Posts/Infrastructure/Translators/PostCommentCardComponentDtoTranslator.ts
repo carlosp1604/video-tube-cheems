@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { DateService } from '../../../../helpers/Infrastructure/DateService'
-import { UserApplicationDto } from '../../../Auth/Application/Dtos/UserApplicationDto'
-import { PostCommentCardComponentDto } from '../Dtos/PostCommentCardComponentDto'
 import { UserPostCommentComponentDtoTranslator } from './UserPostCommentComponentTranslatorDto'
+import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
+import { PostCommentCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentCardComponentDto'
+import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostCommentCardComponentDtoTranslator {
   public static translate (

@@ -48,6 +48,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'post_card',
     'user_signup',
     'user_login',
+    'user_retrieve_password',
   ])
 
   const props: Props = {

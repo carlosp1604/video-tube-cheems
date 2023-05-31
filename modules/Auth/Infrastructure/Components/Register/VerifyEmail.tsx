@@ -30,7 +30,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
-      const result = await authApiService.verifyEmail(email, resendEmail)
+      const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
 
       if (!result.ok) {
         if (result.status === 409) {
@@ -75,7 +75,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
   }
 
-  const onClickSubmit = () => {
+  const onClickHasVerificationCode = () => {
     if (email !== '' && !invalidEmail) {
       onConfirm(email)
     }
@@ -125,7 +125,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         ${styles.register__verificationCodeLink}
         ${!invalidEmail && email !== '' ? styles.register__verificationCodeLink_active : ''}
       ` }
-        onClick={ onClickSubmit }
+        onClick={ onClickHasVerificationCode }
         disabled={ invalidEmail }
       >
         { t('user_signup_verify_email_already_has_a_code_button_title') }

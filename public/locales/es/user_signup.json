@@ -25,7 +25,7 @@
   "user_signup_verify_email_subtitle": "Introduce un email válido. Será necesario para activar la cuenta y recuperar tu contraseña",
   "user_signup_verify_email_title": "Registro",
   "user_signup_signup_duplicated_user_message": "El usuario ya existe. Comprueba tu email/nombre de usuario",
-  "user_signup_signup_invalid_code_message": "El código introducido no es válido.",
+  "user_signup_signup_invalid_code_message": "El código introducido no es válido",
   "user_signup_signup_name_error_message": "Nombre no válido",
   "user_signup_signup_name_input_label": "Nombre",
   "user_signup_signup_name_input_placeholder": "Nombre",

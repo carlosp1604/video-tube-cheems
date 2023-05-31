@@ -18,7 +18,7 @@ jest.mock('crypto', () => {
   }
 })
 
-describe('~/modules/Auth/Application/ValidateToken/ValidateToken.ts', () => {
+describe('~/modules/Auth/Application/ValidateCode/ValidateCode.ts', () => {
   let validateTokenRequest: ValidateTokenApplicationRequestInterface
   const userRepository = mock<UserRepositoryInterface>()
   const verificationTokenRepository = mock<VerificationTokenRepositoryInterface>()

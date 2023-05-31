@@ -1,10 +1,11 @@
 import { FC, ReactElement, useState } from 'react'
 import { VerifyEmail } from './VerifyEmail'
-import { ValidateToken } from './ValidateToken'
+import { ValidateCode } from './ValidateCode'
 import styles from './RetrievePassword.module.scss'
 import { BsArrowLeft } from 'react-icons/bs'
-import { ConfirmingPasswordChanged } from './ConfirmingPasswordChanged'
+import { ConfirmingPasswordChange } from './ConfirmingPasswordChange'
 import { ChangeUserPassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/ChangeUserPassword'
+import { useTranslation } from 'next-i18next'
 
 type RetrieveSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'password_changed'
 
@@ -17,6 +18,8 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
   const [email, setEmail] = useState<string>('')
   const [token, setToken] = useState<string>('')
   const [retrieveStep, setRetrieveStep] = useState<RetrieveSteps>('verifying_email')
+
+  const { t } = useTranslation('user_password_retrieve')
 
   let onClickCancel = onCancel
 
@@ -34,7 +37,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
   if (retrieveStep === 'validating_token') {
     onClickCancel = () => { setRetrieveStep('verifying_email') }
     content = (
-      <ValidateToken email={ email } onConfirm={ (token: string) => {
+      <ValidateCode email={ email } onConfirm={ (token: string) => {
         setToken(token)
         setRetrieveStep('validated_token')
       } }/>
@@ -51,7 +54,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
 
   if (retrieveStep === 'password_changed') {
     content = (
-      <ConfirmingPasswordChanged onConfirm={ () => {
+      <ConfirmingPasswordChange onConfirm={ () => {
         onConfirm()
       } }/>
     )
@@ -64,7 +67,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
           className={ styles.retrievePassword__backIcon }
           onClick={ () => onClickCancel() }
         />
-        { 'Regresar' }
+        { t('back_button_title') }
       </span>
       { content }
     </div>

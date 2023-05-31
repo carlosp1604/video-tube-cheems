@@ -1,6 +1,19 @@
 export class AuthApiService {
-  public async verifyEmail (email: string, sendNewToken: boolean): Promise<Response> {
+  public async verifyEmailForAccountCreation (email: string, sendNewToken: boolean): Promise<Response> {
     return fetch('/api/auth/users/verify-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        sendNewToken,
+      }),
+    })
+  }
+
+  public async verifyEmailForRecoverPassword (email: string, sendNewToken: boolean): Promise<Response> {
+    return fetch('/api/auth/users/recover-password', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -35,6 +48,20 @@ export class AuthApiService {
         password,
         username,
         language,
+        token,
+      }),
+    })
+  }
+
+  public async changeUserPassword (email: string, password: string, token: string): Promise<Response> {
+    return fetch('/api/auth/users/change-password', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
         token,
       }),
     })

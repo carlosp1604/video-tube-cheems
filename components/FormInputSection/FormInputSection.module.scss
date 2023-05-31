@@ -1,0 +1,33 @@
+.form-input-section {
+  &__container {
+    @apply flex flex-col gap-y-0.5 mb-1.5;
+  }
+
+  &__input-label {
+    @apply text-xs font-light outline-0;
+  }
+
+  &__input-error-message {
+    @apply text-xs font-light text-red opacity-0;
+
+    &_visible {
+      @apply opacity-100;
+    }
+  }
+
+  &__input {
+    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm;
+
+    &:focus {
+      @apply border-brand-700;
+    }
+
+    &_error {
+      @apply border-red;
+
+      &:focus {
+        @apply border-red;
+      }
+    }
+  }
+}

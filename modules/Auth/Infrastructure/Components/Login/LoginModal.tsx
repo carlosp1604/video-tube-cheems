@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Modal } from '~/components/Modal/Modal'
-import { Login } from '~/components/Login/Login'
+import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
 import { RetrievePassword } from '~/components/RetrievePassword/RetrievePassword'
 
@@ -16,11 +16,11 @@ export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
   let onClose: (() => void) | null = () => setIsOpen(false)
 
   let modalContent = (
-    <Login modal={ {
-      setOpenModal: setIsOpen,
-      setOpenRegisterModal,
-      setOpenRetrievePasswordModal,
-    } }/>
+    <Login
+      onClickForgotPassword={ () => setOpenRetrievePasswordModal(true) }
+      onClickSignup={ () => setOpenRegisterModal(true) }
+      onSuccessLogin={ () => setIsOpen(false) }
+    />
   )
 
   if (openRegisterModal) {
@@ -39,7 +39,7 @@ export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
       <RetrievePassword
         onConfirm={ () => setOpenRetrievePasswordModal(false) }
         onCancel={ () => setOpenRetrievePasswordModal(false) }
-        />
+      />
     )
   }
 

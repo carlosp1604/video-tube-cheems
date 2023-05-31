@@ -1,4 +1,3 @@
-
 export interface UserApplicationDto {
   readonly id: string
   readonly name: string

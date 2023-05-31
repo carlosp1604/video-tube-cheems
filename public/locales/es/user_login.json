@@ -1,0 +1,14 @@
+{
+  "user_login_email_input_error_message": "Dirección de correo inválida",
+  "user_login_email_input_label": "Email",
+  "user_login_email_input_placeholder": "Email",
+  "user_login_forgot_password_button_title": "Olvidé mi contraseña",
+  "user_login_password_input_error_message": "Contraseña inválida",
+  "user_login_password_input_label": "Contraseña",
+  "user_login_password_input_placeholder": "Contraseña",
+  "user_login_sign_in_button_title": "Regístrate aquí",
+  "user_login_sign_in_error_message": "Combinación Email/Contraseña incorrecta",
+  "user_login_submit_button_title": "Iniciar sesión",
+  "user_login_subtitle": "Inicia sesión con tu email y contraseña",
+  "user_login_title": "Inicio de sesión"
+}

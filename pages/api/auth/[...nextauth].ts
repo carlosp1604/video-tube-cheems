@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { container } from '~/awailix.container'
-import { Login } from '~/modules/Auth/Application/Login'
+import { Login } from '~/modules/Auth/Application/Login/Login'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export const authOptions: NextAuthOptions = {
@@ -22,16 +22,16 @@ export const authOptions: NextAuthOptions = {
         const loginUseCase = container.resolve<Login>('LoginUseCase')
 
         try {
-          const domainUser = await loginUseCase.login({
+          const userApplicationDto = await loginUseCase.login({
             email,
             password,
           })
 
           return {
-            id: domainUser.id,
-            email: domainUser.email,
-            name: domainUser.name,
-            image: domainUser.imageUrl,
+            id: userApplicationDto.id,
+            email: userApplicationDto.email,
+            name: userApplicationDto.name,
+            image: userApplicationDto.imageUrl,
           }
         } catch (exception: unknown) {
           console.error(exception)

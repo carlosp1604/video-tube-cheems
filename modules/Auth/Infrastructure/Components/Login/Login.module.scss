@@ -44,10 +44,11 @@
   }
 
   &__input {
-    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm;
+    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm
+      transition-colors;
 
-    &:focus {
-      @apply border-brand-700;
+    &:focus, &:hover {
+      @apply border-brand-700 transition-colors;
     }
 
     &_error {

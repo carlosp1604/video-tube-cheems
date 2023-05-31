@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { UserApplicationDto } from '../Application/UserApplicationDto'
+import { UserApplicationDto } from '../Application/Dtos/UserApplicationDto'
 import { UserProviderUserDto } from './UserProviderUserDto'
 
 export class UserProviderUserDtoTranslator {
@@ -15,7 +15,7 @@ export class UserProviderUserDtoTranslator {
       id: applicationDto.id,
       name: applicationDto.name,
       email: applicationDto.email,
-      createdAt: createdAt,
+      createdAt,
       emailVerified: applicationDto.emailVerified,
       image: applicationDto.imageUrl,
     }

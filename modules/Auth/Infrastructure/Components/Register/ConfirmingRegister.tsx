@@ -8,7 +8,7 @@ export interface Props {
 }
 
 export const ConfirmingRegister: FC<Props> = ({ onConfirm }) => {
-  const { t } = useTranslation('user-auth')
+  const { t } = useTranslation('user_signup')
 
   return (
     <div className={ styles.register__confirmingRegister }>

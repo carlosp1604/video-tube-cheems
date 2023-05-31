@@ -1,7 +1,6 @@
 import { ChangeEvent, FC, KeyboardEvent, useState } from 'react'
 import styles from './SearchBar.module.scss'
-import { CiSearch, CiUser } from 'react-icons/ci'
-import { useTranslation } from 'next-i18next'
+import { CiSearch } from 'react-icons/ci'
 
 interface Props {
   onChange: (value: string) => void

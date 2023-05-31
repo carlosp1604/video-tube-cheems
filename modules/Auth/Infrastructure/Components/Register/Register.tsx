@@ -19,7 +19,7 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
   const [code, setCode] = useState<string>('')
   const [registrationStep, setRegistrationStep] = useState<RegistrationSteps>('verifying_email')
 
-  const { t } = useTranslation('user-auth')
+  const { t } = useTranslation('user_signup')
 
   let onClickCancel = onCancel
 

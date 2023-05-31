@@ -69,7 +69,7 @@ module.exports = {
     'prefer-arrow-callback': [
       SEVERITY_ERROR,
     ],
-    'no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': SEVERITY_ERROR,
     '@typescript-eslint/no-unused-vars': 'off',
     'unused-imports/no-unused-vars': [
       'warn',

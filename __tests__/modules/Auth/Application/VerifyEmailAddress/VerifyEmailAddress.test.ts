@@ -1,15 +1,15 @@
-import { CryptoServiceInterface } from '~/modules/Auth/Domain/CryptoServiceInterface'
 import { UserEmailSenderInterface } from '~/modules/Auth/Domain/UserEmailSenderInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { mock, mockReset } from 'jest-mock-extended'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { DateTime, Settings } from 'luxon'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
 import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
 import {
   VerifyEmailAddressApplicationException
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
 
 jest.mock('crypto', () => {
   return {
@@ -69,7 +69,7 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
     beforeEach(() => {
       userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
       cryptoService.hash.mockReturnValue(Promise.resolve('hashed-password'))
-      cryptoService.randomHash.mockResolvedValue(Promise.resolve('verify-email-token'))
+      cryptoService.randomString.mockReturnValue('verify-email-token')
     })
 
     // This case only makes sense if already exists a verification token for user
@@ -84,7 +84,7 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
 
           expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
           expect(verificationTokenRepository.findByEmail).toBeCalledWith('test-user@test.es')
-          expect(cryptoService.randomHash).toBeCalledTimes(1)
+          expect(cryptoService.randomString).toBeCalledTimes(1)
           expect(verificationTokenRepository.delete).toBeCalledWith(existingToken)
           expect(verificationTokenRepository.save).toBeCalledWith(verificationToken)
           expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', verificationToken)
@@ -108,7 +108,7 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
 
           expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
           expect(verificationTokenRepository.findByEmail).toBeCalledWith('test-user@test.es')
-          expect(cryptoService.randomHash).toBeCalledTimes(1)
+          expect(cryptoService.randomString).toBeCalledTimes(1)
           expect(verificationTokenRepository.delete).toBeCalledWith(existingToken)
           expect(verificationTokenRepository.save).toBeCalledWith(verificationToken)
           expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', verificationToken)
@@ -124,7 +124,7 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
 
       expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
       expect(verificationTokenRepository.findByEmail).toBeCalledWith('test-user@test.es')
-      expect(cryptoService.randomHash).toBeCalledTimes(1)
+      expect(cryptoService.randomString).toBeCalledTimes(1)
       expect(verificationTokenRepository.delete).not.toBeCalled()
       expect(verificationTokenRepository.save).toBeCalledWith(verificationToken)
       expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', verificationToken)

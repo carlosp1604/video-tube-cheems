@@ -2,7 +2,6 @@ import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInt
 import { mock, mockReset } from 'jest-mock-extended'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { DateTime, Settings } from 'luxon'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
 import {
   ValidateTokenApplicationRequestInterface
 } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationRequestInterface'
@@ -11,6 +10,7 @@ import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/Validate
 import {
   ValidateTokenApplicationException
 } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
 
 jest.mock('crypto', () => {
   return {

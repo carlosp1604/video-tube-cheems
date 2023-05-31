@@ -1,9 +1,9 @@
-import { UserApplicationDtoTranslator } from '../../../Auth/Application/UserApplicationDtoTranslator'
+import { UserApplicationDtoTranslator } from '../../../Auth/Application/Translators/UserApplicationDtoTranslator'
 import { PostChildComment } from '../../Domain/PostChildComment'
 import { ChildCommentApplicationDto } from '../Dtos/ChildCommentApplicationDto'
 
 export class ChildCommentApplicationDtoTranslator {
-  public static fromDomain(childComment: PostChildComment): ChildCommentApplicationDto {
+  public static fromDomain (childComment: PostChildComment): ChildCommentApplicationDto {
     return {
       id: childComment.id,
       comment: childComment.comment,
@@ -11,7 +11,7 @@ export class ChildCommentApplicationDtoTranslator {
       updatedAt: childComment.updatedAt.toISO(),
       parentCommentId: childComment.parentCommentId,
       user: UserApplicationDtoTranslator.fromDomain(childComment.user),
-      userId: childComment.userId
+      userId: childComment.userId,
     }
   }
 }

@@ -1,37 +1,23 @@
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
-import { ChangeEvent, Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
+import { ChangeEvent, FC, FormEvent, useState } from 'react'
 import styles from './Login.module.scss'
-import { z } from 'zod'
+import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import { useTranslation } from 'next-i18next'
 
 export interface Props {
-  modal: {
-    setOpenModal: Dispatch<SetStateAction<boolean>>
-    setOpenRegisterModal: Dispatch<SetStateAction<boolean>>
-    setOpenRetrievePasswordModal: Dispatch<SetStateAction<boolean>>
-  } | null
+  onClickSignup: () => void
+  onClickForgotPassword: () => void
+  onSuccessLogin: () => void
 }
 
-export const Login: FC<Props> = ({ modal }) => {
+export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSuccessLogin }) => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loginError, setLoginError] = useState<boolean>(false)
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
-  const passwordValidator = z.string().min(6)
-  const emailValidator = z.string().email()
 
-  const router = useRouter()
-  const query = router.query
-  const callbackUrl = query.callbackUrl ?? '/'
-
-  const handleSignUpButton = () => {
-    modal?.setOpenRegisterModal(true)
-  }
-
-  const handleForgotPasswordButton = () => {
-    modal?.setOpenRetrievePasswordModal(true)
-  }
+  const { t } = useTranslation('user_login')
 
   const onSubmit = async (event: FormEvent) => {
     setLoginError(false)
@@ -43,16 +29,10 @@ export const Login: FC<Props> = ({ modal }) => {
 
     const result = await signIn('credentials', { redirect: false, password, email })
 
-    console.log(result)
-
     if (result?.error) {
       setLoginError(true)
     } else {
-      if (modal !== null) {
-        modal.setOpenModal(false)
-      } else {
-        await router.push(`${callbackUrl}`)
-      }
+      onSuccessLogin()
     }
   }
 
@@ -92,30 +72,35 @@ export const Login: FC<Props> = ({ modal }) => {
     }
   }
 
+  const canEnableSubmitButton = () => {
+    return !invalidEmail &&
+      !invalidPassword &&
+      email !== '' &&
+      password !== ''
+  }
+
   return (
     <form
       className={ styles.login__container }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.login__title }>
-        Login
-
+        { t('user_login_title') }
         <small className={ styles.login__subtitle }>
-          Inicia sesión con tu correo y contraseña.
+          { t('user_login_subtitle') }
         </small>
       </h1>
 
       <p className={ `
-          ${styles.login__error}
-          ${loginError ? styles.login__error__open : ''}
-        ` }
-      >
-        User/password incorrectos
+        ${styles.login__error}
+        ${loginError ? styles.login__error__open : ''}
+      ` }>
+        { t('user_login_sign_in_error_message') }
       </p>
 
       <div className={ styles.login__inputSection }>
         <label className={ styles.login__inputLabel }>
-          Email
+          { t('user_login_email_input_label') }
         </label>
         <input
           type={ 'email' }
@@ -123,27 +108,27 @@ export const Login: FC<Props> = ({ modal }) => {
             ${styles.login__input}
             ${invalidEmail ? styles.login__input_error : ''}
           ` }
-          placeholder={ 'Email' }
+          placeholder={ t('user_login_email_input_placeholder') ?? '' }
           onChange={ handleEmailChange }
         />
         <label className={ `
           ${styles.login__inputErrorMessage}
           ${invalidEmail ? styles.login__inputErrorMessage__open : ''}
         ` }>
-          El email no es válido
+          { t('user_login_email_input_error_message') }
         </label>
       </div>
 
       <div className={ styles.login__inputSection }>
         <label className={ styles.login__inputLabel }>
-          Password
+          { t('user_login_password_input_label') }
         </label>
         <input
           className={ `
             ${styles.login__input}
             ${invalidPassword ? styles.login__input_error : ''}
           ` }
-          placeholder={ 'Password' }
+          placeholder={ t('user_login_password_input_placeholder') ?? '' }
           type={ 'password' }
           onChange={ handlePasswordChange }
         />
@@ -151,38 +136,33 @@ export const Login: FC<Props> = ({ modal }) => {
           ${styles.login__inputErrorMessage}
           ${invalidPassword ? styles.login__inputErrorMessage__open : ''}
         ` }>
-          La contraseña no es válida
+          { t('user_login_password_input_error_message') }
         </label>
       </div>
       <button
-        type="submit"
+        type={ 'submit' }
         className={ `
           ${styles.login__submit}
-          ${!invalidEmail &&
-            !invalidPassword &&
-            email !== '' &&
-            password !== ''
-            ? styles.login__submit__enabled
-              : ''}
+          ${canEnableSubmitButton() ? styles.login__submit__enabled : ''}
         ` }
         disabled={ invalidEmail || invalidPassword }
       >
-        { 'Iniciar sesión' }
+        { t('user_login_submit_button_title') }
       </button>
 
       <div className={ styles.login__registerRecoverSection }>
         <button
           className={ styles.login__signupButton }
-          onClick={ handleSignUpButton }
+          onClick={ onClickSignup }
         >
-          Registrate aquí
+          { t('user_login_sign_in_button_title') }
         </button>
 
         <button
           className={ styles.login__forgotPasswordButton }
-          onClick={ handleForgotPasswordButton }
+          onClick={ onClickForgotPassword }
         >
-          Recupera tu contraseña
+          { t('user_login_forgot_password_button_title') }
         </button>
       </div>
     </form>

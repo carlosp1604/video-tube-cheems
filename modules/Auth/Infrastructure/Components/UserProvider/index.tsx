@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react'
 import { FC, ReactElement, useEffect, useMemo, useState } from 'react'
-import { UserApplicationDto } from '../../../Application/UserApplicationDto'
+import { UserApplicationDto } from '../../../Application/Dtos/UserApplicationDto'
 import { UserProviderUserDto } from '../../UserProviderUserDto'
 import { UserProviderUserDtoTranslator } from '../../UserProviderUserDtoTranslator'
 import { UserContext } from '~/hooks/UserContext'
@@ -19,8 +19,7 @@ const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
       }
 
       return null
-    }
- catch (exception: unknown) {
+    } catch (exception: unknown) {
       console.error('UserProvider: Failed to fetch user data')
       console.error(exception)
 
@@ -70,7 +69,7 @@ const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
   }), [session.status, status, user])
 
   return (
-    <UserContext.Provider value={ { userInstance: userInstance } }>
+    <UserContext.Provider value={ { userInstance } }>
       { children }
     </UserContext.Provider>
   )

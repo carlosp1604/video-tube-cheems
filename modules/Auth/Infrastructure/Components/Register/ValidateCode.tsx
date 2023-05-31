@@ -1,8 +1,9 @@
-import { ChangeEvent, FC, FormEvent, useState } from 'react'
+import { FC, FormEvent, useState } from 'react'
 import styles from './Register.module.scss'
 import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 
 export interface Props {
   email: string
@@ -58,24 +59,6 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
     }
   }
 
-  const handleCodeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === '') {
-      setCode('')
-      setInvalidCode(false)
-
-      return
-    }
-
-    try {
-      verificationCodeValidator.parse(event.target.value)
-      setCode(event.target.value)
-      setInvalidCode(false)
-    } catch (exception: unknown) {
-      setInvalidCode(true)
-      setCode('')
-    }
-  }
-
   return (
     <form
       className={ styles.register__container }
@@ -96,26 +79,17 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
         { errorMessage }
       </p>
 
-      <div className={ styles.register__inputSection }>
-        <label className={ styles.register__inputLabel }>
-          { t('user_signup_validate_code_code_input_label') }
-        </label>
-        <input
-          type={ 'text' }
-          className={ `
-            ${styles.register__input}
-            ${invalidCode ? styles.register__input_error : ''}
-          ` }
-          placeholder={ t('user_signup_validate_code_code_input_placeholder') ?? '' }
-          onChange={ handleCodeChange }
-        />
-        <label className={ `
-          ${styles.register__inputErrorMessage}
-          ${invalidCode ? styles.register__inputErrorMessage__open : ''}
-        ` }>
-          { t('user_signup_validate_code_invalid_code_message') }
-        </label>
-      </div>
+      <FormInputSection
+        label={ t('user_signup_validate_code_code_input_label') }
+        errorLabel={ t('user_signup_validate_code_invalid_code_message') }
+        type={ 'text' }
+        placeholder={ t('user_signup_validate_code_code_input_placeholder') }
+        validator={ verificationCodeValidator }
+        onChange={ (value, invalidInput) => {
+          setCode(value)
+          setInvalidCode(invalidInput)
+        } }
+      />
 
       <button
         type={ 'submit' }

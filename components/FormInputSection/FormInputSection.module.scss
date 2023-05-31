@@ -4,30 +4,43 @@
   }
 
   &__input-label {
-    @apply text-xs font-light outline-0;
+    @apply -mb-0.5 text-xs font-light text-base-300;
+
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__input-error-message {
-    @apply text-xs font-light text-red opacity-0;
+    @apply -mt-0.5 text-xs font-light text-red opacity-0;
 
     &_visible {
       @apply opacity-100;
+
+      @screen md {
+        @apply text-sm;
+      }
     }
   }
 
   &__input {
-    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm;
+    @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm
+      transition-colors;
 
-    &:focus {
-      @apply border-brand-700;
+    &:focus, &:hover {
+      @apply border-brand-700 transition-colors;
     }
 
     &_error {
-      @apply border-red;
+      @apply border-red transition-colors;
 
       &:focus {
-        @apply border-red;
+        @apply border-red transition-colors;
       }
+    }
+
+    @screen md {
+      @apply text-base;
     }
   }
 }

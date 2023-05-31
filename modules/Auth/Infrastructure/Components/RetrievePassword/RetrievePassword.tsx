@@ -4,7 +4,7 @@ import { ValidateToken } from './ValidateToken'
 import styles from './RetrievePassword.module.scss'
 import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingPasswordChanged } from './ConfirmingPasswordChanged'
-import { ChangeUserPassword } from '~/components/RetrievePassword/ChangeUserPassword'
+import { ChangeUserPassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/ChangeUserPassword'
 
 type RetrieveSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'password_changed'
 

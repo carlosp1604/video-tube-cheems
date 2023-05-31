@@ -1,8 +1,9 @@
-import { ChangeEvent, FC, FormEvent, useState } from 'react'
+import { FC, FormEvent, useState } from 'react'
 import styles from './Register.module.scss'
 import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -74,25 +75,6 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
   }
 
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setResendEmail(false)
-    if (event.target.value === '') {
-      setEmail('')
-      setInvalidEmail(false)
-
-      return
-    }
-
-    try {
-      emailValidator.parse(event.target.value)
-      setEmail(event.target.value)
-      setInvalidEmail(false)
-    } catch (exception: unknown) {
-      setInvalidEmail(true)
-      setEmail('')
-    }
-  }
-
   const onClickSubmit = () => {
     if (email !== '' && !invalidEmail) {
       onConfirm(email)
@@ -118,29 +100,20 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         { errorMessage }
       </p>
 
-      <div className={ styles.register__inputSection }>
-        <label className={ styles.register__inputLabel }>
-          { t('user_signup_verify_email_email_input_label') }
-        </label>
-        <input
-          type={ 'email' }
-          className={ `
-            ${styles.register__input}
-            ${invalidEmail ? styles.register__input_error : ''}
-          ` }
-          placeholder={ t('user_signup_verify_email_email_input_placeholder') ?? '' }
-          onChange={ handleEmailChange }
-        />
-        <label className={ `
-          ${styles.register__inputErrorMessage}
-          ${invalidEmail ? styles.register__inputErrorMessage__open : ''}
-        ` }>
-          { t('user_signup_verify_email_email_error_message') }
-        </label>
-      </div>
+      <FormInputSection
+        label={ t('user_signup_verify_email_email_input_label') }
+        errorLabel={ t('user_signup_verify_email_email_error_message') }
+        type={ 'email' }
+        placeholder={ t('user_signup_verify_email_email_input_placeholder') }
+        validator={ emailValidator }
+        onChange={ (value, invalidInput) => {
+          setEmail(value)
+          setInvalidEmail(invalidInput)
+        } }
+      />
 
       <button
-        type="submit"
+        type={ 'submit' }
         className={ `
           ${styles.register__submit}
           ${!invalidEmail && email !== '' ? styles.register__submit__enabled : ''}

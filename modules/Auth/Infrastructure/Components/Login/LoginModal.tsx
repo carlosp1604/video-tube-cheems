@@ -2,7 +2,7 @@ import { Dispatch, FC, SetStateAction, useState } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
-import { RetrievePassword } from '~/components/RetrievePassword/RetrievePassword'
+import { RetrievePassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/RetrievePassword'
 
 export interface Props {
   isOpen: boolean

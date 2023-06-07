@@ -1,14 +1,14 @@
 {
-  "user_login_email_input_error_message": "Invalid email address",
-  "user_login_email_input_label": "Email",
-  "user_login_email_input_placeholder": "Email",
-  "user_login_forgot_password_button_title": "Forgot my password",
-  "user_login_password_input_error_message": "Invalid password",
-  "user_login_password_input_label": "Password",
-  "user_login_password_input_placeholder": "Password",
-  "user_login_sign_in_button_title": "Signup here",
-  "user_login_sign_in_error_message": "Incorrect Email/Password combination",
-  "user_login_submit_button_title": "Sign In",
-  "user_login_subtitle": "Sign in with your email and password",
-  "user_login_title": "Login"
+  "email_input_error_message": "Invalid email address",
+  "email_input_label": "Email",
+  "email_input_placeholder": "Email",
+  "forgot_password_button_title": "Forgot my password",
+  "password_input_error_message": "Invalid password",
+  "password_input_label": "Password",
+  "password_input_placeholder": "Password",
+  "sign_in_button_title": "Signup here",
+  "sign_in_error_message": "Incorrect Email/Password combination",
+  "submit_button_title": "Sign In",
+  "subtitle": "Sign in with your email and password",
+  "title": "Login"
 }

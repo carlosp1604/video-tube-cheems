@@ -52,14 +52,25 @@ export class MysqlVerificationTokenRepository implements VerificationTokenReposi
   /**
    * Persist a VerificationToken in the database
    * @param verificationToken VerificationToken to insert
+   * @param deleteExisting Decides whether to delete existing token or not
    */
-  public async save (verificationToken: VerificationToken): Promise<void> {
+  public async save (verificationToken: VerificationToken, deleteExisting: boolean): Promise<void> {
     const prismaVerificationTokenModel = PrismaVerificationTokenModelTranslator.toDatabase(verificationToken)
 
-    await prisma.verificationToken.create({
-      data: {
-        ...prismaVerificationTokenModel,
-      },
+    await prisma.$transaction(async (transaction) => {
+      if (deleteExisting) {
+        await transaction.verificationToken.deleteMany({
+          where: {
+            userEmail: verificationToken.userEmail,
+          },
+        })
+      }
+
+      await transaction.verificationToken.create({
+        data: {
+          ...prismaVerificationTokenModel,
+        },
+      })
     })
   }
 

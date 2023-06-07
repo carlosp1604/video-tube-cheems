@@ -50,24 +50,24 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.login__title }>
-        { t('user_login_title') }
+        { t('title') }
         <small className={ styles.login__subtitle }>
-          { t('user_login_subtitle') }
+          { t('subtitle') }
         </small>
       </h1>
 
       <p className={ `
         ${styles.login__error}
-        ${loginError ? styles.login__error__open : ''}
+        ${loginError ? styles.login__error_visible : ''}
       ` }>
-        { t('user_login_sign_in_error_message') }
+        { t('sign_in_error_message') }
       </p>
 
       <FormInputSection
-        label={ t('user_login_email_input_label') }
-        errorLabel={ t('user_login_email_input_error_message') }
+        label={ t('email_input_label') }
+        errorLabel={ t('email_input_error_message') }
         type={ 'email' }
-        placeholder={ t('user_login_email_input_placeholder') }
+        placeholder={ t('email_input_placeholder') }
         validator={ emailValidator }
         onChange={ (value, invalidInput) => {
           setEmail(value)
@@ -76,10 +76,10 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       />
 
       <FormInputSection
-        label={ t('user_login_password_input_label') }
-        errorLabel={ t('user_login_password_input_error_message') }
+        label={ t('password_input_label') }
+        errorLabel={ t('password_input_error_message') }
         type={ 'password' }
-        placeholder={ t('user_login_password_input_placeholder') }
+        placeholder={ t('password_input_placeholder') }
         validator={ passwordValidator }
         onChange={ (value, invalidInput) => {
           setPassword(value)
@@ -93,9 +93,9 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
           ${styles.login__submit}
           ${canEnableSubmitButton() ? styles.login__submit__enabled : ''}
         ` }
-        disabled={ invalidEmail || invalidPassword }
+        disabled={ !canEnableSubmitButton() }
       >
-        { t('user_login_submit_button_title') }
+        { t('submit_button_title') }
       </button>
 
       <div className={ styles.login__registerRecoverSection }>
@@ -103,14 +103,14 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
           className={ styles.login__signupButton }
           onClick={ onClickSignup }
         >
-          { t('user_login_sign_in_button_title') }
+          { t('sign_in_button_title') }
         </button>
 
         <button
           className={ styles.login__forgotPasswordButton }
           onClick={ onClickForgotPassword }
         >
-          { t('user_login_forgot_password_button_title') }
+          { t('forgot_password_button_title') }
         </button>
       </div>
     </form>

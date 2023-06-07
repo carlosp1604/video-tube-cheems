@@ -32,21 +32,14 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
       const result = await authApiService.validateVerificationCode(email, code)
 
       if (!result.ok) {
-        if (result.status === 409) {
-          setErrorMessage(t('user_signup_validate_code_expired_code_message') ?? '')
-          setValidationError(true)
-
-          return
-        }
-
         if (result.status === 404) {
-          setErrorMessage(t('user_signup_validate_code_invalid_code_message') ?? '')
+          setErrorMessage(t('validate_code_invalid_code_message') ?? '')
           setValidationError(true)
 
           return
         }
 
-        setErrorMessage(t('user_signup_validate_code_server_error_message') ?? '')
+        setErrorMessage(t('validate_code_server_error_message') ?? '')
         setValidationError(true)
 
         return
@@ -55,9 +48,13 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
       onConfirm(code)
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('user_signup_validate_code_server_error_message') ?? '')
+      setErrorMessage(t('validate_code_server_error_message') ?? '')
       setValidationError(true)
     }
+  }
+
+  const canSubmit = (): boolean => {
+    return !invalidCode && code !== ''
   }
 
   return (
@@ -66,24 +63,24 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.register__title }>
-        { t('user_signup_validate_code_title') }
+        { t('validate_code_title') }
         <small className={ styles.register__subtitle }>
-          { t('user_signup_validate_code_subtitle') }
+          { t('validate_code_subtitle') }
         </small>
       </h1>
 
       <p className={ `
         ${styles.register__error}
-        ${validationError ? styles.register__error__open : ''}
+        ${validationError ? styles.register__error_visible : ''}
       ` }>
         { errorMessage }
       </p>
 
       <FormInputSection
-        label={ t('user_signup_validate_code_code_input_label') }
-        errorLabel={ t('user_signup_validate_code_invalid_code_message') }
+        label={ t('validate_code_code_input_label') }
+        errorLabel={ t('validate_code_invalid_code_message') }
         type={ 'text' }
-        placeholder={ t('user_signup_validate_code_code_input_placeholder') }
+        placeholder={ t('validate_code_code_input_placeholder') }
         validator={ verificationCodeValidator }
         onChange={ (value, invalidInput) => {
           setCode(value)
@@ -95,11 +92,11 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
         type={ 'submit' }
         className={ `
           ${styles.register__submit}
-          ${!invalidCode && code !== '' ? styles.register__submit__enabled : ''}
+          ${canSubmit() ? styles.register__submit__enabled : ''}
         ` }
-        disabled={ invalidCode }
+        disabled={ !canSubmit() }
       >
-        { t('user_signup_validate_code_submit_button') }
+        { t('validate_code_submit_button') }
       </button>
     </form>
   )

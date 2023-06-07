@@ -1,40 +1,33 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { container } from '~/awailix.container'
+import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
   VerifyEmailAddressApiRequestValidator
-} from '~/modules/Auth/Infrastructure/VerifyEmailAddressApiRequestValidator'
-import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
-import {
-  VerifyEmailAddressApiRequestInterface
-} from '~/modules/Auth/Infrastructure/VerifyEmailAddressApiRequestInterface'
+} from '~/modules/Auth/Infrastructure/Validators/VerifyEmailAddressApiRequestValidator'
 import {
   VerifyEmailAddressApplicationException
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
 import {
   VerifyEmailAddressApplicationRequestTranslator
-} from '~/modules/Auth/Infrastructure/VerifyEmailAddressApplicationRequestTranslator'
-import { container } from '~/awailix.container'
+} from '~/modules/Auth/Infrastructure/Translators/VerifyEmailAddressApplicationRequestTranslator'
 
 export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  const method = request.method
-
-  if (method !== 'POST') {
+  if (request.method !== 'POST') {
     return handleMethod(response)
   }
 
-  const apiRequest = request.body as VerifyEmailAddressApiRequestInterface
-
-  const validationExceptions = VerifyEmailAddressApiRequestValidator.validate(apiRequest)
+  const validationExceptions = VerifyEmailAddressApiRequestValidator.validate(request.body)
 
   if (validationExceptions) {
-    return handleBadRequest(response, validationExceptions)
+    return handleBadRequestValidationError(response, validationExceptions)
   }
 
   const useCase = container.resolve<VerifyEmailAddress>('verifyEmailAddressUseCase')
-  const applicationRequest = VerifyEmailAddressApplicationRequestTranslator.fromApi(apiRequest)
+  const applicationRequest = VerifyEmailAddressApplicationRequestTranslator.fromApi(request.body)
 
   try {
     await useCase.verify(applicationRequest)
@@ -46,18 +39,22 @@ export default async function handler (
     }
 
     switch (exception.id) {
+      case VerifyEmailAddressApplicationException.userNotFoundId:
+        return handleNotFound(response)
       case VerifyEmailAddressApplicationException.existingTokenActiveId:
       case VerifyEmailAddressApplicationException.emailAlreadyRegisteredId:
         return handleConflict(exception, response)
-
       case VerifyEmailAddressApplicationException.cannotCreateVerificationTokenId:
-        return handleBadRequest(response, null)
-
       case VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmailId:
-        return handleUnprocessableEntity(response)
+      case VerifyEmailAddressApplicationException.invalidEmailAddressId:
+      case VerifyEmailAddressApplicationException.invalidTokenTypeId:
+        return handleUnprocessableEntity(response, exception)
 
-      default:
+      default: {
+        console.error(exception)
+
         return handleInternalError(response)
+      }
     }
   }
 
@@ -65,17 +62,17 @@ export default async function handler (
 }
 
 function handleConflict (exception: VerifyEmailAddressApplicationException, response: NextApiResponse) {
-  let code = 'verify-email-address-conflict'
+  let exceptionCode: string
 
   if (exception.id === VerifyEmailAddressApplicationException.existingTokenActiveId) {
-    code += '-token-already-issued'
+    exceptionCode = 'verify-email-address-conflict-token-already-issued'
   } else {
-    code += '-email-already-registered'
+    exceptionCode = 'verify-email-address-conflict-email-already-registered'
   }
 
   return response.status(409)
     .json({
-      code,
+      code: exceptionCode,
       message: exception.message,
     })
 }
@@ -90,16 +87,55 @@ function handleMethod (response: NextApiResponse) {
     })
 }
 
-function handleBadRequest (
+function handleBadRequestValidationError (
   response: NextApiResponse,
-  validationException: UserApiValidationException | null
+  validationException: UserApiValidationException
 ) {
   return response
     .status(400)
     .json({
       code: 'verify-email-address-bad-request',
       message: 'Invalid request',
-      ...validationException !== null ? { errors: validationException.exceptions } : {},
+      errors: validationException.exceptions,
+    })
+}
+
+function handleUnprocessableEntity (response: NextApiResponse, exception: VerifyEmailAddressApplicationException) {
+  let exceptionCode: string
+
+  switch (exception.id) {
+    case VerifyEmailAddressApplicationException.cannotCreateVerificationTokenId:
+      exceptionCode = 'verify-email-address-cannot-create-verification-token'
+      break
+
+    case VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmailId:
+      exceptionCode = 'verify-email-address-cannot-send-verification-token'
+      break
+
+    case VerifyEmailAddressApplicationException.invalidEmailAddressId:
+      exceptionCode = 'verify-email-address-invalid-email-address'
+      break
+
+    case VerifyEmailAddressApplicationException.invalidTokenTypeId:
+      exceptionCode = 'verify-email-address-invalid-email-token-type'
+      break
+
+    default:
+      exceptionCode = 'verify-email-address-unprocessable-entity'
+  }
+
+  return response.status(422)
+    .json({
+      code: exceptionCode,
+      message: exception.message,
+    })
+}
+
+function handleNotFound (response: NextApiResponse) {
+  return response.status(404)
+    .json({
+      code: 'verify-email-address-not-found',
+      message: 'User associated to given email was not found',
     })
 }
 
@@ -108,13 +144,5 @@ function handleInternalError (response: NextApiResponse) {
     .json({
       code: 'verify-email-address-internal-server-error',
       message: 'Something went wrong while processing request',
-    })
-}
-
-function handleUnprocessableEntity (response: NextApiResponse) {
-  return response.status(422)
-    .json({
-      code: 'verify-email-address-invalid-email-address',
-      message: 'Email could not be sent due to email address is invalid',
     })
 }

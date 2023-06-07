@@ -8,7 +8,6 @@ interface Props {
   type: HTMLInputTypeAttribute
   placeholder: string
   validator: ZodString
-  extraValidation?: (value: string) => boolean
   onChange: (value: string, invalidInput: boolean) => void
 }
 
@@ -18,7 +17,6 @@ export const FormInputSection: FC<Props> = ({
   type,
   placeholder,
   validator,
-  extraValidation,
   onChange,
 }) => {
   const [invalidInput, setInvalidInput] = useState<boolean>(false)
@@ -32,14 +30,6 @@ export const FormInputSection: FC<Props> = ({
 
     try {
       validator.parse(event.target.value)
-      if (extraValidation) {
-        if (!extraValidation(event.target.value)) {
-          setInvalidInput(true)
-          onChange('', true)
-
-          return
-        }
-      }
       onChange(event.target.value, false)
       setInvalidInput(false)
     } catch (exception: unknown) {

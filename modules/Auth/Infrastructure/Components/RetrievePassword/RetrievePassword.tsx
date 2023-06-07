@@ -19,7 +19,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
   const [token, setToken] = useState<string>('')
   const [retrieveStep, setRetrieveStep] = useState<RetrieveSteps>('verifying_email')
 
-  const { t } = useTranslation('user_password_retrieve')
+  const { t } = useTranslation('user_retrieve_password')
 
   let onClickCancel = onCancel
 

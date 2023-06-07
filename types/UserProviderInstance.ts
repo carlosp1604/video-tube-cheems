@@ -1,4 +1,4 @@
-import { UserProviderUserDto } from '../modules/Auth/Infrastructure/UserProviderUserDto'
+import { UserProviderUserDto } from '../modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
 
 export type UserStatus = 'SIGNED_OUT' | 'SIGNED_IN'
 

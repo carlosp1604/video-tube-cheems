@@ -1,13 +1,17 @@
-import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
+import { UserDomainException } from '~/modules/Auth/Domain/UserDomainException'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/Dtos/VerificationTokenApplicationDto'
+import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
+import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import {
-  VerificationTokenApplicationTranslator
-} from '~/modules/Auth/Application/VerificationTokenApplicationTranslator'
+  VerificationTokenApplicationDtoTranslator
+} from '~/modules/Auth/Application/Translators/VerificationTokenApplicationDtoTranslator'
 import {
   ValidateTokenApplicationRequestInterface
 } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationRequestInterface'
-import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/VerificationTokenApplicationDto'
-import { ValidateTokenApplicationException } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
+import {
+  ValidateTokenApplicationException
+} from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
 
 export class ValidateToken {
   // eslint-disable-next-line no-useless-constructor
@@ -17,27 +21,45 @@ export class ValidateToken {
   ) {}
 
   public async validate (request: ValidateTokenApplicationRequestInterface): Promise<VerificationTokenApplicationDto> {
-    const verificationToken =
-      await this.verificationTokenRepository.findByEmailAndToken(request.userEmail, request.token)
+    const user = await this.userRepository.findByEmail(request.userEmail, ['verificationToken'])
 
-    if (!verificationToken) {
-      throw ValidateTokenApplicationException.verificationTokenNotFound(request.userEmail)
+    if (user === null) {
+      const verificationToken =
+        await this.verificationTokenRepository.findByEmailAndToken(request.userEmail, request.token)
+
+      if (verificationToken === null) {
+        throw ValidateTokenApplicationException.verificationTokenNotFound(request.userEmail)
+      }
+
+      if (!verificationToken.isTokenValidFor(VerificationTokenType.CREATE_ACCOUNT)) {
+        throw ValidateTokenApplicationException.cannotUseCreateAccountToken(request.userEmail)
+      }
+
+      return VerificationTokenApplicationDtoTranslator.fromDomain(verificationToken)
     }
 
-    if (verificationToken.tokenHasExpired()) {
-      throw ValidateTokenApplicationException.verificationTokenExpired(request.userEmail)
+    try {
+      user.assertVerificationTokenIsValidFor(VerificationTokenType.RETRIEVE_PASSWORD, request.token)
+
+      return VerificationTokenApplicationDtoTranslator.fromDomain(user.verificationToken as VerificationToken)
+    } catch (exception: unknown) {
+      if (!(exception instanceof UserDomainException)) {
+        throw exception
+      }
+
+      switch (exception.id) {
+        case UserDomainException.userHasNotAVerificationTokenId:
+          throw ValidateTokenApplicationException.verificationTokenNotFound(user.email)
+
+        case UserDomainException.verificationTokenIsNotValidForId:
+          throw ValidateTokenApplicationException.cannotUseRecoverPasswordToken(user.email)
+
+        case UserDomainException.tokenDoesNotMatchId:
+          throw ValidateTokenApplicationException.tokenDoesNotMatch(user.email)
+
+        default:
+          throw exception
+      }
     }
-
-    const user = await this.userRepository.existsByEmail(verificationToken.userEmail)
-
-    if (user && verificationToken.type === 'verify-email') {
-      throw ValidateTokenApplicationException.cannotUseVerifyEmailToken(request.userEmail)
-    }
-
-    if (!user && verificationToken.type === 'recover-password') {
-      throw ValidateTokenApplicationException.cannotUseRecoverPasswordToken(request.userEmail)
-    }
-
-    return VerificationTokenApplicationTranslator.fromDomain(verificationToken)
   }
 }

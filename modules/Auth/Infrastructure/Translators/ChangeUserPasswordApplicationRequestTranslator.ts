@@ -1,7 +1,7 @@
 import {
   ChangeUserPasswordApiRequestInterface
-} from '~/modules/Auth/Infrastructure/ChangeUserPasswordApiRequestInterface'
-import { ChangeUserPasswordApplicationRequest } from '~/modules/Auth/Application/ChangeUserPasswordApplicationRequest'
+} from '~/modules/Auth/Infrastructure/Dtos/ChangeUserPasswordApiRequestInterface'
+import { ChangeUserPasswordApplicationRequest } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPasswordApplicationRequest'
 
 export class ChangeUserPasswordApplicationRequestTranslator {
   public static fromApi (apiRequest: ChangeUserPasswordApiRequestInterface): ChangeUserPasswordApplicationRequest {

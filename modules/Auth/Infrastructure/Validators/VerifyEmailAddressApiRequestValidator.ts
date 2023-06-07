@@ -2,10 +2,11 @@ import { z, ZodError } from 'zod'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
   VerifyEmailAddressApiRequestInterface
-} from '~/modules/Auth/Infrastructure/VerifyEmailAddressApiRequestInterface'
+} from '~/modules/Auth/Infrastructure/Dtos/VerifyEmailAddressApiRequestInterface'
 
 export class VerifyEmailAddressApiRequestValidator {
   private static verifyEmailAddressApiRequestSchema = z.object({
+    type: z.string().min(1),
     email: z.string().email().min(1),
     sendNewToken: z.boolean(),
   })

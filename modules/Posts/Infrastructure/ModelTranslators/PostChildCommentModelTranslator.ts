@@ -1,12 +1,12 @@
 import { DateTime } from 'luxon'
-import { UserModelTranslator } from '../../../Auth/Infrastructure/UserModelTranslator'
+import { PrismaUserModelTranslator } from '../../../Auth/Infrastructure/PrismaUserModelTranslator'
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
 import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
 import { PostCommentWithUser } from '../PrismaModels/PostCommentModel'
 import { PostChildComment } from '../../Domain/PostChildComment'
 
 export class PostChildCommentModelTranslator {
-  public static toDomain(
+  public static toDomain (
     prismaPostCommentModel: PrismaPostCommentModel,
     options: RepositoryOptions[]
   ): PostChildComment {
@@ -29,14 +29,15 @@ export class PostChildCommentModelTranslator {
 
     if (options.includes('comments.user')) {
       const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
-      const userDomain = UserModelTranslator.toDomain(postCommentWithUser.user)
+      const userDomain = PrismaUserModelTranslator.toDomain(postCommentWithUser.user)
+
       postComment.setUser(userDomain)
     }
 
     return postComment
   }
 
-  public static toDatabase(postChildComment: PostChildComment): PrismaPostCommentModel {
+  public static toDatabase (postChildComment: PostChildComment): PrismaPostCommentModel {
     return {
       id: postChildComment.id,
       comment: postChildComment.comment,
@@ -45,7 +46,7 @@ export class PostChildCommentModelTranslator {
       createdAt: postChildComment.createdAt.toJSDate(),
       deletedAt: postChildComment.deletedAt?.toJSDate() ?? null,
       updatedAt: postChildComment.updatedAt.toJSDate(),
-      postId: null
+      postId: null,
     }
   }
 }

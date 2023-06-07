@@ -66,9 +66,9 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
         <BsArrowLeft
           className={ styles.register__backIcon }
           onClick={ () => onClickCancel() }
-          title={ t('user_signup_back_button_title') ?? '' }
+          title={ t('back_button_title') ?? '' }
         />
-        { t('user_signup_back_button_title') ?? '' }
+        { t('back_button_title') ?? '' }
       </span>
       { content }
     </div>

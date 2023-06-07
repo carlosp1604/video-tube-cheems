@@ -1,8 +1,8 @@
 import { Knex } from 'knex'
 
-export async function up(knex: Knex): Promise<void> {
+export async function up (knex: Knex): Promise<void> {
   return knex.schema
-    .createTable('post_tags', function (table) {
+    .createTable('post_tags', (table) => {
       table.string('id', 36).primary().notNullable()
       table.string('name', 64).notNullable()
       table.string('description', 1024).nullable()
@@ -18,7 +18,6 @@ export async function up(knex: Knex): Promise<void> {
     })
 }
 
-export async function down(knex: Knex): Promise<void> {
+export async function down (knex: Knex): Promise<void> {
   return knex.schema.dropTable('post_tags')
 }
-

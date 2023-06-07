@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { UserApplicationDto } from '../Application/Dtos/UserApplicationDto'
-import { UserProviderUserDto } from './UserProviderUserDto'
+import { UserApplicationDto } from '../../Application/Dtos/UserApplicationDto'
+import { UserProviderUserDto } from '../Dtos/UserProviderUserDto'
 
 export class UserProviderUserDtoTranslator {
   public static fromApplication (applicationDto: UserApplicationDto): UserProviderUserDto {

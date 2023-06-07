@@ -32,24 +32,44 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       const result = await authApiService.verifyEmailForRecoverPassword(email, resendEmail)
 
       if (!result.ok) {
-        if (result.status === 409) {
-          setResendEmail(true)
-          setErrorMessage(t('verify_email_email_already_sent_message') ?? '')
+        if (result.status === 404) {
+          setErrorMessage(t('verify_email_email_user_not_found_message') ?? '')
           setVerificationError(true)
 
           return
         }
 
-        if (result.status === 400) {
-          setErrorMessage(t('verify_email_invalid_email_message') ?? '')
+        if (result.status === 409) {
+          const jsonResponse = await result.json()
+
+          setVerificationError(true)
+
+          if (jsonResponse.code === 'verify-email-address-conflict-token-already-issued') {
+            setResendEmail(true)
+            setErrorMessage(t('verify_email_email_already_sent_message') ?? '')
+
+            return
+          }
+
+          setErrorMessage(t('verify_email_server_error_message') ?? '')
           setVerificationError(true)
 
           return
         }
 
         if (result.status === 422) {
-          setErrorMessage(t('verify_email_email_could_not_be_sent_message') ?? '')
+          const jsonResponse = await result.json()
+
           setVerificationError(true)
+
+          switch (jsonResponse.code) {
+            case 'verify-email-address-invalid-email':
+              setErrorMessage(t('verify_email_invalid_email_message') ?? '')
+              break
+            default:
+              setErrorMessage(t('verify_email_server_error_message') ?? '')
+              break
+          }
 
           return
         }
@@ -74,6 +94,10 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
   }
 
+  const canSubmit = (): boolean => {
+    return !invalidEmail && email !== ''
+  }
+
   return (
     <form
       className={ styles.retrievePassword__container }
@@ -88,7 +112,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
 
       <p className={ `
         ${styles.retrievePassword__error}
-        ${verificationError ? styles.retrievePassword__error__open : ''}
+        ${verificationError ? styles.retrievePassword__error_visible : ''}
       ` }>
         { errorMessage }
       </p>
@@ -109,18 +133,19 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         type={ 'submit' }
         className={ `
           ${styles.retrievePassword__submit}
-          ${!invalidEmail && email !== '' ? styles.retrievePassword__submit__enabled : ''}
+          ${canSubmit() ? styles.retrievePassword__submit__enabled : ''}
           ${resendEmail ? styles.retrievePassword__submit_resendEmail : ''}
-        ` }>
-        { resendEmail
-          ? t('verify_email_submit_button')
-          : t('verify_email_resend_email') }
+        ` }
+        disabled={ !canSubmit() }
+      >
+        { resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
       </button>
       <button className={ `
         ${styles.retrievePassword__verificationCodeLink}
         ${!invalidEmail && email !== '' ? styles.retrievePassword__verificationCodeLink_active : ''}
       ` }
         onClick={ onClickHasVerificationCode }
+        disabled={ !canSubmit() }
       >
         { t('verify_email_already_has_a_code_button_title') }
       </button>

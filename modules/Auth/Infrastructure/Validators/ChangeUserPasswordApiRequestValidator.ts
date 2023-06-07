@@ -2,7 +2,7 @@ import { z, ZodError } from 'zod'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
   ChangeUserPasswordApiRequestInterface
-} from '~/modules/Auth/Infrastructure/ChangeUserPasswordApiRequestInterface'
+} from '~/modules/Auth/Infrastructure/Dtos/ChangeUserPasswordApiRequestInterface'
 
 export class ChangeUserPasswordApiRequestValidator {
   private static changeUserPasswordApiRequestSchema = z.object({
@@ -14,8 +14,7 @@ export class ChangeUserPasswordApiRequestValidator {
   public static validate (request: ChangeUserPasswordApiRequestInterface): UserApiValidationException | void {
     try {
       this.changeUserPasswordApiRequestSchema.parse(request)
-    }
- catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {
         throw exception
       }

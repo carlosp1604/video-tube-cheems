@@ -1,7 +1,7 @@
 import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
-import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/VerificationTokenApplicationDto'
+import { VerificationTokenApplicationDto } from '~/modules/Auth/Application/Dtos/VerificationTokenApplicationDto'
 
-export class VerificationTokenApplicationTranslator {
+export class VerificationTokenApplicationDtoTranslator {
   public static fromDomain (verificationToken: VerificationToken): VerificationTokenApplicationDto {
     return {
       id: verificationToken.id,

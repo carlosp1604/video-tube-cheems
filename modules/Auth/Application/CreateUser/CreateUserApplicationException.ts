@@ -8,6 +8,8 @@ export class CreateUserApplicationException extends ApplicationException {
   public static verificationTokenIsNotValidId = 'create_user_verification_token_is_not_valid'
   public static invalidUsernameId = 'create_user_invalid_username'
   public static invalidEmailId = 'create_user_invalid_email'
+  public static invalidPasswordId = 'create_user_invalid_password'
+  public static invalidNameId = 'create_user_invalid_name'
 
   constructor (message: string, id: string) {
     super(message, id)
@@ -17,14 +19,14 @@ export class CreateUserApplicationException extends ApplicationException {
 
   public static usernameAlreadyRegistered (username: User['username']): CreateUserApplicationException {
     return new CreateUserApplicationException(
-      `${username} is already taken`,
+      `Username: ${username} is already registered`,
       this.usernameAlreadyRegisteredId
     )
   }
 
   public static emailAlreadyRegistered (userEmail: User['email']): CreateUserApplicationException {
     return new CreateUserApplicationException(
-      `${userEmail} is already taken`,
+      `Email: ${userEmail} is already registered`,
       this.emailAlreadyRegisteredId
     )
   }
@@ -45,15 +47,29 @@ export class CreateUserApplicationException extends ApplicationException {
 
   public static invalidEmail (userEmail: User['email']): CreateUserApplicationException {
     return new CreateUserApplicationException(
-      `Invalid email ${userEmail}`,
+      `Invalid email: ${userEmail}`,
       this.invalidEmailId
     )
   }
 
   public static invalidUsername (username: User['username']): CreateUserApplicationException {
     return new CreateUserApplicationException(
-      `Invalid email ${username}`,
+      `Invalid username: ${username}`,
       this.invalidUsernameId
+    )
+  }
+
+  public static invalidName (name: User['name']): CreateUserApplicationException {
+    return new CreateUserApplicationException(
+      `Invalid name: ${name}`,
+      this.invalidNameId
+    )
+  }
+
+  public static invalidPassword (password: User['password']): CreateUserApplicationException {
+    return new CreateUserApplicationException(
+      `Invalid password: ${password}`,
+      this.invalidPasswordId
     )
   }
 }

@@ -5,7 +5,7 @@ export class ZodApiValidationException {
   public id: string
   public exceptions: ValidationErrorItem[]
 
-  constructor(
+  constructor (
     id: string,
     issues: ZodIssue[]
   ) {
@@ -13,7 +13,7 @@ export class ZodApiValidationException {
     this.exceptions = ZodApiValidationException.parseExceptions(issues)
   }
 
-  private static parseExceptions(issues: ZodIssue[]): ValidationErrorItem[] {
+  private static parseExceptions (issues: ZodIssue[]): ValidationErrorItem[] {
     return issues.map((issue) => {
       return new ValidationErrorItem(
         issue.message,

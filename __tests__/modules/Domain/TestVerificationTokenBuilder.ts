@@ -13,10 +13,10 @@ export class TestVerificationTokenBuilder {
   private createdAt: DateTime
 
   constructor () {
-    this.id = 'test-user-id'
-    this.token = 'test-user-name'
+    this.id = 'test-verification-token-id'
+    this.token = 'test-token'
     this.userEmail = 'test@test.es'
-    this.type = VerificationTokenType.VERIFY_EMAIL
+    this.type = VerificationTokenType.CREATE_ACCOUNT
     this.expiresAt = DateTime.now()
     this.createdAt = DateTime.now()
   }

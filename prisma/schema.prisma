@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -11,175 +12,177 @@ datasource db {
 }
 
 model Producer {
-  id              String          @id
-  name            String
-  description     String
-  parentProducer  Producer?       @relation("parentProducer", fields: [parentProducerId], references: [id])  
-  parentProducerId String?        @map("parent_producer_id")     
-  imageUrl        String?         @map("image_url")
-  brandHexColor   String          @map("brand_hex_color")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  childProducers  Producer[]      @relation("parentProducer")
-  posts           Post[]
+  id               String     @id
+  name             String
+  description      String
+  parentProducer   Producer?  @relation("parentProducer", fields: [parentProducerId], references: [id])
+  parentProducerId String?    @map("parent_producer_id")
+  imageUrl         String?    @map("image_url")
+  brandHexColor    String     @map("brand_hex_color")
+  createdAt        DateTime   @map("created_at")
+  updatedAt        DateTime   @map("updated_at")
+  deletedAt        DateTime?  @map("deleted_at")
+  childProducers   Producer[] @relation("parentProducer")
+  posts            Post[]
 
   @@map("producers")
 }
 
 model Post {
-  id              String          @id
-  title           String
-  description     String 
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  publishedAt     DateTime?       @map("published_at")
-  producer        Producer?       @relation(fields: [producerId], references: [id])
-  producerId      String?         @map("producer_id")
-  meta            PostMeta[]
-  tags            PostPostTag[]
-  actors          PostActor[]
-  comments        PostComment[]
-  reactions       PostReaction[]
-  views           PostView[]
-  
+  id          String         @id
+  title       String
+  description String
+  createdAt   DateTime       @map("created_at")
+  updatedAt   DateTime       @map("updated_at")
+  deletedAt   DateTime?      @map("deleted_at")
+  publishedAt DateTime?      @map("published_at")
+  producer    Producer?      @relation(fields: [producerId], references: [id])
+  producerId  String?        @map("producer_id")
+  meta        PostMeta[]
+  tags        PostPostTag[]
+  actors      PostActor[]
+  comments    PostComment[]
+  reactions   PostReaction[]
+  views       PostView[]
+
   @@map("posts")
 }
 
 model PostTag {
-  id              String          @id
-  name            String
-  description     String?
-  imageUrl        String?         @map("image_url")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  posts           PostPostTag[]
+  id          String        @id
+  name        String
+  description String?
+  imageUrl    String?       @map("image_url")
+  createdAt   DateTime      @map("created_at")
+  updatedAt   DateTime      @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+  posts       PostPostTag[]
 
   @@map("post_tags")
 }
 
 model PostPostTag {
-  post            Post            @relation(fields: [postId], references: [id])
-  tag             PostTag         @relation(fields: [postTagId], references: [id])
-  postId          String          @map("post_id")
-  postTagId       String          @map("post_tag_id")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
+  post      Post      @relation(fields: [postId], references: [id])
+  tag       PostTag   @relation(fields: [postTagId], references: [id])
+  postId    String    @map("post_id")
+  postTagId String    @map("post_tag_id")
+  createdAt DateTime  @map("created_at")
+  updatedAt DateTime  @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@id([postId, postTagId])
   @@map("post_post_tags")
 }
 
 model PostMeta {
-  type            String
-  value           String
-  post            Post            @relation(fields: [postId], references: [id])
-  postId          String          @map("post_id")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
+  type      String
+  value     String
+  post      Post      @relation(fields: [postId], references: [id])
+  postId    String    @map("post_id")
+  createdAt DateTime  @map("created_at")
+  updatedAt DateTime  @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@id([type, postId])
   @@map("posts_meta")
 }
 
 model User {
-  id              String          @id
-  name            String
-  username        String          @unique
-  email           String          @unique
-  imageUrl        String?         @map("image_url")
-  language        String
-  password        String
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  emailVerified   DateTime?       @map("email_verified")
-  reactions       PostReaction[]  
-  comments        PostComment[]
-  views           PostView[]
+  id                String             @id
+  name              String
+  username          String             @unique
+  email             String             @unique
+  imageUrl          String?            @map("image_url")
+  language          String
+  password          String
+  createdAt         DateTime           @map("created_at")
+  updatedAt         DateTime           @map("updated_at")
+  deletedAt         DateTime?          @map("deleted_at")
+  emailVerified     DateTime?          @map("email_verified")
+  reactions         PostReaction[]
+  comments          PostComment[]
+  views             PostView[]
+  verificationToken VerificationToken?
+
   @@map("users")
 }
 
 model VerificationToken {
-  id                              String                    @id
-  token                           String
-  userEmail                       String                    @map("user_email") @unique
-  type                            String
-  expiresAt                       DateTime                  @map("expires_at")
-  createdAt                       DateTime                  @map("created_at")
+  id        String   @id
+  token     String
+  userEmail String   @unique @map("user_email")
+  user      User?    @relation(fields: [userEmail], references: [email], onDelete: Cascade, onUpdate: Cascade)
+  type      String
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @map("created_at")
 
   @@map("verification_tokens")
 }
 
 model PostReaction {
-  post            Post            @relation(fields: [postId], references: [id])
-  user            User            @relation(fields: [userId], references: [id])
-  postId          String          @map("post_id")
-  userId          String          @map("user_id")
-  reactionType    String          @map("reaction_type")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
+  post         Post      @relation(fields: [postId], references: [id])
+  user         User      @relation(fields: [userId], references: [id])
+  postId       String    @map("post_id")
+  userId       String    @map("user_id")
+  reactionType String    @map("reaction_type")
+  createdAt    DateTime  @map("created_at")
+  updatedAt    DateTime  @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
 
   @@id([postId, userId])
   @@map("post_reactions")
 }
 
 model PostComment {
-  id              String          @id
+  id              String        @id
   comment         String
-  post            Post?           @relation(fields: [postId], references: [id])
-  postId          String?         @map("post_id")
-  parentComment   PostComment?    @relation("Replies", fields: [parentCommentId], references: [id])
-  parentCommentId String?         @map("parent_comment_id")
-  user            User            @relation(fields: [userId], references: [id])
-  userId          String          @map("user_id")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  childComments   PostComment[]   @relation("Replies")
-  
+  post            Post?         @relation(fields: [postId], references: [id])
+  postId          String?       @map("post_id")
+  parentComment   PostComment?  @relation("Replies", fields: [parentCommentId], references: [id])
+  parentCommentId String?       @map("parent_comment_id")
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String        @map("user_id")
+  createdAt       DateTime      @map("created_at")
+  updatedAt       DateTime      @map("updated_at")
+  deletedAt       DateTime?     @map("deleted_at")
+  childComments   PostComment[] @relation("Replies")
+
   @@map("post_comments")
 }
 
 model Actor {
-  id              String          @id
-  name            String
-  description     String
-  imageUrl        String?         @map("image_url")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  posts           PostActor[]
+  id          String      @id
+  name        String
+  description String
+  imageUrl    String?     @map("image_url")
+  createdAt   DateTime    @map("created_at")
+  updatedAt   DateTime    @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at")
+  posts       PostActor[]
 
   @@map("actors")
 }
 
 model PostActor {
-  post            Post            @relation(fields: [postId], references: [id])
-  postId          String          @map("post_id")
-  actor           Actor           @relation(fields: [actorId], references: [id])
-  actorId         String          @map("actor_id")
-  createdAt       DateTime        @map("created_at")
-  updatedAt       DateTime        @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
+  post      Post      @relation(fields: [postId], references: [id])
+  postId    String    @map("post_id")
+  actor     Actor     @relation(fields: [actorId], references: [id])
+  actorId   String    @map("actor_id")
+  createdAt DateTime  @map("created_at")
+  updatedAt DateTime  @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@id([postId, actorId])
   @@map("post_actors")
 }
 
 model PostView {
-  id              String          @id
-  postId          String          @map("post_id")     
-  post            Post            @relation(fields: [postId], references: [id])  
-  userId          String?         @map("user_id")
-  user            User?           @relation(fields: [userId], references: [id])
-  createdAt       DateTime        @map("created_at")
+  id        String   @id
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String?  @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @map("created_at")
 
   @@map("post_views")
 }
-

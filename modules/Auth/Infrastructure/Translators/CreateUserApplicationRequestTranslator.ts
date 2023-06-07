@@ -1,4 +1,4 @@
-import { CreateUserApiRequestInterface } from '~/modules/Auth/Infrastructure/CreateUserApiRequestInterface'
+import { CreateUserApiRequestInterface } from '~/modules/Auth/Infrastructure/Dtos/CreateUserApiRequestInterface'
 import { CreateUserApplicationRequestInterface } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationRequestInterface'
 
 export class CreateUserApplicationRequestTranslator {

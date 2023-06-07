@@ -46,10 +46,12 @@
   }
 
   &__error {
-    @apply text-xs font-light text-red opacity-0 mb-2;
-    
-    &__open {
-      @apply opacity-100;
+    @apply text-xs font-light text-red opacity-0 mb-2
+    transition duration-300;
+
+    &_visible {
+      @apply opacity-100 transition duration-300
+      animate-bounce-short;
     }
 
     @screen md {

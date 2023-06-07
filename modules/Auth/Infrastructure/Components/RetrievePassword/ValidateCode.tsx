@@ -1,9 +1,9 @@
-import { FC, FormEvent, useState } from 'react'
 import styles from './RetrievePassword.module.scss'
-import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
-import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
-import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
+import { useTranslation } from 'next-i18next'
+import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
+import { FC, FormEvent, useState } from 'react'
+import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 
 export interface Props {
   email: string
@@ -16,7 +16,7 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
   const [invalidCode, setInvalidCode] = useState<boolean>(false)
   const [validationError, setValidationError] = useState<boolean>(false)
 
-  const { t } = useTranslation('user_password_retrieve')
+  const { t } = useTranslation('user_retrieve_password')
 
   const authApiService = new AuthApiService()
 
@@ -32,13 +32,6 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
       const result = await authApiService.validateVerificationCode(email, code)
 
       if (!result.ok) {
-        if (result.status === 409) {
-          setErrorMessage(t('validate_code_expired_code_message') ?? '')
-          setValidationError(true)
-
-          return
-        }
-
         if (result.status === 404) {
           setErrorMessage(t('validate_code_invalid_code_message') ?? '')
           setValidationError(true)
@@ -60,6 +53,10 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
     }
   }
 
+  const canSubmit = (): boolean => {
+    return !invalidCode && code !== ''
+  }
+
   return (
     <form
       className={ styles.retrievePassword__container }
@@ -67,14 +64,14 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
     >
       <h1 className={ styles.retrievePassword__title }>
         { t('validate_code_title') }
-        <small className={ styles.register__subtitle }>
+        <small className={ styles.retrievePassword__subtitle }>
           { t('validate_code_subtitle') }
         </small>
       </h1>
 
       <p className={ `
         ${styles.retrievePassword__error}
-        ${validationError ? styles.retrievePassword__error__open : ''}
+        ${validationError ? styles.retrievePassword__error_visible : ''}
       ` }>
         { errorMessage }
       </p>
@@ -95,9 +92,9 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
         type={ 'submit' }
         className={ `
           ${styles.retrievePassword__submit}
-          ${!invalidCode && code !== '' ? styles.retrievePassword__submit__enabled : ''}
+          ${canSubmit() ? styles.retrievePassword__submit__enabled : ''}
         ` }
-        disabled={ invalidCode }
+        disabled={ !canSubmit() }
       >
         { t('validate_code_submit_button') }
       </button>

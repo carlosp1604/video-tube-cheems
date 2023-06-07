@@ -22,8 +22,9 @@ export interface VerificationTokenRepositoryInterface {
   /**
    * Persist a VerificationToken in the database
    * @param verificationToken VerificationToken to insert
+   * @param deleteExisting Decides whether to delete existing token or not
    */
-  save(verificationToken: VerificationToken): Promise<void>
+  save(verificationToken: VerificationToken, deleteExisting: boolean): Promise<void>
 
   /**
    * Remove a VerificationToken from the database

@@ -1,18 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
-  ChangeUserPasswordApiRequestInterface
-} from '~/modules/Auth/Infrastructure/ChangeUserPasswordApiRequestInterface'
-import {
   ChangeUserPasswordApiRequestValidator
-} from '~/modules/Auth/Infrastructure/ChangeUserPasswordApiRequestValidator'
+} from '~/modules/Auth/Infrastructure/Validators/ChangeUserPasswordApiRequestValidator'
 import {
   ChangeUserPasswordApplicationRequestTranslator
-} from '~/modules/Auth/Infrastructure/ChangeUserPasswordApplicationRequestTranslator'
-import { ChangeUserPassword } from '~/modules/Auth/Application/ChangeUserPassword'
+} from '~/modules/Auth/Infrastructure/Translators/ChangeUserPasswordApplicationRequestTranslator'
+import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
 import {
   ChangeUserPasswordApplicationException
-} from '~/modules/Auth/Application/ChangeUserPasswordApplicationException'
+} from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPasswordApplicationException'
 import { container } from '~/awailix.container'
 
 export default async function handler (
@@ -23,15 +20,14 @@ export default async function handler (
     return handleMethod(response)
   }
 
-  const body = request.body as ChangeUserPasswordApiRequestInterface
-  const validationExceptions = ChangeUserPasswordApiRequestValidator.validate(body)
+  const validationExceptions = ChangeUserPasswordApiRequestValidator.validate(request.body)
 
   if (validationExceptions) {
     return handleBadRequest(response, validationExceptions)
   }
 
-  const applicationRequest = ChangeUserPasswordApplicationRequestTranslator.fromApi(body)
-  const useCase = container.resolve<ChangeUserPassword>('changeUserPasswordUseCase')
+  const applicationRequest = ChangeUserPasswordApplicationRequestTranslator.fromApi(request.body)
+  const useCase: ChangeUserPassword = container.resolve<ChangeUserPassword>('changeUserPasswordUseCase')
 
   try {
     await useCase.change(applicationRequest)
@@ -42,15 +38,17 @@ export default async function handler (
       return handleInternalError(response)
     }
 
+    console.error(exception)
+
     switch (exception.id) {
       case ChangeUserPasswordApplicationException.userNotFoundId:
         return handleNotFound(response)
       case ChangeUserPasswordApplicationException.verificationTokenIsNotValidId:
-        return response.status(422)
-          .json({
-            code: 'change-user-password-invalid-token',
-            message: 'Token is not valid to perform this action',
-          })
+      case ChangeUserPasswordApplicationException.verificationTokenNotFoundId:
+      case ChangeUserPasswordApplicationException.tokenDoesNotMatchId:
+        return handleUnauthorized(response)
+      case ChangeUserPasswordApplicationException.invalidPasswordId:
+        return handleUnprocessableEntity(response)
 
       default:
         return handleInternalError(response)
@@ -75,6 +73,22 @@ function handleNotFound (response: NextApiResponse) {
     .json({
       code: 'change-user-password-not-found',
       message: 'User associated to token was not found',
+    })
+}
+
+function handleUnauthorized (response: NextApiResponse) {
+  return response.status(401)
+    .json({
+      code: 'change-user-password-unauthorized',
+      message: 'Token is invalid or expired',
+    })
+}
+
+function handleUnprocessableEntity (response: NextApiResponse) {
+  return response.status(422)
+    .json({
+      code: 'change-user-password-unprocessable-entity',
+      message: 'Provided password is not valid',
     })
 }
 

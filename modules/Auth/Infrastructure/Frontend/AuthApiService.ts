@@ -1,3 +1,5 @@
+import { VerificationEmailTypes } from '~/modules/Auth/Infrastructure/Frontend/VerificationEmailTypes'
+
 export class AuthApiService {
   public async verifyEmailForAccountCreation (email: string, sendNewToken: boolean): Promise<Response> {
     return fetch('/api/auth/users/verify-email', {
@@ -8,12 +10,13 @@ export class AuthApiService {
       body: JSON.stringify({
         email,
         sendNewToken,
+        type: VerificationEmailTypes.ACCOUNT_CREATION,
       }),
     })
   }
 
   public async verifyEmailForRecoverPassword (email: string, sendNewToken: boolean): Promise<Response> {
-    return fetch('/api/auth/users/recover-password', {
+    return fetch('/api/auth/users/verify-email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,6 +24,7 @@ export class AuthApiService {
       body: JSON.stringify({
         email,
         sendNewToken,
+        type: VerificationEmailTypes.RETRIEVE_PASSWORD,
       }),
     })
   }

@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
         const email = credentials?.email as string
         const password = credentials?.password as string
 
-        const loginUseCase = container.resolve<Login>('LoginUseCase')
+        const loginUseCase = container.resolve<Login>('loginUseCase')
 
         try {
           const userApplicationDto = await loginUseCase.login({

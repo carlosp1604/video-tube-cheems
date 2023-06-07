@@ -1,33 +1,49 @@
-import { UserModelTranslator } from './UserModelTranslator'
+import { PrismaUserModelTranslator } from './PrismaUserModelTranslator'
 import { User } from '~/modules/Auth/Domain/User'
 import { prisma } from '~/persistence/prisma'
-import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import {
+  FindByEmailOptions,
+  UserRepositoryInterface
+} from '~/modules/Auth/Domain/UserRepositoryInterface'
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
    * Insert a User in the database
+   * Deletes existing verification token associated to user email
    * @param user User to insert
    */
   public async save (user: User): Promise<void> {
-    const prismaUserRow = UserModelTranslator.toDatabase(user)
+    const prismaUserRow = PrismaUserModelTranslator.toDatabase(user)
 
-    await prisma.user.create({
-      data: {
-        ...prismaUserRow,
-      },
-    })
+    await prisma.$transaction([
+      prisma.user.create({
+        data: {
+          ...prismaUserRow,
+        },
+      }),
+
+      prisma.verificationToken.delete({
+        where: {
+          userEmail: user.email,
+        },
+      }),
+    ])
   }
 
   /**
    * Find a User given its email
    * @param userEmail User's email
+   * @param options Options with the User's relationships to load
    * @return User if found or null
    */
-  public async findByEmail (userEmail: User['email']): Promise<User | null> {
+  public async findByEmail (userEmail: User['email'], options: FindByEmailOptions[] = []): Promise<User | null> {
     const user = await prisma.user.findFirst({
       where: {
         deletedAt: null,
         email: userEmail,
+      },
+      include: {
+        verificationToken: options.includes('verificationToken'),
       },
     })
 
@@ -35,7 +51,7 @@ export class MysqlUserRepository implements UserRepositoryInterface {
       return null
     }
 
-    return UserModelTranslator.toDomain(user)
+    return PrismaUserModelTranslator.toDomain(user, options)
   }
 
   /**
@@ -55,23 +71,34 @@ export class MysqlUserRepository implements UserRepositoryInterface {
       return null
     }
 
-    return UserModelTranslator.toDomain(user)
+    return PrismaUserModelTranslator.toDomain(user)
   }
 
   /**
    * Update a User in the database
    * @param user User to update
+   * @param deleteVerificationToken Decides whether user's verification token is removed
    */
-  public async update (user: User): Promise<void> {
-    const prismaUserModel = UserModelTranslator.toDatabase(user)
+  public async update (user: User, deleteVerificationToken = false): Promise<void> {
+    const prismaUserModel = PrismaUserModelTranslator.toDatabase(user)
 
-    await prisma.user.update({
-      data: {
-        ...prismaUserModel,
-      },
-      where: {
-        id: user.id,
-      },
+    await prisma.$transaction(async (transaction) => {
+      await transaction.user.update({
+        data: {
+          ...prismaUserModel,
+        },
+        where: {
+          id: user.id,
+        },
+      })
+
+      if (deleteVerificationToken) {
+        await transaction.verificationToken.delete({
+          where: {
+            userEmail: user.email,
+          },
+        })
+      }
     })
   }
 

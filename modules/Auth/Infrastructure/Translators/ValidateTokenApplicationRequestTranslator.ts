@@ -1,4 +1,4 @@
-import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestInterface'
+import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/Dtos/ValidateTokenApiRequestInterface'
 import {
   ValidateTokenApplicationRequestInterface
 } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationRequestInterface'

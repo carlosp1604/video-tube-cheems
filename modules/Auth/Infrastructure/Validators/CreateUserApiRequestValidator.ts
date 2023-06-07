@@ -1,5 +1,5 @@
 import { z, ZodError } from 'zod'
-import { CreateUserApiRequestInterface } from '~/modules/Auth/Infrastructure/CreateUserApiRequestInterface'
+import { CreateUserApiRequestInterface } from '~/modules/Auth/Infrastructure/Dtos/CreateUserApiRequestInterface'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 
 export class CreateUserApiRequestValidator {
@@ -15,8 +15,7 @@ export class CreateUserApiRequestValidator {
   public static validate (request: CreateUserApiRequestInterface): UserApiValidationException | void {
     try {
       this.createUserApiRequestSchema.parse(request)
-    }
- catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {
         throw exception
       }

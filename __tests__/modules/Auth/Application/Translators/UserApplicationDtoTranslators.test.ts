@@ -12,7 +12,7 @@ describe('~/modules/Auth/Application/Translators/UserApplicationDtoTranslator.ts
 
     testUserBuilder = new TestUserBuilder()
       .withId('test-user-id')
-      .withName('test-user-name')
+      .withName('Test User Name')
       .withUsername('test_user_username')
       .withEmail('test-user-email@email.es')
       .withImageUrl('test-user-image')
@@ -34,7 +34,7 @@ describe('~/modules/Auth/Application/Translators/UserApplicationDtoTranslator.ts
       id: 'test-user-id',
       imageUrl: 'test-user-image',
       language: 'test-user-language',
-      name: 'test-user-name',
+      name: 'Test User Name',
       updatedAt: nowDate.toISO(),
     })
   })
@@ -54,7 +54,7 @@ describe('~/modules/Auth/Application/Translators/UserApplicationDtoTranslator.ts
       id: 'test-user-id',
       imageUrl: null,
       language: 'test-user-language',
-      name: 'test-user-name',
+      name: 'Test User Name',
       updatedAt: nowDate.toISO(),
     })
   })

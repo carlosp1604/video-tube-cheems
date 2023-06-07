@@ -2,11 +2,11 @@ import { DateTime } from 'luxon'
 import { DateServiceInterface } from '../Domain/DateServiceInterface'
 
 export class DateService implements DateServiceInterface {
-  public nowDate(): Date {
+  public nowDate (): Date {
     return new Date()
   }
 
-  public formatAgoLike(date: DateTime, locale: string): string {
+  public formatAgoLike (date: DateTime, locale: string): string {
     const units: Intl.RelativeTimeFormatUnit[] = [
       'year',
       'month',

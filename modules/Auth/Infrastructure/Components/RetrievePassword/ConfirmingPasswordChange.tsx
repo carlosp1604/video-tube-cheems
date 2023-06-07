@@ -1,14 +1,14 @@
 import { FC } from 'react'
 import styles from './RetrievePassword.module.scss'
-import { BsCheckCircle } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
+import { BsCheckCircle } from 'react-icons/bs'
 
 export interface Props {
   onConfirm: () => void
 }
 
 export const ConfirmingPasswordChange: FC<Props> = ({ onConfirm }) => {
-  const { t } = useTranslation('user_password_retrieve')
+  const { t } = useTranslation('user_retrieve_password')
 
   return (
     <div className={ styles.retrievePassword__confirmingRegister }>

@@ -1,8 +1,6 @@
 import { z, ZodError } from 'zod'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
-
-
-import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestInterface'
+import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/Dtos/ValidateTokenApiRequestInterface'
 
 export class ValidateTokenApiRequestValidator {
   private static validateTokenApiRequestSchema = z.object({
@@ -13,8 +11,7 @@ export class ValidateTokenApiRequestValidator {
   public static validate (request: ValidateTokenApiRequestInterface): UserApiValidationException | void {
     try {
       this.validateTokenApiRequestSchema.parse(request)
-    }
- catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {
         throw exception
       }

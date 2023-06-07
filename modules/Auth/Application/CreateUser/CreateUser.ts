@@ -1,13 +1,16 @@
-import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { CreateUserApplicationRequestInterface } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationRequestInterface'
 import { User } from '~/modules/Auth/Domain/User'
 import { DateTime } from 'luxon'
-import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationException'
-import * as crypto from 'crypto'
-import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
-import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
-import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
+import { randomUUID } from 'crypto'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationException'
+import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
+import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
+import {
+  CreateUserApplicationRequestInterface
+} from '~/modules/Auth/Application/CreateUser/CreateUserApplicationRequestInterface'
+import { PasswordValidator } from '~/modules/Shared/Domain/PasswordValidator'
 
 export class CreateUser {
   // eslint-disable-next-line no-useless-constructor
@@ -18,9 +21,9 @@ export class CreateUser {
   ) {}
 
   public async create (request: CreateUserApplicationRequestInterface): Promise<void> {
-    const token = await this.getVerificationToken(request.email, request.token)
+    await this.checkTokenExistsAndValidate(request.email, request.token)
 
-    await this.checkIfEmailOrUsernameAreBeignUsed(request.email, request.username)
+    await this.checkIfEmailOrUsernameAreBeingUsed(request.email, request.username)
 
     const user = await this.buildUser(request)
 
@@ -31,29 +34,21 @@ export class CreateUser {
 
       throw CreateUserApplicationException.cannotCreateUser(request.email)
     }
-
-    await this.verificationTokenRepository.delete(token)
   }
 
-  private async getVerificationToken (
+  private async checkTokenExistsAndValidate (
     userEmail: VerificationToken['userEmail'],
     token: VerificationToken['token']
-  ): Promise<VerificationToken> {
+  ): Promise<void> {
     const verificationToken = await this.verificationTokenRepository
       .findByEmailAndToken(userEmail, token)
 
-    if (
-      verificationToken === null ||
-      verificationToken.tokenHasExpired() ||
-      verificationToken.type !== 'verify-email'
-    ) {
+    if (verificationToken === null || !verificationToken.isTokenValidFor(VerificationTokenType.CREATE_ACCOUNT)) {
       throw CreateUserApplicationException.verificationTokenIsNotValid(userEmail)
     }
-
-    return verificationToken
   }
 
-  private async checkIfEmailOrUsernameAreBeignUsed (
+  private async checkIfEmailOrUsernameAreBeingUsed (
     email: CreateUserApplicationRequestInterface['email'],
     username: CreateUserApplicationRequestInterface['username']
   ): Promise<void> {
@@ -72,9 +67,9 @@ export class CreateUser {
   }
 
   private async buildUser (request: CreateUserApplicationRequestInterface): Promise<User> {
-    const userId = crypto.randomUUID()
+    const userId = randomUUID()
 
-    const hashedPassword = await this.cryptoService.hash(request.password)
+    const hashedPassword = await this.validateAndHashPassword(request.password)
 
     const nowDate = DateTime.now()
 
@@ -104,11 +99,34 @@ export class CreateUser {
         case ValidationException.invalidUsernameId:
           throw CreateUserApplicationException.invalidUsername(request.username)
 
+        case ValidationException.invalidNameId:
+          throw CreateUserApplicationException.invalidName(request.name)
+
         default: {
           console.error(exception)
           throw exception
         }
       }
     }
+  }
+
+  private async validateAndHashPassword (password: CreateUserApplicationRequestInterface['password']): Promise<string> {
+    let validatedPassword
+
+    try {
+      validatedPassword = (new PasswordValidator()).validate(password)
+    } catch (exception: unknown) {
+      if (!(exception instanceof ValidationException)) {
+        throw exception
+      }
+
+      if (exception.id === ValidationException.invalidPasswordId) {
+        throw CreateUserApplicationException.invalidPassword(password)
+      }
+
+      throw exception
+    }
+
+    return this.cryptoService.hash(validatedPassword)
   }
 }

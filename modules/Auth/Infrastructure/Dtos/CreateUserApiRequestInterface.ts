@@ -3,7 +3,6 @@ export interface CreateUserApiRequestInterface {
   email: string
   password: string
   username: string
-  type: string
   language: string
   token: string
 }

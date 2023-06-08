@@ -1,6 +1,6 @@
-import { UserApplicationDto } from './Dtos/UserApplicationDto'
-import { UserApplicationDtoTranslator } from './Translators/UserApplicationDtoTranslator'
-import { GetUserByIdApplicationException } from './GetUseByIdApplicationException'
+import { UserApplicationDto } from '../Dtos/UserApplicationDto'
+import { UserApplicationDtoTranslator } from '../Translators/UserApplicationDtoTranslator'
+import { GetUserByIdApplicationException } from './GetUserByIdApplicationException'
 import { User } from '~/modules/Auth/Domain/User'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 

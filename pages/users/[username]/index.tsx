@@ -34,6 +34,12 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
           'user_menu',
           'user_profile',
           'app_menu',
+          'menu_options',
+          'sorting_menu_dropdown',
+          'user_menu',
+          'user_signup',
+          'user_login',
+          'user_retrieve_password',
         ]),
       },
     }

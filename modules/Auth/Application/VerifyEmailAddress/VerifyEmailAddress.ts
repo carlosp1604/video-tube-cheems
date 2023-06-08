@@ -67,7 +67,7 @@ export class VerifyEmailAddress {
     const verificationToken = this.setTokenToUser(user, request)
 
     try {
-      await this.verificationTokenRepository.save(verificationToken, user.verificationToken !== null)
+      await this.verificationTokenRepository.save(verificationToken, true)
     } catch (exception: unknown) {
       console.error(exception)
       throw VerifyEmailAddressApplicationException.cannotCreateVerificationToken(user.email)

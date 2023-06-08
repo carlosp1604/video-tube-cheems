@@ -172,7 +172,7 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
 
         await useCase.verify(request)
 
-        expect(verificationTokenRepository.save).toBeCalledWith(createdVerificationToken, false)
+        expect(verificationTokenRepository.save).toBeCalledWith(createdVerificationToken, true)
         expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', createdVerificationToken)
       })
     })

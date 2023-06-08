@@ -1,26 +1,25 @@
-import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
-import { BcryptCryptoService } from '~/helpers/Infrastructure/BcryptCryptoService'
-import { MysqlUserRepository } from '~/modules/Auth/Infrastructure/MysqlUserRepository'
 import { Login } from '~/modules/Auth/Application/Login/Login'
-import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
-import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
-import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
-import { RecoverPassword } from '~/modules/Auth/Application/RecoverPassword'
-import { ChangeUserPassword } from '~/modules/Auth/Application/ChangeUserPassword'
-import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
-import { AWSUserEmailSender } from '~/modules/Auth/Infrastructure/AWSUserEmailSender'
-import { SESClient } from '@aws-sdk/client-ses'
-import { GetUserById } from '~/modules/Auth/Application/GetUserById'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { MysqlPostRepository } from '~/modules/Posts/Infrastructure/MysqlPostRepository'
 import { GetActors } from '~/modules/Actors/Application/GetActors'
+import { SESClient } from '@aws-sdk/client-ses'
+import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
+import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
+import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
+import { GetUserById } from '~/modules/Auth/Application/GetUserById'
+import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
+import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
+import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
+import { AWSUserEmailSender } from '~/modules/Auth/Infrastructure/AWSUserEmailSender'
+import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
+import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
+import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReaction'
+import { MysqlUserRepository } from '~/modules/Auth/Infrastructure/MysqlUserRepository'
+import { MysqlPostRepository } from '~/modules/Posts/Infrastructure/MysqlPostRepository'
+import { BcryptCryptoService } from '~/helpers/Infrastructure/BcryptCryptoService'
 import { MysqlActorRepository } from '~/modules/Actors/Infrastructure/MysqlActorRepository'
 import { MysqlProducerRepository } from '~/modules/Producers/Infrastructure/MysqlProducerRepository'
-import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
-import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
-import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
-import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
-import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReaction'
+import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
+import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
 
 /**
  * We create a container to register our classes dependencies
@@ -54,6 +53,17 @@ container.register('sesClient', asFunction(() => {
     },
   })
 }))
+container.register('emailFromAddress', asFunction(() => {
+  const { env } = process
+
+  const fromAddress = env.EMAIL_FROM_ADDRESS
+
+  if (!fromAddress) {
+    throw Error('Missing EMAIL_FROM_ADDRESS environment variable to build SendTemplatedEmailCommand.')
+  }
+
+  return fromAddress
+}))
 container.register('userEmailSender', asClass(AWSUserEmailSender))
 // FIXME: This was the only way to make it works...
 container.register('postRepository', asFunction(() => {
@@ -65,7 +75,7 @@ container.register('producerRepository', asClass(MysqlProducerRepository))
 /**
  * Use-cases
  */
-container.register('LoginUseCase', asClass(Login))
+container.register('loginUseCase', asClass(Login))
 // FIXME: This was the only way to make it works...
 container.register('createUserUseCase', asFunction(() => {
   return new CreateUser(
@@ -74,9 +84,15 @@ container.register('createUserUseCase', asFunction(() => {
     container.resolve('cryptoService')
   )
 }))
-container.register('verifyEmailAddressUseCase', asClass(VerifyEmailAddress))
+container.register('verifyEmailAddressUseCase', asFunction(() => {
+  return new VerifyEmailAddress(
+    container.resolve('userRepository'),
+    container.resolve('verificationTokenRepository'),
+    container.resolve('cryptoService'),
+    container.resolve('userEmailSender')
+  )
+}))
 container.register('validateTokenUseCase', asClass(ValidateToken))
-container.register('recoverPasswordUseCase', asClass(RecoverPassword))
 container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
 container.register('getUserById', asClass(GetUserById))
 container.register('getPosts', asClass(GetPosts))

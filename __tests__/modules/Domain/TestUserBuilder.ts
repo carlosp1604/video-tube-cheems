@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
 import { User } from '~/modules/Auth/Domain/User'
+import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 
 /**
  * User model builder for tests
@@ -16,9 +18,10 @@ export class TestUserBuilder {
   private createdAt: DateTime
   private updatedAt: DateTime
   private deletedAt: DateTime | null
+  private verificationTokenRelationship: Relationship<VerificationToken | null>
   constructor () {
     this.id = 'test-user-id'
-    this.name = 'test-user-name'
+    this.name = 'Test User Name'
     this.username = 'test_user_username'
     this.email = 'test@email.es'
     this.imageUrl = null
@@ -28,6 +31,7 @@ export class TestUserBuilder {
     this.createdAt = DateTime.now()
     this.updatedAt = DateTime.now()
     this.deletedAt = null
+    this.verificationTokenRelationship = Relationship.notLoaded()
   }
 
   public build (): User {
@@ -42,7 +46,8 @@ export class TestUserBuilder {
       this.createdAt,
       this.updatedAt,
       this.emailVerified,
-      this.deletedAt
+      this.deletedAt,
+      this.verificationTokenRelationship
     )
   }
 
@@ -108,6 +113,14 @@ export class TestUserBuilder {
 
   public withEmailVerified (emailVerified: DateTime | null): TestUserBuilder {
     this.emailVerified = emailVerified
+
+    return this
+  }
+
+  public withVerificationToken (
+    verificationTokenRelationship: Relationship<VerificationToken | null>
+  ): TestUserBuilder {
+    this.verificationTokenRelationship = verificationTokenRelationship
 
     return this
   }

@@ -3,8 +3,8 @@ import { EmailValidator } from '~/modules/Shared/Domain/EmailValidator'
 import { VerificationTokenDomainException } from '~/modules/Auth/Domain/VerificationTokenDomainException'
 
 export enum VerificationTokenType {
-  VERIFY_EMAIL = 'verify-email',
-  RECOVER_PASSWORD = 'recover-password'
+  CREATE_ACCOUNT = 'create-account',
+  RETRIEVE_PASSWORD = 'retrieve-password'
 }
 
 export class VerificationToken {
@@ -43,5 +43,13 @@ export class VerificationToken {
 
   public tokenHasExpired (): boolean {
     return this.expiresAt < DateTime.now()
+  }
+
+  public isTokenValidFor (type: VerificationTokenType): boolean {
+    return !this.tokenHasExpired() && this.type === type
+  }
+
+  public valueMatches (value: string): boolean {
+    return this.token === value
   }
 }

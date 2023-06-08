@@ -1,6 +1,6 @@
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { mock, mockReset } from 'jest-mock-extended'
-import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
+import { VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { DateTime, Settings } from 'luxon'
 import {
   ValidateTokenApplicationRequestInterface
@@ -11,6 +11,8 @@ import {
   ValidateTokenApplicationException
 } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
 import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 
 jest.mock('crypto', () => {
   return {
@@ -18,12 +20,13 @@ jest.mock('crypto', () => {
   }
 })
 
-describe('~/modules/Auth/Application/ValidateToken/ValidateToken.ts', () => {
+describe('~/modules/Auth/Application/ValidateCode/ValidateCode.ts', () => {
   let validateTokenRequest: ValidateTokenApplicationRequestInterface
   const userRepository = mock<UserRepositoryInterface>()
   const verificationTokenRepository = mock<VerificationTokenRepositoryInterface>()
-  let verificationToken: VerificationToken
+  let testVerificationTokenBuilder: TestVerificationTokenBuilder
   let fakeLocal: DateTime
+  let testUserBuilder: TestUserBuilder
 
   const buildUseCase = () => {
     return new ValidateToken(userRepository, verificationTokenRepository)
@@ -45,115 +48,91 @@ describe('~/modules/Auth/Application/ValidateToken/ValidateToken.ts', () => {
 
     validateTokenRequest = {
       userEmail: 'test-user@test.es',
-      token: 'verify-email-token',
+      token: 'expected-request-token',
     }
 
-    verificationToken = new TestVerificationTokenBuilder()
+    testVerificationTokenBuilder = new TestVerificationTokenBuilder()
       .withExpiresAt(fakeLocal.plus({ minute: 30 }))
-      .withType(VerificationTokenType.VERIFY_EMAIL)
+      .withType(VerificationTokenType.CREATE_ACCOUNT)
       .withUserEmail('test-user@test.es')
-      .build()
+
+    testUserBuilder = new TestUserBuilder()
+      .withId('test-user-id')
+      .withEmail('test-user@test.es')
   })
 
   describe('when everything goes well', () => {
-    it('should call to repositories and services correctly when verification is verify-email type', async () => {
+    it('should call to repositories and services correctly when verification is create-account type', async () => {
+      const verificationToken = testVerificationTokenBuilder.build()
+
       verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+      userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
 
       const useCase = buildUseCase()
 
       await useCase.validate(validateTokenRequest)
 
-      expect(verificationTokenRepository.findByEmailAndToken).toBeCalledWith('test-user@test.es', 'verify-email-token')
-      expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
+      expect(userRepository.findByEmail).toBeCalledWith('test-user@test.es', ['verificationToken'])
+      expect(verificationTokenRepository.findByEmailAndToken)
+        .toBeCalledWith('test-user@test.es', 'expected-request-token')
     })
 
-    it('should call to repositories and services correctly when verification is recover-password type', async () => {
-      verificationToken = new TestVerificationTokenBuilder()
-        .withType(VerificationTokenType.RECOVER_PASSWORD)
+    it('should call to repositories and services correctly when verification is retrieve-password type', async () => {
+      const verificationToken = testVerificationTokenBuilder
+        .withType(VerificationTokenType.RETRIEVE_PASSWORD)
         .withUserEmail('test-user@test.es')
+        .withToken('expected-request-token')
         .withExpiresAt(fakeLocal.plus({ minute: 30 }))
         .build()
 
+      const user = testUserBuilder
+        .withVerificationToken(Relationship.initializeRelation(verificationToken))
+        .build()
+
       verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(true))
+      userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
 
       const useCase = buildUseCase()
 
       await useCase.validate(validateTokenRequest)
 
-      expect(verificationTokenRepository.findByEmailAndToken).toBeCalledWith('test-user@test.es', 'verify-email-token')
-      expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
+      expect(userRepository.findByEmail).toBeCalledWith('test-user@test.es', ['verificationToken'])
     })
 
     it('should return the correct response', async () => {
-      verificationToken = new TestVerificationTokenBuilder()
-        .withId('expected-id')
-        .withType(VerificationTokenType.RECOVER_PASSWORD)
-        .withUserEmail('test-user@test.es')
-        .withToken('expected-token')
+      const verificationToken = testVerificationTokenBuilder
+        .withId('test-verification-token-id')
+        .withToken('expected-request-token')
         .withExpiresAt(fakeLocal.plus({ minute: 30 }))
         .build()
 
       verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(true))
+      userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
 
       const useCase = buildUseCase()
 
       const response = await useCase.validate(validateTokenRequest)
 
-      expect(response).toStrictEqual(response)
+      expect(response).toStrictEqual({
+        expiresAt: fakeLocal.plus({ minute: 30 }).toISO(),
+        id: 'test-verification-token-id',
+        token: 'expected-request-token',
+        type: 'create-account',
+        userEmail: 'test-user@test.es',
+      })
     })
   })
 
   describe('when there are failures', () => {
-    it('should throw verificationTokenNotFound exception if token does not exist', async () => {
-      verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(null))
+    describe('when token is create-account type', () => {
+      it('should throw exception if user does exist', async () => {
+        const verificationToken = testVerificationTokenBuilder.build()
 
-      const useCase = buildUseCase()
-
-      await expect(useCase.validate(validateTokenRequest))
-        .rejects
-        .toStrictEqual(ValidateTokenApplicationException.verificationTokenNotFound('test-user@test.es'))
-    })
-
-    it('should throw verificationTokenExpired exception if token has expired', async () => {
-      verificationToken = new TestVerificationTokenBuilder()
-        .withType(VerificationTokenType.RECOVER_PASSWORD)
-        .withUserEmail('test-user@test.es')
-        .withExpiresAt(fakeLocal.minus({ second: 1 }))
-        .build()
-
-      verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
-
-      const useCase = buildUseCase()
-
-      await expect(useCase.validate(validateTokenRequest))
-        .rejects
-        .toStrictEqual(ValidateTokenApplicationException.verificationTokenExpired('test-user@test.es'))
-    })
-
-    it('should throw cannotUseVerifyEmailToken exception if token is verify-email type and user exists', async () => {
-      verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(true))
-
-      const useCase = buildUseCase()
-
-      await expect(useCase.validate(validateTokenRequest))
-        .rejects
-        .toStrictEqual(ValidateTokenApplicationException.cannotUseVerifyEmailToken('test-user@test.es'))
-    })
-
-    it('should throw cannotUseRecoverPasswordToken exception if token is recover-password type and user does not exist',
-      async () => {
-        verificationToken = new TestVerificationTokenBuilder()
-          .withType(VerificationTokenType.RECOVER_PASSWORD)
-          .withUserEmail('test-user@test.es')
-          .withExpiresAt(fakeLocal.plus({ second: 30 }))
+        const user = testUserBuilder
+          .withVerificationToken(Relationship.initializeRelation(verificationToken))
           .build()
 
-        verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
-        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
 
         const useCase = buildUseCase()
 
@@ -161,5 +140,124 @@ describe('~/modules/Auth/Application/ValidateToken/ValidateToken.ts', () => {
           .rejects
           .toStrictEqual(ValidateTokenApplicationException.cannotUseRecoverPasswordToken('test-user@test.es'))
       })
+
+      it('should throw exception if verification token does not exist', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+        verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(null))
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.verificationTokenNotFound('test-user@test.es'))
+      })
+
+      it('should throw exception if verification token has expired', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+
+        const verificationToken = testVerificationTokenBuilder
+          .withExpiresAt(fakeLocal.minus({ second: 30 }))
+          .build()
+
+        verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.cannotUseCreateAccountToken('test-user@test.es'))
+      })
+
+      it('should throw exception if verification token is not create-account type', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+
+        const verificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.RETRIEVE_PASSWORD)
+          .build()
+
+        verificationTokenRepository.findByEmailAndToken.mockResolvedValue(Promise.resolve(verificationToken))
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.cannotUseCreateAccountToken('test-user@test.es'))
+      })
+    })
+
+    describe('when token is retrieve-password type', () => {
+      it('should throw exception if user does not exist', async () => {
+        const verificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.RETRIEVE_PASSWORD)
+          .build()
+
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+        verificationTokenRepository.findByEmailAndToken.mockResolvedValue(verificationToken)
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.cannotUseCreateAccountToken('test-user@test.es'))
+      })
+
+      it('should throw exception if verification token is expired', async () => {
+        const verificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.RETRIEVE_PASSWORD)
+          .withExpiresAt(fakeLocal.minus({ second: 30 }))
+          .build()
+
+        const user = testUserBuilder
+          .withVerificationToken(Relationship.initializeRelation(verificationToken))
+          .build()
+
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.cannotUseRecoverPasswordToken('test-user@test.es'))
+      })
+
+      it('should throw exception if verification token is not retrieve-password type', async () => {
+        const verificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.CREATE_ACCOUNT)
+          .withExpiresAt(fakeLocal.plus({ second: 30 }))
+          .build()
+
+        const user = testUserBuilder
+          .withVerificationToken(Relationship.initializeRelation(verificationToken))
+          .build()
+
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.cannotUseRecoverPasswordToken('test-user@test.es'))
+      })
+
+      it('should throw exception if verification token does not match', async () => {
+        const verificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.RETRIEVE_PASSWORD)
+          .withExpiresAt(fakeLocal.plus({ second: 30 }))
+          .withToken('token')
+          .build()
+
+        const user = testUserBuilder
+          .withVerificationToken(Relationship.initializeRelation(verificationToken))
+          .build()
+
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        const useCase = buildUseCase()
+
+        await expect(useCase.validate(validateTokenRequest))
+          .rejects
+          .toStrictEqual(ValidateTokenApplicationException.tokenDoesNotMatch('test-user@test.es'))
+      })
+    })
   })
 })

@@ -10,7 +10,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
   let verificationToken: VerificationToken
 
   const buildService = () => {
-    return new AWSUserEmailSender(mockedSesClient)
+    return new AWSUserEmailSender(mockedSesClient, 'some-from-address')
   }
 
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
     verificationToken = new TestVerificationTokenBuilder()
       .withUserEmail('test-email@test.es')
       .withToken('test-token')
-      .withType(VerificationTokenType.VERIFY_EMAIL)
+      .withType(VerificationTokenType.CREATE_ACCOUNT)
       .build()
 
     mockedSesClient.send.mockImplementation(() => {
@@ -39,7 +39,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
               CcAddresses: [],
               ToAddresses: ['test-email@test.es'],
             },
-            Source: 'carlosdaniel.pontonv@um.es',
+            Source: 'some-from-address',
             Template: 'email-verification',
             TemplateData: JSON.stringify({
               token: 'test-token',
@@ -49,11 +49,11 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
       )
     })
 
-    it('should call to aws ses correctly when token is recover-password type', async () => {
+    it('should call to aws ses correctly when token is retrieve-password type', async () => {
       verificationToken = new TestVerificationTokenBuilder()
         .withUserEmail('test-email@test.es')
         .withToken('test-token')
-        .withType(VerificationTokenType.RECOVER_PASSWORD)
+        .withType(VerificationTokenType.RETRIEVE_PASSWORD)
         .build()
 
       const emailSender = buildService()
@@ -67,7 +67,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
               CcAddresses: [],
               ToAddresses: ['test-email@test.es'],
             },
-            Source: 'carlosdaniel.pontonv@um.es',
+            Source: 'some-from-address',
             Template: 'recover-password',
             TemplateData: JSON.stringify({
               token: 'test-token',

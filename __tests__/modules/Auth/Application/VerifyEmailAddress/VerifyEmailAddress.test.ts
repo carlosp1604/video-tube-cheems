@@ -5,11 +5,18 @@ import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/
 import { DateTime, Settings } from 'luxon'
 import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import {
+  VerifyEmailAddressApplicationRequestInterface
+} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationRequestInterface'
+import { User } from '~/modules/Auth/Domain/User'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
+import { UserDomainException } from '~/modules/Auth/Domain/UserDomainException'
 import {
   VerifyEmailAddressApplicationException
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
-import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
 
 jest.mock('crypto', () => {
   return {
@@ -22,15 +29,21 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
   const verificationTokenRepository = mock<VerificationTokenRepositoryInterface>()
   const userEmailSender = mock<UserEmailSenderInterface>()
   const userRepository = mock<UserRepositoryInterface>()
-  let verificationToken: VerificationToken
-  let existingToken: VerificationToken
+  let testVerificationTokenBuilder: TestVerificationTokenBuilder
+  let testUserBuilder: TestUserBuilder
   let fakeLocal: DateTime
+  let request: VerifyEmailAddressApplicationRequestInterface
 
   const buildUseCase = () => {
     return new VerifyEmailAddress(userRepository, verificationTokenRepository, cryptoService, userEmailSender)
   }
 
   beforeEach(() => {
+    mockReset(cryptoService)
+    mockReset(userRepository)
+    mockReset(userEmailSender)
+    mockReset(verificationTokenRepository)
+
     Settings.defaultLocale = 'es-ES'
     Settings.defaultZone = 'Europe/Madrid'
 
@@ -41,148 +54,344 @@ describe('modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress.ts', ()
     DateTime.local = jest.fn(() => fakeLocal)
     DateTime.now = jest.fn(() => fakeLocal)
 
-    mockReset(cryptoService)
-    mockReset(userRepository)
-    mockReset(userEmailSender)
-    mockReset(verificationTokenRepository)
-
-    verificationToken = new TestVerificationTokenBuilder()
+    testVerificationTokenBuilder = new TestVerificationTokenBuilder()
       .withId('expected-id')
       .withCreatedAt(fakeLocal)
-      .withExpiresAt(fakeLocal.plus({ minute: 60 }))
+      .withExpiresAt(fakeLocal.plus({ minute: 30 }))
       .withToken('verify-email-token')
-      .withType(VerificationTokenType.VERIFY_EMAIL)
+      .withType(VerificationTokenType.CREATE_ACCOUNT)
       .withUserEmail('test-user@test.es')
-      .build()
 
-    existingToken = new TestVerificationTokenBuilder()
-      .withId('expected-existing-id')
-      .withCreatedAt(fakeLocal)
-      .withExpiresAt(fakeLocal.plus({ minute: 60 }))
-      .withToken('verify-email-token')
-      .withType(VerificationTokenType.VERIFY_EMAIL)
-      .withUserEmail('test-user@test.es')
-      .build()
+    testUserBuilder = new TestUserBuilder()
+      .withId('test-user-id')
+      .withEmail('test-user@test.es')
   })
 
   describe('when everything goes well', () => {
-    beforeEach(() => {
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
-      cryptoService.hash.mockReturnValue(Promise.resolve('hashed-password'))
-      cryptoService.randomString.mockReturnValue('verify-email-token')
+    describe('when verification token is create-account type', () => {
+      let existingVerificationToken: VerificationToken
+      let createdVerificationToken: VerificationToken
+
+      beforeEach(() => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+
+        existingVerificationToken = testVerificationTokenBuilder.build()
+        createdVerificationToken = testVerificationTokenBuilder.build()
+
+        jest.spyOn(User, 'buildVerificationTokenForAccountCreation').mockReturnValue(createdVerificationToken)
+
+        request = {
+          email: 'test-user@test.es',
+          sendNewToken: true,
+          type: VerificationTokenType.CREATE_ACCOUNT,
+        }
+      })
+
+      it('should call repositories and services correctly when token exists and should be resent', async () => {
+        verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(existingVerificationToken))
+
+        jest.spyOn(User, 'buildVerificationTokenForAccountCreation').mockReturnValue(createdVerificationToken)
+
+        const useCase = buildUseCase()
+
+        await useCase.verify(request)
+
+        expect(verificationTokenRepository.save).toBeCalledWith(createdVerificationToken, true)
+        expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', createdVerificationToken)
+      })
+
+      it('should call repositories and services correctly when token does not exist', async () => {
+        verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+
+        const useCase = buildUseCase()
+
+        await useCase.verify(request)
+
+        expect(verificationTokenRepository.save).toBeCalledWith(createdVerificationToken, true)
+        expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', createdVerificationToken)
+      })
     })
 
-    // This case only makes sense if already exists a verification token for user
-    describe('sendNewToken flag', () => {
-      it('should call to repositories and services correctly when flag is active',
-        async () => {
-          verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(existingToken))
+    describe('when verification token is retrieve-password type', () => {
+      let existingVerificationToken: VerificationToken
+      let createdVerificationToken: VerificationToken
+      let user: User
 
-          const useCase = buildUseCase()
+      beforeEach(() => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
 
-          await useCase.verify({ email: 'test-user@test.es', sendNewToken: true })
+        existingVerificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.RETRIEVE_PASSWORD)
+          .build()
 
-          expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
-          expect(verificationTokenRepository.findByEmail).toBeCalledWith('test-user@test.es')
-          expect(cryptoService.randomString).toBeCalledTimes(1)
-          expect(verificationTokenRepository.delete).toBeCalledWith(existingToken)
-          expect(verificationTokenRepository.save).toBeCalledWith(verificationToken)
-          expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', verificationToken)
-        })
+        createdVerificationToken = testVerificationTokenBuilder
+          .withType(VerificationTokenType.RETRIEVE_PASSWORD)
+          .build()
 
-      it('should call to repositories and services correctly when flag is not active and token is expired',
-        async () => {
-          existingToken = new TestVerificationTokenBuilder()
-            .withId('expected-existing-id')
-            .withCreatedAt(fakeLocal)
-            .withExpiresAt(fakeLocal.minus({ second: 1 }))
-            .withToken('verify-email-token')
-            .withType(VerificationTokenType.RECOVER_PASSWORD)
-            .withUserEmail('test-user@test.es')
-            .build()
-          verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(existingToken))
+        request = {
+          email: 'test-user@test.es',
+          sendNewToken: true,
+          type: VerificationTokenType.RETRIEVE_PASSWORD,
+        }
 
-          const useCase = buildUseCase()
+        user = testUserBuilder
+          .withVerificationToken(Relationship.initializeRelation(createdVerificationToken))
+          .build()
 
-          await useCase.verify({ email: 'test-user@test.es', sendNewToken: false })
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
 
-          expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
-          expect(verificationTokenRepository.findByEmail).toBeCalledWith('test-user@test.es')
-          expect(cryptoService.randomString).toBeCalledTimes(1)
-          expect(verificationTokenRepository.delete).toBeCalledWith(existingToken)
-          expect(verificationTokenRepository.save).toBeCalledWith(verificationToken)
-          expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', verificationToken)
-        })
-    })
+        jest.spyOn(user, 'setVerificationToken').mockReturnValue(createdVerificationToken)
+      })
 
-    it('should call to repositories and services correctly when user does not have any token', async () => {
-      verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+      it('should call repositories and services correctly when token exists and should be resent', async () => {
+        const useCase = buildUseCase()
 
-      const useCase = buildUseCase()
+        await useCase.verify(request)
 
-      await useCase.verify({ email: 'test-user@test.es', sendNewToken: false })
+        expect(verificationTokenRepository.save).toBeCalledWith(createdVerificationToken, true)
+        expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', createdVerificationToken)
+      })
 
-      expect(userRepository.existsByEmail).toBeCalledWith('test-user@test.es')
-      expect(verificationTokenRepository.findByEmail).toBeCalledWith('test-user@test.es')
-      expect(cryptoService.randomString).toBeCalledTimes(1)
-      expect(verificationTokenRepository.delete).not.toBeCalled()
-      expect(verificationTokenRepository.save).toBeCalledWith(verificationToken)
-      expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', verificationToken)
+      it('should call repositories and services correctly when user does not have a verification token', async () => {
+        const foundUser = testUserBuilder
+          .withVerificationToken(Relationship.initializeRelation(null))
+          .build()
+
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        jest.spyOn(foundUser, 'setVerificationToken').mockReturnValue(createdVerificationToken)
+        jest.spyOn(foundUser, 'assertVerificationTokenIsValidFor').mockImplementation(
+          () => {
+            throw UserDomainException.userHasNotAVerificationToken('test-user-id')
+          }
+        )
+        jest.spyOn(foundUser, 'verificationToken', 'get').mockReturnValue(null)
+
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(foundUser))
+        const useCase = buildUseCase()
+
+        await useCase.verify(request)
+
+        expect(verificationTokenRepository.save).toBeCalledWith(createdVerificationToken, true)
+        expect(userEmailSender.sendEmailVerificationEmail).toBeCalledWith('test-user@test.es', createdVerificationToken)
+      })
     })
   })
 
   describe('when there are failures', () => {
-    it('should throw emailAlreadyRegistered exception if an user with input email is found', async () => {
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(true))
-
+    it('should throw exception if verification token type is not a valid type', async () => {
       const useCase = buildUseCase()
 
-      await expect(useCase.verify({ email: 'test-user@test.es', sendNewToken: false }))
+      request = {
+        ...request,
+        type: 'invalid-type',
+      }
+
+      await expect(() => useCase.verify(request))
         .rejects
-        .toStrictEqual(VerifyEmailAddressApplicationException.emailAlreadyRegistered('test-user@test.es'))
+        .toStrictEqual(VerifyEmailAddressApplicationException.invalidTokenType('invalid-type'))
     })
 
-    it('should throw existingTokenActive exception if a token is found and its active', async () => {
-      existingToken = new TestVerificationTokenBuilder()
-        .withId('expected-existing-id')
-        .withCreatedAt(fakeLocal)
-        .withExpiresAt(fakeLocal.plus({ minutes: 1 }))
-        .withToken('verify-email-token')
-        .withType(VerificationTokenType.VERIFY_EMAIL)
-        .withUserEmail('test-user@test.es')
-        .build()
-      verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(existingToken))
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+    describe('when verification token is create-account type', () => {
+      let existingToken: VerificationToken
+      let createdToken: VerificationToken
 
-      const useCase = buildUseCase()
+      beforeEach(() => {
+        request = {
+          type: VerificationTokenType.CREATE_ACCOUNT,
+          email: 'test-user@test.es',
+          sendNewToken: false,
+        }
 
-      await expect(useCase.verify({ email: 'test-user@test.es', sendNewToken: false }))
-        .rejects
-        .toStrictEqual(VerifyEmailAddressApplicationException.existingTokenActive('test-user@test.es'))
+        existingToken = testVerificationTokenBuilder
+          .withToken(VerificationTokenType.CREATE_ACCOUNT)
+          .build()
+
+        createdToken = testVerificationTokenBuilder
+          .withToken(VerificationTokenType.CREATE_ACCOUNT)
+          .build()
+      })
+
+      it('should throw exception if user email is already registered', async () => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(true))
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.emailAlreadyRegistered('test-user@test.es'))
+      })
+
+      it('should throw exception if valid token exists and sendNewToken flag is set to false', async () => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+        verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(existingToken))
+
+        jest.spyOn(existingToken, 'tokenHasExpired').mockReturnValue(false)
+
+        request = {
+          ...request,
+          sendNewToken: false,
+        }
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.existingTokenActive('test-user@test.es'))
+      })
+
+      it('should throw exception if token cannot be created due to invalid email', async () => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+        verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+
+        jest.spyOn(User, 'buildVerificationTokenForAccountCreation').mockImplementation(() => {
+          throw UserDomainException.cannotCreateVerificationToken('test-user@test.es')
+        })
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.invalidEmailAddress('test-user@test.es'))
+      })
+
+      it('should throw exception if token cannot be created due to unexpected error', async () => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+        verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+        verificationTokenRepository.save.mockImplementationOnce(() => {
+          throw Error('unexpected database error')
+        })
+
+        jest.spyOn(User, 'buildVerificationTokenForAccountCreation').mockReturnValue(createdToken)
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.cannotCreateVerificationToken('test-user@test.es'))
+      })
+
+      it('should throw exception if token cannot be sent', async () => {
+        userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
+        verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
+        userEmailSender.sendEmailVerificationEmail.mockImplementationOnce(() => {
+          throw Error('unexpected error while trying to send email')
+        })
+
+        jest.spyOn(User, 'buildVerificationTokenForAccountCreation').mockReturnValue(createdToken)
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmail('test-user@test.es'))
+      })
     })
 
-    it('should throw cannotSendVerificationTokenEmail exception if email could not be sent', async () => {
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
-      verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
-      verificationTokenRepository.save.mockImplementation(() => { throw Error() })
+    describe('when verification token is retrieve-password type', () => {
+      let existingToken: VerificationToken
+      let createdToken: VerificationToken
+      const user = mock<User>({
+        email: 'test-user@test.es',
+      })
 
-      const useCase = buildUseCase()
+      beforeEach(() => {
+        request = {
+          type: VerificationTokenType.RETRIEVE_PASSWORD,
+          email: 'test-user@test.es',
+          sendNewToken: false,
+        }
 
-      await expect(useCase.verify({ email: 'test-user@test.es', sendNewToken: false }))
-        .rejects
-        .toStrictEqual(VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmail('test-user@test.es'))
-    })
+        existingToken = testVerificationTokenBuilder
+          .withToken(VerificationTokenType.RETRIEVE_PASSWORD)
+          .build()
 
-    it('should throw cannotCreateVerificationToken exception if email could not be created', async () => {
-      userRepository.existsByEmail.mockResolvedValue(Promise.resolve(false))
-      verificationTokenRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
-      verificationTokenRepository.save.mockImplementation(() => { throw Error() })
+        createdToken = testVerificationTokenBuilder
+          .withToken(VerificationTokenType.RETRIEVE_PASSWORD)
+          .build()
+      })
 
-      const useCase = buildUseCase()
+      it('should throw exception if user does not exist', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(null))
 
-      await expect(useCase.verify({ email: 'test-user@test.e', sendNewToken: false }))
-        .rejects
-        .toStrictEqual(VerifyEmailAddressApplicationException.cannotCreateVerificationToken('test-user@test.e'))
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.userNotFound('test-user@test.es'))
+      })
+
+      it('should throw exception if user has a valid token and sendNewToken flag is set to false', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        user.setVerificationToken.mockImplementation(() => {
+          throw UserDomainException.userHasAlreadyAnActiveToken('expected-id')
+        })
+
+        request = {
+          ...request,
+          sendNewToken: false,
+        }
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.existingTokenActive('test-user@test.es'))
+      })
+
+      it('should throw exception if an unexpected exception occurred while setting token to user', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        user.setVerificationToken.mockImplementationOnce(() => {
+          throw UserDomainException.cannotAddVerificationTokenToAccountCreation('expected-id')
+        })
+
+        request = {
+          ...request,
+          sendNewToken: false,
+        }
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(UserDomainException.cannotAddVerificationTokenToAccountCreation('expected-id'))
+      })
+
+      it('should throw exception if token cannot be created because of unexpected error', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        user.setVerificationToken.mockReturnValueOnce(createdToken)
+
+        verificationTokenRepository.save.mockImplementationOnce(() => {
+          throw Error('unexpected database error')
+        })
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.cannotCreateVerificationToken('test-user@test.es'))
+      })
+
+      it('should throw exception if token cannot be sent because of unexpected error', async () => {
+        userRepository.findByEmail.mockResolvedValue(Promise.resolve(user))
+
+        user.setVerificationToken.mockReturnValueOnce(createdToken)
+
+        userEmailSender.sendEmailVerificationEmail.mockImplementationOnce(() => {
+          throw Error('unexpected error while trying to send email')
+        })
+
+        jest.spyOn(User, 'buildVerificationTokenForAccountCreation').mockReturnValue(createdToken)
+
+        const useCase = buildUseCase()
+
+        await expect(() => useCase.verify(request))
+          .rejects
+          .toStrictEqual(VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmail('test-user@test.es'))
+      })
     })
   })
 })

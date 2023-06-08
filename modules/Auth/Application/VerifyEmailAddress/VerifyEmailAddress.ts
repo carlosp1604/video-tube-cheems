@@ -1,18 +1,16 @@
-import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
-import { UserEmailSenderInterface } from '~/modules/Auth/Domain/UserEmailSenderInterface'
 import { User } from '~/modules/Auth/Domain/User'
-import { DateTime } from 'luxon'
-import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
+import { UserDomainException } from '~/modules/Auth/Domain/UserDomainException'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { UserEmailSenderInterface } from '~/modules/Auth/Domain/UserEmailSenderInterface'
+import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
+import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import {
   VerifyEmailAddressApplicationException
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
-import * as crypto from 'crypto'
 import {
   VerifyEmailAddressApplicationRequestInterface
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationRequestInterface'
-import { RecoverPasswordApplicationRequest } from '~/modules/Auth/Application/RecoverPasswordApplicationRequest'
-import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 
 export class VerifyEmailAddress {
   // eslint-disable-next-line no-useless-constructor
@@ -24,85 +22,126 @@ export class VerifyEmailAddress {
   ) {}
 
   public async verify (request: VerifyEmailAddressApplicationRequestInterface): Promise<void> {
+    // TODO: This should evolve to strategy pattern
+    switch (request.type) {
+      case VerificationTokenType.CREATE_ACCOUNT:
+        return this.handleVerifyEmailAddressForCreateAccount(request)
+      case VerificationTokenType.RETRIEVE_PASSWORD:
+        return this.handleVerifyEmailAddressForRetrievePassword(request)
+
+      default:
+        throw VerifyEmailAddressApplicationException.invalidTokenType(request.type)
+    }
+  }
+
+  private async handleVerifyEmailAddressForCreateAccount (
+    request: VerifyEmailAddressApplicationRequestInterface
+  ): Promise<void> {
     const emailAddressTaken = await this.userRepository.existsByEmail(request.email)
 
     if (emailAddressTaken) {
       throw VerifyEmailAddressApplicationException.emailAlreadyRegistered(request.email)
     }
 
-    const existingVerificationToken = await this.verificationTokenRepository.findByEmail(request.email)
+    const existingVerificationToken =
+      await this.verificationTokenRepository.findByEmail(request.email)
 
     if (existingVerificationToken !== null) {
       if (request.sendNewToken) {
         return this.handleSendNewToken(existingVerificationToken, request)
       }
 
-      return this.handleExistingToken(existingVerificationToken, request)
+      if (!existingVerificationToken.tokenHasExpired()) {
+        throw VerifyEmailAddressApplicationException.existingTokenActive(request.email)
+      }
     }
 
     return this.handleSendNewToken(null, request)
   }
 
+  private async handleVerifyEmailAddressForRetrievePassword (
+    request: VerifyEmailAddressApplicationRequestInterface
+  ): Promise<void> {
+    const user = await this.getUser(request.email)
+
+    const verificationToken = this.setTokenToUser(user, request)
+
+    try {
+      await this.verificationTokenRepository.save(verificationToken, true)
+    } catch (exception: unknown) {
+      console.error(exception)
+      throw VerifyEmailAddressApplicationException.cannotCreateVerificationToken(user.email)
+    }
+
+    await this.sendVerificationToken(verificationToken)
+  }
+
+  private async getUser (userEmail: VerifyEmailAddressApplicationRequestInterface['email']): Promise<User> {
+    const user = await this.userRepository.findByEmail(userEmail, ['verificationToken'])
+
+    if (!user) {
+      throw VerifyEmailAddressApplicationException.userNotFound(userEmail)
+    }
+
+    return user
+  }
+
+  private setTokenToUser (user: User, request: VerifyEmailAddressApplicationRequestInterface): VerificationToken {
+    try {
+      return user.setVerificationToken(VerificationTokenType.RETRIEVE_PASSWORD, request.sendNewToken)
+    } catch (exception: unknown) {
+      if (!(exception instanceof UserDomainException)) {
+        throw exception
+      }
+
+      switch (exception.id) {
+        case UserDomainException.userHasAlreadyAnActiveTokenId:
+          throw VerifyEmailAddressApplicationException.existingTokenActive(user.email)
+
+        default:
+          throw exception
+      }
+    }
+  }
+
   private async handleSendNewToken (
     existingToken: VerificationToken | null,
-    request: RecoverPasswordApplicationRequest
+    request: VerifyEmailAddressApplicationRequestInterface
   ): Promise<void> {
-    const newTokenToSend = this.buildVerificationToken(request.email)
+    let newTokenToSend: VerificationToken
 
-    if (existingToken) {
-      // TODO: Handle possible errors
-      await this.verificationTokenRepository.delete(existingToken)
+    try {
+      newTokenToSend = User.buildVerificationTokenForAccountCreation(request.email)
+    } catch (exception: unknown) {
+      if (!(exception instanceof UserDomainException)) {
+        throw exception
+      }
+
+      if (exception.id === UserDomainException.cannotCreateVerificationTokenId) {
+        throw VerifyEmailAddressApplicationException.invalidEmailAddress(request.email)
+      }
+
+      throw exception
     }
 
-    await this.saveAndSendVerificationToken(newTokenToSend)
-  }
+    try {
+      await this.verificationTokenRepository.save(newTokenToSend, true)
+    } catch (exception: unknown) {
+      console.error(exception)
 
-  private async handleExistingToken (
-    existingToken: VerificationToken,
-    request: RecoverPasswordApplicationRequest
-  ): Promise<void> {
-    if (existingToken.expiresAt > DateTime.now()) {
-      throw VerifyEmailAddressApplicationException.existingTokenActive(request.email)
+      throw VerifyEmailAddressApplicationException.cannotCreateVerificationToken(request.email)
     }
 
-    return this.handleSendNewToken(existingToken, request)
+    await this.sendVerificationToken(newTokenToSend)
   }
 
-  private async saveAndSendVerificationToken (
-    verificationToken: VerificationToken
-  ): Promise<void> {
+  private async sendVerificationToken (verificationToken: VerificationToken): Promise<void> {
     try {
       await this.userEmailSender.sendEmailVerificationEmail(verificationToken.userEmail, verificationToken)
-
-      await this.verificationTokenRepository.save(verificationToken)
     } catch (exception: unknown) {
       console.error(exception)
 
       throw VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmail(verificationToken.userEmail)
-    }
-  }
-
-  private buildVerificationToken (
-    userEmail: User['email']
-  ): VerificationToken {
-    const tokenId = crypto.randomUUID()
-    const token = this.cryptoService.randomString()
-
-    const nowDate = DateTime.now()
-
-    try {
-      return new VerificationToken(
-        tokenId,
-        token,
-        userEmail,
-        VerificationTokenType.VERIFY_EMAIL,
-        nowDate.plus({ minute: 60 }),
-        nowDate
-      )
-    } catch (exception: unknown) {
-      console.error(exception)
-
-      throw VerifyEmailAddressApplicationException.cannotCreateVerificationToken(userEmail)
     }
   }
 }

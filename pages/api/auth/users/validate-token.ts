@@ -1,16 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { container } from '~/awailix.container'
+import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {
-  VerifyEmailAddressApplicationException
-} from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
-import { ValidateTokenApiRequestValidator } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestValidator'
-import { ValidateTokenApiRequestInterface } from '~/modules/Auth/Infrastructure/ValidateTokenApiRequestInterface'
-import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
+  ValidateTokenApiRequestValidator
+} from '~/modules/Auth/Infrastructure/Validators/ValidateTokenApiRequestValidator'
 import {
   ValidateTokenApplicationRequestTranslator
-} from '~/modules/Auth/Infrastructure/ValidateTokenApplicationRequestTranslator'
-import { container } from '~/awailix.container'
-import { ValidateTokenApplicationException } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
+} from '~/modules/Auth/Infrastructure/Translators/ValidateTokenApplicationRequestTranslator'
+import {
+  ValidateTokenApplicationException
+} from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
 
 export default async function handler (
   request: NextApiRequest,
@@ -22,13 +22,9 @@ export default async function handler (
 
   const { email, token } = request.query
 
-  if (!email || !token) {
-    return handleBadRequest(response, null)
-  }
-
-  const apiRequest: ValidateTokenApiRequestInterface = {
-    email: email.toString(),
-    token: token.toString(),
+  const apiRequest: any = {
+    ...email ? { email: email.toString() } : {},
+    ...token ? { token: token.toString() } : {},
   }
 
   const validationExceptions = ValidateTokenApiRequestValidator.validate(apiRequest)
@@ -53,28 +49,25 @@ export default async function handler (
 
     switch (exception.id) {
       case ValidateTokenApplicationException.verificationTokenNotFoundId:
+      case ValidateTokenApplicationException.tokenDoesNotMatchId:
         return handleNotFound(response)
       case ValidateTokenApplicationException.cannotUseRecoverPasswordTokenId:
-      case ValidateTokenApplicationException.cannotUseVerifyEmailTokenId:
-        // Log exception and obfuscate response. This should not happen
+      case ValidateTokenApplicationException.cannotUseCreateAccountTokenId:
+        /**
+         * Log exception and obfuscate response. This should not happen
+         * Maybe in thew future this could be handled in a different way
+         */
         console.error(exception)
 
         return handleNotFound(response)
-      case ValidateTokenApplicationException.verificationTokenExpiredId:
-        return handleConflict(exception, response)
 
-      default:
+      default: {
+        console.error(exception)
+
         return handleInternalError(response)
+      }
     }
   }
-}
-
-function handleConflict (exception: VerifyEmailAddressApplicationException, response: NextApiResponse) {
-  return response.status(409)
-    .json({
-      code: 'validate-token-conflict',
-      message: exception.message,
-    })
 }
 
 function handleNotFound (response: NextApiResponse) {
@@ -97,16 +90,14 @@ function handleMethod (response: NextApiResponse) {
 
 function handleBadRequest (
   response: NextApiResponse,
-  validationException: UserApiValidationException | null
+  validationException: UserApiValidationException
 ) {
   return response
     .status(400)
     .json({
       code: 'validate-token-bad-request',
       message: 'Invalid request',
-      ...validationException !== null
-        ? { errors: validationException.exceptions }
-        : { errors: [{ message: 'Token and Email are required' }] },
+      errors: validationException.exceptions,
     })
 }
 

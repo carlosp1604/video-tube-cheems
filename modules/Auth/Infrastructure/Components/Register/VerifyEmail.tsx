@@ -1,8 +1,9 @@
-import { ChangeEvent, FC, FormEvent, useState } from 'react'
+import { FC, FormEvent, useState } from 'react'
 import styles from './Register.module.scss'
 import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -16,12 +17,13 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
   const [verificationError, setVerificationError] = useState<boolean>(false)
   const [resendEmail, setResendEmail] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] =
-    useState<string>(t('user_signup_verify_email_email_not_available_message') ?? '')
+    useState<string>('')
 
   const authApiService = new AuthApiService()
 
   const onSubmit = async (event: FormEvent) => {
     setVerificationError(false)
+    setErrorMessage('')
     event.preventDefault()
 
     if (email === '') {
@@ -29,38 +31,42 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
-      const result = await authApiService.verifyEmail(email, resendEmail)
+      const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
 
       if (!result.ok) {
         if (result.status === 409) {
           const jsonResponse = await result.json()
 
+          setVerificationError(true)
+
           if (jsonResponse.code === 'verify-email-address-conflict-token-already-issued') {
             setResendEmail(true)
-            setErrorMessage(t('user_signup_verify_email_email_already_sent_message') ?? '')
+            setErrorMessage(t('verify_email_email_already_sent_message') ?? '')
           } else {
-            setErrorMessage(t('user_signup_verify_email_email_not_available_message') ?? '')
+            setErrorMessage(t('verify_email_email_not_available_message') ?? '')
           }
-          setVerificationError(true)
-
-          return
-        }
-
-        if (result.status === 400) {
-          setErrorMessage(t('user_signup_verify_email_email_error_message') ?? '')
-          setVerificationError(true)
 
           return
         }
 
         if (result.status === 422) {
-          setErrorMessage(t('user_signup_verify_email_email_could_not_be_sent_message') ?? '')
+          const jsonResponse = await result.json()
+
           setVerificationError(true)
+
+          switch (jsonResponse.code) {
+            case 'verify-email-address-invalid-email':
+              setErrorMessage(t('verify_email_invalid_email_message') ?? '')
+              break
+            default:
+              setErrorMessage(t('verify_email_server_error_message') ?? '')
+              break
+          }
 
           return
         }
 
-        setErrorMessage(t('user_signup_verify_email_server_error_message') ?? '')
+        setErrorMessage(t('verify_email_server_error_message') ?? '')
         setVerificationError(true)
 
         return
@@ -69,34 +75,19 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       onConfirm(email)
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('user_signup_verify_email_server_error_message') ?? '')
+      setErrorMessage(t('verify_email_server_error_message') ?? '')
       setVerificationError(true)
     }
   }
 
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setResendEmail(false)
-    if (event.target.value === '') {
-      setEmail('')
-      setInvalidEmail(false)
-
-      return
-    }
-
-    try {
-      emailValidator.parse(event.target.value)
-      setEmail(event.target.value)
-      setInvalidEmail(false)
-    } catch (exception: unknown) {
-      setInvalidEmail(true)
-      setEmail('')
-    }
-  }
-
-  const onClickSubmit = () => {
+  const onClickHasVerificationCode = () => {
     if (email !== '' && !invalidEmail) {
       onConfirm(email)
     }
+  }
+
+  const canSubmit = (): boolean => {
+    return !invalidEmail && email !== ''
   }
 
   return (
@@ -105,57 +96,50 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       onSubmit={ onSubmit }
     >
       <div className={ styles.register__title }>
-        { t('user_signup_verify_email_title') }
+        { t('verify_email_title') }
         <small className={ styles.register__subtitle }>
-          { t('user_signup_verify_email_subtitle') }
+          { t('verify_email_subtitle') }
         </small>
       </div>
 
       <p className={ `
         ${styles.register__error}
-        ${verificationError ? styles.register__error__open : ''}
+        ${verificationError ? styles.register__error_visible : ''}
       ` }>
         { errorMessage }
       </p>
 
-      <div className={ styles.register__inputSection }>
-        <label className={ styles.register__inputLabel }>
-          { t('user_signup_verify_email_email_input_label') }
-        </label>
-        <input
-          type={ 'email' }
-          className={ `
-            ${styles.register__input}
-            ${invalidEmail ? styles.register__input_error : ''}
-          ` }
-          placeholder={ t('user_signup_verify_email_email_input_placeholder') ?? '' }
-          onChange={ handleEmailChange }
-        />
-        <label className={ `
-          ${styles.register__inputErrorMessage}
-          ${invalidEmail ? styles.register__inputErrorMessage__open : ''}
-        ` }>
-          { t('user_signup_verify_email_email_error_message') }
-        </label>
-      </div>
+      <FormInputSection
+        label={ t('verify_email_email_input_label') }
+        errorLabel={ t('verify_email_email_error_message') }
+        type={ 'email' }
+        placeholder={ t('verify_email_email_input_placeholder') }
+        validator={ emailValidator }
+        onChange={ (value, invalidInput) => {
+          setEmail(value)
+          setInvalidEmail(invalidInput)
+        } }
+      />
 
       <button
-        type="submit"
+        type={ 'submit' }
         className={ `
           ${styles.register__submit}
-          ${!invalidEmail && email !== '' ? styles.register__submit__enabled : ''}
+          ${canSubmit() ? styles.register__submit__enabled : ''}
           ${resendEmail ? styles.register__submit_resendEmail : ''}
-        ` }>
-        { resendEmail ? t('user_signup_verify_email_resend_email') : t('user_signup_verify_email_submit_button') }
+        ` }
+        disabled={ !canSubmit() }
+      >
+        { resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
       </button>
       <button className={ `
         ${styles.register__verificationCodeLink}
-        ${!invalidEmail && email !== '' ? styles.register__verificationCodeLink_active : ''}
+        ${canSubmit() ? styles.register__verificationCodeLink_active : ''}
       ` }
-        onClick={ onClickSubmit }
-        disabled={ invalidEmail }
+        onClick={ onClickHasVerificationCode }
+        disabled={ !canSubmit() }
       >
-        { t('user_signup_verify_email_already_has_a_code_button_title') }
+        { t('verify_email_already_has_a_code_button_title') }
       </button>
     </form>
   )

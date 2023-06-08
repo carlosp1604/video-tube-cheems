@@ -3,9 +3,9 @@ import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
 
 export class ValidateTokenApplicationException extends ApplicationException {
   public static verificationTokenNotFoundId = 'validate_token_verification_token_not_found'
-  public static verificationTokenExpiredId = 'validate_token_verification_token_expired'
-  public static cannotUseVerifyEmailTokenId = 'validate_token_cannot_use_verification_token'
-  public static cannotUseRecoverPasswordTokenId = 'validate_token_cannot_use_recover_password'
+  public static cannotUseCreateAccountTokenId = 'validate_token_cannot_use_create_account_token'
+  public static cannotUseRecoverPasswordTokenId = 'validate_token_cannot_use_recover_password_token'
+  public static tokenDoesNotMatchId = 'validate_token_token_does_not_match'
 
   constructor (message: string, id: string) {
     super(message, id)
@@ -22,21 +22,12 @@ export class ValidateTokenApplicationException extends ApplicationException {
     )
   }
 
-  public static verificationTokenExpired (
+  public static cannotUseCreateAccountToken (
     userEmail: VerificationToken['userEmail']
   ): ValidateTokenApplicationException {
     return new ValidateTokenApplicationException(
-      `Token for user with email ${userEmail} has already expired`,
-      this.verificationTokenExpiredId
-    )
-  }
-
-  public static cannotUseVerifyEmailToken (
-    userEmail: VerificationToken['userEmail']
-  ): ValidateTokenApplicationException {
-    return new ValidateTokenApplicationException(
-      `Token is intended to created a new user but an user with email ${userEmail} was found`,
-      this.cannotUseVerifyEmailTokenId
+      `Token is intended to create a new user but an user with email ${userEmail} already exists`,
+      this.cannotUseCreateAccountTokenId
     )
   }
 
@@ -44,8 +35,15 @@ export class ValidateTokenApplicationException extends ApplicationException {
     userEmail: VerificationToken['userEmail']
   ): ValidateTokenApplicationException {
     return new ValidateTokenApplicationException(
-      `Token is intended to recover the password from user with email ${userEmail} but it was not found`,
+      `Token is intended to recover the password from user with email ${userEmail} but user does not exist`,
       this.cannotUseRecoverPasswordTokenId
+    )
+  }
+
+  public static tokenDoesNotMatch (userEmail: VerificationToken['userEmail']): ValidateTokenApplicationException {
+    return new ValidateTokenApplicationException(
+      `Token does not match for user with email ${userEmail}`,
+      this.tokenDoesNotMatchId
     )
   }
 }

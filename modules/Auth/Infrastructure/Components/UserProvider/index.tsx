@@ -1,8 +1,8 @@
 import { useSession } from 'next-auth/react'
 import { FC, ReactElement, useEffect, useMemo, useState } from 'react'
 import { UserApplicationDto } from '../../../Application/Dtos/UserApplicationDto'
-import { UserProviderUserDto } from '../../UserProviderUserDto'
-import { UserProviderUserDtoTranslator } from '../../UserProviderUserDtoTranslator'
+import { UserProviderUserDto } from '../../Dtos/UserProviderUserDto'
+import { UserProviderUserDtoTranslator } from '../../Translators/UserProviderUserDtoTranslator'
 import { UserContext } from '~/hooks/UserContext'
 import { UserStatus } from '~/types/UserProviderInstance'
 

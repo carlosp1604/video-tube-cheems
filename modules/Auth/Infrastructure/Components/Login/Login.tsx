@@ -1,8 +1,9 @@
 import { signIn } from 'next-auth/react'
-import { ChangeEvent, FC, FormEvent, useState } from 'react'
+import { FC, FormEvent, useState } from 'react'
 import styles from './Login.module.scss'
 import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { useTranslation } from 'next-i18next'
+import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 
 export interface Props {
   onClickSignup: () => void
@@ -36,42 +37,6 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
     }
   }
 
-  const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === '') {
-      setEmail('')
-      setInvalidEmail(false)
-
-      return
-    }
-
-    try {
-      emailValidator.parse(event.target.value)
-      setEmail(event.target.value)
-      setInvalidEmail(false)
-    } catch (exception: unknown) {
-      setInvalidEmail(true)
-      setEmail('')
-    }
-  }
-
-  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value === '') {
-      setPassword('')
-      setInvalidPassword(false)
-
-      return
-    }
-
-    try {
-      passwordValidator.parse(event.target.value)
-      setPassword(event.target.value)
-      setInvalidPassword(false)
-    } catch (exception: unknown) {
-      setInvalidPassword(true)
-      setPassword('')
-    }
-  }
-
   const canEnableSubmitButton = () => {
     return !invalidEmail &&
       !invalidPassword &&
@@ -85,69 +50,52 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.login__title }>
-        { t('user_login_title') }
+        { t('title') }
         <small className={ styles.login__subtitle }>
-          { t('user_login_subtitle') }
+          { t('subtitle') }
         </small>
       </h1>
 
       <p className={ `
         ${styles.login__error}
-        ${loginError ? styles.login__error__open : ''}
+        ${loginError ? styles.login__error_visible : ''}
       ` }>
-        { t('user_login_sign_in_error_message') }
+        { t('sign_in_error_message') }
       </p>
 
-      <div className={ styles.login__inputSection }>
-        <label className={ styles.login__inputLabel }>
-          { t('user_login_email_input_label') }
-        </label>
-        <input
-          type={ 'email' }
-          className={ `
-            ${styles.login__input}
-            ${invalidEmail ? styles.login__input_error : ''}
-          ` }
-          placeholder={ t('user_login_email_input_placeholder') ?? '' }
-          onChange={ handleEmailChange }
-        />
-        <label className={ `
-          ${styles.login__inputErrorMessage}
-          ${invalidEmail ? styles.login__inputErrorMessage__open : ''}
-        ` }>
-          { t('user_login_email_input_error_message') }
-        </label>
-      </div>
+      <FormInputSection
+        label={ t('email_input_label') }
+        errorLabel={ t('email_input_error_message') }
+        type={ 'email' }
+        placeholder={ t('email_input_placeholder') }
+        validator={ emailValidator }
+        onChange={ (value, invalidInput) => {
+          setEmail(value)
+          setInvalidEmail(invalidInput)
+        } }
+      />
 
-      <div className={ styles.login__inputSection }>
-        <label className={ styles.login__inputLabel }>
-          { t('user_login_password_input_label') }
-        </label>
-        <input
-          className={ `
-            ${styles.login__input}
-            ${invalidPassword ? styles.login__input_error : ''}
-          ` }
-          placeholder={ t('user_login_password_input_placeholder') ?? '' }
-          type={ 'password' }
-          onChange={ handlePasswordChange }
-        />
-        <label className={ `
-          ${styles.login__inputErrorMessage}
-          ${invalidPassword ? styles.login__inputErrorMessage__open : ''}
-        ` }>
-          { t('user_login_password_input_error_message') }
-        </label>
-      </div>
+      <FormInputSection
+        label={ t('password_input_label') }
+        errorLabel={ t('password_input_error_message') }
+        type={ 'password' }
+        placeholder={ t('password_input_placeholder') }
+        validator={ passwordValidator }
+        onChange={ (value, invalidInput) => {
+          setPassword(value)
+          setInvalidPassword(invalidInput)
+        } }
+      />
+
       <button
         type={ 'submit' }
         className={ `
           ${styles.login__submit}
           ${canEnableSubmitButton() ? styles.login__submit__enabled : ''}
         ` }
-        disabled={ invalidEmail || invalidPassword }
+        disabled={ !canEnableSubmitButton() }
       >
-        { t('user_login_submit_button_title') }
+        { t('submit_button_title') }
       </button>
 
       <div className={ styles.login__registerRecoverSection }>
@@ -155,14 +103,14 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
           className={ styles.login__signupButton }
           onClick={ onClickSignup }
         >
-          { t('user_login_sign_in_button_title') }
+          { t('sign_in_button_title') }
         </button>
 
         <button
           className={ styles.login__forgotPasswordButton }
           onClick={ onClickForgotPassword }
         >
-          { t('user_login_forgot_password_button_title') }
+          { t('forgot_password_button_title') }
         </button>
       </div>
     </form>

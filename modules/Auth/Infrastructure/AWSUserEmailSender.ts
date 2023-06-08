@@ -1,12 +1,13 @@
-import { UserEmailSenderInterface } from '~/modules/Auth/Domain/UserEmailSenderInterface'
 import { User } from '~/modules/Auth/Domain/User'
-import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
+import { UserEmailSenderInterface } from '~/modules/Auth/Domain/UserEmailSenderInterface'
 import { SendTemplatedEmailCommand, SESClient } from '@aws-sdk/client-ses'
+import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 
 export class AWSUserEmailSender implements UserEmailSenderInterface {
   // eslint-disable-next-line no-useless-constructor
   constructor (
-    private readonly sesClient: SESClient
+    private readonly sesClient: SESClient,
+    private readonly emailFromAddress: string
   ) {}
 
   /**
@@ -23,7 +24,7 @@ export class AWSUserEmailSender implements UserEmailSenderInterface {
     try {
       await this.sesClient.send(sendEmailCommand)
     } catch (exception: unknown) {
-      console.log(exception)
+      console.error(exception)
       throw Error(`Could not send email to user with email ${userEmail}`)
     }
   }
@@ -32,22 +33,16 @@ export class AWSUserEmailSender implements UserEmailSenderInterface {
     toAddress: string,
     verificationToken: VerificationToken
   ): SendTemplatedEmailCommand {
-    const { env } = process
-
-    const fromAddress = env.EMAIL_FROM_ADDRESS
-
-    if (!fromAddress) {
-      throw Error('Missing EMAIL_FROM_ADDRESS environment variable to build SendTemplatedEmailCommand.')
-    }
-
     return new SendTemplatedEmailCommand({
       Destination: {
         CcAddresses: [],
         ToAddresses: [toAddress],
       },
-      Template: verificationToken.type === 'verify-email' ? 'email-verification' : 'recover-password',
+      Template: verificationToken.type === VerificationTokenType.CREATE_ACCOUNT
+        ? 'email-verification'
+        : 'recover-password',
       TemplateData: JSON.stringify({ token: verificationToken.token }),
-      Source: fromAddress,
+      Source: this.emailFromAddress,
     })
   }
 }

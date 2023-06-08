@@ -2,7 +2,7 @@ export class ValidationErrorItem {
   public message: string
   public parameter: string
 
-  constructor(
+  constructor (
     message: string,
     parameter: string
   ) {

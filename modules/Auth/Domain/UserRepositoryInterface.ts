@@ -1,8 +1,13 @@
 import { User } from './User'
 
+export type UserRepositoryOptions = 'verificationToken'
+
+export type FindByEmailOptions = Extract<UserRepositoryOptions, 'verificationToken'>
+
 export interface UserRepositoryInterface {
   /**
    * Insert a User in the database
+   * Deletes existing verification token associated to user email
    * @param user User to insert
    */
   save(user: User): Promise<void>
@@ -10,9 +15,10 @@ export interface UserRepositoryInterface {
   /**
    * Find a User given its email
    * @param userEmail User's email
+   * @param options Options with the User's relationships to load
    * @return User if found or null
    */
-  findByEmail(userEmail: User['email']): Promise<User | null>
+  findByEmail(userEmail: User['email'], options?: FindByEmailOptions[]): Promise<User | null>
 
   /**
    * Find a User given its User ID
@@ -24,8 +30,9 @@ export interface UserRepositoryInterface {
   /**
    * Update a User in the database
    * @param user User to update
+   * @param deleteVerificationToken Decides whether user's verification token is removed
    */
-  update(user: User): Promise<void>
+  update (user: User, deleteVerificationToken?: boolean): Promise<void>
 
   /**
    * Check whether user exists given an email

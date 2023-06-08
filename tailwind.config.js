@@ -23,6 +23,9 @@ module.exports = {
       '2xl': '1536px',
     },
     extend: {
+      animation: {
+        'bounce-short': 'bounce 0.3s ease-in-out 2',
+      },
       colors: {
         body: '#1d1d1d',
         base: {

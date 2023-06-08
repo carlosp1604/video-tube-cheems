@@ -1,13 +1,13 @@
 import { DateTime } from 'luxon'
 import { PostComment } from '../../Domain/PostComment'
-import { UserModelTranslator } from '../../../Auth/Infrastructure/UserModelTranslator'
+import { PrismaUserModelTranslator } from '../../../Auth/Infrastructure/PrismaUserModelTranslator'
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
 import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
 import { PostCommentWithChilds, PostCommentWithUser } from '../PrismaModels/PostCommentModel'
 import { PostChildCommentModelTranslator } from './PostChildCommentModelTranslator'
 
 export class PostCommentModelTranslator {
-  public static toDomain(
+  public static toDomain (
     prismaPostCommentModel: PrismaPostCommentModel,
     options: RepositoryOptions[]
   ): PostComment {
@@ -30,12 +30,14 @@ export class PostCommentModelTranslator {
 
     if (options.includes('comments.user')) {
       const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
-      const userDomain = UserModelTranslator.toDomain(postCommentWithUser.user)
+      const userDomain = PrismaUserModelTranslator.toDomain(postCommentWithUser.user)
+
       postComment.setUser(userDomain)
     }
 
     if (options.includes('comments.childComments')) {
       const postCommentWithChilds = prismaPostCommentModel as PostCommentWithChilds
+
       postCommentWithChilds.childComments.forEach((childComment) => {
         postComment.addChildComment(PostChildCommentModelTranslator.toDomain(childComment, ['comments.user']))
       })
@@ -44,7 +46,7 @@ export class PostCommentModelTranslator {
     return postComment
   }
 
-  public static toDatabase(postComment: PostComment): PrismaPostCommentModel {
+  public static toDatabase (postComment: PostComment): PrismaPostCommentModel {
     return {
       id: postComment.id,
       comment: postComment.comment,
@@ -53,7 +55,7 @@ export class PostCommentModelTranslator {
       createdAt: postComment.createdAt.toJSDate(),
       deletedAt: postComment.deletedAt?.toJSDate() ?? null,
       updatedAt: postComment.updatedAt.toJSDate(),
-      postId: postComment.postId
+      postId: postComment.postId,
     }
   }
 }

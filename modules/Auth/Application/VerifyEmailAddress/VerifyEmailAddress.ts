@@ -125,7 +125,7 @@ export class VerifyEmailAddress {
     }
 
     try {
-      await this.verificationTokenRepository.save(newTokenToSend, existingToken !== null)
+      await this.verificationTokenRepository.save(newTokenToSend, true)
     } catch (exception: unknown) {
       console.error(exception)
 

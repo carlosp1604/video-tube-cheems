@@ -1,9 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
-import { authOptions } from './[...nextauth]'
 import { container } from '~/awailix.container'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { GetUserById } from '~/modules/Auth/Application/GetUserById'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { GetUserByIdApplicationException } from '~/modules/Auth/Application/GetUseByIdApplicationException'
+import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
 
 export default async function handler (
   request: NextApiRequest,

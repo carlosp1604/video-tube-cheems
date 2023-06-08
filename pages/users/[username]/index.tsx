@@ -1,21 +1,14 @@
 import nextI18nextConfig from '~/next-i18next.config'
 import { container } from '~/awailix.container'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
-import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
+import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { GetServerSideProps, NextPage } from 'next'
-import {
-  UserProfileHeaderComponentDto
-} from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
+import { UserProfilePageProps, UserProfilePage } from '~/components/pages/UserProfilePage/UserProfilePage'
 import {
   UserHeaderComponentDtoTranslator
 } from '~/modules/Auth/Infrastructure/Translators/UserHeaderComponentDtoTranslator'
 
-interface Props {
-  userComponentDto: UserProfileHeaderComponentDto
-}
-
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
   let username = context.query.username
 
@@ -40,6 +33,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
         ...await serverSideTranslations(locale, [
           'user_menu',
           'user_profile',
+          'app_menu',
         ]),
       },
     }
@@ -50,14 +44,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       notFound: true,
     }
   }
-}
-
-const UserProfilePage: NextPage<Props> = ({ userComponentDto }) => {
-  return (
-    <UserProfileHeader
-      componentDto={ userComponentDto }
-    />
-  )
 }
 
 export default UserProfilePage

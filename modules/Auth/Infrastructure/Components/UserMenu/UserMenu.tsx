@@ -9,6 +9,7 @@ import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
 
 interface Props {
   id: string
+  username: string
   imageUrl: string | null
   name: string
   email: string
@@ -18,6 +19,7 @@ interface Props {
 
 export const UserMenu: FC<Props> = ({
   id,
+  username,
   imageUrl,
   name,
   email,
@@ -68,7 +70,7 @@ export const UserMenu: FC<Props> = ({
               {
                 translationKey: 'user_menu_profile_button',
                 isActive: false,
-                action: `/users/${id}`,
+                action: `/users/${username}`,
                 icon: <CiUser />,
                 onClick: () => setIsOpen(false),
               },

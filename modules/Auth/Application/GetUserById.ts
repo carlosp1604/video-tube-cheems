@@ -6,9 +6,7 @@ import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInt
 
 export class GetUserById {
   // eslint-disable-next-line no-useless-constructor
-  constructor (
-    private readonly userRepository: UserRepositoryInterface
-  ) {}
+  constructor (private readonly userRepository: UserRepositoryInterface) {}
 
   public async get (userId: User['id']): Promise<UserApplicationDto> {
     const actor = await this.userRepository.findById(userId)

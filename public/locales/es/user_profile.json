@@ -1,3 +1,5 @@
 {
-  "user_my_profile_button": "Editar perfil"
+  "user_my_profile_button": "Editar perfil",
+  "user_joined_at_label_title": "Desde",
+  "user_name_label_title": "Nombre"
 }

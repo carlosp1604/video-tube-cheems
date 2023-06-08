@@ -8,7 +8,8 @@
   }
 
   &__user-info {
-    @apply flex flex-col border border-base-600 rounded-lg bg-base-900;
+    @apply flex flex-col border border-base-600 rounded-lg bg-base-900
+      capitalize;
   }
 
   &__user-info-item {

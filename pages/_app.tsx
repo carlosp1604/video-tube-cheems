@@ -8,7 +8,8 @@ import UserProvider from '~/modules/Auth/Infrastructure/Components/UserProvider'
 import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
-import { appWithTranslation } from 'next-i18next'
+import { appWithTranslation, useTranslation } from 'next-i18next'
+import { Settings } from 'luxon'
 
 function App ({
   Component,
@@ -18,6 +19,13 @@ function App ({
   },
 }: AppProps) {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
+
+  const { i18n } = useTranslation()
+
+  Settings.defaultLocale = i18n.language || 'en'
+
+  // TODO: find the way to get user timezone and set it on Luxon Settings
+  Settings.defaultZone = 'Europe/Madrid'
 
   return (
     <SessionProvider session={ session }>

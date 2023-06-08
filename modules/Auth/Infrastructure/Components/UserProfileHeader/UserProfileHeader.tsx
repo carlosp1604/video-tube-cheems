@@ -70,7 +70,7 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
         <div className={ styles.userProfile__userInfoItem }>
           <BiCalendarEvent className={ styles.userProfile__userInfoItemIcon }/>
           <span className={ styles.userProfile__userInfoItemTitle }>
-            { t('user_joined_at_label') }
+            { t('user_joined_at_label_title') }
           </span>
           { componentDto.createdAt }
         </div>

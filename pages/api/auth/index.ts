@@ -10,13 +10,7 @@ export default async function handler (
   response: NextApiResponse
 ) {
   if (request.method !== 'GET') {
-    return response
-      .setHeader('Allow', 'GET')
-      .status(405)
-      .json({
-        code: 'get-user-by-id-method-not-allowed',
-        message: 'HTTP method not allowed',
-      })
+    return handleMethod(response)
   }
 
   const session = await UnstableGetServerSession(request, response, authOptions)
@@ -64,5 +58,15 @@ function handleNotFound (response: NextApiResponse, message: string) {
     .json({
       code: 'get-user-by-id-resource-not-found',
       message,
+    })
+}
+
+function handleMethod (response: NextApiResponse) {
+  return response
+    .setHeader('Allow', 'GET')
+    .status(405)
+    .json({
+      code: 'get-user-by-id-method-not-allowed',
+      message: 'HTTP method not allowed',
     })
 }

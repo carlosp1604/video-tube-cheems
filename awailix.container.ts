@@ -20,6 +20,7 @@ import { MysqlActorRepository } from '~/modules/Actors/Infrastructure/MysqlActor
 import { MysqlProducerRepository } from '~/modules/Producers/Infrastructure/MysqlProducerRepository'
 import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
 import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
+import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 
 /**
  * We create a container to register our classes dependencies
@@ -94,6 +95,7 @@ container.register('verifyEmailAddressUseCase', asFunction(() => {
 }))
 container.register('validateTokenUseCase', asClass(ValidateToken))
 container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
+container.register('getUserByUsername', asClass(GetUserByUsername))
 container.register('getUserById', asClass(GetUserById))
 container.register('getPosts', asClass(GetPosts))
 container.register('getActors', asClass(GetActors))

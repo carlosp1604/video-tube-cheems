@@ -36,6 +36,7 @@ describe('~/modules/Auth/Application/Translators/UserApplicationDtoTranslator.ts
       language: 'test-user-language',
       name: 'Test User Name',
       updatedAt: nowDate.toISO(),
+      username: 'test_user_username',
     })
   })
 

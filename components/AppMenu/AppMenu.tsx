@@ -42,8 +42,8 @@ export const AppMenu: FC = () => {
         >
           <img
             className={ styles.appMenu__userAvatarImage }
-            src={ user?.image }
-            alt={ user?.name }
+            src={ user.image }
+            alt={ user.name }
           />
         </button>
       )
@@ -66,11 +66,11 @@ export const AppMenu: FC = () => {
 
     userMenu = (
       <UserMenu
-        id={ user?.id }
-        username={ user?.username }
-        imageUrl={ user?.image }
-        name={ user?.name }
-        email={ user?.email }
+        id={ user.id }
+        username={ user.username }
+        imageUrl={ user.image }
+        name={ user.name }
+        email={ user.email }
         setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
         isOpen={ userMenuOpen }
       />
@@ -104,6 +104,7 @@ export const AppMenu: FC = () => {
             <img
               className={ styles.appMenu__logoImage }
               src='/img/cheems-logo.png'
+              alt={ t('app_menu_logo_url_alt') ?? '' }
             />
           </Link>
 

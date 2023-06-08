@@ -72,16 +72,19 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
           <span className={ styles.userProfile__userInfoItemTitle }>
             { t('user_joined_at_label_title') }
           </span>
-          { componentDto.createdAt }
+          <span className={ styles.userProfile__userInfoItemContent }>
+            { componentDto.createdAt }
+          </span>
         </div>
         <div className={ styles.userProfile__userInfoItem }>
           <BiIdCard className={ styles.userProfile__userInfoItemIcon }/>
           <span className={ styles.userProfile__userInfoItemTitle }>
             { t('user_name_label_title') }
           </span>
-          { componentDto.name }
+          <span className={ styles.userProfile__userInfoItemContent }>
+            { componentDto.name }
+          </span>
         </div>
-
       </div>
 
       { /**

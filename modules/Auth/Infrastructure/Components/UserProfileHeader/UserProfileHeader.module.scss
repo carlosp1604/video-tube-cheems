@@ -8,8 +8,7 @@
   }
 
   &__user-info {
-    @apply flex flex-col border border-base-600 rounded-lg bg-base-900
-      capitalize;
+    @apply flex flex-col border border-base-600 rounded-lg bg-base-900;
   }
 
   &__user-info-item {
@@ -23,6 +22,12 @@
 
   &__user-info-item-title {
     @apply flex flex-row gap-x-4 font-light text-sm;
+  }
+
+  &__user-info-item-content {
+    &:first-letter {
+      @apply uppercase;
+    }
   }
 
   &__user-info-item-icon {

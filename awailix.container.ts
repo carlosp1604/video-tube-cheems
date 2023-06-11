@@ -65,6 +65,17 @@ container.register('emailFromAddress', asFunction(() => {
 
   return fromAddress
 }))
+container.register('emailBrandName', asFunction(() => {
+  const { env } = process
+
+  const emailBrandName = env.EMAIL_BRAND_NAME
+
+  if (!emailBrandName) {
+    throw Error('Missing EMAIL_BRAND_NAME environment variable to build SendTemplatedEmailCommand.')
+  }
+
+  return emailBrandName
+}))
 container.register('userEmailSender', asClass(AWSUserEmailSender))
 // FIXME: This was the only way to make it works...
 container.register('postRepository', asFunction(() => {

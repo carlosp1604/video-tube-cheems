@@ -40,7 +40,7 @@ function handleAuthorizationRequired (response: NextApiResponse) {
   return response
     .status(401)
     .json({
-      code: 'get-user-by-id-authentication-required',
+      code: 'get-user-authentication-required',
       message: 'User not authenticated',
     })
 }
@@ -48,7 +48,7 @@ function handleAuthorizationRequired (response: NextApiResponse) {
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'get-user-by-id-server-error',
+      code: 'get-user-server-error',
       message: 'Something went wrong while processing the request',
     })
 }
@@ -56,7 +56,7 @@ function handleServerError (response: NextApiResponse) {
 function handleNotFound (response: NextApiResponse, message: string) {
   return response.status(404)
     .json({
-      code: 'get-user-by-id-resource-not-found',
+      code: 'get-user-resource-not-found',
       message,
     })
 }
@@ -66,7 +66,7 @@ function handleMethod (response: NextApiResponse) {
     .setHeader('Allow', 'GET')
     .status(405)
     .json({
-      code: 'get-user-by-id-method-not-allowed',
+      code: 'get-user-method-not-allowed',
       message: 'HTTP method not allowed',
     })
 }

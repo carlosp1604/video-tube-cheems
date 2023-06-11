@@ -10,7 +10,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
   let verificationToken: VerificationToken
 
   const buildService = () => {
-    return new AWSUserEmailSender(mockedSesClient, 'some-from-address')
+    return new AWSUserEmailSender(mockedSesClient, 'some-from-address', 'some-brand-name')
   }
 
   beforeEach(() => {
@@ -27,7 +27,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
   })
 
   describe('when everything goes well', () => {
-    it('should call to aws ses correctly when token is verify-email type', async () => {
+    it('should call to aws ses correctly', async () => {
       const emailSender = buildService()
 
       await emailSender.sendEmailVerificationEmail(userEmail, verificationToken)
@@ -43,34 +43,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
             Template: 'email-verification',
             TemplateData: JSON.stringify({
               token: 'test-token',
-            }),
-          }),
-        })
-      )
-    })
-
-    it('should call to aws ses correctly when token is retrieve-password type', async () => {
-      verificationToken = new TestVerificationTokenBuilder()
-        .withUserEmail('test-email@test.es')
-        .withToken('test-token')
-        .withType(VerificationTokenType.RETRIEVE_PASSWORD)
-        .build()
-
-      const emailSender = buildService()
-
-      await emailSender.sendEmailVerificationEmail(userEmail, verificationToken)
-
-      expect(mockedSesClient.send).toBeCalledWith(
-        expect.objectContaining({
-          input: expect.objectContaining({
-            Destination: {
-              CcAddresses: [],
-              ToAddresses: ['test-email@test.es'],
-            },
-            Source: 'some-from-address',
-            Template: 'recover-password',
-            TemplateData: JSON.stringify({
-              token: 'test-token',
+              brandName: 'some-brand-name',
             }),
           }),
         })

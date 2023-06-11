@@ -38,7 +38,7 @@ container.register('verificationTokenRepository', asClass(MysqlVerificationToken
 container.register('sesClient', asFunction(() => {
   const { env } = process
 
-  const awsAccessKey = env.AWS_ACCESS_KEY
+  const awsAccessKey = env.AWS_ACCESS_KEY_ID
   const awsSecretAccessKey = env.AWS_SECRET_ACCESS_KEY
   const awsRegion = env.AWS_REGION
 

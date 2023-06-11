@@ -12,9 +12,7 @@ export async function up (knex: Knex): Promise<void> {
         .references('id')
         .inTable('users')
         .nullable()
-      table.timestamp('created_at')
-        .defaultTo(knex.raw('CURRENT_TIMESTAMP'))
-        .notNullable()
+      table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
     })
 }
 

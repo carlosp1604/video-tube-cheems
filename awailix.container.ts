@@ -5,7 +5,7 @@ import { SESClient } from '@aws-sdk/client-ses'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
 import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
-import { GetUserById } from '~/modules/Auth/Application/GetUserById'
+import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
@@ -20,6 +20,7 @@ import { MysqlActorRepository } from '~/modules/Actors/Infrastructure/MysqlActor
 import { MysqlProducerRepository } from '~/modules/Producers/Infrastructure/MysqlProducerRepository'
 import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
 import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
+import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 
 /**
  * We create a container to register our classes dependencies
@@ -64,6 +65,17 @@ container.register('emailFromAddress', asFunction(() => {
 
   return fromAddress
 }))
+container.register('emailBrandName', asFunction(() => {
+  const { env } = process
+
+  const emailBrandName = env.EMAIL_BRAND_NAME
+
+  if (!emailBrandName) {
+    throw Error('Missing EMAIL_BRAND_NAME environment variable to build SendTemplatedEmailCommand.')
+  }
+
+  return emailBrandName
+}))
 container.register('userEmailSender', asClass(AWSUserEmailSender))
 // FIXME: This was the only way to make it works...
 container.register('postRepository', asFunction(() => {
@@ -94,6 +106,7 @@ container.register('verifyEmailAddressUseCase', asFunction(() => {
 }))
 container.register('validateTokenUseCase', asClass(ValidateToken))
 container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
+container.register('getUserByUsername', asClass(GetUserByUsername))
 container.register('getUserById', asClass(GetUserById))
 container.register('getPosts', asClass(GetPosts))
 container.register('getActors', asClass(GetActors))

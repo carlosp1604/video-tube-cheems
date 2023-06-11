@@ -1,10 +1,10 @@
 import { useSession } from 'next-auth/react'
-import { FC, ReactElement, useEffect, useMemo, useState } from 'react'
-import { UserApplicationDto } from '../../../Application/Dtos/UserApplicationDto'
-import { UserProviderUserDto } from '../../Dtos/UserProviderUserDto'
-import { UserProviderUserDtoTranslator } from '../../Translators/UserProviderUserDtoTranslator'
-import { UserContext } from '~/hooks/UserContext'
 import { UserStatus } from '~/types/UserProviderInstance'
+import { UserContext } from '~/hooks/UserContext'
+import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
+import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
+import { UserProviderUserDtoTranslator } from '~/modules/Auth/Infrastructure/Translators/UserProviderUserDtoTranslator'
+import { FC, ReactElement, useCallback, useMemo, useState } from 'react'
 
 const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [status, setStatus] = useState<UserStatus>('SIGNED_OUT')
@@ -26,47 +26,51 @@ const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
       return null
     }
   }
+  const getUser = async (): Promise<void> => {
+    const authenticatedUser = await fetchUser()
 
-  useEffect(() => {
-    const getUser = async (): Promise<void> => {
-      const authenticatedUser = await fetchUser()
-
-      if (authenticatedUser !== null) {
-        setUser(authenticatedUser)
-        setStatus('SIGNED_IN')
+    if (authenticatedUser !== null) {
+      setStatus('SIGNED_IN')
+      setUser(authenticatedUser)
+    } else {
+      if (user !== null && status === 'SIGNED_IN') {
+        setUser(null)
+        setStatus('SIGNED_OUT')
       }
     }
+  }
 
-    if (session.status === 'authenticated' && status !== 'SIGNED_IN') {
-      getUser()
-        .catch((reason) => {
-          console.log('UserProvider: getUser() could not update authenticated user data')
-          console.log(reason)
-        })
-    }
+  if (session.status === 'authenticated' && status === 'SIGNED_OUT') {
+    getUser()
+      .catch((reason) => {
+        console.log('UserProvider: getUser() could not update authenticated user data')
+        console.log(reason)
+      })
+  }
 
-    if (
-      session.status === 'unauthenticated' &&
-      status === 'SIGNED_IN'
-    ) {
-      setUser(null)
-      setStatus('SIGNED_OUT')
-    }
-  }, [session, setUser, setStatus, status])
+  if (
+    session.status === 'unauthenticated' &&
+    status === 'SIGNED_IN'
+  ) {
+    setUser(null)
+    setStatus('SIGNED_OUT')
+  }
+
+  const updateUser = useCallback(async () => {
+    await getUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const userInstance = useMemo(() => ({
     user,
     status,
-    updateUser: async (): Promise<void> => {
-      if (session.status !== 'authenticated') {
-        return
-      }
-
-      const updatedUser = await fetchUser()
-
-      setUser(updatedUser)
-    },
-  }), [session.status, status, user])
+    updateUser,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [
+    session.status,
+    status,
+    user,
+  ])
 
   return (
     <UserContext.Provider value={ { userInstance } }>

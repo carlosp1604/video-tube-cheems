@@ -24,6 +24,12 @@
     @apply flex flex-row gap-x-4 font-light text-sm;
   }
 
+  &__user-info-item-content {
+    &:first-letter {
+      @apply uppercase;
+    }
+  }
+
   &__user-info-item-icon {
     @apply h-6 w-6 text-base-400;
   }

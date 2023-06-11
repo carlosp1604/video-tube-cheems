@@ -1,18 +1,17 @@
-import { FC, useState } from 'react'
-import styles from './AppMenu.module.scss'
 import Link from 'next/link'
-import { CiUser } from 'react-icons/ci'
-import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
-import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
-import { useUserContext } from '~/hooks/UserContext'
 import Avatar from 'react-avatar'
-import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
+import styles from './AppMenu.module.scss'
+import { CiUser } from 'react-icons/ci'
+import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
+import { useRouter } from 'next/router'
+import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
+import { useSession } from 'next-auth/react'
+import { FC, useState } from 'react'
+import { useUserContext } from '~/hooks/UserContext'
 import { useTranslation } from 'next-i18next'
 
 export const AppMenu: FC = () => {
-  const [openSearchBar, setOpenSearchBar] = useState<boolean>(false)
   const [title, setTitle] = useState<string>('')
   const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false)
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
@@ -34,7 +33,7 @@ export const AppMenu: FC = () => {
   const router = useRouter()
   const session = useSession()
 
-  if (session.status === 'authenticated') {
+  if (session.status === 'authenticated' && user !== null) {
     if (user?.image !== null) {
       userAvatar = (
         <button
@@ -43,8 +42,8 @@ export const AppMenu: FC = () => {
         >
           <img
             className={ styles.appMenu__userAvatarImage }
-            src={ user?.image }
-            alt={ user?.name }
+            src={ user.image }
+            alt={ user.name }
           />
         </button>
       )
@@ -67,10 +66,11 @@ export const AppMenu: FC = () => {
 
     userMenu = (
       <UserMenu
-        id={ user?.id ?? '' }
-        imageUrl={ user?.image ?? null }
-        name={ user?.name ?? '' }
-        email={ user?.email ?? '' }
+        id={ user.id }
+        username={ user.username }
+        imageUrl={ user.image }
+        name={ user.name }
+        email={ user.email }
         setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
         isOpen={ userMenuOpen }
       />
@@ -104,6 +104,7 @@ export const AppMenu: FC = () => {
             <img
               className={ styles.appMenu__logoImage }
               src='/img/cheems-logo.png'
+              alt={ t('app_menu_logo_url_alt') ?? '' }
             />
           </Link>
 

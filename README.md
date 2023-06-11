@@ -244,3 +244,95 @@ Otherwise, you will receive an error message
 | 422       | ``change-user-password-unprocessable-entity``         | Provided password is not valid                                                                                                 |
 | 500       | ``change-user-password-internal-server-error``        | Something went wrong while processing request                                                                                  |
 
+### Get logged user data
+This endpoint returns the information of the logged user. Before calling to this endpoint you must sign in.
+
+```
+GET /api/auth
+```
+
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    id: string
+    name: string
+    username: string
+    email: string
+    imageUrl: string | null
+    language: string
+    emailVerified: string | null
+    createdAt: string
+    updatedAt: string
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+}
+```
+
+| HTTP Code | Code                                 | Message                                       |
+|-----------|--------------------------------------|-----------------------------------------------| 
+| 401       | ``get-user-authentication-required`` | User not authenticated                        |
+| 404       | ``get-user-resource-not-found``      | User with ID {userId} was not found           |
+| 500       | ``get-user-server-error``            | Something went wrong while processing request |
+
+### Get user data by its username
+To get the data from an specific user you must provide its username
+
+```
+GET /api/users/{username}
+```
+
+| Parameter | Required   | Type/Possible values |
+|-----------|------------|----------------------| 
+| username  | ``true``   | ``string``           |
+
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    id: string
+    name: string
+    username: string
+    email: string
+    imageUrl: string | null
+    language: string
+    emailVerified: string | null
+    createdAt: string
+    updatedAt: string
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                            | Message                                                                                                                        |
+|-----------|---------------------------------|--------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``get-user-bad-request``        | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request |
+| 404       | ``get-user-resource-not-found`` | User with username {username} was not found                                                                                    |
+| 500       | ``get-user-server-error``       | Something went wrong while processing request                                                                                  |

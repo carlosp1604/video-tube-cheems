@@ -1,22 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
-import { authOptions } from './[...nextauth]'
 import { container } from '~/awailix.container'
-import { GetUserById } from '~/modules/Auth/Application/GetUserById'
-import { GetUserByIdApplicationException } from '~/modules/Auth/Application/GetUseByIdApplicationException'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
+import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { GetUserByIdApplicationException } from '~/modules/Auth/Application/GetUser/GetUserByIdApplicationException'
+import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
 
 export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
   if (request.method !== 'GET') {
-    return response
-      .setHeader('Allow', 'GET')
-      .status(405)
-      .json({
-        code: 'get-user-by-id-method-not-allowed',
-        message: 'HTTP method not allowed',
-      })
+    return handleMethod(response)
   }
 
   const session = await UnstableGetServerSession(request, response, authOptions)
@@ -46,7 +40,7 @@ function handleAuthorizationRequired (response: NextApiResponse) {
   return response
     .status(401)
     .json({
-      code: 'get-user-by-id-authentication-required',
+      code: 'get-user-authentication-required',
       message: 'User not authenticated',
     })
 }
@@ -54,7 +48,7 @@ function handleAuthorizationRequired (response: NextApiResponse) {
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'get-user-by-id-server-error',
+      code: 'get-user-server-error',
       message: 'Something went wrong while processing the request',
     })
 }
@@ -62,7 +56,17 @@ function handleServerError (response: NextApiResponse) {
 function handleNotFound (response: NextApiResponse, message: string) {
   return response.status(404)
     .json({
-      code: 'get-user-by-id-resource-not-found',
+      code: 'get-user-resource-not-found',
       message,
+    })
+}
+
+function handleMethod (response: NextApiResponse) {
+  return response
+    .setHeader('Allow', 'GET')
+    .status(405)
+    .json({
+      code: 'get-user-method-not-allowed',
+      message: 'HTTP method not allowed',
     })
 }

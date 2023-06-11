@@ -21,6 +21,13 @@ export interface UserRepositoryInterface {
   findByEmail(userEmail: User['email'], options?: FindByEmailOptions[]): Promise<User | null>
 
   /**
+   * Find a User given its username
+   * @param username User's username
+   * @return User if found or null
+   */
+  findByUsername(username: User['username']): Promise<User | null>
+
+  /**
    * Find a User given its User ID
    * @param userId User's ID
    * @return User if found or null

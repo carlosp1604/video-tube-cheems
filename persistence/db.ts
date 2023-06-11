@@ -1,14 +1,14 @@
 import { Knex } from 'knex'
-import { MysqlConfigProvider } from './MysqlConfigProvider'
+import { DatabaseConfigProvider } from './DatabaseConfigProvider'
 
-export function getKnexConfig(): Knex.MySqlConnectionConfig {
-  const mysqlConfigProvider = MysqlConfigProvider.getInstance()
-  
+export function getKnexConfig (): Knex.MySqlConnectionConfig {
+  const databaseConfigProvider = DatabaseConfigProvider.getInstance()
+
   return {
-    host: mysqlConfigProvider.getHost(),
-    database: mysqlConfigProvider.getDatabase(),
-    port: mysqlConfigProvider.getPort(),
-    user: mysqlConfigProvider.getUser(),
-    password: mysqlConfigProvider.getPassword()
+    host: databaseConfigProvider.getHost(),
+    database: databaseConfigProvider.getDatabase(),
+    port: databaseConfigProvider.getPort(),
+    user: databaseConfigProvider.getUser(),
+    password: databaseConfigProvider.getPassword(),
   }
 }

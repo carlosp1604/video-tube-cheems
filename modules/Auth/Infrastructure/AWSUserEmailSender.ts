@@ -1,13 +1,14 @@
 import { User } from '~/modules/Auth/Domain/User'
 import { UserEmailSenderInterface } from '~/modules/Auth/Domain/UserEmailSenderInterface'
 import { SendTemplatedEmailCommand, SESClient } from '@aws-sdk/client-ses'
-import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
+import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
 
 export class AWSUserEmailSender implements UserEmailSenderInterface {
   // eslint-disable-next-line no-useless-constructor
   constructor (
     private readonly sesClient: SESClient,
-    private readonly emailFromAddress: string
+    private readonly emailFromAddress: string,
+    private readonly emailBrandName: string
   ) {}
 
   /**
@@ -38,10 +39,11 @@ export class AWSUserEmailSender implements UserEmailSenderInterface {
         CcAddresses: [],
         ToAddresses: [toAddress],
       },
-      Template: verificationToken.type === VerificationTokenType.CREATE_ACCOUNT
-        ? 'email-verification'
-        : 'recover-password',
-      TemplateData: JSON.stringify({ token: verificationToken.token }),
+      Template: 'email-verification',
+      TemplateData: JSON.stringify({
+        token: verificationToken.token,
+        brandName: this.emailBrandName,
+      }),
       Source: this.emailFromAddress,
     })
   }

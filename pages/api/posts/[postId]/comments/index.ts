@@ -15,7 +15,6 @@ import {
   GetPostPostChildCommentsApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
 import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments'
-import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 import {
@@ -41,6 +40,7 @@ import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostCh
 import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
+import { getServerSession } from 'next-auth/next'
 
 export default async function handler (
   request: NextApiRequest,
@@ -165,7 +165,7 @@ async function handleGET (request: NextApiRequest, response: NextApiResponse) {
 }
 
 async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
-  const session = await UnstableGetServerSession(request, response, authOptions)
+  const session = await getServerSession(request, response, authOptions)
 
   if (session === null) {
     return handleAuthentication(request, response)

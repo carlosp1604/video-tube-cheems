@@ -28,7 +28,13 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       return
     }
 
-    const result = await signIn('credentials', { redirect: false, password, email })
+    const result = await signIn(
+      'credentials',
+      {
+        redirect: false,
+        password,
+        email,
+      })
 
     if (result?.error) {
       setLoginError(true)

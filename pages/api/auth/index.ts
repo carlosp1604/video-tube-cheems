@@ -3,7 +3,7 @@ import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { GetUserByIdApplicationException } from '~/modules/Auth/Application/GetUser/GetUserByIdApplicationException'
-import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
+import { getServerSession } from 'next-auth/next'
 
 export default async function handler (
   request: NextApiRequest,
@@ -13,7 +13,7 @@ export default async function handler (
     return handleMethod(response)
   }
 
-  const session = await UnstableGetServerSession(request, response, authOptions)
+  const session = await getServerSession(request, response, authOptions)
 
   if (session === null) {
     return handleAuthorizationRequired(response)

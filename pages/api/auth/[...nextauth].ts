@@ -7,17 +7,13 @@ import { NextApiRequest, NextApiResponse } from 'next'
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'credentials',
-      credentials: {
-        email: { label: 'email', type: 'text', placeholder: 'name@example.com' },
-        password: { label: 'Password', type: 'password' },
-      },
-
-      async authorize (
-        credentials: Record<'email' | 'password', string> | undefined
-      ): Promise<User | null> {
-        const email = credentials?.email as string
-        const password = credentials?.password as string
+      name: 'Credentials',
+      credentials: {},
+      async authorize (credentials): Promise<User | null> {
+        const { email, password } = credentials as {
+          email: string
+          password: string
+        }
 
         const loginUseCase = container.resolve<Login>('loginUseCase')
 
@@ -40,7 +36,6 @@ export const authOptions: NextAuthOptions = {
           return null
         }
       },
-      type: 'credentials',
     }),
   ],
   session: {
@@ -63,8 +58,11 @@ export const authOptions: NextAuthOptions = {
       return Promise.resolve(token)
     },
   },
+  secret: process.env.NEXT_PUBLIC_SECRET,
 }
 
 export default async function auth (request: NextApiRequest, response: NextApiResponse) {
+  response.setHeader('Cache-Control', 'no-store, max-age=0')
+
   return await NextAuth(request, response, authOptions)
 }

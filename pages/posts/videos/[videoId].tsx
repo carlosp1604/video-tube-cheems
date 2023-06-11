@@ -8,7 +8,7 @@ import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Trans
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
   }
 
   videoId = videoId.toString()
-  const session = await UnstableGetServerSession(context.req, context.res, authOptions)
+  const session = await getServerSession(context.req, context.res, authOptions)
 
   const useCase = container.resolve<GetPostById>('getPostById')
   const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPosts')

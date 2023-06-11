@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { DeletePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/DeletePostCommentApiRequestDto'
 import {
@@ -44,7 +44,7 @@ export default async function handler (
 }
 
 async function handleDeleteMethod (request: NextApiRequest, response: NextApiResponse) {
-  const session = await UnstableGetServerSession(request, response, authOptions)
+  const session = await getServerSession(request, response, authOptions)
 
   if (session === null) {
     return handleAuthentication(request, response)
@@ -100,7 +100,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
 }
 
 async function handlePatchMethod (request: NextApiRequest, response: NextApiResponse) {
-  const session = await UnstableGetServerSession(request, response, authOptions)
+  const session = await getServerSession(request, response, authOptions)
 
   if (session === null) {
     return handleAuthentication(request, response)

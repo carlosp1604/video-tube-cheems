@@ -1,11 +1,12 @@
 import { Knex } from 'knex'
 import path from 'path'
 import { getKnexConfig } from './persistence/db'
-import { DatabaseConfigProvider } from '~/persistence/DatabaseConfigProvider'
 
 const knexConfig: Knex.Config = {
-  client: DatabaseConfigProvider.getInstance().getClient(),
-  connection: getKnexConfig(),
+  client: process.env.DATABASE_CLIENT ?? 'pg',
+  connection: {
+    ...getKnexConfig(),
+  },
   pool: {
     min: 2,
     max: 10,

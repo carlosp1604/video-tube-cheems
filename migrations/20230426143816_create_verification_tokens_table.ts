@@ -8,9 +8,7 @@ export async function up (knex: Knex): Promise<void> {
       table.string('user_email', 256).notNullable().unique()
       table.string('type', 20).notNullable()
       table.timestamp('expires_at').notNullable()
-      table.timestamp('created_at')
-        .defaultTo(knex.raw('CURRENT_TIMESTAMP'))
-        .notNullable()
+      table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
     })
 }
 

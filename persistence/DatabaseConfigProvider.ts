@@ -5,6 +5,7 @@ dotenv.config()
 const { env } = process
 
 export class DatabaseConfigProvider {
+  // eslint-disable-next-line no-use-before-define
   private static instance: DatabaseConfigProvider
 
   // eslint-disable-next-line no-useless-constructor,@typescript-eslint/no-empty-function
@@ -36,6 +37,10 @@ export class DatabaseConfigProvider {
 
   public getPassword (): string {
     return this.parsePassword()
+  }
+
+  public getClient (): string {
+    return this.parseClient()
   }
 
   private parsetHost (): string {
@@ -90,5 +95,15 @@ export class DatabaseConfigProvider {
     }
 
     return password
+  }
+
+  private parseClient (): string {
+    const client = env.DATABASE_CLIENT
+
+    if (!client) {
+      throw Error('Missing DATABASE_CLIENT env var.')
+    }
+
+    return client
   }
 }

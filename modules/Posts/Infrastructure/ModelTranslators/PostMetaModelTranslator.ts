@@ -1,9 +1,9 @@
-import { PostMeta } from '../../Domain/PostMeta'
 import { DateTime } from 'luxon'
 import { PostMeta as PrismaPostMetaModel } from '@prisma/client'
+import { PostMeta } from '~/modules/Posts/Domain/PostMeta'
 
 export class PostMetaModelTranslator {
-  public static toDomain(prismaPostMetaModel: PrismaPostMetaModel): PostMeta {
+  public static toDomain (prismaPostMetaModel: PrismaPostMetaModel): PostMeta {
     let deletedAt: DateTime | null = null
 
     if (prismaPostMetaModel.deletedAt !== null) {
@@ -20,7 +20,7 @@ export class PostMetaModelTranslator {
     )
   }
 
-  public static toDatabase(postMeta: PostMeta): PrismaPostMetaModel {
+  public static toDatabase (postMeta: PostMeta): PrismaPostMetaModel {
     return {
       type: postMeta.type,
       postId: postMeta.postId,

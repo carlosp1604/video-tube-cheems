@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetActor } from '../../../../modules/Actors/Application/GetActor'
-import { GetActorApplicationException } from '../../../../modules/Actors/Application/GetActorApplicationException'
-import { ActorApiRequestValidatorError } from '../../../../modules/Actors/Infrastructure/ActorApiRequestValidatorError'
-import { bindings } from '../../../../modules/Actors/Infrastructure/Bindings'
-import { GetActorApiRequestValidator } from '../../../../modules/Actors/Infrastructure/GetActorApiRequestValidator'
+import { GetActorApiRequestValidator } from '~/modules/Actors/Infrastructure/GetActorApiRequestValidator'
+import { bindings } from '~/modules/Actors/Infrastructure/Bindings'
+import { GetActor } from '~/modules/Actors/Application/GetActor'
+import { GetActorApplicationException } from '~/modules/Actors/Application/GetActorApplicationException'
+import { ActorApiRequestValidatorError } from '~/modules/Actors/Infrastructure/ActorApiRequestValidatorError'
 
 export default async function handler (
   request: NextApiRequest,

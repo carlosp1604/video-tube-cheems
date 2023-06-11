@@ -1,4 +1,4 @@
-import { ApplicationException } from '../../../Exceptions/Application/ApplicationException'
+import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
 
 export class GetPostsApplicationException extends ApplicationException {
   public static invalidLimitValueId = 'get_posts_invalid_limit_value'

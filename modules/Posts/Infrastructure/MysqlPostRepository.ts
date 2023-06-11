@@ -1,4 +1,4 @@
-import { PostRepositoryFilterOption, PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
+import { PostRepositoryFilterOption, PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
 import { PostReactionModelTranslator } from './ModelTranslators/PostReactionModelTranslator'
 import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'

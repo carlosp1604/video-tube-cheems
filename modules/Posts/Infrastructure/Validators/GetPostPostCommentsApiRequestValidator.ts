@@ -1,7 +1,7 @@
 import { z, ZodError } from 'zod'
-import { maxPerPage, minPerPage } from '../../../Shared/Infrastructure/Pagination'
-import { GetPostPostCommentsApiRequestDto } from '../Dtos/GetPostPostCommentsApiRequestDto'
 import { PostCommentApiRequestValidatorError } from './PostCommentApiRequestValidatorError'
+import { GetPostPostCommentsApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/GetPostPostCommentsApiRequestDto'
+import { maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export class GetPostPostCommentsApiRequestValidator {
   private static getPostPostCommentsApiRequestSchema = z.object({
@@ -10,18 +10,15 @@ export class GetPostPostCommentsApiRequestValidator {
     perPage: z.number().positive().min(minPerPage).max(maxPerPage),
   })
 
-  public static validate(request: GetPostPostCommentsApiRequestDto): PostCommentApiRequestValidatorError | void {
+  public static validate (request: GetPostPostCommentsApiRequestDto): PostCommentApiRequestValidatorError | void {
     try {
       this.getPostPostCommentsApiRequestSchema.parse(request)
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {
         throw exception
       }
 
       return PostCommentApiRequestValidatorError.getPostCommentsValidator(exception.issues)
     }
-
-    return
   }
 }

@@ -1,6 +1,6 @@
-import { PostApplicationDtoTranslator } from '../Translators/PostApplicationDtoTranslator'
 import { PostWithCountInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
 import { GetRelatedPostsApplicationResponse } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPostsApplicationResponse'
+import { PostApplicationDtoTranslator } from '~/modules/Posts/Application/Translators/PostApplicationDtoTranslator'
 
 export class GetRelatedPostsApplicationResponseTranslator {
   public static fromDomain (postsWithCount: PostWithCountInterface[]): GetRelatedPostsApplicationResponse {

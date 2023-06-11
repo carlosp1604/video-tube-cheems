@@ -4,7 +4,9 @@ import { PostComment } from './PostComment'
 import { PostReaction } from './PostReaction'
 import { PostWithCountInterface } from './PostWithCountInterface'
 import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
-import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
+import {
+  RepositoryFilterOptionInterface
+} from '~/modules/Shared/Domain/RepositoryFilterOption'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 

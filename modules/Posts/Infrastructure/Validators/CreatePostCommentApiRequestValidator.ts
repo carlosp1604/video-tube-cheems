@@ -1,6 +1,6 @@
 import { z, ZodError } from 'zod'
-import { CreatePostCommentApiRequestDto } from '../Dtos/CreatePostCommentApiRequestDto'
 import { PostCommentApiRequestValidatorError } from './PostCommentApiRequestValidatorError'
+import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 
 export class CreatePostCommentApiRequestValidator {
   private static createPostCommentApiRequestSchema = z.object({
@@ -12,18 +12,15 @@ export class CreatePostCommentApiRequestValidator {
     userId: z.string().uuid(),
   })
 
-  public static validate(request: CreatePostCommentApiRequestDto): PostCommentApiRequestValidatorError | void {
+  public static validate (request: CreatePostCommentApiRequestDto): PostCommentApiRequestValidatorError | void {
     try {
       this.createPostCommentApiRequestSchema.parse(request)
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof ZodError)) {
         throw exception
       }
 
       return PostCommentApiRequestValidatorError.createPostCommentValidation(exception.issues)
     }
-
-    return
   }
 }

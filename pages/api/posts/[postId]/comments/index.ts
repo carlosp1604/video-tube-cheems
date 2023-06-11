@@ -1,34 +1,46 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { GetPostPostCommentsApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/GetPostPostCommentsApiRequestDto'
 import {
-  CreatePostCommentApiRequestValidator
-} from '../../../../../modules/Posts/Infrastructure/Validators/CreatePostCommentApiRequestValidator'
-import { bindings } from '../../../../../modules/Posts/Infrastructure/Bindings'
-import {
-  PostCommentApiRequestValidatorError
-} from '../../../../../modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
-import { CreatePostCommentRequestDtoTranslator } from '../../../../../modules/Posts/Infrastructure/CreatePostCommentRequestDtoTranslator'
-import { CreatePostComment } from '../../../../../modules/Posts/Application/CreatePostComment'
+  GetPostPostCommentsApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
+import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
+import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments'
 import {
   CreatePostCommentApplicationException
-} from '../../../../../modules/Posts/Application/CreatePostCommentApplicationException'
+} from '~/modules/Posts/Application/CreatePostCommentApplicationException'
 import {
-  CreatePostCommentApiRequestDto
-} from '../../../../../modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
+  GetPostPostChildCommentsApiRequestDto
+} from '~/modules/Posts/Infrastructure/Dtos/GetPostPostChildCommentsApiRequestDto'
+import {
+  GetPostPostChildCommentsApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
+import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments'
 import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
-import { authOptions } from '../../../auth/[...nextauth]'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
+import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 import {
   CreatePostCommentRequestSanitizer
-} from '../../../../../modules/Posts/Infrastructure/Sanitizers/CreatePostCommentRequestSanitizer'
-import { GetPostPostCommentsApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/GetPostPostCommentsApiRequestDto'
-import { GetPostPostCommentsApiRequestValidator } from '../../../../../modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
-import { GetPostPostComments } from '../../../../../modules/Posts/Application/GetPostPostComments'
-import { CreatePostChildCommentApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'
-import { CreatePostChildCommentRequestSanitizer } from '../../../../../modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
-import { CreatePostChildCommentRequestDtoTranslator } from '../../../../../modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
-import { CreatePostChildComment } from '../../../../../modules/Posts/Application/CreatePostChildComment'
-import { GetPostPostChildCommentsApiRequestDto } from '../../../../../modules/Posts/Infrastructure/Dtos/GetPostPostChildCommentsApiRequestDto'
-import { GetPostPostChildCommentsApiRequestValidator } from '../../../../../modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
-import { GetPostPostChildComments } from '../../../../../modules/Posts/Application/GetPostPostChildComments'
+} from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostCommentRequestSanitizer'
+import {
+  CreatePostCommentApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/CreatePostCommentApiRequestValidator'
+import {
+  CreatePostCommentRequestDtoTranslator
+} from '~/modules/Posts/Infrastructure/CreatePostCommentRequestDtoTranslator'
+import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment'
+import {
+  CreatePostChildCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'
+import {
+  CreatePostChildCommentRequestSanitizer
+} from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
+import {
+  CreatePostChildCommentRequestDtoTranslator
+} from '~/modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
+import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment'
+import {
+  PostCommentApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
 
 export default async function handler (
   request: NextApiRequest,

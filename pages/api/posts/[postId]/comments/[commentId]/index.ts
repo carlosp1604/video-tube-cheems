@@ -1,39 +1,31 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import {
-  UpdatePostCommentApiRequestDto
-} from '../../../../../../modules/Posts/Infrastructure/Dtos/UpdatePostCommentApiRequestDto'
 import { unstable_getServerSession as UnstableGetServerSession } from 'next-auth/next'
-import { authOptions } from '../../../../auth/[...nextauth]'
-import {
-  UpdatePostCommentRequestSanitizer
-} from '../../../../../../modules/Posts/Infrastructure/Sanitizers/UpdatePostCommentRequestSanitizer'
-import {
-  UpdatePostCommentApiRequestValidator
-} from '../../../../../../modules/Posts/Infrastructure/Validators/UpdatePostCommentApiRequestValidator'
-import {
-  UpdatePostRequestDtoTranslator
-} from '../../../../../../modules/Posts/Infrastructure/UpdatePostRequestDtoTranslator'
-import { bindings } from '../../../../../../modules/Posts/Infrastructure/Bindings'
-import { UpdatePostComment } from '../../../../../../modules/Posts/Application/UpdatePostComment'
-import {
-  UpdatePostCommentApplicationException
-} from '../../../../../../modules/Posts/Application/UpdatePostCommentApplicationException'
-import {
-  PostCommentApiRequestValidatorError
-} from '../../../../../../modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
-import {
-  DeletePostCommentApiRequestDto
-} from '../../../../../../modules/Posts/Infrastructure/Dtos/DeletePostCommentApiRequestDto'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
+import { DeletePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/DeletePostCommentApiRequestDto'
 import {
   DeletePostCommentApiRequestValidator
-} from '../../../../../../modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
-import {
-  DeletePostRequestDtoTranslator
-} from '../../../../../../modules/Posts/Infrastructure/DeletePostRequestDtoTranslator'
-import { DeletePostComment } from '../../../../../../modules/Posts/Application/DeletePostComment'
+} from '~/modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
+import { DeletePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/DeletePostRequestDtoTranslator'
+import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment'
+import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   DeletePostCommentApplicationException
-} from '../../../../../../modules/Posts/Application/DeletePostCommentApplicationException'
+} from '~/modules/Posts/Application/DeletePostCommentApplicationException'
+import { UpdatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/UpdatePostCommentApiRequestDto'
+import {
+  UpdatePostCommentRequestSanitizer
+} from '~/modules/Posts/Infrastructure/Sanitizers/UpdatePostCommentRequestSanitizer'
+import {
+  UpdatePostCommentApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/UpdatePostCommentApiRequestValidator'
+import { UpdatePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/UpdatePostRequestDtoTranslator'
+import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
+import {
+  UpdatePostCommentApplicationException
+} from '~/modules/Posts/Application/UpdatePostCommentApplicationException'
+import {
+  PostCommentApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
 
 export default async function handler (
   request: NextApiRequest,

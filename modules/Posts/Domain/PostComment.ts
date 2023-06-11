@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
 import { DateTime } from 'luxon'
-import { User } from '../../Auth/Domain/User'
+import { User } from '~/modules/Auth/Domain/User'
 import { PostChildComment } from './PostChildComment'
 import { PostCommentDomainException } from './PostCommentDomainException'
 
@@ -16,7 +16,7 @@ export class PostComment {
   private _childComments: Map<PostChildComment['id'], PostChildComment> =
     new Map<PostChildComment['id'], PostChildComment>()
 
-  public constructor(
+  public constructor (
     id: string,
     comment: string,
     postId: string,
@@ -34,7 +34,7 @@ export class PostComment {
     this.deletedAt = deletedAt
   }
 
-  public addChildComment(
+  public addChildComment (
     comment: PostChildComment['comment'],
     userId: PostChildComment['userId']
   ): PostChildComment {
@@ -45,7 +45,7 @@ export class PostComment {
     return newChildComment
   }
 
-  public deleteChildComment(childCommentId: PostChildComment['id']): void {
+  public deleteChildComment (childCommentId: PostChildComment['id']): void {
     const childRemoved = this._childComments.delete(childCommentId)
 
     if (!childRemoved) {
@@ -53,7 +53,7 @@ export class PostComment {
     }
   }
 
-  public updateChild(
+  public updateChild (
     postCommentId: PostComment['id'],
     comment: PostComment['comment']
   ): PostChildComment {
@@ -67,11 +67,11 @@ export class PostComment {
     childComment.setComment(comment)
     childComment.setUpdatedAt(DateTime.now())
     this._childComments.set(postCommentId, childComment)
+
     return childComment
   }
 
-
-  public setUser(user: User): void {
+  public setUser (user: User): void {
     if (this._user !== null) {
       throw PostCommentDomainException.userAlreadySet(this.id)
     }
@@ -79,11 +79,11 @@ export class PostComment {
     this._user = user
   }
 
-  public setComment(comment: PostComment['comment']): void {
+  public setComment (comment: PostComment['comment']): void {
     this.comment = comment
   }
 
-  get user(): User {
+  get user (): User {
     if (this._user === null) {
       throw PostCommentDomainException.userIsNotSet(this.id)
     }
@@ -91,19 +91,20 @@ export class PostComment {
     return this._user
   }
 
-  get childComments(): PostChildComment[] {
+  get childComments (): PostChildComment[] {
     return Array.from(this._childComments.values())
   }
 
-  public setUpdatedAt(value: PostComment['updatedAt']) {
+  public setUpdatedAt (value: PostComment['updatedAt']) {
     this.updatedAt = value
   }
 
-  private buildChildComment(
+  private buildChildComment (
     comment: PostComment['comment'],
-    userId: PostComment['userId'],
+    userId: PostComment['userId']
   ): PostChildComment {
     const nowDate = DateTime.now()
+
     return new PostChildComment(
       randomUUID(),
       comment,

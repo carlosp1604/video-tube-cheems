@@ -1,6 +1,6 @@
-import { ProducerRepositoryInterface } from '../Domain/ProducerRepositoryInterface'
 import { ProducerApplicationDto } from './ProducerApplicationDto'
 import { ProducerApplicationDtoTranslator } from './ProducerApplicationDtoTranslator'
+import { ProducerRepositoryInterface } from '~/modules/Producers/Domain/ProducerRepositoryInterface'
 
 export class GetAllProducers {
   // eslint-disable-next-line no-useless-constructor

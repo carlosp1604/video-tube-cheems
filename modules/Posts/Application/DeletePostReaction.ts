@@ -1,18 +1,19 @@
-import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
-import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '../Domain/PostDomainException'
 import { DeletePostReactionRequestDto } from './Dtos/DeletePostReactionRequestDto'
 import { DeletePostReactionApplicationException } from './DeletePostReactionApplicationException'
+import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 
 export class UpdatePostReaction {
   private options: RepositoryOptions[] = ['reactions', 'reactions.user']
 
-  constructor(
+  // eslint-disable-next-line no-useless-constructor
+  constructor (
     private readonly postRepository: PostRepositoryInterface,
-    private readonly userRepository: UserRepositoryInterface,
+    private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async delete(
+  public async delete (
     request: DeletePostReactionRequestDto
   ): Promise<void> {
     const post = await this.postRepository.findById(request.postId, this.options)
@@ -31,8 +32,7 @@ export class UpdatePostReaction {
       post.deleteReaction(request.userId)
 
       await this.postRepository.deleteReaction(request.userId, request.postId)
-    }
-    catch (exception: unknown) {
+    } catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {
         throw exception
       }

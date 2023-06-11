@@ -1,22 +1,23 @@
-import { Producer } from '../Domain/Producer'
 import { ProducerApplicationDto } from './ProducerApplicationDto'
+import { Producer } from '~/modules/Producers/Domain/Producer'
 
 export class ProducerApplicationDtoTranslator {
-  public static fromDomain(producer: Producer): ProducerApplicationDto {
+  public static fromDomain (producer: Producer): ProducerApplicationDto {
     let parentProducer: ProducerApplicationDto | null = null
+
     if (producer.parentProducer !== null) {
       parentProducer = ProducerApplicationDtoTranslator.fromDomain(producer.parentProducer)
     }
 
-    return { 
+    return {
       id: producer.id,
       name: producer.name,
       brandHexColor: producer.brandHexColor,
       createdAt: producer.createdAt.toISO(),
       description: producer.description,
       imageUrl: producer.imageUrl,
-      parentProducer: parentProducer,
-      parentProducerId: producer.parentProducerId
+      parentProducer,
+      parentProducerId: producer.parentProducerId,
     }
-  } 
+  }
 }

@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
-import { PrismaUserModelTranslator } from '../../../Auth/Infrastructure/PrismaUserModelTranslator'
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
-import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
-import { PostCommentWithUser } from '../PrismaModels/PostCommentModel'
-import { PostChildComment } from '../../Domain/PostChildComment'
+import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { PostCommentWithUser } from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
+import { PrismaUserModelTranslator } from '~/modules/Auth/Infrastructure/PrismaUserModelTranslator'
 
 export class PostChildCommentModelTranslator {
   public static toDomain (

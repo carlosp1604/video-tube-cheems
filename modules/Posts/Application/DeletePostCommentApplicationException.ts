@@ -1,7 +1,7 @@
-import { ApplicationException } from '../../Exceptions/Application/ApplicationException'
-import { User } from '../../Auth/Domain/User'
-import { Post } from '../Domain/Post'
-import { PostComment } from '../Domain/PostComment'
+import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
+import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { User } from '~/modules/Auth/Domain/User'
 
 export class DeletePostCommentApplicationException extends ApplicationException {
   public static cannotDeleteCommentId = 'delete_post_comment_cannot_add_comment'

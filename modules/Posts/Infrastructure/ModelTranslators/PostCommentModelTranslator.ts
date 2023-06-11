@@ -1,10 +1,11 @@
 import { DateTime } from 'luxon'
-import { PostComment } from '../../Domain/PostComment'
-import { PrismaUserModelTranslator } from '../../../Auth/Infrastructure/PrismaUserModelTranslator'
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
-import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
-import { PostCommentWithChilds, PostCommentWithUser } from '../PrismaModels/PostCommentModel'
-import { PostChildCommentModelTranslator } from './PostChildCommentModelTranslator'
+import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { PrismaUserModelTranslator } from '~/modules/Auth/Infrastructure/PrismaUserModelTranslator'
+import {
+  PostCommentWithChilds, PostCommentWithUser
+} from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
 
 export class PostCommentModelTranslator {
   public static toDomain (
@@ -39,7 +40,9 @@ export class PostCommentModelTranslator {
       const postCommentWithChilds = prismaPostCommentModel as PostCommentWithChilds
 
       postCommentWithChilds.childComments.forEach((childComment) => {
-        postComment.addChildComment(PostChildCommentModelTranslator.toDomain(childComment, ['comments.user']))
+        postComment.addChildComment(
+          childComment.comment,
+          childComment.userId)
       })
     }
 

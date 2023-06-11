@@ -36,7 +36,8 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     return {
       props: {
         posts: posts.posts.map((post) =>
-          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, post.postComments, locale)
+          // FIXME:
+          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, post.postComments, 0, locale)
         ),
         title: search.toLocaleString(),
         postsNumber: posts.postsNumber,

@@ -1,13 +1,13 @@
-import { ApplicationException } from '../../Exceptions/Application/ApplicationException'
-import { User } from '../../Auth/Domain/User'
-import { Post } from '../Domain/Post'
+import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { User } from '~/modules/Auth/Domain/User'
 
 export class CreatePostCommentApplicationException extends ApplicationException {
   public static cannotAddCommentId = 'create_post_comment_cannot_add_comment'
   public static postNotFoundId = 'create_post_comment_post_not_found'
   public static userNotFoundId = 'create_post_comment_user_not_found'
 
-  public static cannotAddComment(
+  public static cannotAddComment (
     postId: Post['id'],
     userId: User['id']
   ): CreatePostCommentApplicationException {
@@ -17,14 +17,14 @@ export class CreatePostCommentApplicationException extends ApplicationException 
     )
   }
 
-  public static postNotFound(postId: Post['id']): CreatePostCommentApplicationException {
+  public static postNotFound (postId: Post['id']): CreatePostCommentApplicationException {
     return new CreatePostCommentApplicationException(
       `Post with ID ${postId} was not found`,
       this.postNotFoundId
     )
   }
 
-  public static userNotFound(userId: User['id']): CreatePostCommentApplicationException {
+  public static userNotFound (userId: User['id']): CreatePostCommentApplicationException {
     return new CreatePostCommentApplicationException(
       `User with ID ${userId} was not found`,
       this.userNotFoundId

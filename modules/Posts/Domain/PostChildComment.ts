@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { User } from '../../Auth/Domain/User'
+import { User } from '~/modules/Auth/Domain/User'
 import { PostCommentDomainException } from './PostCommentDomainException'
 
 export class PostChildComment {
@@ -12,7 +12,7 @@ export class PostChildComment {
   public deletedAt: DateTime | null
   public _user: User | null = null
 
-  public constructor(
+  public constructor (
     id: string,
     comment: string,
     userId: string,
@@ -30,7 +30,7 @@ export class PostChildComment {
     this.deletedAt = deletedAt
   }
 
-  public setUser(user: User): void {
+  public setUser (user: User): void {
     if (this._user !== null) {
       throw PostCommentDomainException.userAlreadySet(this.id)
     }
@@ -38,11 +38,11 @@ export class PostChildComment {
     this._user = user
   }
 
-  public setComment(comment: PostChildComment['comment']): void {
+  public setComment (comment: PostChildComment['comment']): void {
     this.comment = comment
   }
 
-  get user(): User {
+  get user (): User {
     if (this._user === null) {
       throw PostCommentDomainException.userIsNotSet(this.id)
     }
@@ -50,7 +50,7 @@ export class PostChildComment {
     return this._user
   }
 
-  public setUpdatedAt(value: PostChildComment['updatedAt']) {
+  public setUpdatedAt (value: PostChildComment['updatedAt']) {
     this.updatedAt = value
   }
 }

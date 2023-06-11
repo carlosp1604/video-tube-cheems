@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
-import { PostReaction, Reaction } from '../../Domain/PostReaction'
 import { PostReaction as PrismaPostReactionModel } from '@prisma/client'
+import { PostReaction, Reaction } from '~/modules/Posts/Domain/PostReaction'
 
 export class PostReactionModelTranslator {
-  public static toDomain(prismaPostReactionModel: PrismaPostReactionModel): PostReaction {
+  public static toDomain (prismaPostReactionModel: PrismaPostReactionModel): PostReaction {
     let deletedAt: DateTime | null = null
 
     if (prismaPostReactionModel.deletedAt !== null) {
@@ -20,14 +20,14 @@ export class PostReactionModelTranslator {
     )
   }
 
-  public static toDatabase(postReaction: PostReaction): PrismaPostReactionModel {
+  public static toDatabase (postReaction: PostReaction): PrismaPostReactionModel {
     return {
       reactionType: postReaction.reactionType,
       userId: postReaction.userId,
       createdAt: postReaction.createdAt.toJSDate(),
       deletedAt: postReaction.deletedAt?.toJSDate() ?? null,
       updatedAt: postReaction.updatedAt.toJSDate(),
-      postId: postReaction.postId
+      postId: postReaction.postId,
     }
   }
 }

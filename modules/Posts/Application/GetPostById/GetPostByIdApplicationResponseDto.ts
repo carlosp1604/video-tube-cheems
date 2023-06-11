@@ -1,5 +1,5 @@
-import { PostApplicationDto } from '../Dtos/PostApplicationDto'
 import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
+import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 
 export interface GetPostByIdApplicationResponseDto {
   readonly post: PostApplicationDto

@@ -8,7 +8,6 @@ export class UpdatePostRequestDtoTranslator {
       postId: request.postId,
       userId: request.userId,
       comment: request.comment,
-      postParentId: request.parentCommentId,
     }
   }
 }

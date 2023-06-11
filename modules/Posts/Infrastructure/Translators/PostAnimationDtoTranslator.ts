@@ -1,8 +1,8 @@
-import { PostApplicationDto } from '../../Application/Dtos/PostApplicationDto'
-import { PostAnimationDto } from '../Dtos/PostAnimationDto'
+import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
+import { PostAnimationDto } from '~/modules/Posts/Infrastructure/Dtos/PostAnimationDto'
 
 export class PostAnimationDtoTranslator {
-  public static fromApplication(applicationDto: PostApplicationDto): PostAnimationDto | null {
+  public static fromApplication (applicationDto: PostApplicationDto): PostAnimationDto | null {
     const animation = applicationDto.meta.find((meta) => {
       return meta.type === 'trailer'
     })
@@ -10,7 +10,7 @@ export class PostAnimationDtoTranslator {
     if (!animation) {
       return null
     }
-    
+
     const animationType = animation.type
       .split('.')
       .filter(Boolean)

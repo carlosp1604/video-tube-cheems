@@ -1,5 +1,7 @@
 import { FC } from 'react'
 import 'video.js/dist/video-js.css'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import ReactJWPlayer from 'react-jw-player'
 import styles from './VideoPlayer.module.scss'
 import { VideoQualityDto } from '~/modules/Posts/Infrastructure/Dtos/VideoComponentDto'

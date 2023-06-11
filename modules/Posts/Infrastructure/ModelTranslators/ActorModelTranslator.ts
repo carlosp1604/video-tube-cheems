@@ -1,9 +1,9 @@
-import { Actor } from '../../../Actors/Domain/Actor'
 import { Actor as PrismaActorModel } from '@prisma/client'
 import { DateTime } from 'luxon'
+import { Actor } from '~/modules/Actors/Domain/Actor'
 
 export class ActorModelTranslator {
-  public static toDomain(prismaActorModel: PrismaActorModel) {
+  public static toDomain (prismaActorModel: PrismaActorModel) {
     let deletedAt: DateTime | null = null
 
     if (prismaActorModel.deletedAt !== null) {

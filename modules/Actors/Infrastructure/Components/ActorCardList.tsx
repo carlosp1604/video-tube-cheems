@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import styles from './ActorCardList.module.scss'
-import { ActorComponentDto } from '../ActorComponentDto'
 import { ActorCard } from './ActorCard'
+import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
 
 interface Props {
   actors: ActorComponentDto[]
@@ -13,11 +13,11 @@ export const ActorCardList: FC<Props> = ({ actors }) => {
       { actors.map((actor) => {
         return (
           <ActorCard
-            actor={actor}
-            key={actor.id}
+            actor={ actor }
+            key={ actor.id }
           />
         )
-      })}
+      }) }
     </div>
   )
 }

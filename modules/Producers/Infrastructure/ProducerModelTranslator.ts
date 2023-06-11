@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
 import { Producer as PrismaProducerModel } from '@prisma/client'
-import { Producer } from '../Domain/Producer'
 import { ProducerWithParent } from './PrismaProducerModel'
-import { RepositoryOptions } from '../../Posts/Domain/PostRepositoryInterface'
+import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { Producer } from '~/modules/Producers/Domain/Producer'
 
 export class ProducerModelTranslator {
-  public static toDomain(
+  public static toDomain (
     prismaProducerModel: PrismaProducerModel,
     options: RepositoryOptions[]
   ) {
@@ -32,14 +32,15 @@ export class ProducerModelTranslator {
 
       if (producerWithParent.parentProducer !== null) {
         const parentProducerDomain = ProducerModelTranslator.toDomain(producerWithParent.parentProducer, [])
+
         producer.setParentProducer(parentProducerDomain)
       }
     }
-    
+
     return producer
   }
 
-  public static toDatabase(producer: Producer): PrismaProducerModel {
+  public static toDatabase (producer: Producer): PrismaProducerModel {
     return {
       id: producer.id,
       brandHexColor: producer.brandHexColor,

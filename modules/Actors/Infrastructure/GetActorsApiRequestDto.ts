@@ -1,14 +1,13 @@
-import { InfrastructureFilter } from '../../Shared/Infrastructure/InfrastructureFilter'
-import {
-  SortingInfrastructureCriteriaType, 
-  SortingInfrastructureOptionsType 
-} from '../../Shared/Infrastructure/InfrastructureSorting'
 import { ActorFilterOptionsType } from './ActorFilter'
+import {
+  InfrastructureSortingCriteria,
+  InfrastructureSortingOptions
+} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 
 export interface GetActorsApiRequestDto {
-  readonly page: number,
-  readonly actorsPerPage: number,
-  readonly filters: InfrastructureFilter<ActorFilterOptionsType>[],
-  readonly sortOption: SortingInfrastructureOptionsType
-  readonly sortCriteria: SortingInfrastructureCriteriaType
+  readonly page: number
+  readonly actorsPerPage: number
+  readonly filters: ActorFilterOptionsType
+  readonly sortOption: InfrastructureSortingOptions
+  readonly sortCriteria: InfrastructureSortingCriteria
 }

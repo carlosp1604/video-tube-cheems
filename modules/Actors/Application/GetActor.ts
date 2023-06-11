@@ -1,8 +1,8 @@
-import { Actor } from '../Domain/Actor'
-import { ActorRepositoryInterface } from '../Domain/ActorRepositoryInterface'
 import { ActorApplicationDto } from './ActorApplicationDto'
 import { ActorApplicationDtoTranslator } from './ActorApplicationDtoTranslator'
 import { GetActorApplicationException } from './GetActorApplicationException'
+import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
+import { Actor } from '~/modules/Actors/Domain/Actor'
 
 export class GetActor {
   // eslint-disable-next-line no-useless-constructor

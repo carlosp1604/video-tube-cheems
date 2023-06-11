@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client'
-import { prisma } from '../../../persistence/prisma'
-import { RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilterOption'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '../../Shared/Domain/RepositorySorting'
-import { Actor } from '../Domain/Actor'
-import { ActorRepositoryFilterOption, ActorRepositoryInterface } from '../Domain/ActorRepositoryInterface'
 import { ActorModelTranslator } from './ActorModelTranslator'
+import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
+import { Actor } from '~/modules/Actors/Domain/Actor'
+import { prisma } from '~/persistence/prisma'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
   /**
@@ -40,7 +40,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilterOption<ActorRepositoryFilterOption>[]
+    filters: RepositoryFilterOptionInterface[]
   ): Promise<Actor[]> {
     let whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
@@ -68,7 +68,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @return Number of actors that accomplish with the filters
    */
   public async countPostsWithFilters (
-    filters: RepositoryFilterOption<ActorRepositoryFilterOption>[]
+    filters: RepositoryFilterOptionInterface[]
   ): Promise<number> {
     let whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
@@ -89,7 +89,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   private buildFilters (
-    filters: RepositoryFilterOption<ActorRepositoryFilterOption>[]
+    filters: RepositoryFilterOptionInterface[]
   ): Prisma.PostWhereInput | undefined {
     let whereClause: Prisma.ActorWhereInput | undefined = {}
 

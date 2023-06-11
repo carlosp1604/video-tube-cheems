@@ -1,4 +1,4 @@
-import { PostApplicationDto } from '../Dtos/PostApplicationDto'
+import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 
 export interface GetPostsApplicationDto {
   post: PostApplicationDto

@@ -9,6 +9,10 @@ import { GetPostsApiFilterRequestDto } from '~/modules/Posts/Infrastructure/Dtos
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { ActorApiRequestValidatorError } from '~/modules/Actors/Infrastructure/ActorApiRequestValidatorError'
 import { GetActorsApiRequestDto } from '~/modules/Actors/Infrastructure/GetActorsApiRequestDto'
+import {
+  InfrastructureSortingCriteria,
+  InfrastructureSortingOptions
+} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 
 export default async function handler (
   request: NextApiRequest,
@@ -62,15 +66,16 @@ function parseQuery (query: NextApiRequestQuery): GetActorsApiRequestDto {
 
   const pageNumber = parseInt(page ? page.toString() : '0')
   const actorsPerPage = parseInt(perPage ? perPage.toString() : '0')
-  const sortOption = orderBy ? orderBy.toString() : 'date'
+  const sortOption = orderBy ? orderBy.toString() : InfrastructureSortingOptions.DATE
   const sortCriteria = order ? order.toString() : 'desc'
 
   return {
     page: pageNumber,
     actorsPerPage,
-    sortCriteria,
-    sortOption,
-    filters,
+    sortCriteria: sortCriteria as InfrastructureSortingCriteria,
+    sortOption: sortOption as InfrastructureSortingOptions,
+    // FIXME:
+    filters: 'actorId',
   }
 }
 

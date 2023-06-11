@@ -6,7 +6,9 @@ import { AddPostViewApiRequestValidator }
   from '~/modules/Posts/Infrastructure/Validators/AddPostViewApiRequestValidator'
 import { AddPostViewRequestTranslator } from '~/modules/Posts/Infrastructure/AddPostViewRequestTranslator'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
-import { AddPostViewApplicationException } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
+import {
+  AddPostViewApplicationException
+} from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
 
 export default async function handler (
   request: NextApiRequest,

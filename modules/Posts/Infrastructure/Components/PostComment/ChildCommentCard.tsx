@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import styles from './CommentCard.module.scss'
-import { CommentApplicationDto } from '../../../Application/Dtos/CommentApplicationDto'
 import { DateTime } from 'luxon'
+import { CommentApplicationDto } from '~/modules/Posts/Application/Dtos/CommentApplicationDto'
 
 interface Props {
   comment: CommentApplicationDto

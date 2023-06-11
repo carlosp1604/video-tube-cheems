@@ -1,4 +1,4 @@
-import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
+import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UpdatePostCommentRequestDto } from './Dtos/UpdatePostCommentRequestDto'
 import { UpdatePostCommentApplicationException } from './UpdatePostCommentApplicationException'
 import { CommentApplicationDtoTranslator } from './Translators/CommentApplicationDtoTranslator'

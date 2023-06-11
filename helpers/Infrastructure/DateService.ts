@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { DateServiceInterface } from '../Domain/DateServiceInterface'
+import { DateServiceInterface } from '~/helpers/Domain/DateServiceInterface'
 
 export class DateService implements DateServiceInterface {
   public nowDate (): Date {

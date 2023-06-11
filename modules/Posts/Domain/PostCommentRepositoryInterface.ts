@@ -1,9 +1,9 @@
 import { Post } from '@prisma/client'
-import { RepositoryFilterOption } from '../../Shared/Domain/RepositoryFilterOption'
 import { PostChildComment } from './PostChildComment'
 import { PostCommentWithCount } from './PostCommentWithCountInterface'
+import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
 
-export type PostRepositoryFilterOption = RepositoryFilterOption
+export type PostRepositoryFilterOption = RepositoryFilterOptionInterface
 
 export interface PostCommentRepositoryInterface {
 

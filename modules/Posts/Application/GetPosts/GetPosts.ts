@@ -1,4 +1,4 @@
-import { PostRepositoryFilterOption, PostRepositoryInterface } from '../../Domain/PostRepositoryInterface'
+import { PostRepositoryFilterOption, PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { GetPostRequestFilterDto, GetPostsRequestDto } from './GetPostsRequestDto'
 import { GetPostsApplicationException } from './GetPostsApplicationException'
 import { GetPostsApplicationResponse } from './GetPostsApplicationDto'

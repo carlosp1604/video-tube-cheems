@@ -1,4 +1,4 @@
-import { User } from '../Domain/User'
+import { User } from '~/modules/Auth/Domain/User'
 import { DateTime } from 'luxon'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'

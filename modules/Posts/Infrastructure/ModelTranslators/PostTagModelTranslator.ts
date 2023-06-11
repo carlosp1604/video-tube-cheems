@@ -1,6 +1,6 @@
-import { PostTag } from '../../Domain/PostTag'
 import { DateTime } from 'luxon'
 import { PostTag as PrismaPostTagModel } from '@prisma/client'
+import { PostTag } from '~/modules/Posts/Domain/PostTag'
 
 export class PostTagModelTranslator {
   public static toDomain (

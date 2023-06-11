@@ -1,9 +1,12 @@
 import { z, ZodError } from 'zod'
-import { InfrastructureSortingCriteria, InfrastructureSortingOptions } from '../../Shared/Infrastructure/InfrastructureSorting'
-import { maxPerPage, minPerPage } from '../../Shared/Infrastructure/Pagination'
 import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
 import { ActorFilterOptions } from './ActorFilter'
 import { GetActorsApiRequestDto } from './GetActorsApiRequestDto'
+import { maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import {
+  InfrastructureSortingCriteria,
+  InfrastructureSortingOptions
+} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 
 export class GetActorsApiRequestValidator {
   private static getActorsApiRequestSchema = z.object({

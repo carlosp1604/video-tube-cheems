@@ -1,4 +1,4 @@
-import { RepositoryOptions } from '../../Domain/PostRepositoryInterface'
+import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostMetaModelTranslator } from './PostMetaModelTranslator'
 import { PostTagModelTranslator } from './PostTagModelTranslator'
 import { ActorModelTranslator } from './ActorModelTranslator'
@@ -6,12 +6,20 @@ import { DateTime } from 'luxon'
 import { PostCommentModelTranslator } from './PostCommentModelTranslator'
 import { PostReactionModelTranslator } from './PostReactionModelTranslator'
 import { Post as PostPrismaModel } from '@prisma/client'
-import { Post } from '../../Domain/Post'
-import { PostWithActors, PostWithComments, PostWithMeta, PostWithProducer, PostWithProducerWithParent, PostWithReactions, PostWithTags } from '../PrismaModels/PostModel'
-import { ProducerModelTranslator } from '../../../Producers/Infrastructure/ProducerModelTranslator'
+import {
+  PostWithActors,
+  PostWithComments,
+  PostWithMeta,
+  PostWithProducer,
+  PostWithProducerWithParent,
+  PostWithReactions,
+  PostWithTags
+} from '~/modules/Posts/Infrastructure/PrismaModels/PostModel'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { ProducerModelTranslator } from '~/modules/Producers/Infrastructure/ProducerModelTranslator'
 
 export class PostModelTranslator {
-  public static toDomain(
+  public static toDomain (
     prismaPostModel: PostPrismaModel,
     options: RepositoryOptions[] = []
   ) {
@@ -26,7 +34,6 @@ export class PostModelTranslator {
       deletedAt = DateTime.fromJSDate(prismaPostModel.deletedAt)
     }
 
-
     const post = new Post(
       prismaPostModel.id,
       prismaPostModel.title,
@@ -40,42 +47,52 @@ export class PostModelTranslator {
 
     if (options.includes('meta')) {
       const postWithMeta = prismaPostModel as PostWithMeta
+
       for (let i = 0; i < postWithMeta.meta.length; i++) {
         const postMetaDomain = PostMetaModelTranslator.toDomain(postWithMeta.meta[i])
+
         post.addMeta(postMetaDomain)
       }
     }
 
     if (options.includes('tags')) {
       const postWithTags = prismaPostModel as PostWithTags
+
       for (let i = 0; i < postWithTags.tags.length; i++) {
         const postTagDomain = PostTagModelTranslator.toDomain(postWithTags.tags[i].tag)
+
         post.addTag(postTagDomain)
       }
     }
 
     if (options.includes('actors')) {
       const postWithActor = prismaPostModel as PostWithActors
+
       for (let i = 0; i < postWithActor.actors.length; i++) {
         const actorDomain = ActorModelTranslator.toDomain(postWithActor.actors[i].actor)
+
         post.addActor(actorDomain)
       }
     }
 
     if (options.includes('comments')) {
       const postWithComments = prismaPostModel as PostWithComments
+
       for (let i = 0; i < postWithComments.comments.length; i++) {
         const commentDomain = PostCommentModelTranslator.toDomain(
           postWithComments.comments[i], options
         )
+
         post.createComment(commentDomain)
       }
     }
 
     if (options.includes('reactions')) {
-      const postWithReactions = prismaPostModel as PostWithReactions   
+      const postWithReactions = prismaPostModel as PostWithReactions
+
       for (let i = 0; i < postWithReactions.reactions.length; i++) {
         const reactionDomain = PostReactionModelTranslator.toDomain(postWithReactions.reactions[i])
+
         post.addPostReaction(reactionDomain)
       }
     }
@@ -86,14 +103,15 @@ export class PostModelTranslator {
 
         if (postWithProducer.producer !== null) {
           const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, [])
+
           post.setProducer(producerDomain)
         }
-      }
-      else {
+      } else {
         const postWithProducer = prismaPostModel as PostWithProducerWithParent
 
         if (postWithProducer.producer !== null) {
           const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, options)
+
           post.setProducer(producerDomain)
         }
       }
@@ -102,7 +120,7 @@ export class PostModelTranslator {
     return post
   }
 
-  public static toDatabase(post: Post): PostPrismaModel {
+  public static toDatabase (post: Post): PostPrismaModel {
     return {
       id: post.id,
       description: post.description,

@@ -1,6 +1,6 @@
-import { UserApplicationDtoTranslator } from '../../../Auth/Application/Translators/UserApplicationDtoTranslator'
-import { PostChildComment } from '../../Domain/PostChildComment'
-import { ChildCommentApplicationDto } from '../Dtos/ChildCommentApplicationDto'
+import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { ChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/ChildCommentApplicationDto'
+import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 
 export class ChildCommentApplicationDtoTranslator {
   public static fromDomain (childComment: PostChildComment): ChildCommentApplicationDto {

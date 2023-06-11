@@ -1,15 +1,17 @@
-import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
 import { GetPostByIdApplicationException } from './GetPostById/GetPostByIdApplicationException'
-import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '../Domain/PostDomainException'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
 import { CreatePostChildCommentRequestDto } from './Dtos/CreatePostChildCommentRequestDto'
 import { ChildCommentApplicationDtoTranslator } from './Translators/ChildCommentApplicationDtoTranslator'
 import { ChildCommentApplicationDto } from './Dtos/ChildCommentApplicationDto'
+import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 
 export class CreatePostChildComment {
-  private options: RepositoryOptions[] = ['comments', 'comments.user', 'comments.childComments', 'comments.childComments.user']
+  private options: RepositoryOptions[] =
+    ['comments', 'comments.user', 'comments.childComments', 'comments.childComments.user']
 
+  // eslint-disable-next-line no-useless-constructor
   constructor (
     private readonly postRepository: PostRepositoryInterface,
     private readonly userRepository: UserRepositoryInterface

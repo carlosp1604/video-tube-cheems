@@ -1,6 +1,7 @@
-import { ProducerComponentDto } from '../../Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { FetchPostsFilter } from '../../Shared/Infrastructure/InfrastructureFilter'
-import { GetPostsApplicationResponse } from '../Application/GetPosts/GetPostsApplicationDto'
+import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
+import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 
 const buildSearchParams = (
   pageNumber: number,
@@ -30,11 +31,11 @@ export const fetchPosts = async (
   const filters: FetchPostsFilter[] = []
 
   filters.push({
-    type: 'producerName',
+    type: PostFilterOptions.PRODUCER_NAME,
     value: producer !== null ? producer.id : null,
   })
   filters.push({
-    type: 'postTitle',
+    type: PostFilterOptions.POST_TITLE,
     value: titleFilter !== null ? titleFilter : null,
   })
 

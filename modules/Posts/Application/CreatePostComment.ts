@@ -1,10 +1,10 @@
-import { PostRepositoryInterface, RepositoryOptions } from '../Domain/PostRepositoryInterface'
 import { CreatePostCommentRequestDto } from './Dtos/CreatePostCommentRequestDto'
-import { UserRepositoryInterface } from '../../Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '../Domain/PostDomainException'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
 import { CommentApplicationDto } from './Dtos/CommentApplicationDto'
 import { CommentApplicationDtoTranslator } from './Translators/CommentApplicationDtoTranslator'
+import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 
 export class CreatePostComment {
   private options: RepositoryOptions[] = ['comments', 'comments.user']

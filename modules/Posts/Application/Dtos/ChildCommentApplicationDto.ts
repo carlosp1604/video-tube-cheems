@@ -1,4 +1,4 @@
-import { UserApplicationDto } from '../../../Auth/Application/Dtos/UserApplicationDto'
+import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
 
 export interface ChildCommentApplicationDto {
   readonly id: string

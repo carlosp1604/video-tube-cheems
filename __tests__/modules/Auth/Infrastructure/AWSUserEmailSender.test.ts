@@ -1,8 +1,8 @@
 import { SESClient } from '@aws-sdk/client-ses'
-import { AWSUserEmailSender } from '~/modules/Auth/Infrastructure/AWSUserEmailSender'
-import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { mock, mockReset } from 'jest-mock-extended'
+import { AWSUserEmailSender } from '~/modules/Auth/Infrastructure/AWSUserEmailSender'
 import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 
 describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
   const mockedSesClient = mock<SESClient>()

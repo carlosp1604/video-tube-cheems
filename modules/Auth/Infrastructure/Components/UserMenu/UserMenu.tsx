@@ -1,31 +1,20 @@
-import { FC } from 'react'
-import styles from './UserMenu.module.scss'
-import { CiLogout, CiUser } from 'react-icons/ci'
-import { signOut } from 'next-auth/react'
 import Avatar from 'react-avatar'
-import { useTranslation } from 'next-i18next'
+import styles from './UserMenu.module.scss'
+import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
+import { signOut } from 'next-auth/react'
 import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
+import { useTranslation } from 'next-i18next'
+import { CiLogout, CiUser } from 'react-icons/ci'
+import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
 
 interface Props {
-  id: string
-  username: string
-  imageUrl: string | null
-  name: string
-  email: string
+  user: UserProviderUserDto
   setIsOpen: (isOpen: boolean) => void
   isOpen: boolean
 }
 
-export const UserMenu: FC<Props> = ({
-  id,
-  username,
-  imageUrl,
-  name,
-  email,
-  setIsOpen,
-  isOpen,
-}) => {
+export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
 
   let avatar = (
@@ -33,17 +22,17 @@ export const UserMenu: FC<Props> = ({
       className={ styles.userMenu__userAvatar }
       round={ true }
       size={ '50' }
-      name={ name }
+      name={ user.name }
       textSizeRatio={ 2 }
     />
   )
 
-  if (imageUrl !== null) {
+  if (user.image !== null) {
     avatar = (
       <img
         className={ styles.userMenu__userAvatar }
-        src={ imageUrl }
-        alt={ name }
+        src={ user.image }
+        alt={ user.name }
       />
     )
   }
@@ -57,9 +46,9 @@ export const UserMenu: FC<Props> = ({
         <div className={ styles.userMenu__userData }>
           { avatar }
           <span className={ styles.userMenu__userDataText }>
-            { name }
+            { user.name }
             <small className={ styles.userMenu__userEmail }>
-              { email }
+              { user.email }
             </small>
           </span>
         </div>
@@ -68,9 +57,10 @@ export const UserMenu: FC<Props> = ({
           <MenuOptions
             menuOptions={ [
               {
+                // TODO: This should be extracted to an object when grow up
                 translationKey: 'user_menu_profile_button',
                 isActive: false,
-                action: `/users/${username}`,
+                action: `/users/${user.username}`,
                 icon: <CiUser />,
                 onClick: () => setIsOpen(false),
               },

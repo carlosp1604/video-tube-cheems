@@ -40,7 +40,7 @@ describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {
               ToAddresses: ['test-email@test.es'],
             },
             Source: 'some-from-address',
-            Template: 'email-verification',
+            Template: 'verify-email',
             TemplateData: JSON.stringify({
               token: 'test-token',
               brandName: 'some-brand-name',

@@ -39,7 +39,7 @@ export class AWSUserEmailSender implements UserEmailSenderInterface {
         CcAddresses: [],
         ToAddresses: [toAddress],
       },
-      Template: 'email-verification',
+      Template: 'verify-email',
       TemplateData: JSON.stringify({
         token: verificationToken.token,
         brandName: this.emailBrandName,

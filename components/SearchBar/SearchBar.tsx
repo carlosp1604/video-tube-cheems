@@ -5,12 +5,12 @@ import { CiSearch } from 'react-icons/ci'
 interface Props {
   onChange: (value: string) => void
   onSearch: () => void
-  openable: boolean
+  expandable: boolean
   placeHolderTitle: string
 }
 
-export const SearchBar: FC<Props> = ({ onChange, onSearch, openable, placeHolderTitle }) => {
-  const [openSearchBar, setOpenSearchBar] = useState<boolean>(!openable)
+export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHolderTitle }) => {
+  const [openSearchBar, setOpenSearchBar] = useState<boolean>(!expandable)
 
   const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -27,7 +27,7 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, openable, placeHolder
       <button
         className={ styles.searchBar__searchButton }
         onClick={ () => {
-          if (openable) {
+          if (expandable) {
             setOpenSearchBar(!openSearchBar)
           }
         } }

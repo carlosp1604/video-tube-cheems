@@ -116,7 +116,7 @@ export const AppMenu: FC = () => {
             <SearchBar
               onChange={ (value: string) => setTitle(value) }
               onSearch={ onSearch }
-              openable={ true }
+              expandable={ true }
               placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
             />
             { userAvatar }

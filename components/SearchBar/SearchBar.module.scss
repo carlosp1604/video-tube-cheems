@@ -4,14 +4,14 @@
   }
 
   &__search-button {
-    @apply p-3 rounded-full;
+    @apply p-3 rounded-full transition-colors;
 
-    &:hover {
-      @apply bg-base-800 text-base-500;
+    &:hover, &:focus {
+      @apply bg-base-800 transition-colors;
     }
 
     &:active {
-      @apply bg-base-700 text-brand-500;
+      @apply bg-base-700 text-brand-500 transition-colors;
     }
   }
 
@@ -21,10 +21,14 @@
 
   &__search-input {
     @apply w-0 -m-2 transition-all duration-300 text-base-100 bg-body
-    caret-base-100 italic border-base-700;
+      caret-base-100 italic border-transparent outline-0 transition-all;
+
+    &:focus, &:hover {
+      @apply border-brand-700 transition-colors;
+    }
 
     &__open {
-      @apply px-2 h-8 rounded-md border w-40;
+      @apply px-2 h-8 rounded-md border-2 w-40 border-base-700 transition-all;
 
       @screen md {
         @apply w-64;

@@ -33,10 +33,10 @@
   }
 
   &__menu-button {
-    @apply p-3 rounded-full;
+    @apply p-3 rounded-full transition-colors;
 
-    &:hover {
-      @apply bg-base-800;
+    &:hover, &:focus {
+      @apply bg-base-800 transition-colors;
     }
 
     &:active {
@@ -58,6 +58,10 @@
 
   &__menu-icon {
     @apply h-6 w-6;
+  }
+
+  &__loading-menu-icon {
+    @apply h-6 w-6 animate-spin;
   }
 
   &__search-input {

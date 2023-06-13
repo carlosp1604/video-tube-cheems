@@ -8,8 +8,9 @@ import { useRouter } from 'next/router'
 import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
 import { useSession } from 'next-auth/react'
 import { FC, useState } from 'react'
-import { useUserContext } from '~/hooks/UserContext'
 import { useTranslation } from 'next-i18next'
+import { useUserContext } from '~/hooks/UserContext'
+import { AiOutlineLoading } from 'react-icons/ai'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
@@ -18,20 +19,23 @@ export const AppMenu: FC = () => {
 
   const { user } = useUserContext()
   const { t } = useTranslation('app_menu')
+  const router = useRouter()
+  const session = useSession()
 
   let userAvatar = (
     <button
       className={ styles.appMenu__menuButton }
       onClick={ () => setLoginModalOpen(true) }
+      disabled={ session.status === 'loading' }
     >
-      <CiUser className={ styles.appMenu__menuIcon }/>
+      { session.status === 'loading'
+        ? <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/>
+        : <CiUser className={ styles.appMenu__menuIcon }/>
+      }
     </button>
   )
 
   let userMenu = null
-
-  const router = useRouter()
-  const session = useSession()
 
   if (session.status === 'authenticated' && user !== null) {
     if (user?.image !== null) {
@@ -66,11 +70,7 @@ export const AppMenu: FC = () => {
 
     userMenu = (
       <UserMenu
-        id={ user.id }
-        username={ user.username }
-        imageUrl={ user.image }
-        name={ user.name }
-        email={ user.email }
+        user={ user }
         setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
         isOpen={ userMenuOpen }
       />
@@ -78,6 +78,10 @@ export const AppMenu: FC = () => {
   }
 
   const onSearch = async () => {
+    if (title === '') {
+      return
+    }
+
     if (router.pathname === '/posts/search') {
       await router.push({
         query: {

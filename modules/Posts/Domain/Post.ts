@@ -8,6 +8,8 @@ import { randomUUID } from 'crypto'
 import { PostChildComment } from './PostChildComment'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 import { Actor } from '~/modules/Actors/Domain/Actor'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
@@ -21,12 +23,15 @@ export class Post {
   public updatedAt: DateTime
   public deletedAt: DateTime | null
   public publishedAt: DateTime | null
-  private _meta: Map<string, PostMeta> = new Map<string, PostMeta>()
-  private _tags: Map<PostTag['id'], PostTag> = new Map<PostTag['id'], PostTag>()
-  private _actors: Map<Actor['id'], Actor> = new Map<Actor['id'], Actor>()
-  private _comments: Map<PostComment['id'], PostComment> = new Map<PostComment['id'], PostComment>()
-  private _reactions: Map<PostReaction['userId'], PostReaction> = new Map<PostReaction['userId'], PostReaction>()
-  public producer: Producer | null = null
+
+  /** Relationships **/
+  private _meta: Collection<PostMeta, PostMeta['type']>
+  private _tags: Collection<PostTag, PostTag['id']>
+  private _actors: Collection<Actor, Actor['id']>
+  private _comments: Collection<PostComment, PostComment['id']>
+  private _reactions: Collection<PostReaction, PostReaction['userId']>
+  private _views: Collection<PostView, PostView['id']>
+  private _producer: Relationship<Producer | null>
 
   public constructor (
     id: string,
@@ -36,7 +41,14 @@ export class Post {
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null,
-    publishedAt: DateTime | null
+    publishedAt: DateTime | null,
+    meta: Collection<PostMeta, PostMeta['type']> = Collection.notLoaded(),
+    tags: Collection<PostTag, PostTag['id']> = Collection.notLoaded(),
+    actors: Collection<Actor, Actor['id']> = Collection.notLoaded(),
+    comments: Collection<PostComment, PostComment['id']> = Collection.notLoaded(),
+    reactions: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded(),
+    views: Collection<PostView, PostView['id']> = Collection.notLoaded(),
+    producer: Relationship<Producer | null> = Relationship.notLoaded()
   ) {
     this.id = id
     this.title = title
@@ -46,22 +58,29 @@ export class Post {
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
     this.publishedAt = publishedAt
+    this._meta = meta
+    this._tags = tags
+    this._actors = actors
+    this._comments = comments
+    this._reactions = reactions
+    this._views = views
+    this._producer = producer
   }
 
   public addMeta (postMeta: PostMeta): void {
-    this._meta.set(postMeta.type, postMeta)
+    this._meta.addItem(postMeta, postMeta.type)
   }
 
   public addPostReaction (postReaction: PostReaction): void {
-    this._reactions.set(postReaction.userId, postReaction)
+    this._reactions.addItem(postReaction, postReaction.userId)
   }
 
   public addTag (postTag: PostTag): void {
-    this._tags.set(postTag.id, postTag)
+    this._tags.addItem(postTag, postTag.id)
   }
 
   public addActor (postActor: Actor): void {
-    this._actors.set(postActor.id, postActor)
+    this._actors.addItem(postActor, postActor.id)
   }
 
   public addChildComment (
@@ -69,7 +88,7 @@ export class Post {
     comment: PostComment['comment'],
     userId: PostComment['userId']
   ): PostChildComment {
-    const parentComment = this._comments.get(parentCommentId)
+    const parentComment = this._comments.getItem(parentCommentId)
 
     if (!parentComment) {
       throw PostDomainException.parentCommentNotFound(parentCommentId)
@@ -84,7 +103,7 @@ export class Post {
   ): PostComment {
     const commentToAdd = this.buildComment(comment, userId)
 
-    this._comments.set(commentToAdd.id, commentToAdd)
+    this._comments.addItem(commentToAdd, commentToAdd.id)
 
     return commentToAdd
   }
@@ -92,7 +111,7 @@ export class Post {
   public deleteComment (
     postCommentId: PostComment['id']
   ): void {
-    const commentRemoved = this._comments.delete(postCommentId)
+    const commentRemoved = this._comments.removeItem(postCommentId)
 
     if (!commentRemoved) {
       throw PostDomainException.cannotDeleteComment(postCommentId)
@@ -104,7 +123,7 @@ export class Post {
     comment: PostComment['comment']
   ): PostComment {
     // TODO: Fix this method
-    const commentToUpdate = this._comments.get(postCommentId)
+    const commentToUpdate = this._comments.getItem(postCommentId)
 
     if (!commentToUpdate) {
       throw PostDomainException.cannotUpdateComment(postCommentId)
@@ -116,17 +135,17 @@ export class Post {
 
     commentToUpdate.setComment(comment)
     commentToUpdate.setUpdatedAt(DateTime.now())
-    this._comments.set(commentToUpdate.id, commentToUpdate)
+    this._comments.addItem(commentToUpdate, commentToUpdate.id)
 
     return commentToUpdate
   }
 
   public createComment (postComment: PostComment): void {
-    this._comments.set(postComment.id, postComment)
+    this._comments.addItem(postComment, postComment.id)
   }
 
   public createReaction (postReaction: PostReaction): void {
-    this._reactions.set(postReaction.userId, postReaction)
+    this._reactions.addItem(postReaction, postReaction.userId)
   }
 
   public addReaction (
@@ -141,13 +160,13 @@ export class Post {
       throw PostDomainException.cannotAddReaction(userId, this.id)
     }
 
-    const existingReaction = this._reactions.get(postReaction.userId)
+    const existingReaction = this._reactions.getItem(postReaction.userId)
 
     if (existingReaction) {
       throw PostDomainException.userAlreadyReacted(postReaction.userId, this.id)
     }
 
-    this._reactions.set(postReaction.userId, postReaction)
+    this._reactions.addItem(postReaction, postReaction.userId)
 
     return postReaction
   }
@@ -156,7 +175,7 @@ export class Post {
     userId: PostReaction['userId'],
     reactionType: PostReaction['reactionType']
   ): PostReaction {
-    const existingReaction = this._reactions.get(userId)
+    const existingReaction = this._reactions.getItem(userId)
 
     if (!existingReaction) {
       throw PostDomainException.userHasNotReacted(userId, this.id)
@@ -173,13 +192,13 @@ export class Post {
       throw PostDomainException.cannotUpdateReaction(userId, this.id)
     }
 
-    this._reactions.set(userId, existingReaction)
+    this._reactions.addItem(existingReaction, userId)
 
     return existingReaction
   }
 
   public deleteReaction (userId: PostReaction['userId']): void {
-    const reactionRemoved = this._reactions.delete(userId)
+    const reactionRemoved = this._reactions.removeItem(userId)
 
     if (!reactionRemoved) {
       throw PostDomainException.cannotDeleteReaction(userId, this.id)
@@ -187,19 +206,23 @@ export class Post {
   }
 
   get meta (): PostMeta[] {
-    return Array.from(this._meta.values())
+    return this._meta.values
   }
 
   get tags (): PostTag[] {
-    return Array.from(this._tags.values())
+    return this._tags.values
   }
 
   get actors (): Actor[] {
-    return Array.from(this._actors.values())
+    return this._actors.values
   }
 
   get comments (): PostComment[] {
-    return Array.from(this._comments.values())
+    return this._comments.values
+  }
+
+  get producer (): Producer | null {
+    return this._producer.value ?? null
   }
 
   public setProducer (producer: Producer): void {
@@ -207,11 +230,11 @@ export class Post {
       throw PostDomainException.producerAlreadySet(this.id)
     }
 
-    this.producer = producer
+    this._producer = Relationship.createRelation(producer)
   }
 
   get reactions (): PostReaction[] {
-    return Array.from(this._reactions.values())
+    return this._reactions.values
   }
 
   private buildComment (

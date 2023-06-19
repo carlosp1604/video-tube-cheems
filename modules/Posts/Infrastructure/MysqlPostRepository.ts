@@ -288,6 +288,13 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     }
 
     // TODO:Support ORDER BY views
+    if (sortingOption === 'views') {
+      sortCriteria = {
+        views: {
+          _count: sortingCriteria,
+        },
+      }
+    }
 
     const whereFilters = MysqlPostRepository.buildFilters(filters)
 
@@ -315,7 +322,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     return posts.map((post) => {
       return {
-        post: PostModelTranslator.toDomain(post, ['meta', 'producer']),
+        post: PostModelTranslator.toDomain(post, [
+          'meta',
+          'producer',
+        ]),
         postReactions: post._count.reactions,
         postComments: post._count.comments,
         postViews: post._count.views,
@@ -345,7 +355,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       ...whereFilters,
     }
 
-    return await prisma.post.count({
+    return prisma.post.count({
       where: whereClause,
     })
   }

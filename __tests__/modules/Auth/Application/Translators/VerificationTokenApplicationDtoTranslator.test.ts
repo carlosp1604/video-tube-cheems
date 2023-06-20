@@ -1,5 +1,5 @@
 import { DateTime, Settings } from 'luxon'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import {
   VerificationTokenApplicationDtoTranslator

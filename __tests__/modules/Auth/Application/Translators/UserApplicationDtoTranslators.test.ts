@@ -1,4 +1,4 @@
-import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Auth/Domain/TestUserBuilder'
 import { DateTime, Settings } from 'luxon'
 import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 

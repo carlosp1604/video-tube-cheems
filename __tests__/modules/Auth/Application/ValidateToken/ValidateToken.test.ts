@@ -10,8 +10,8 @@ import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/Validate
 import {
   ValidateTokenApplicationException
 } from '~/modules/Auth/Application/ValidateToken/ValidateTokenApplicationException'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
-import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Auth/Domain/TestUserBuilder'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 
 jest.mock('crypto', () => {

@@ -6,8 +6,8 @@ import { DateTime, Settings } from 'luxon'
 import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
 import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
-import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Auth/Domain/TestUserBuilder'
 import {
   VerifyEmailAddressApplicationRequestInterface
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationRequestInterface'

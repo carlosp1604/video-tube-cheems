@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { VerificationTokenDomainException } from '~/modules/Auth/Domain/VerificationTokenDomainException'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 
 describe('~/modules/Auth/Domain/VerificationToken.ts', () => {

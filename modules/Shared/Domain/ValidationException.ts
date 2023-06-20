@@ -31,7 +31,7 @@ export class ValidationException extends DomainException {
   }
 
   public static invalidFilterValue (value: string): ValidationException {
-    return new ValidationException(`Invalid filter value: ${value}`, this.invalidFilterTypeId)
+    return new ValidationException(`Invalid filter value: ${value}`, this.invalidFilterValueId)
   }
 
   public static invalidSortingCriteria (value: string): ValidationException {

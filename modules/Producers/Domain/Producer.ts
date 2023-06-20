@@ -1,19 +1,22 @@
 import { DateTime } from 'luxon'
-import { ProducerDomainException } from './ProducerDomainException'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 
 export class Producer {
   public readonly id: string
   public readonly name: string
   public readonly description: string
   public readonly imageUrl: string | null
-  public readonly parentProducerId: string | null 
+  public readonly parentProducerId: string | null
   public readonly createdAt: DateTime
   public readonly brandHexColor: string
   public updatedAt: DateTime
   public deletedAt: DateTime | null
-  public parentProducer: Producer | null = null
 
-  public constructor(
+  /** Relationships **/
+  // eslint-disable-next-line no-use-before-define
+  private _parentProducer: Relationship<Producer | null>
+
+  public constructor (
     id: string,
     name: string,
     description: string,
@@ -23,7 +26,8 @@ export class Producer {
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null,
-) {
+    parentProducer: Relationship<Producer | null> = Relationship.notLoaded()
+  ) {
     this.id = id
     this.name = name
     this.description = description
@@ -33,13 +37,10 @@ export class Producer {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
+    this._parentProducer = parentProducer
   }
 
-  public setParentProducer(parentProducer: Producer): void {
-    if (parentProducer !== null) {
-      throw ProducerDomainException.parentCommentNotFound(this.id)
-    }
-
-    this.parentProducer = parentProducer
+  get parentProducer (): Producer | null {
+    return this._parentProducer.value ?? null
   }
 }

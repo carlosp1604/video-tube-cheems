@@ -35,8 +35,6 @@ export class GetPosts {
       await this.postRepository.countPostsWithFilters(filters),
     ])
 
-    console.log(posts[0])
-
     return GetPostsApplicationDtoTranslator.fromDomain(posts, postsNumber)
   }
 

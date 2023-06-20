@@ -10,7 +10,6 @@ import {
   PostWithActors,
   PostWithComments,
   PostWithMeta,
-  PostWithProducer,
   PostWithProducerWithParent,
   PostWithReactions,
   PostWithTags
@@ -106,27 +105,15 @@ export class PostModelTranslator {
       }
     }
 
-    if (options.includes('producer') || options.includes('producer.parentProducer')) {
-      if (options.includes('producer.parentProducer')) {
-        const postWithProducer = prismaPostModel as PostWithProducer
+    if (options.includes('producer')) {
+      const postWithProducer = prismaPostModel as PostWithProducerWithParent
 
-        if (postWithProducer.producer !== null) {
-          const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, [])
+      if (postWithProducer.producer !== null) {
+        const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer)
 
-          producerRelationship = Relationship.initializeRelation(producerDomain)
-        } else {
-          producerRelationship = Relationship.initializeRelation(null)
-        }
+        producerRelationship = Relationship.initializeRelation(producerDomain)
       } else {
-        const postWithProducer = prismaPostModel as PostWithProducerWithParent
-
-        if (postWithProducer.producer !== null) {
-          const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, options)
-
-          producerRelationship = Relationship.initializeRelation(producerDomain)
-        } else {
-          producerRelationship = Relationship.initializeRelation(null)
-        }
+        producerRelationship = Relationship.initializeRelation(null)
       }
     }
 

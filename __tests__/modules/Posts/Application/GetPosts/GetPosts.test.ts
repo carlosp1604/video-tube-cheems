@@ -272,7 +272,7 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
     it('should throw exception if sorting option value is not valid', async () => {
       request = {
         ...request,
-        sortCriteria: 'invalid-option',
+        sortOption: 'invalid-option',
       }
 
       const useCase = buildUseCase()

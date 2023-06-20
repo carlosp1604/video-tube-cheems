@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { AddPostViewApiRequestValidator }
   from '~/modules/Posts/Infrastructure/Validators/AddPostViewApiRequestValidator'
 import { AddPostViewRequestTranslator } from '~/modules/Posts/Infrastructure/AddPostViewRequestTranslator'

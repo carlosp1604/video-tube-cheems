@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import { DateTime } from 'luxon'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { EmailValidator } from '~/modules/Shared/Domain/EmailValidator'
 import { UsernameValidator } from '~/modules/Shared/Domain/UsernameValidator'

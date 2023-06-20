@@ -1,4 +1,4 @@
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import { NextApiRequest, NextApiResponse } from 'next'

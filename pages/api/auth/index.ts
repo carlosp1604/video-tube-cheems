@@ -1,4 +1,4 @@
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { NextApiRequest, NextApiResponse } from 'next'

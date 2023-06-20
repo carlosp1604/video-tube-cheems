@@ -24,7 +24,7 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 
 interface Props {
   posts: PostCardComponentDto[]

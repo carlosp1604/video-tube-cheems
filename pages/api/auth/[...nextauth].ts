@@ -1,6 +1,6 @@
 import NextAuth, { NextAuthOptions, User } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { Login } from '~/modules/Auth/Application/Login/Login'
 import { NextApiRequest, NextApiResponse } from 'next'
 

@@ -10,7 +10,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 
 export default async function handler (
   request: NextApiRequest,

@@ -5,17 +5,17 @@ import { GetPostsApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/GetPo
 
 export class GetPostsApiRequestValidator {
   private static getPostsApiRequestSchema = z.object({
-    page: z.number().positive(),
-    postsPerPage: z.number().positive(),
+    page: z.number().positive().min(1),
+    perPage: z.number().positive().min(1),
     filters: z.array(z.object({
       type: z.string().min(1),
       value: z.string().min(1),
     })),
-    sortOption: z.string().min(1),
-    sortCriteria: z.string().min(1),
+    orderBy: z.string().min(1),
+    order: z.string().min(1),
   })
 
-  public static validate (request: GetPostsApiRequestDto): PostCommentApiRequestValidatorError | void {
+  public static validate (request: Partial<GetPostsApiRequestDto>): PostCommentApiRequestValidatorError | void {
     try {
       this.getPostsApiRequestSchema.parse(request)
     } catch (exception: unknown) {

@@ -204,7 +204,7 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
 
       await expect(useCase.get(request))
         .rejects
-        .toStrictEqual(GetPostsApplicationException.invalidOffsetValue())
+        .toStrictEqual(GetPostsApplicationException.invalidPageValue())
     })
 
     it('should throw exception if perPage value is not valid', async () => {
@@ -217,7 +217,7 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
 
       await expect(useCase.get(request))
         .rejects
-        .toStrictEqual(GetPostsApplicationException.invalidLimitValue(minPerPage, maxPerPage))
+        .toStrictEqual(GetPostsApplicationException.invalidPerPageValue(minPerPage, maxPerPage))
     })
 
     it('should throw exception if filter type is not valid', async () => {

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { GetPostsApiRequestValidator } from '~/modules/Posts/Infrastructure/Validators/GetPostsApiRequestValidator'
-import { GetPostsRequestDtoTranslator } from '~/modules/Posts/Infrastructure/GetPostsRequestDtoTranslator'
+import { GetPostsRequestDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/GetPostsRequestDtoTranslator'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import { NextApiRequestQuery } from 'next/dist/server/api-utils'
@@ -20,13 +20,15 @@ export default async function handler (
     return handleMethod(request, response)
   }
 
-  const apiRequest = parseQuery(request.query)
+  const parsedQuery = parseQuery(request.query)
 
-  const validationError = GetPostsApiRequestValidator.validate(apiRequest)
+  const validationError = GetPostsApiRequestValidator.validate(parsedQuery)
 
   if (validationError) {
     return handleValidationError(response, validationError)
   }
+
+  const apiRequest = parsedQuery as GetPostsApiRequestDto
 
   const applicationRequest = GetPostsRequestDtoTranslator.fromApiDto(apiRequest)
 
@@ -37,8 +39,9 @@ export default async function handler (
 
     return response.status(200).json(posts)
   } catch (exception: unknown) {
-    console.error(exception)
     if (!(exception instanceof GetPostsApplicationException)) {
+      console.error(exception)
+
       return handleServerError(response)
     }
 
@@ -47,18 +50,26 @@ export default async function handler (
       case GetPostsApplicationException.invalidSortingOptionId:
       case GetPostsApplicationException.invalidFilterTypeId:
       case GetPostsApplicationException.invalidFilterValueId:
+      case GetPostsApplicationException.invalidPerPageValueId:
+      case GetPostsApplicationException.invalidPageValueId:
         return handleBadRequest(response, exception)
 
-      default:
+      default: {
         console.error(exception)
 
         return handleServerError(response)
+      }
     }
   }
 }
 
-function parseQuery (query: NextApiRequestQuery): GetPostsApiRequestDto {
-  const { page, perPage, order, orderBy } = query
+function parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto> {
+  const {
+    page,
+    perPage,
+    order, orderBy,
+  } = query
+
   const filters: GetPostsApiFilterRequestDto[] = []
 
   for (const filter of Object.values(PostFilterOptions)) {
@@ -72,16 +83,11 @@ function parseQuery (query: NextApiRequestQuery): GetPostsApiRequestDto {
     }
   }
 
-  const pageNumber = parseInt(page ? page.toString() : '0')
-  const postsPerPage = parseInt(perPage ? perPage.toString() : '0')
-  const sortOption = orderBy ? orderBy.toString() : 'date'
-  const sortCriteria = order ? order.toString() : 'desc'
-
   return {
-    page: pageNumber,
-    postsPerPage,
-    sortCriteria,
-    sortOption,
+    ...page ? { page: parseInt(page.toString()) } : {},
+    ...perPage ? { perPage: parseInt(perPage.toString()) } : {},
+    ...orderBy ? { orderBy: orderBy.toString() } : {},
+    ...order ? { order: order.toString() } : {},
     filters,
   }
 }

@@ -32,7 +32,7 @@ export default async function handler (
 
   const applicationRequest = GetPostsRequestDtoTranslator.fromApiDto(apiRequest)
 
-  const useCase = container.resolve<GetPosts>('getPosts')
+  const useCase = container.resolve<GetPosts>('getPostsUseCase')
 
   try {
     const posts = await useCase.get(applicationRequest)

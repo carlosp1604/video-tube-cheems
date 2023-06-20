@@ -1,9 +1,9 @@
-import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 import { PostAnimationDto } from '~/modules/Posts/Infrastructure/Dtos/PostAnimationDto'
+import { MetaApplicationDto } from '~/modules/Posts/Application/Dtos/MetaApplicationDto'
 
 export class PostAnimationDtoTranslator {
-  public static fromApplication (applicationDto: PostApplicationDto): PostAnimationDto | null {
-    const animation = applicationDto.meta.find((meta) => {
+  public static fromApplication (postMeta: MetaApplicationDto[]): PostAnimationDto | null {
+    const animation = postMeta.find((meta) => {
       return meta.type === 'trailer'
     })
 

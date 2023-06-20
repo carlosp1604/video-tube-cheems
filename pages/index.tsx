@@ -33,7 +33,7 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const getPosts = container.resolve<GetPosts>('getPosts')
+  const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')
 
   const locale = context.locale ?? 'en'

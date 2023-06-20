@@ -52,7 +52,7 @@ export default async function handler (
       case GetPostsApplicationException.invalidFilterValueId:
       case GetPostsApplicationException.invalidPerPageValueId:
       case GetPostsApplicationException.invalidPageValueId:
-        return handleBadRequest(response, exception)
+        return handleUnprocessableEntity(response, exception)
 
       default: {
         console.error(exception)
@@ -114,13 +114,13 @@ function handleValidationError (
     })
 }
 
-function handleBadRequest (
+function handleUnprocessableEntity (
   response: NextApiResponse,
   exception: GetPostsApplicationException
 ) {
-  return response.status(400)
+  return response.status(422)
     .json({
-      code: 'get-posts-bad-request',
+      code: 'get-posts-unprocessable-entity',
       message: exception.message,
     })
 }

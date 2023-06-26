@@ -96,6 +96,14 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNumber])
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    })
+  }
+
   return (
     <div className={ styles.paginatedPostCardGallery__container }>
       <div className={ styles.paginatedPostCardGallery__header }>
@@ -124,7 +132,6 @@ export const PaginatedPostCardGallery: FC<Props> = ({
           pageNumber={ pageNumber }
           setPageNumber={ setPageNumber }
           pagesNumber={ pagesNumber }
-          scrollToTopWhenPageChanges={ true }
         />
       </div>
     </div>

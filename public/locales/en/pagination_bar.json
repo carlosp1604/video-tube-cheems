@@ -1,0 +1,7 @@
+{
+  "first_page_button_title": "First page",
+  "last_page_button_title": "Last page",
+  "n_page_button_title": "Page {{pageNumber}}",
+  "next_page_button_title": "Next page",
+  "previous_page_button_title":"Previous page"
+}

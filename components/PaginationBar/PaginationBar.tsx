@@ -1,6 +1,7 @@
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useState } from 'react'
 import styles from './PaginationBar.module.scss'
 import { BsCaretLeft, BsCaretRight, BsSkipEnd, BsSkipStart } from 'react-icons/bs'
+import { useTranslation } from 'next-i18next'
 
 const getPagesAfterCurrentPage = (
   currentPage: number,
@@ -71,27 +72,20 @@ interface Props {
   pageNumber: number
   setPageNumber: Dispatch<SetStateAction<number>>
   pagesNumber: number
-  scrollToTopWhenPageChanges: boolean
 }
 
 export const PaginationBar: FC<Props> = ({
   pagesNumber,
   setPageNumber,
   pageNumber,
-  scrollToTopWhenPageChanges,
 }) => {
   const [pages, setPages] = useState<Array<number>>(getShowablePages(pageNumber, pagesNumber))
 
-  useEffect(() => {
-    setPages(getShowablePages(pageNumber, pagesNumber))
-  }, [pageNumber, pagesNumber])
+  const { t } = useTranslation('pagination_bar')
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    })
+  const handleChange = (newPageNumber: number) => {
+    setPageNumber(newPageNumber)
+    setPages(getShowablePages(pageNumber, pagesNumber))
   }
 
   return (
@@ -102,14 +96,8 @@ export const PaginationBar: FC<Props> = ({
           ${pageNumber === 1 ? styles.paginationBar__leftPageButtonHide : ''}
         ` }
         disabled={ pageNumber === 1 }
-        onClick={ async () => {
-          setPageNumber(1)
-          if (scrollToTopWhenPageChanges) {
-            await setTimeout(() => {
-              scrollToTop()
-            }, 500)
-          }
-        } }
+        onClick={ () => handleChange(1) }
+        title={ t('first_page_button_title') }
       >
         <BsSkipStart />
       </button>
@@ -119,14 +107,8 @@ export const PaginationBar: FC<Props> = ({
           ${pageNumber === 1 ? styles.paginationBar__leftPageButtonHide : ''}
         ` }
         disabled={ pageNumber === 1 }
-        onClick={ async () => {
-          setPageNumber(pageNumber - 1)
-          if (scrollToTopWhenPageChanges) {
-            await setTimeout(() => {
-              scrollToTop()
-            }, 500)
-          }
-        } }
+        onClick={ () => handleChange(pageNumber - 1) }
+        title={ t('previous_page_button_title') }
       >
         <BsCaretLeft />
       </button>
@@ -138,14 +120,8 @@ export const PaginationBar: FC<Props> = ({
               ${pageNumber === page ? styles.paginationBar__pageNumberButton__active : ''}
             ` }
             key={ page }
-            onClick={ async () => {
-              setPageNumber(page)
-              if (scrollToTopWhenPageChanges) {
-                await setTimeout(() => {
-                  scrollToTop()
-                }, 500)
-              }
-            } }
+            onClick={ () => handleChange(page) }
+            title={ t('n_page_button_title', { pageNumber: page }) }
           >
             { page }
           </button>
@@ -157,14 +133,8 @@ export const PaginationBar: FC<Props> = ({
           ${pageNumber === pagesNumber ? styles.paginationBar__rightPageButtonHide : ''}
         ` }
         disabled={ pageNumber === pagesNumber }
-        onClick={ async () => {
-          setPageNumber(pageNumber + 1)
-          if (scrollToTopWhenPageChanges) {
-            await setTimeout(() => {
-              scrollToTop()
-            }, 500)
-          }
-        } }
+        onClick={ () => handleChange(pageNumber + 1) }
+        title={ t('next_page_button_title') }
       >
         <BsCaretRight />
       </button>
@@ -174,14 +144,8 @@ export const PaginationBar: FC<Props> = ({
           ${pageNumber === pagesNumber ? styles.paginationBar__rightPageButtonHide : ''}
         ` }
         disabled={ pageNumber === pagesNumber }
-        onClick={ async () => {
-          setPageNumber(pagesNumber)
-          if (scrollToTopWhenPageChanges) {
-            await setTimeout(() => {
-              scrollToTop()
-            }, 500)
-          }
-        } }
+        onClick={ () => handleChange(pagesNumber) }
+        title={ t('last_page_button_title') }
       >
         <BsSkipEnd />
       </button>

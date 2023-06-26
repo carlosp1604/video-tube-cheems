@@ -1,4 +1,6 @@
 {
+  "dropdown_button_title": "Filtrar videos",
   "latest_entries_option": "Más recientes",
+  "most_viewed_entries_option": "Más vistos",
   "oldest_entries_option": "Más antiguos"
 }

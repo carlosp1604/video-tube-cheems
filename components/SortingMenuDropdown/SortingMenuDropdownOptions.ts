@@ -22,4 +22,9 @@ export const sortingOptions: SortingOption[] = [
     option: InfrastructureSortingOptions.DATE,
     criteria: InfrastructureSortingCriteria.ASC,
   },
+  {
+    translationKey: 'most_viewed_entries_option',
+    option: InfrastructureSortingOptions.VIEWS,
+    criteria: InfrastructureSortingCriteria.DESC,
+  },
 ]

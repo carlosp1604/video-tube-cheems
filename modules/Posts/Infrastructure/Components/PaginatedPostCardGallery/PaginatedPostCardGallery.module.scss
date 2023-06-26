@@ -8,8 +8,8 @@
   }
 
   &__title {
-    @apply flex flex-col items-start first-letter:py-5 text-base-100 text-2xl uppercase
-    font-black gap-x-2;
+    @apply flex flex-col items-start first-letter:py-5 text-base-100 text-2xl
+      uppercase font-black gap-x-2;
   }
 
   &__videos-quantity {

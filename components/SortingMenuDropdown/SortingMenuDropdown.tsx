@@ -18,6 +18,7 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
     <div
       className={ styles.sortingMenuDropdown__container }
       onClick={ () => setOpenMenu(!openMenu) }
+      title={ t('dropdown_button_title') }
     >
       <button className={ styles.sortingMenuDropdown__dropdownButton }>
         <BsFilter className={ styles.sortingMenuDropdown__dropdownButtonIcon }/>
@@ -25,7 +26,9 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
       <div className={ `
         ${styles.sortingMenuDropdown__dropdownContainer}
         ${openMenu ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
-      ` }>
+      ` }
+        onMouseLeave={ () => setOpenMenu(false) }
+      >
         { options.map((option) => {
           return (
             <span

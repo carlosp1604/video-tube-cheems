@@ -31,7 +31,7 @@ function App ({
     <SessionProvider session={ session }>
       <UserProvider>
         <main className={ styles.app__layout } >
-        <AppMenu />
+          <AppMenu />
           <MenuSideBar />
           <div className={ styles.app__container }>
             <MobileMenu

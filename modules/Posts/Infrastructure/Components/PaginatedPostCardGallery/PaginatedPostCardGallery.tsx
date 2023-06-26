@@ -19,6 +19,7 @@ import {
 } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { useTranslation } from 'next-i18next'
 
 interface Props {
   title: string
@@ -39,6 +40,9 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   const [playerId, setPlayerId] = useState<string>('')
   const [activeSortingOption, setActiveSortingOption] = useState<SortingOption>(defaultSortingOption)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
+
+  // TODO: If component translation keys grows up then create a specific translations file
+  const { t } = useTranslation('common')
 
   const apiService = new PostsApiService()
 
@@ -78,7 +82,9 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     }
 
     if (pageNumber === 1) {
-      updatePosts()
+      updatePosts().then(() => {
+        scrollToTop()
+      })
 
       return
     }
@@ -92,9 +98,19 @@ export const PaginatedPostCardGallery: FC<Props> = ({
       return
     }
 
-    updatePosts()
+    updatePosts().then(() => {
+      scrollToTop()
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageNumber])
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    })
+  }
 
   return (
     <div className={ styles.paginatedPostCardGallery__container }>
@@ -102,7 +118,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         <h1 className={ styles.paginatedPostCardGallery__title }>
           { title }
           <small className={ styles.paginatedPostCardGallery__videosQuantity }>
-            { `${postsNumber} videos` }
+            { t('paginated_gallery_videos_count_title', { videosNumber: postsNumber }) }
           </small>
         </h1>
 
@@ -124,7 +140,6 @@ export const PaginatedPostCardGallery: FC<Props> = ({
           pageNumber={ pageNumber }
           setPageNumber={ setPageNumber }
           pagesNumber={ pagesNumber }
-          scrollToTopWhenPageChanges={ true }
         />
       </div>
     </div>

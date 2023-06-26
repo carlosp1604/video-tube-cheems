@@ -107,7 +107,6 @@ export const PaginatedActorCardGallery: FC<Props> = ({
         pageNumber={ pageNumber }
         setPageNumber={ setPageNumber }
         pagesNumber={ pagesNumber }
-        scrollToTopWhenPageChanges={ true }
       />
     </div>
   )

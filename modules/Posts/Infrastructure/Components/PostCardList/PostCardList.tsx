@@ -14,12 +14,13 @@ export const PostCardList: FC<Props> = ({ playerId, setPlayerId, posts }) => {
     <div className={ styles.postCardList__container }>
       { posts.map((post) => {
         return (
+          <div className={ styles.postCardList__item } key={ post.id }>
           <PostCard
             setPlayerId={ setPlayerId }
             playerId={ playerId }
             post={ post }
-            key={ post.id }
-          />)
+          />
+          </div>)
       }) }
     </div>
   )

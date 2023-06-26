@@ -1,5 +1,24 @@
 .post-card-list {
   &__container {
-    @apply flex flex-col;
+    @apply flex flex-row flex-wrap gap-4 justify-center;
+  }
+
+  &__item {
+    @apply flex flex-grow;
+    @screen md {
+      @apply max-w-[48%];
+    }
+
+    @screen lg {
+      @apply max-w-[32%];
+    }
+
+    @screen xl {
+      @apply max-w-[23.9%];
+    }
+
+    @screen 2xl {
+      @apply max-w-[19%];
+    }
   }
 }

@@ -1,5 +1,4 @@
 import { GetServerSideProps, NextPage } from 'next'
-import styles from '~/components/pages/HomePage/HomePage.module.scss'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
@@ -103,7 +102,7 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
 
   // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
-    <div className={ styles.home__container }>
+    <>
       <ProducerList
         producers={ producers }
         setActiveProducer={ setActiveProducer }
@@ -119,7 +118,8 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
           value: activeProducer.id === '' ? null : activeProducer.id,
         }] }
       />
-    </div>
+    </>
+
   )
 }
 

@@ -2,11 +2,15 @@
   $parentBlock: &;
 
   &__container {
-    @apply relative overflow-hidden;
+    @apply flex flex-col overflow-hidden;
+  }
+
+  &__video-container {
+    @apply relative;
   }
 
   &__video-link {
-    @apply z-card-link;
+    @apply absolute inset-0 opacity-0 z-card-link;
   }
 
   &__video-wrapper {
@@ -17,44 +21,37 @@
     @apply h-full w-full object-cover;
   }
 
-  &__video-data {
-    @apply flex py-2 gap-x-2;
+  &__video-data-container {
+    @apply grid py-2 gap-x-2;
+    grid-template-areas:
+      "producer-logo video-data";
+    grid-template-columns: auto 1fr;
   }
 
   &__producer-logo {
-    @apply rounded-full w-10 h-10 object-cover;
+    @apply rounded-full w-8 h-8 object-cover;
+    grid-area: producer-logo;
+
+    @screen md {
+      @apply w-10 h-10;
+    }
   }
 
-  &__video-title {
+  &__video-data {
     @apply flex flex-col truncate;
+    grid-area: video-data;
   }
 
   &__video-title-link {
     @apply truncate text-sm;
   }
 
-  &__producer-name-link {
-    @apply text-xs overflow-x-scroll scrollbar-hide;
-  }
-
   &__extra-data {
-    @apply flex flex-row items-center font-normal text-gray-400 text-xs gap-x-0.5;
+    @apply flex items-center font-normal text-gray-400 text-xs gap-x-0.5;
   }
 
-  &__video-options {
-    @apply hidden translate-x-full cursor-pointer text-gray-400 transition rounded-full h-10 w-10;
-
-    &:hover, &:focus {
-      @apply bg-base-800 text-base-700 transition;
-    }
-
-    &:active {
-      @apply bg-base-700 text-base-100 transition;
-    }
-  }
-
-  &__options-icon {
-    @apply text-xl;
+  &__producer-name {
+    @apply text-xs overflow-x-scroll scrollbar-hide;
   }
 
   &__video-time {

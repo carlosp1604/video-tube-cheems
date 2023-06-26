@@ -3,7 +3,6 @@ import styles from './PostCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import Link from 'next/link'
 import { SafePlayVideo, SafeStopVideo } from '~/modules/Shared/Infrastructure/SafeVideoElement'
-import Avatar from 'react-avatar'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useTranslation } from 'next-i18next'
 
@@ -20,7 +19,8 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
 
   const { t } = useTranslation('post_card')
 
-  let producerImage: ReactElement
+  // TODO: Set a default image for producers without image
+  let producerImage: ReactElement | null = null
 
   let media: ReactElement = (
     <img
@@ -48,6 +48,7 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
 
   if (post.producer !== null && post.producer.imageUrl) {
     producerImage = (
+      // TODO: FIX THIS
       <Link href={ '/' } title={ post.producer.name }>
         <img
           className={ styles.postCard__producerLogo }
@@ -55,16 +56,6 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
           alt={ post.producer?.name }
         />
       </Link>
-    )
-  } else {
-    producerImage = (
-      <Avatar
-        className={ styles.postCard__producerLogo }
-        round={ true }
-        size={ '40' }
-        name={ post.producer !== null ? post.producer.name : 'No Producer' }
-        textSizeRatio={ 2 }
-      />
     )
   }
 
@@ -84,41 +75,41 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
 
   return (
     <div className={ styles.postCard__container }>
-      <p className={ styles.postCard__videoTime } >
-        { post.duration }
-      </p>
-      <Link
-        href={ `/posts/videos/${post.id}` }
-        title={ post.title }
+      <div
+        className={ styles.postCard__videoContainer }
+        onMouseOver={ async () =>
+          player.current ? await SafePlayVideo(player.current, setPlayPromise) : ''
+        }
+        onMouseLeave={ () =>
+          player.current ? SafeStopVideo(player.current, playPromise) : ''
+        }
+        onTouchMove={ () => setPlayerId(post.id) }
       >
-        <div
-          className={ styles.postCard__videoWrapper }
-          onMouseOver={ async () =>
-            player.current ? await SafePlayVideo(player.current, setPlayPromise) : ''
-          }
-          onMouseLeave={ () =>
-            player.current ? SafeStopVideo(player.current, playPromise) : ''
-          }
-          onTouchMove={ () => setPlayerId(post.id) }
-        >
+        <p className={ styles.postCard__videoTime } >
+          { post.duration }
+        </p>
+        <Link
+          href={ `/posts/videos/${post.id}` }
+          className={ styles.postCard__videoLink }
+        />
+        <div className={ styles.postCard__videoWrapper }>
           { media }
         </div>
-      </Link>
+      </div>
 
-      <div className={ styles.postCard__videoData }>
-        { /*
-        <p className={ styles.postCard__videoOptions } >
-          <BsThreeDotsVertical className={ styles.postCard__optionsIcon }/>
-        </p>
-        */ }
+      <div className={ styles.postCard__videoDataContainer }>
         { producerImage }
-        <div className={ styles.postCard__videoTitle }>
-          <Link href={ '/' } className={ styles.postCard__videoTitleLink }>
+        <div className={ styles.postCard__videoData }>
+          <Link
+            href={ `/posts/videos/${post.id}` }
+            className={ styles.postCard__videoTitleLink }
+            title={ post.title }
+          >
             { post.title }
           </Link>
           <div className={ styles.postCard__extraData }>
             { post.producer !== null
-              ? <span className={ styles.postCard__producerNameLink }>{ post.producer.name }</span>
+              ? <span className={ styles.postCard__producerName }>{ post.producer.name }</span>
               : '' }
             { post.producer !== null ? <BsDot /> : '' }
             { t('post_card_post_views', { views: post.views }) }

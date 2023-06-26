@@ -50,6 +50,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'user_login',
     'user_retrieve_password',
     'pagination_bar',
+    'common',
   ])
 
   const props: Props = {

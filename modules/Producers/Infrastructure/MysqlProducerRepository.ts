@@ -10,7 +10,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
     const producers = await prisma.producer.findMany()
 
     return producers.map(
-      (producer) => ProducerModelTranslator.toDomain(producer, repositoryOptions)
+      (producer) => ProducerModelTranslator.toDomain(producer)
     )
   }
 }

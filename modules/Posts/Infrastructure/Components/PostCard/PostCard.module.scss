@@ -65,12 +65,13 @@
   }
 
   &__video-time {
-    @apply z-post-card-time absolute top-2 right-2 text-sm font-normal text-white;
+    @apply z-post-card-time absolute top-1 right-1 text-sm font-normal
+      text-base-400 py-0.5 px-1 rounded-lg bg-body;
   }
 
   &__container:hover, &__container:focus {
     #{$parentBlock}__video-time {
-      @apply opacity-0 transition-all duration-1000;
+      @apply opacity-0 transition-all duration-500;
     }
 
     #{$parentBlock}__video-options {

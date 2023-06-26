@@ -26,7 +26,9 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
       <div className={ `
         ${styles.sortingMenuDropdown__dropdownContainer}
         ${openMenu ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
-      ` }>
+      ` }
+        onMouseLeave={ () => setOpenMenu(false) }
+      >
         { options.map((option) => {
           return (
             <span

@@ -87,7 +87,10 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
       <p className={ styles.postCard__videoTime } >
         { post.duration }
       </p>
-      <Link href={ `/posts/videos/${post.id}` }>
+      <Link
+        href={ `/posts/videos/${post.id}` }
+        title={ post.title }
+      >
         <div
           className={ styles.postCard__videoWrapper }
           onMouseOver={ async () =>

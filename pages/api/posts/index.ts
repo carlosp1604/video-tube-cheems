@@ -67,7 +67,8 @@ function parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto>
   const {
     page,
     perPage,
-    order, orderBy,
+    order,
+    orderBy,
   } = query
 
   const filters: GetPostsApiFilterRequestDto[] = []

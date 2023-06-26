@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply relative mx-auto block overflow-hidden;
+    @apply relative overflow-hidden;
   }
 
   &__video-link {

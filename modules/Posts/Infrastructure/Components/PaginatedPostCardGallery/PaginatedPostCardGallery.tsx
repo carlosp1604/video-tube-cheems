@@ -129,19 +129,17 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         />
       </div>
 
-      <div className={ styles.paginatedPostCardGallery__contentContainer }>
-        <PostCardList
-          posts={ currentPosts }
-          playerId={ playerId }
-          setPlayerId={ setPlayerId }
-        />
+      <PostCardList
+        posts={ currentPosts }
+        playerId={ playerId }
+        setPlayerId={ setPlayerId }
+      />
 
-        <PaginationBar
-          pageNumber={ pageNumber }
-          setPageNumber={ setPageNumber }
-          pagesNumber={ pagesNumber }
-        />
-      </div>
+      <PaginationBar
+        pageNumber={ pageNumber }
+        setPageNumber={ setPageNumber }
+        pagesNumber={ pagesNumber }
+      />
     </div>
   )
 }

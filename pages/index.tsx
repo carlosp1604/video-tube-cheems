@@ -24,7 +24,7 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -33,7 +33,7 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-  const getPosts = container.resolve<GetPosts>('getPosts')
+  const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')
 
   const locale = context.locale ?? 'en'

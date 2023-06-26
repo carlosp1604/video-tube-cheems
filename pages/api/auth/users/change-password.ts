@@ -10,7 +10,7 @@ import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassw
 import {
   ChangeUserPasswordApplicationException
 } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPasswordApplicationException'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 
 export default async function handler (
   request: NextApiRequest,

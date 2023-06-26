@@ -286,7 +286,7 @@ Otherwise, you will receive an error message
 | 500       | ``get-user-server-error``            | Something went wrong while processing request |
 
 ### Get user data by its username
-To get the data from an specific user you must provide its username
+To get the data from a specific user you must provide its username
 
 ```
 GET /api/users/{username}
@@ -336,3 +336,97 @@ Otherwise, you will receive an error message
 | 400       | ``get-user-bad-request``        | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request |
 | 404       | ``get-user-resource-not-found`` | User with username {username} was not found                                                                                    |
 | 500       | ``get-user-server-error``       | Something went wrong while processing request                                                                                  |
+
+### Get user data by its username
+To get the data from a specific user you must provide its username
+
+```
+GET /api/posts?order={order}&orderBy={orderBy}&{...filters}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| order     | ``true`` | ``asc``, ``desc``    |
+| orderBy   | ``true`` | ``string``           |
+| filters   | ``true`` | ``array``            |
+
+Filters should be sent like: ``filterType=value``. Example:
+
+```
+GET /api/posts?order=asc&orderBy=postTitle&postTitle=some post title
+```
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    posts: [
+        {
+            post: {
+                id: string
+                title: string
+                description: string
+                publishedAt: string
+                producer: {
+                    id: string
+                    name: string
+                    description: string
+                    imageUrl: string | null
+                    parentProducerId: string | null 
+                    brandHexColor: string
+                    createdAt: string
+                    parentProducer: {
+                        id: string
+                        name: string
+                        description: string
+                        imageUrl: string | null
+                        parentProducerId: string | null 
+                        brandHexColor: string
+                        createdAt: string
+                        parentProducer: null 
+                    } | null, 
+                } | null,
+                meta: [
+                    {
+                        type: string
+                        value: string
+                        postId: string
+                        createdAt: string
+                    },
+                    ...
+                ]
+                createdAt: string
+            },
+            postRections: number,
+            postComments: number,
+            postViews: number 
+        },
+        ...
+    ],
+    postsNumber: number
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                | Message                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|-----------|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``get-posts-bad-request``           | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request                                                                                                                                                                                                                                                                                                                     |
+| 422       | ``get-posts-unprocessable-entity``  | Some parameter value from the request is invalid.<br/>-PerPage must be a positive integer in range [{minLimit} - {maxLimit}]<br/>-Page must be a integer greater or equal to 0<br/>-Filter {filter} is not a valid filter<br/>-Filter must be a not empty string and must not include special characters<br/>-Sorting option {sortingOption} is not a valid sorting option<br/>-Sorting criteria {sortingCriteria} is not a valid sorting criteria |
+| 500       | ``get-user-server-error``           | Something went wrong while processing request                                                                                                                                                                                                                                                                                                                                                                                                      |

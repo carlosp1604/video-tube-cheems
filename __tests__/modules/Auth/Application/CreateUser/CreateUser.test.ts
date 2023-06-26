@@ -8,8 +8,8 @@ import { CreateUserApplicationException } from '~/modules/Auth/Application/Creat
 import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
-import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Auth/Domain/TestUserBuilder'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
 
 jest.mock('crypto', () => {
   return {

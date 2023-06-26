@@ -1,5 +1,5 @@
 import nextI18nextConfig from '~/next-i18next.config'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

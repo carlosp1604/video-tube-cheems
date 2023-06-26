@@ -40,11 +40,11 @@ export class GetPosts {
 
   private static validateRequest (request: GetPostsRequestDto): void {
     if (isNaN(request.page) || request.page <= 0) {
-      throw GetPostsApplicationException.invalidOffsetValue()
+      throw GetPostsApplicationException.invalidPageValue()
     }
 
     if (isNaN(request.postsPerPage) || request.postsPerPage < minPerPage || request.postsPerPage > maxPerPage) {
-      throw GetPostsApplicationException.invalidLimitValue(minPerPage, maxPerPage)
+      throw GetPostsApplicationException.invalidPerPageValue(minPerPage, maxPerPage)
     }
   }
 

@@ -1,22 +1,24 @@
 import { DateTime } from 'luxon'
 import { PostAnimationDtoTranslator } from './PostAnimationDtoTranslator'
-import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 import {
   PostCardComponentDto,
   ProducerPostCardComponentDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostAnimationDto } from '~/modules/Posts/Infrastructure/Dtos/PostAnimationDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import {
+  PostWithProducerAndMetaApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
 
 export class PostCardComponentDtoTranslator {
   public static fromApplication (
-    applicationDto: PostApplicationDto,
+    applicationDto: PostWithProducerAndMetaApplicationDto,
     reactionsNumber: number,
     commentsNumber: number,
     postViews: number,
     locale: string
   ): PostCardComponentDto {
-    const animation: PostAnimationDto | null = PostAnimationDtoTranslator.fromApplication(applicationDto)
+    const animation: PostAnimationDto | null = PostAnimationDtoTranslator.fromApplication(applicationDto.meta)
 
     const date = new DateService()
       .formatAgoLike(DateTime.fromISO(applicationDto.publishedAt), locale)

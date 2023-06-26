@@ -8,7 +8,7 @@ export class PostMeta {
   public updatedAt: DateTime
   public deletedAt: DateTime | null
 
-  public constructor(
+  public constructor (
     type: string,
     value: string,
     postId: string,

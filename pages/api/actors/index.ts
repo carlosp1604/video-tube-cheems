@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { NextApiRequestQuery } from 'next/dist/server/api-utils'
 import { GetActorsApiRequestValidator } from '~/modules/Actors/Infrastructure/GetActorsApiRequestValidator'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { GetActors } from '~/modules/Actors/Application/GetActors'
 import { GetActorsRequestDtoTranslator } from '~/modules/Actors/Infrastructure/GetActorsRequestDtoTranslator'
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'

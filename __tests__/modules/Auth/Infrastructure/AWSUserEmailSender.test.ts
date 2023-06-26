@@ -1,7 +1,7 @@
 import { SESClient } from '@aws-sdk/client-ses'
 import { mock, mockReset } from 'jest-mock-extended'
 import { AWSUserEmailSender } from '~/modules/Auth/Infrastructure/AWSUserEmailSender'
-import { TestVerificationTokenBuilder } from '~/__tests__/modules/Domain/TestVerificationTokenBuilder'
+import { TestVerificationTokenBuilder } from '~/__tests__/modules/Auth/Domain/TestVerificationTokenBuilder'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 
 describe('~/modules/Auth/Infrastructure/AWSUserEmailSender.ts', () => {

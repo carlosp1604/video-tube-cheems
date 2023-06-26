@@ -10,6 +10,12 @@ export class ValidationException extends DomainException {
   public static invalidSortingOptionId = 'validate_filter_invalid_sorting_option'
   public static invalidPasswordId = 'validate_password_invalid_password'
 
+  constructor (message: string, id: string) {
+    super(message, id)
+
+    Object.setPrototypeOf(this, ValidationException.prototype)
+  }
+
   public static invalidEmail (value: string): ValidationException {
     return new ValidationException(`Invalid email: ${value}`, this.invalidEmailId)
   }
@@ -31,7 +37,7 @@ export class ValidationException extends DomainException {
   }
 
   public static invalidFilterValue (value: string): ValidationException {
-    return new ValidationException(`Invalid filter value: ${value}`, this.invalidFilterTypeId)
+    return new ValidationException(`Invalid filter value: ${value}`, this.invalidFilterValueId)
   }
 
   public static invalidSortingCriteria (value: string): ValidationException {

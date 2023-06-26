@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
 import {

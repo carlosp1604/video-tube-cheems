@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { container } from '~/awailix.container'
+import { container } from '~/awilix.container'
 import { VideoPage, VideoPageProps } from '~/components/pages/VideoPage/VideoPage'
 import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'

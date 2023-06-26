@@ -10,13 +10,20 @@ import {
   PostWithActors,
   PostWithComments,
   PostWithMeta,
-  PostWithProducer,
   PostWithProducerWithParent,
   PostWithReactions,
   PostWithTags
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostModel'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ProducerModelTranslator } from '~/modules/Producers/Infrastructure/ProducerModelTranslator'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
+import { PostMeta } from '~/modules/Posts/Domain/PostMeta'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { PostTag } from '~/modules/Posts/Domain/PostTag'
+import { Actor } from '~/modules/Actors/Domain/Actor'
+import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { Producer } from '~/modules/Producers/Domain/Producer'
+import { PostReaction } from '~/modules/Posts/Domain/PostReaction'
 
 export class PostModelTranslator {
   public static toDomain (
@@ -34,48 +41,48 @@ export class PostModelTranslator {
       deletedAt = DateTime.fromJSDate(prismaPostModel.deletedAt)
     }
 
-    const post = new Post(
-      prismaPostModel.id,
-      prismaPostModel.title,
-      prismaPostModel.description,
-      prismaPostModel.producerId,
-      DateTime.fromJSDate(prismaPostModel.createdAt),
-      DateTime.fromJSDate(prismaPostModel.updatedAt),
-      deletedAt,
-      publishedAt
-    )
+    let metaCollection: Collection<PostMeta, PostMeta['type']> = Collection.notLoaded()
+    let tagsCollection: Collection<PostTag, PostTag['id']> = Collection.notLoaded()
+    let actorsCollection: Collection<Actor, Actor['id']> = Collection.notLoaded()
+    let commentsCollection: Collection<PostComment, PostComment['id']> = Collection.notLoaded()
+    let reactionsCollection: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded()
+    let producerRelationship: Relationship<Producer | null> = Relationship.notLoaded()
 
     if (options.includes('meta')) {
+      metaCollection = Collection.initializeCollection()
       const postWithMeta = prismaPostModel as PostWithMeta
 
       for (let i = 0; i < postWithMeta.meta.length; i++) {
         const postMetaDomain = PostMetaModelTranslator.toDomain(postWithMeta.meta[i])
 
-        post.addMeta(postMetaDomain)
+        metaCollection.addItemFromPersistenceLayer(postMetaDomain, postMetaDomain.type)
       }
     }
 
     if (options.includes('tags')) {
+      tagsCollection = Collection.initializeCollection()
       const postWithTags = prismaPostModel as PostWithTags
 
       for (let i = 0; i < postWithTags.tags.length; i++) {
         const postTagDomain = PostTagModelTranslator.toDomain(postWithTags.tags[i].tag)
 
-        post.addTag(postTagDomain)
+        tagsCollection.addItemFromPersistenceLayer(postTagDomain, postTagDomain.id)
       }
     }
 
     if (options.includes('actors')) {
+      actorsCollection = Collection.initializeCollection()
       const postWithActor = prismaPostModel as PostWithActors
 
       for (let i = 0; i < postWithActor.actors.length; i++) {
         const actorDomain = ActorModelTranslator.toDomain(postWithActor.actors[i].actor)
 
-        post.addActor(actorDomain)
+        actorsCollection.addItemFromPersistenceLayer(actorDomain, actorDomain.id)
       }
     }
 
     if (options.includes('comments')) {
+      commentsCollection = Collection.initializeCollection()
       const postWithComments = prismaPostModel as PostWithComments
 
       for (let i = 0; i < postWithComments.comments.length; i++) {
@@ -83,41 +90,50 @@ export class PostModelTranslator {
           postWithComments.comments[i], options
         )
 
-        post.createComment(commentDomain)
+        commentsCollection.addItemFromPersistenceLayer(commentDomain, commentDomain.id)
       }
     }
 
     if (options.includes('reactions')) {
+      reactionsCollection = Collection.initializeCollection()
       const postWithReactions = prismaPostModel as PostWithReactions
 
       for (let i = 0; i < postWithReactions.reactions.length; i++) {
         const reactionDomain = PostReactionModelTranslator.toDomain(postWithReactions.reactions[i])
 
-        post.addPostReaction(reactionDomain)
+        reactionsCollection.addItemFromPersistenceLayer(reactionDomain, reactionDomain.userId)
       }
     }
 
-    if (options.includes('producer') || options.includes('producer.parentProducer')) {
-      if (options.includes('producer.parentProducer')) {
-        const postWithProducer = prismaPostModel as PostWithProducer
+    if (options.includes('producer')) {
+      const postWithProducer = prismaPostModel as PostWithProducerWithParent
 
-        if (postWithProducer.producer !== null) {
-          const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, [])
+      if (postWithProducer.producer !== null) {
+        const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer)
 
-          post.setProducer(producerDomain)
-        }
+        producerRelationship = Relationship.initializeRelation(producerDomain)
       } else {
-        const postWithProducer = prismaPostModel as PostWithProducerWithParent
-
-        if (postWithProducer.producer !== null) {
-          const producerDomain = ProducerModelTranslator.toDomain(postWithProducer.producer, options)
-
-          post.setProducer(producerDomain)
-        }
+        producerRelationship = Relationship.initializeRelation(null)
       }
     }
 
-    return post
+    return new Post(
+      prismaPostModel.id,
+      prismaPostModel.title,
+      prismaPostModel.description,
+      prismaPostModel.producerId,
+      DateTime.fromJSDate(prismaPostModel.createdAt),
+      DateTime.fromJSDate(prismaPostModel.updatedAt),
+      deletedAt,
+      publishedAt,
+      metaCollection,
+      tagsCollection,
+      actorsCollection,
+      commentsCollection,
+      reactionsCollection,
+      Collection.notLoaded(),
+      producerRelationship
+    )
   }
 
   public static toDatabase (post: Post): PostPrismaModel {

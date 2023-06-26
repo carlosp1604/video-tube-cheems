@@ -1,6 +1,8 @@
 import { PostWithCountInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
-import { PostApplicationDtoTranslator } from '~/modules/Posts/Application/Translators/PostApplicationDtoTranslator'
+import {
+  PostWithProducerAndMetaApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'
 
 export class GetPostsApplicationDtoTranslator {
   public static fromDomain (
@@ -9,7 +11,7 @@ export class GetPostsApplicationDtoTranslator {
   ): GetPostsApplicationResponse {
     const posts = postsWithCount.map((postWithCount) => {
       return {
-        post: PostApplicationDtoTranslator.fromDomain(postWithCount.post),
+        post: PostWithProducerAndMetaApplicationDtoTranslator.fromDomain(postWithCount.post),
         postComments: postWithCount.postComments,
         postReactions: postWithCount.postReactions,
         postViews: postWithCount.postViews,

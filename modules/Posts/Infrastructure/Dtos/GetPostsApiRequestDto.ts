@@ -5,8 +5,8 @@ export interface GetPostsApiFilterRequestDto {
 
 export interface GetPostsApiRequestDto {
   readonly page: number
-  readonly postsPerPage: number
+  readonly perPage: number
   readonly filters: GetPostsApiFilterRequestDto[]
-  readonly sortOption: string
-  readonly sortCriteria: string
+  readonly orderBy: string
+  readonly order: string
 }

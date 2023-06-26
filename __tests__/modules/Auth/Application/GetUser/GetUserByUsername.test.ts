@@ -1,7 +1,7 @@
 import { User } from '~/modules/Auth/Domain/User'
 import { DateTime } from 'luxon'
 import { mock, mockReset } from 'jest-mock-extended'
-import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Auth/Domain/TestUserBuilder'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import {

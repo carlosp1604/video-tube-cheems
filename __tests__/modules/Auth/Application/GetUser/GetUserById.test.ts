@@ -2,7 +2,7 @@ import { User } from '~/modules/Auth/Domain/User'
 import { DateTime } from 'luxon'
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { mock, mockReset } from 'jest-mock-extended'
-import { TestUserBuilder } from '~/__tests__/modules/Domain/TestUserBuilder'
+import { TestUserBuilder } from '~/__tests__/modules/Auth/Domain/TestUserBuilder'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { GetUserByIdApplicationException } from '~/modules/Auth/Application/GetUser/GetUserByIdApplicationException'
 

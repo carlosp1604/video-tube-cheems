@@ -1,7 +1,9 @@
-import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
+import {
+  PostWithProducerAndMetaApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
 
 export interface GetPostsApplicationDto {
-  post: PostApplicationDto
+  post: PostWithProducerAndMetaApplicationDto
   postReactions: number
   postComments: number
   postViews: number

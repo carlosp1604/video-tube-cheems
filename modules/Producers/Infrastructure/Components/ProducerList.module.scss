@@ -1,15 +1,7 @@
 .producer-list {
-  &__container {
-    @apply relative overflow-hidden w-full pt-5 mx-auto;
-  }
-
-  &__slider {
-    @apply flex flex-row whitespace-nowrap top-0 overflow-x-scroll scroll-smooth scrollbar-hide;
-  }
-
   &__category {
     @apply text-center rounded-lg p-2 border border-base-700 truncate text-sm
-      font-light transition duration-500;
+      font-light transition;
 
     &:hover {
       @apply bg-base-700;
@@ -18,47 +10,11 @@
 
   &__category-active {
     @apply font-bold bg-[color:var(--category-color)]
-      transition duration-500 border-[color:var(--category-color)] border;
+      transition border-[color:var(--category-color)] border;
 
     &:hover {
       @apply bg-[color:var(--category-color)]
-        border-[color:var(--category-color)] transition duration-700;
-    }
-  }
-
-  &__left-scroll-button {
-    @apply hidden absolute top-6 left-5 h-8 w-8 rounded-full bg-base-700 p-2
-      text-base-300 cursor-pointer;
-
-    @screen md {
-      @apply block opacity-100 transition-all duration-200;
-
-      &__hidden {
-        @apply opacity-0 -translate-x-full transition-all duration-200;
-      }
-
-      &__active {
-        @apply opacity-100 transition-all duration-200 backdrop-filter
-          backdrop-blur-sm bg-opacity-5;
-      }
-    }
-  }
-
-  &__right-scroll-button {
-    @apply hidden absolute top-6 right-5 h-8 w-8 rounded-full p-2 bg-base-700
-      text-base-300 cursor-pointer;
-
-    @screen md {
-      @apply block opacity-100 transition-all duration-200;
-
-      &__hidden {
-        @apply opacity-0 translate-x-full transition-all duration-200;;
-      }
-
-      &__active {
-        @apply opacity-100 transition-all duration-200 backdrop-filter
-          backdrop-blur-sm bg-opacity-5;
-      }
+        border-[color:var(--category-color)] transition;
     }
   }
 }

@@ -4,11 +4,12 @@
   }
 
   &__slider {
-    @apply flex flex-row flex-shrink-0 gap-x-2 whitespace-nowrap top-0 overflow-x-scroll scroll-smooth scrollbar-hide;
+    @apply flex flex-row flex-shrink-0 gap-x-2 whitespace-nowrap top-0 overflow-x-scroll
+      scroll-smooth scrollbar-hide;
   }
 
   &__slider-item {
-    @apply flex-shrink-0;
+    @apply flex flex-shrink-0 truncate;
     max-width: 90%;
 
     @screen md {

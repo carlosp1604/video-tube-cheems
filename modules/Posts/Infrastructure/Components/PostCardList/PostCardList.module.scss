@@ -1,24 +1,22 @@
 .post-card-list {
   &__container {
-    @apply flex flex-row flex-wrap gap-4 justify-center;
-  }
+    @apply grid gap-4;
+    grid-template-columns: repeat(1, 1fr);
 
-  &__item {
-    @apply flex flex-grow;
-    @screen md {
-      @apply max-w-[48%];
+    @screen sm {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     @screen lg {
-      @apply max-w-[32%];
+      grid-template-columns: repeat(3, 1fr);
     }
 
     @screen xl {
-      @apply max-w-[23.9%];
+      grid-template-columns: repeat(4, 1fr);
     }
 
     @screen 2xl {
-      @apply max-w-[19%];
+      grid-template-columns: repeat(6, 1fr);
     }
   }
 }

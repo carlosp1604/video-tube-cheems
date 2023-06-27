@@ -1,6 +1,6 @@
 .paginated-post-card-gallery {
   &__container {
-    @apply flex flex-col gap-y-2 mx-auto;
+    @apply flex flex-col gap-y-2 mx-auto w-full;
   }
 
   &__header {

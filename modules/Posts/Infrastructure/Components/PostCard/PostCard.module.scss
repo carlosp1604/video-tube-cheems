@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply flex flex-col overflow-hidden;
+    @apply overflow-hidden;
   }
 
   &__video-container {
@@ -14,7 +14,7 @@
   }
 
   &__video-wrapper {
-    @apply aspect-video w-full overflow-hidden rounded-lg;
+    @apply aspect-video w-full h-fit overflow-hidden rounded-lg;
   }
 
   &__media {

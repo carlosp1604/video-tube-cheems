@@ -1,10 +1,15 @@
+body {
+  @apply bg-body text-base font-roboto text-base-100
+    overflow-y-scroll overflow-x-hidden;
+}
+
 a {
   &:hover {
-    @apply text-base-300 transition-colors duration-500;
+    @apply text-base-300 transition;
   }
 
   &:active {
-    @apply text-brand-500 transition-colors duration-500;
+    @apply text-brand-500 transition;
   }
 }
 

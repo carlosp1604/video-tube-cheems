@@ -1,10 +1,7 @@
 .app {
-  &__layout {
-    @apply bg-body font-roboto text-base-100;
-  }
-
   &__container {
-    @apply min-h-screen bg-body h-full;
+    @apply min-h-screen;
+
     @screen lg {
       @apply ml-16;
     }

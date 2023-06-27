@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import styles from './PaginationBar.module.scss'
 import { BsCaretLeft, BsCaretRight, BsSkipEnd, BsSkipStart } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
@@ -82,6 +82,10 @@ export const PaginationBar: FC<Props> = ({
   const [pages, setPages] = useState<Array<number>>(getShowablePages(pageNumber, pagesNumber))
 
   const { t } = useTranslation('pagination_bar')
+
+  useEffect(() => {
+    setPages(getShowablePages(pageNumber, pagesNumber))
+  }, [pageNumber, pagesNumber])
 
   const handleChange = (newPageNumber: number) => {
     setPageNumber(newPageNumber)

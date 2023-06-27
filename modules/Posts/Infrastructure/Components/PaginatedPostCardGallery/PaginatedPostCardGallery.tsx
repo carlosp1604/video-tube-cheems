@@ -112,6 +112,18 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     })
   }
 
+  let paginationBar = null
+
+  if (postsNumber > 0) {
+    paginationBar = (
+      <PaginationBar
+        pageNumber={ pageNumber }
+        setPageNumber={ setPageNumber }
+        pagesNumber={ pagesNumber }
+      />
+    )
+  }
+
   return (
     <div className={ styles.paginatedPostCardGallery__container }>
       <div className={ styles.paginatedPostCardGallery__header }>
@@ -135,11 +147,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         setPlayerId={ setPlayerId }
       />
 
-      <PaginationBar
-        pageNumber={ pageNumber }
-        setPageNumber={ setPageNumber }
-        pagesNumber={ pagesNumber }
-      />
+      { paginationBar }
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, FC, SetStateAction, useState } from 'react'
+import { CSSProperties, Dispatch, FC, SetStateAction } from 'react'
 import styles from './ProducerList.module.scss'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import { useTranslation } from 'next-i18next'

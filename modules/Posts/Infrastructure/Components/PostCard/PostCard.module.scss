@@ -22,14 +22,14 @@
   }
 
   &__video-data-container {
-    @apply grid py-2 gap-x-2;
+    @apply grid py-2;
     grid-template-areas:
       "producer-logo video-data";
     grid-template-columns: auto 1fr;
   }
 
   &__producer-logo {
-    @apply rounded-full w-8 h-8 object-cover;
+    @apply rounded-full w-8 h-8 object-cover mr-2;
     grid-area: producer-logo;
 
     @screen md {

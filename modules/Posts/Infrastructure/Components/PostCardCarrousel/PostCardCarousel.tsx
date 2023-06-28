@@ -19,6 +19,7 @@ export const PostCardCarousel: FC<Props> = ({ posts }) => {
             playerId={ playerId }
             post={ post }
             key={ post.id }
+            showProducerImage={ false }
           />
         )
       }) }

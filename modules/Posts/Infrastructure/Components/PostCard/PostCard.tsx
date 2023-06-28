@@ -10,9 +10,15 @@ interface Props {
   playerId: string
   setPlayerId: Dispatch<SetStateAction<string>>
   post: PostCardComponentDto
+  showProducerImage: boolean
 }
 
-export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
+export const PostCard: FC<Props> = ({
+  post,
+  playerId,
+  setPlayerId,
+  showProducerImage = true,
+}) => {
   const player = createRef<HTMLVideoElement>()
   const [playPromise, setPlayPromise] = useState<Promise<void>>(Promise.resolve())
   const [playing, setPlaying] = useState<boolean>(false)
@@ -46,9 +52,9 @@ export const PostCard: FC<Props> = ({ post, playerId, setPlayerId }) => {
     )
   }
 
-  if (post.producer !== null && post.producer.imageUrl) {
+  if (post.producer !== null && post.producer.imageUrl && showProducerImage) {
     producerImage = (
-      // TODO: FIX THIS
+      // TODO: FIX THIS WHEN PRODUCER PAGE IS READY
       <Link href={ '/' } title={ post.producer.name }>
         <img
           className={ styles.postCard__producerLogo }

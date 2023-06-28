@@ -1,6 +1,4 @@
-import { CommentApplicationDtoTranslator } from './CommentApplicationDtoTranslator'
 import { MetaApplicationDtoTranslator } from './MetaApplicationDtoTranslator'
-import { ReactionApplicationDtoTranslator } from './ReactionApplicationDtoTranslator'
 import { TagApplicationDtoTranslator } from './TagApplicationDtoTranslator'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
@@ -15,17 +13,11 @@ export class PostApplicationDtoTranslator {
       actors: post.actors.map((actor) => {
         return ActorApplicationDtoTranslator.fromDomain(actor)
       }),
-      comments: post.comments.map((comment) => {
-        return CommentApplicationDtoTranslator.fromDomain(comment)
-      }),
       description: post.description,
       meta: post.meta.map((meta) => {
         return MetaApplicationDtoTranslator.fromDomain(meta)
       }),
       publishedAt: post.publishedAt?.toISO() ?? '',
-      reactions: post.reactions.map((reaction) => {
-        return ReactionApplicationDtoTranslator.fromDomain(reaction)
-      }),
       tags: post.tags.map((tag) => {
         return TagApplicationDtoTranslator.fromDomain(tag)
       }),

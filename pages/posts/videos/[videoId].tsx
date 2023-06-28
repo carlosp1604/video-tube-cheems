@@ -35,8 +35,6 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
     })
     const relatedPosts = await getRelatedPosts.get(videoId)
 
-    console.log(postWithCount.userReaction)
-
     return {
       props: {
         post: PostComponentDtoTranslator.fromApplicationDto(

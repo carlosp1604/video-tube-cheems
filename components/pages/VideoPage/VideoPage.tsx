@@ -37,8 +37,6 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(post.userReaction)
 
-  console.log(userReaction)
-
   const { t } = useTranslation('video_page')
   const { data } = useSession()
 

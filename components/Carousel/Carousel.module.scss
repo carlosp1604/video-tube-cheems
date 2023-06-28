@@ -10,10 +10,10 @@
 
   &__slider-item {
     @apply flex flex-shrink-0 truncate;
-    max-width: 90%;
+    max-width: 50%;
 
     @screen md {
-      max-width: 40%;
+      max-width: 35%;
     }
 
     @screen lg {

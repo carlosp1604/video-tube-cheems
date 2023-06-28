@@ -10,8 +10,6 @@ export class GetRelatedPosts {
   public async get (postId: Post['id']): Promise<GetRelatedPostsApplicationResponse> {
     const relatedPosts = await this.postRepository.getRelatedPosts(postId)
 
-    return GetRelatedPostsApplicationResponseTranslator.fromDomain(
-      relatedPosts
-    )
+    return GetRelatedPostsApplicationResponseTranslator.fromDomain(relatedPosts)
   }
 }

@@ -1,7 +1,5 @@
 import { MetaApplicationDto } from './MetaApplicationDto'
 import { TagApplicationDto } from './TagApplicationDto'
-import { CommentApplicationDto } from './CommentApplicationDto'
-import { ReactionApplicationDto } from './ReactionApplicationDto'
 import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
 import { ProducerApplicationDto } from '~/modules/Producers/Application/ProducerApplicationDto'
 
@@ -14,7 +12,5 @@ export interface PostApplicationDto {
   readonly meta: MetaApplicationDto[]
   readonly actors: ActorApplicationDto[]
   readonly tags: TagApplicationDto[]
-  readonly comments: CommentApplicationDto[]
-  readonly reactions: ReactionApplicationDto[]
   readonly createdAt: string
 }

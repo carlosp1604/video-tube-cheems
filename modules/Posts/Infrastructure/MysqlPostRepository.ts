@@ -287,7 +287,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
     }
 
-    // TODO:Support ORDER BY views
     if (sortingOption === 'views') {
       sortCriteria = {
         views: {
@@ -365,7 +364,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param reaction PostReaction
    */
   public async createReaction (reaction: PostReaction): Promise<void> {
-    console.log(reaction)
     const prismaPostReactionModel = PostReactionModelTranslator.toDatabase(reaction)
 
     await prisma.post.update({
@@ -540,7 +538,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     return posts.map((post) => {
       return {
-        post: PostModelTranslator.toDomain(post, ['meta', 'producer']),
+        post: PostModelTranslator.toDomain(post, [
+          'meta',
+          'producer',
+        ]),
         postReactions: post._count.reactions,
         postComments: post._count.comments,
         postViews: post._count.views,

@@ -9,7 +9,7 @@ export class Actor {
   public updatedAt: DateTime
   public deletedAt: DateTime | null
 
-  public constructor(
+  public constructor (
     id: string,
     name: string,
     description: string | null,

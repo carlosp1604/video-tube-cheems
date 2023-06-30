@@ -10,6 +10,8 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
+import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
+import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
 
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
   let videoId = context.query.videoId
@@ -25,15 +27,19 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
   videoId = videoId.toString()
   const session = await getServerSession(context.req, context.res, authOptions)
 
-  const useCase = container.resolve<GetPostById>('getPostById')
-  const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPosts')
+  const useCase = container.resolve<GetPostById>('getPostByIdUseCase')
+  const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPostsUseCase')
+  const getPostUserReaction = container.resolve<GetPostUserReaction>('getPostUserReactionUseCase')
 
   try {
-    const postWithCount = await useCase.get({
-      postId: videoId,
-      userId: session ? session.user.id : null,
-    })
+    const postWithCount = await useCase.get({ postId: videoId })
     const relatedPosts = await getRelatedPosts.get(videoId)
+
+    let userReaction: PostReactionApplicationDto | null = null
+
+    if (session !== null) {
+      userReaction = await getPostUserReaction.get({ postId: videoId, userId: session.user.id })
+    }
 
     return {
       props: {
@@ -42,7 +48,7 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
           postWithCount.comments,
           postWithCount.reactions,
           postWithCount.views,
-          postWithCount.userReaction,
+          userReaction,
           locale
         ),
         relatedPosts: relatedPosts.posts.map((relatedPost) => {

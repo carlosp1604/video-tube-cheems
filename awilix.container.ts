@@ -21,6 +21,7 @@ import { MysqlProducerRepository } from '~/modules/Producers/Infrastructure/Mysq
 import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
 import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
+import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
 
 /**
  * We create a container to register our classes dependencies
@@ -111,9 +112,10 @@ container.register('getUserById', asClass(GetUserById))
 container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getActors', asClass(GetActors))
 container.register('getAllProducers', asClass(GetAllProducers))
-container.register('getRelatedPosts', asClass(GetRelatedPosts))
-container.register('getPostById', asClass(GetPostById))
+container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
+container.register('getPostByIdUseCase', asClass(GetPostById))
 container.register('addPostView', asClass(AddPostView))
 container.register('addPostReaction', asClass(CreatePostReaction))
+container.register('getPostUserReactionUseCase', asClass(GetPostUserReaction))
 
 export { container }

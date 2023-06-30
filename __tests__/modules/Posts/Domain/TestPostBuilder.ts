@@ -121,4 +121,16 @@ export class TestPostBuilder {
 
     return this
   }
+
+  public withTags (tags: Collection<PostTag, PostTag['id']>): TestPostBuilder {
+    this._tags = tags
+
+    return this
+  }
+
+  public withActors (actors: Collection<Actor, Actor['id']>): TestPostBuilder {
+    this._actors = actors
+
+    return this
+  }
 }

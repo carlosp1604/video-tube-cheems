@@ -1,7 +1,7 @@
-import { GetRelatedPostsApplicationResponseTranslator } from './GetRelatedPostsApplicationResponseTranslator'
-import { GetRelatedPostsApplicationResponse } from './GetRelatedPostsApplicationResponse'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { GetRelatedPostsApplicationResponse } from './GetRelatedPostsApplicationResponse'
+import { GetRelatedPostsApplicationResponseTranslator } from './GetRelatedPostsApplicationResponseTranslator'
 
 export class GetRelatedPosts {
   // eslint-disable-next-line no-useless-constructor

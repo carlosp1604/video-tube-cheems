@@ -1,5 +1,7 @@
 import { PostWithCountInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
-import { GetRelatedPostsApplicationResponse } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPostsApplicationResponse'
+import {
+  GetRelatedPostsApplicationResponse
+} from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPostsApplicationResponse'
 import {
   PostWithProducerAndMetaApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'

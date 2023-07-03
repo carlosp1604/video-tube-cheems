@@ -1,13 +1,13 @@
 import { PostWithCountInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
 import {
-  GetRelatedPostsApplicationResponse
-} from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPostsApplicationResponse'
+  GetRelatedPostsApplicationDto
+} from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPostsApplicationDto'
 import {
   PostWithProducerAndMetaApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'
 
-export class GetRelatedPostsApplicationResponseTranslator {
-  public static fromDomain (postsWithCount: PostWithCountInterface[]): GetRelatedPostsApplicationResponse {
+export class GetRelatedPostsApplicationDtoTranslator {
+  public static fromDomain (postsWithCount: PostWithCountInterface[]): GetRelatedPostsApplicationDto {
     const posts = postsWithCount.map((postWithCount) => {
       return {
         post: PostWithProducerAndMetaApplicationDtoTranslator.fromDomain(postWithCount.post),

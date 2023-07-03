@@ -12,7 +12,7 @@ export class GetPostUserReaction {
   constructor (private readonly postRepository: PostRepositoryInterface) {}
 
   public async get (request: GetPostUserReactionApplicationRequest): Promise<PostReactionApplicationDto | null> {
-    const postUserReaction = await this.postRepository.findUserReaction(request.postId, request.postId)
+    const postUserReaction = await this.postRepository.findUserReaction(request.postId, request.userId)
 
     if (postUserReaction === null) {
       return null

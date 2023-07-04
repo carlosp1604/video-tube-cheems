@@ -4,7 +4,7 @@ import { GetActors } from '~/modules/Actors/Application/GetActors'
 import { SESClient } from '@aws-sdk/client-ses'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
-import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
+import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
@@ -22,6 +22,7 @@ import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/
 import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
+import { DateService } from '~/helpers/Infrastructure/DateService'
 
 /**
  * We create a container to register our classes dependencies
@@ -84,6 +85,7 @@ container.register('postRepository', asFunction(() => {
 }))
 container.register('actorRepository', asClass(MysqlActorRepository))
 container.register('producerRepository', asClass(MysqlProducerRepository))
+container.register('dateService', asClass(DateService))
 
 /**
  * Use-cases
@@ -113,7 +115,7 @@ container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getActors', asClass(GetActors))
 container.register('getAllProducers', asClass(GetAllProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
-container.register('getPostByIdUseCase', asClass(GetPostById))
+container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostView', asClass(AddPostView))
 container.register('addPostReaction', asClass(CreatePostReaction))
 container.register('getPostUserReactionUseCase', asClass(GetPostUserReaction))

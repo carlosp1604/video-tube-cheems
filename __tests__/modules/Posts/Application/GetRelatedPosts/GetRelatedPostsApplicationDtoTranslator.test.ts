@@ -61,6 +61,7 @@ describe('~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts.ts', () =>
       },
       publishedAt: nowDate.toISO(),
       title: 'expected-title',
+      slug: 'expected-post-slug',
     })
   })
 
@@ -94,6 +95,7 @@ describe('~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts.ts', () =>
             },
             publishedAt: nowDate.toISO(),
             title: 'expected-title',
+            slug: 'expected-post-slug',
           },
           postComments: 1,
           postReactions: 1,

@@ -1,4 +1,4 @@
-import { GetPostByIdApplicationException } from './GetPostById/GetPostByIdApplicationException'
+import { GetPostBySlugApplicationException } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlugApplicationException'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
 import { CreatePostChildCommentRequestDto } from './Dtos/CreatePostChildCommentRequestDto'
 import { ChildCommentApplicationDtoTranslator } from './Translators/ChildCommentApplicationDtoTranslator'
@@ -21,13 +21,14 @@ export class CreatePostChildComment {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
-      throw GetPostByIdApplicationException.postNotFound(request.postId)
+      throw GetPostBySlugApplicationException.postNotFound(request.postId)
     }
 
     const user = await this.userRepository.findById(request.userId)
 
+    // FIXME:
     if (user === null) {
-      throw GetPostByIdApplicationException.userNotFound(request.userId)
+      throw Error()
     }
 
     try {

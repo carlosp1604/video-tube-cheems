@@ -1,3 +1,5 @@
 export interface DateServiceInterface {
-  nowDate(): Date
+  formatAgoLike(date: Date, locale: string): string
+  formatSecondsToHHMMSSFormat(seconds: number): string
+  formatDateToDateMedFromIso(isoDate: string, locale: string): string
 }

@@ -1,8 +1,22 @@
-import { ActorComponentDto } from './ActorComponentDto'
-import { TagComponentDto } from './TagComponentDto'
 import { VideoComponentDto } from './VideoComponentDto'
-import { PostComponentProducerDto } from '~/modules/Producers/Infrastructure/Dtos/PostComponentProducerDto'
 import { PostReactionComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostReactionComponentDto'
+
+export interface PostComponentDtoActorDto {
+  readonly id: string
+  readonly imageUrl: string
+  readonly name: string
+}
+
+export interface PostComponentDtoTagDto {
+  readonly id: string
+  readonly name: string
+}
+
+export interface PostComponentDtoProducerDto {
+  readonly id: string
+  readonly imageUrl: string
+  readonly name: string
+}
 
 export interface PostComponentDto {
   readonly id: string
@@ -13,8 +27,8 @@ export interface PostComponentDto {
   readonly reactions: number
   readonly comments: number
   readonly description: string
-  readonly actors: ActorComponentDto[]
-  readonly tags: TagComponentDto[]
-  readonly producer: PostComponentProducerDto | null
+  readonly actors: PostComponentDtoActorDto[]
+  readonly tags: PostComponentDtoTagDto[]
+  readonly producer: PostComponentDtoProducerDto | null
   readonly userReaction: PostReactionComponentDto | null
 }

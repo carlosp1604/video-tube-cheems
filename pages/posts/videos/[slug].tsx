@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
 import { VideoPage, VideoPageProps } from '~/components/pages/VideoPage/VideoPage'
-import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
+import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
 import {
@@ -14,31 +14,31 @@ import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReac
 import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
 
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
-  let videoId = context.query.videoId
+  let slug = context.query.slug
 
   const locale = context.locale ?? 'en'
 
-  if (!videoId) {
+  if (!slug) {
     return {
       notFound: true,
     }
   }
 
-  videoId = videoId.toString()
+  slug = slug.toString()
   const session = await getServerSession(context.req, context.res, authOptions)
 
-  const useCase = container.resolve<GetPostById>('getPostByIdUseCase')
+  const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')
   const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPostsUseCase')
   const getPostUserReaction = container.resolve<GetPostUserReaction>('getPostUserReactionUseCase')
 
   try {
-    const postWithCount = await useCase.get({ postId: videoId })
-    const relatedPosts = await getRelatedPosts.get(videoId)
+    const postWithCount = await useCase.get({ slug })
+    const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
 
     let userReaction: PostReactionApplicationDto | null = null
 
     if (session !== null) {
-      userReaction = await getPostUserReaction.get({ postId: videoId, userId: session.user.id })
+      userReaction = await getPostUserReaction.get({ postId: postWithCount.post.id, userId: session.user.id })
     }
 
     return {

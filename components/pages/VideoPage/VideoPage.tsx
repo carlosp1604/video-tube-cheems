@@ -101,9 +101,10 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
     userId = data.user.id
 
     if (userReaction !== null) {
-      // asdas
+      // FIXME: If user has reacted we must ignore the event (while only like reaction is supported)
     } else {
       try {
+        // FIXME: Use an api service instead of make call to api
         const userReaction = await (await fetch(`/api/posts/${post.id}/reactions`, {
           method: 'POST',
           headers: {

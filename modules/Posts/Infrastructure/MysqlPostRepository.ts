@@ -112,14 +112,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
-   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its ID
-   * @param postId Post ID
+   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its Slug
+   * @param slug Post Slug
    * @return PostWithCount if found or null
    */
-  public async findByIdWithCount (postId: Post['id']): Promise<PostWithCountInterface | null> {
+  public async findBySlugWithCount (slug: Post['slug']): Promise<PostWithCountInterface | null> {
     const post = await prisma.post.findFirst({
       where: {
-        id: postId,
+        slug,
         deletedAt: null,
         publishedAt: {
           not: null,

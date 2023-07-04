@@ -1,29 +1,28 @@
-import { DateTime } from 'luxon'
 import { DateServiceInterface } from '~/helpers/Domain/DateServiceInterface'
+import { DateTime } from 'luxon'
 
 export class DateService implements DateServiceInterface {
-  public nowDate (): Date {
-    return new Date()
+  public formatAgoLike (date: Date, locale: string): string {
+    if (DateTime.now() < DateTime.fromJSDate(date)) {
+      throw Error('Date to format must be less or equal to current date')
+    }
+
+    return DateTime.fromJSDate(date).toRelative(
+      {
+        locale,
+        round: true,
+      }) ?? ''
   }
 
-  public formatAgoLike (date: DateTime, locale: string): string {
-    const units: Intl.RelativeTimeFormatUnit[] = [
-      'year',
-      'month',
-      'week',
-      'day',
-      'hour',
-      'minute',
-      'second',
-    ]
+  public formatSecondsToHHMMSSFormat (seconds: number): string {
+    if (seconds < 3600) {
+      return new Date(seconds * 1000).toISOString().substring(14, 19)
+    }
 
-    const diff = date.diffNow().shiftTo(...units)
-    const unit = units.find((unit) => diff.get(unit) !== 0) || 'second'
+    return new Date(seconds * 1000).toISOString().substring(11, 19)
+  }
 
-    const relativeFormatter = new Intl.RelativeTimeFormat(locale, {
-      numeric: 'auto',
-    })
-
-    return relativeFormatter.format(Math.trunc(diff.as(unit)), unit)
+  public formatDateToDateMedFromIso (isoDate: string, locale: string): string {
+    return DateTime.fromISO(isoDate).setLocale(locale).toLocaleString(DateTime.DATE_MED)
   }
 }

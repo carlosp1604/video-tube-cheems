@@ -1,6 +1,6 @@
 import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { mock } from 'jest-mock-extended'
-import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
+import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { DateTime } from 'luxon'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { PostMeta } from '~/modules/Posts/Domain/PostMeta'
@@ -10,12 +10,12 @@ import { TestPostMetaBuilder } from '~/__tests__/modules/Posts/Domain/TestPostMe
 import { TestPostBuilder } from '~/__tests__/modules/Posts/Domain/TestPostBuilder'
 import { PostApplicationDtoTranslator } from '~/modules/Posts/Application/Translators/PostApplicationDtoTranslator'
 
-describe('~/modules/Posts/Application/GetPostById/GetPostById.ts', () => {
+describe('~/modules/Posts/Application/GetPostBySlug/GetPostBySlug.ts', () => {
   const postRepository = mock<PostRepositoryInterface>()
   const nowDate = DateTime.now()
 
-  const buildUseCase = (): GetPostById => {
-    return new GetPostById(postRepository)
+  const buildUseCase = (): GetPostBySlug => {
+    return new GetPostBySlug(postRepository)
   }
 
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('~/modules/Posts/Application/GetPostById/GetPostById.ts', () => {
       postViews: 1,
     }
 
-    postRepository.findByIdWithCount.mockResolvedValueOnce(Promise.resolve(postWithCount))
+    postRepository.findBySlugWithCount.mockResolvedValueOnce(Promise.resolve(postWithCount))
 
     jest.spyOn(PostApplicationDtoTranslator, 'fromDomain').mockReturnValueOnce({
       createdAt: nowDate.toISO(),
@@ -66,6 +66,7 @@ describe('~/modules/Posts/Application/GetPostById/GetPostById.ts', () => {
       title: 'expected-title',
       actors: [],
       tags: [],
+      slug: 'expected-post-slug',
     })
   })
 
@@ -73,17 +74,17 @@ describe('~/modules/Posts/Application/GetPostById/GetPostById.ts', () => {
     const useCase = buildUseCase()
 
     await useCase.get({
-      postId: 'expected-post-id',
+      slug: 'expected-post-slug',
     })
 
-    expect(postRepository.findByIdWithCount).toBeCalledWith('expected-post-id')
+    expect(postRepository.findBySlugWithCount).toBeCalledWith('expected-post-slug')
   })
 
   it('should return correct data', async () => {
     const useCase = buildUseCase()
 
     const post = await useCase.get({
-      postId: 'expected-post-id',
+      slug: 'expected-post-slug',
     })
 
     expect(post).toStrictEqual({
@@ -113,6 +114,7 @@ describe('~/modules/Posts/Application/GetPostById/GetPostById.ts', () => {
         title: 'expected-title',
         actors: [],
         tags: [],
+        slug: 'expected-post-slug',
       },
       reactions: 1,
       comments: 1,

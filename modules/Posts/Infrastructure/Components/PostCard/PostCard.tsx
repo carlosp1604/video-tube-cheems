@@ -95,7 +95,7 @@ export const PostCard: FC<Props> = ({
           { post.duration }
         </p>
         <Link
-          href={ `/posts/videos/${post.id}` }
+          href={ `/posts/videos/${post.slug}` }
           className={ styles.postCard__videoLink }
         />
         <div className={ styles.postCard__videoWrapper }>

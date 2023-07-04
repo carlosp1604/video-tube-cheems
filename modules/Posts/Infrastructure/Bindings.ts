@@ -3,7 +3,7 @@ import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryIn
 import { MysqlPostRepository } from '~/modules/Posts/Infrastructure/MysqlPostRepository'
 import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostCommentRepositoryInterface'
 import { MysqlPostCommentRepository } from '~/modules/Posts/Infrastructure/MysqlPostCommentRepository'
-import { GetPostById } from '~/modules/Posts/Application/GetPostById/GetPostById'
+import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
@@ -32,11 +32,11 @@ const postCommentRepository: Provider<PostCommentRepositoryInterface> =
     },
   }
 
-const getPostById: Provider<GetPostById> =
+const getPostById: Provider<GetPostBySlug> =
   {
     provide: 'GetPostById',
     useClass: () => {
-      return new GetPostById(
+      return new GetPostBySlug(
         bindings.get('PostRepositoryInterface')
       )
     },

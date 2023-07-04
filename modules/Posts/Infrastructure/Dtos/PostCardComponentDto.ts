@@ -8,6 +8,7 @@ export interface ProducerPostCardComponentDto {
 
 export interface PostCardComponentDto {
   readonly id: string
+  readonly slug: string
   readonly title: string
   readonly thumb: string
   readonly animation: PostAnimationDto | null

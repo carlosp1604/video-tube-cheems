@@ -1,18 +1,18 @@
-import { GetPostByIdApplicationException } from './GetPostByIdApplicationException'
-import { GetPostByIdApplicationResponseDto } from './GetPostByIdApplicationResponseDto'
+import { GetPostBySlugApplicationException } from './GetPostBySlugApplicationException'
+import { GetPostBySlugApplicationResponseDto } from './GetPostBySlugApplicationResponseDto'
 import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { GetPostByIdApplicationRequest } from '~/modules/Posts/Application/GetPostById/GetPostByIdApplicationRequest'
+import { GetPostBySlugApplicationRequest } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlugApplicationRequest'
 import { PostApplicationDtoTranslator } from '~/modules/Posts/Application/Translators/PostApplicationDtoTranslator'
 
-export class GetPostById {
+export class GetPostBySlug {
   // eslint-disable-next-line no-useless-constructor
   constructor (private readonly postRepository: PostRepositoryInterface) {}
 
-  public async get (request: GetPostByIdApplicationRequest): Promise<GetPostByIdApplicationResponseDto> {
-    const postWithCount = await this.postRepository.findByIdWithCount(request.postId)
+  public async get (request: GetPostBySlugApplicationRequest): Promise<GetPostBySlugApplicationResponseDto> {
+    const postWithCount = await this.postRepository.findBySlugWithCount(request.slug)
 
     if (postWithCount === null) {
-      throw GetPostByIdApplicationException.postNotFound(request.postId)
+      throw GetPostBySlugApplicationException.postNotFound(request.slug)
     }
 
     return {

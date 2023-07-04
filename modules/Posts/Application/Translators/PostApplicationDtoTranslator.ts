@@ -5,6 +5,7 @@ import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplica
 import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
 import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Application/ProducerApplicationDtoTranslator'
 
+// NOTE: We are not testing this due to this class does not have logic to be tested
 export class PostApplicationDtoTranslator {
   public static fromDomain (post: Post): PostApplicationDto {
     return {
@@ -25,6 +26,7 @@ export class PostApplicationDtoTranslator {
       producer: post.producer !== null
         ? ProducerApplicationDtoTranslator.fromDomain(post.producer)
         : null,
+      slug: post.slug,
     }
   }
 }

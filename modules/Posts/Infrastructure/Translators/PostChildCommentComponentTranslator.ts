@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { UserPostCommentComponentDtoTranslator } from './UserPostCommentComponentTranslatorDto'
 import { ChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/ChildCommentApplicationDto'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
@@ -13,7 +12,7 @@ export class PostChildCommentComponentDtoTranslator {
       id: applicationDto.id,
       comment: applicationDto.comment,
       createdAt: new DateService()
-        .formatAgoLike(DateTime.fromISO(applicationDto.createdAt), locale),
+        .formatAgoLike(new Date(applicationDto.createdAt), locale),
       user: UserPostCommentComponentDtoTranslator.fromApplication(applicationDto.user),
       parentCommentId: applicationDto.parentCommentId,
 

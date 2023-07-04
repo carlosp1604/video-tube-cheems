@@ -121,6 +121,7 @@ export class PostModelTranslator {
       prismaPostModel.id,
       prismaPostModel.title,
       prismaPostModel.description,
+      prismaPostModel.slug,
       prismaPostModel.producerId,
       DateTime.fromJSDate(prismaPostModel.createdAt),
       DateTime.fromJSDate(prismaPostModel.updatedAt),
@@ -140,6 +141,7 @@ export class PostModelTranslator {
     return {
       id: post.id,
       description: post.description,
+      slug: post.slug,
       title: post.title,
       producerId: post.producerId,
       publishedAt: post.publishedAt?.toJSDate() ?? null,

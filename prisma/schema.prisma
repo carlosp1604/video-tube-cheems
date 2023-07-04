@@ -32,6 +32,7 @@ model Post {
   id          String         @id
   title       String
   description String
+  slug        String         @unique
   createdAt   DateTime       @map("created_at")
   updatedAt   DateTime       @map("updated_at")
   deletedAt   DateTime?      @map("deleted_at")

@@ -17,6 +17,7 @@ export class TestPostBuilder {
   private id: string
   private title: string
   private description: string
+  private slug: string
   private producerId: string | null
   private createdAt: DateTime
   private updatedAt: DateTime
@@ -34,6 +35,7 @@ export class TestPostBuilder {
     this.id = 'test-post-id'
     this.title = 'test-post-title'
     this.description = 'test-post-description'
+    this.slug = 'test-post-slug'
     this.producerId = null
     this.createdAt = DateTime.now()
     this.updatedAt = DateTime.now()
@@ -53,6 +55,7 @@ export class TestPostBuilder {
       this.id,
       this.title,
       this.description,
+      this.slug,
       this.producerId,
       this.createdAt,
       this.updatedAt,
@@ -82,6 +85,12 @@ export class TestPostBuilder {
 
   public withDescription (description: string): TestPostBuilder {
     this.description = description
+
+    return this
+  }
+
+  public withSlug (slug: string): TestPostBuilder {
+    this.slug = slug
 
     return this
   }

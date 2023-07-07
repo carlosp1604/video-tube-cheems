@@ -1,13 +1,13 @@
 import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
 import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
-import { CommentApplicationDto } from '~/modules/Posts/Application/Dtos/CommentApplicationDto'
+import { PostCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostCommentApplicationDto'
 
 export class CommentsApiService {
   public async create (
     postId: string,
     comment: string,
     parentCommentId: string | null
-  ): Promise<CommentApplicationDto> {
+  ): Promise<PostCommentApplicationDto> {
     return (await fetch(`/api/posts/${postId}/comments`, {
       method: 'POST',
       body: JSON.stringify({

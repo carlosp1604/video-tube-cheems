@@ -1,8 +1,8 @@
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UpdatePostCommentRequestDto } from './Dtos/UpdatePostCommentRequestDto'
 import { UpdatePostCommentApplicationException } from './UpdatePostCommentApplicationException'
-import { CommentApplicationDtoTranslator } from './Translators/CommentApplicationDtoTranslator'
-import { CommentApplicationDto } from './Dtos/CommentApplicationDto'
+import { PostCommentApplicationDtoTranslator } from './Translators/PostCommentApplicationDtoTranslator'
+import { PostCommentApplicationDto } from './Dtos/PostCommentApplicationDto'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 
@@ -17,7 +17,7 @@ export class UpdatePostComment {
 
   public async update (
     request: UpdatePostCommentRequestDto
-  ): Promise<CommentApplicationDto> {
+  ): Promise<PostCommentApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
@@ -35,7 +35,7 @@ export class UpdatePostComment {
 
       await this.postRepository.updateComment(request.postCommentId, request.comment)
 
-      return CommentApplicationDtoTranslator.fromDomain(updatedComment)
+      return PostCommentApplicationDtoTranslator.fromDomain(updatedComment)
     } catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {
         throw exception

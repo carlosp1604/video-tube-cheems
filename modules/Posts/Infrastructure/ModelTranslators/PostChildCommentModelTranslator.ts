@@ -4,6 +4,8 @@ import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterfac
 import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
 import { PostCommentWithUser } from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
 import { PrismaUserModelTranslator } from '~/modules/Auth/Infrastructure/PrismaUserModelTranslator'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
+import { User } from '~/modules/Auth/Domain/User'
 
 export class PostChildCommentModelTranslator {
   public static toDomain (
@@ -16,7 +18,16 @@ export class PostChildCommentModelTranslator {
       deletedAt = DateTime.fromJSDate(prismaPostCommentModel.deletedAt)
     }
 
-    const postComment = new PostChildComment(
+    let user: Relationship<User> = Relationship.notLoaded()
+
+    if (options.includes('comments.user')) {
+      const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
+      const userDomain = PrismaUserModelTranslator.toDomain(postCommentWithUser.user)
+
+      user = Relationship.initializeRelation(userDomain)
+    }
+
+    return new PostChildComment(
       prismaPostCommentModel.id,
       prismaPostCommentModel.comment,
       prismaPostCommentModel.userId,
@@ -24,17 +35,9 @@ export class PostChildCommentModelTranslator {
       prismaPostCommentModel.parentCommentId as string,
       DateTime.fromJSDate(prismaPostCommentModel.createdAt),
       DateTime.fromJSDate(prismaPostCommentModel.updatedAt),
-      deletedAt
+      deletedAt,
+      user
     )
-
-    if (options.includes('comments.user')) {
-      const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
-      const userDomain = PrismaUserModelTranslator.toDomain(postCommentWithUser.user)
-
-      postComment.setUser(userDomain)
-    }
-
-    return postComment
   }
 
   public static toDatabase (postChildComment: PostChildComment): PrismaPostCommentModel {

@@ -6,6 +6,13 @@ import { PrismaUserModelTranslator } from '~/modules/Auth/Infrastructure/PrismaU
 import {
   PostCommentWithChilds, PostCommentWithUser
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
+import { User } from '~/modules/Auth/Domain/User'
+import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import {
+  PostChildCommentModelTranslator
+} from '~/modules/Posts/Infrastructure/ModelTranslators/PostChildCommentModelTranslator'
 
 export class PostCommentModelTranslator {
   public static toDomain (
@@ -18,35 +25,41 @@ export class PostCommentModelTranslator {
       deletedAt = DateTime.fromJSDate(prismaPostCommentModel.deletedAt)
     }
 
-    const postComment = new PostComment(
-      prismaPostCommentModel.id,
-      prismaPostCommentModel.comment,
-      // if it's a comment we are sure the postId is not null
-      prismaPostCommentModel.postId as string,
-      prismaPostCommentModel.userId,
-      DateTime.fromJSDate(prismaPostCommentModel.createdAt),
-      DateTime.fromJSDate(prismaPostCommentModel.updatedAt),
-      deletedAt
-    )
+    let user: Relationship<User> = Relationship.notLoaded()
+    let childrenCollection: Collection<PostChildComment, PostChildComment['id']> = Collection.notLoaded()
 
     if (options.includes('comments.user')) {
       const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
       const userDomain = PrismaUserModelTranslator.toDomain(postCommentWithUser.user)
 
-      postComment.setUser(userDomain)
+      user = Relationship.initializeRelation(userDomain)
     }
 
     if (options.includes('comments.childComments')) {
-      const postCommentWithChilds = prismaPostCommentModel as PostCommentWithChilds
+      const postCommentWithChildren = prismaPostCommentModel as PostCommentWithChilds
 
-      postCommentWithChilds.childComments.forEach((childComment) => {
-        postComment.addChildComment(
-          childComment.comment,
-          childComment.userId)
+      childrenCollection = Collection.initializeCollection()
+
+      postCommentWithChildren.childComments.forEach((childComment) => {
+        childrenCollection.addItemFromPersistenceLayer(
+          PostChildCommentModelTranslator.toDomain(childComment, ['comments.user']),
+          childComment.userId
+        )
       })
     }
 
-    return postComment
+    return new PostComment(
+      prismaPostCommentModel.id,
+      prismaPostCommentModel.comment,
+      // if it's a PostComment we are sure the postId is not null
+      prismaPostCommentModel.postId as string,
+      prismaPostCommentModel.userId,
+      DateTime.fromJSDate(prismaPostCommentModel.createdAt),
+      DateTime.fromJSDate(prismaPostCommentModel.updatedAt),
+      deletedAt,
+      user,
+      childrenCollection
+    )
   }
 
   public static toDatabase (postComment: PostComment): PrismaPostCommentModel {

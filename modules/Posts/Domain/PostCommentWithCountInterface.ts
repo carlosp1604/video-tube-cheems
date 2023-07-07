@@ -1,6 +1,6 @@
 import { PostComment } from './PostComment'
 
 export interface PostCommentWithCount {
-  postComment: PostComment,
+  postComment: PostComment
   childComments: number
 }

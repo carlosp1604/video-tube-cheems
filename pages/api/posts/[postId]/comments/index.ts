@@ -4,7 +4,7 @@ import {
   GetPostPostCommentsApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
 import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
-import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments'
+import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import {
   CreatePostCommentApplicationException
 } from '~/modules/Posts/Application/CreatePostCommentApplicationException'
@@ -41,20 +41,26 @@ import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
 import { getServerSession } from 'next-auth/next'
+import { container } from '~/awilix.container'
+import {
+  GetPostPostCommentsApplicationException
+} from '~/modules/Posts/Application/GetPostPostComments/GetPostPostCommentsApplicationException'
+import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 
 export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  if (request.method === 'POST') {
-    return handlePOST(request, response)
-  }
+  switch (request.method) {
+    case 'POST':
+      return handlePOST(request, response)
 
-  if (request.method === 'GET') {
-    return handleGET(request, response)
-  }
+    case 'GET':
+      return handleGET(request, response)
 
-  return handleMethod(request, response)
+    default:
+      return handleMethod(request, response)
+  }
 }
 
 async function handleGET (request: NextApiRequest, response: NextApiResponse) {
@@ -77,35 +83,31 @@ async function handleGET (request: NextApiRequest, response: NextApiResponse) {
       return handleValidationError(request, response, validationError)
     }
 
-    const useCase = bindings.get<GetPostPostComments>('GetPostPostComments')
+    const useCase = container.resolve<GetPostPostComments>('getPostPostCommentsUseCase')
 
     try {
-      const comments = await useCase.get(
-        apiRequest.postId,
-        apiRequest.page,
-        apiRequest.perPage
-      )
+      const comments = await useCase.get({
+        postId: apiRequest.postId,
+        page: apiRequest.page,
+        perPage: apiRequest.perPage,
+      })
 
-      console.log(comments)
-
-      return response
-        .setHeader('Cache-Control', 'no-cache')
-        .status(200).json(comments)
+      return response.status(200).json(comments)
     } catch (exception: unknown) {
-      console.error(exception)
-      if (!(exception instanceof CreatePostCommentApplicationException)) {
+      if (!(exception instanceof GetPostPostCommentsApplicationException)) {
         return handleServerError(response)
       }
 
       switch (exception.id) {
-        case CreatePostCommentApplicationException.postNotFoundId:
-          return handleNotFound(response)
+        case GetPostPostCommentsApplicationException.invalidPageValueId:
+        case GetPostPostCommentsApplicationException.invalidPerPageValueId:
+          return handleUnprocessableEntity(response, exception)
 
-        case CreatePostCommentApplicationException.cannotAddCommentId:
-          return handleConflict(response)
+        default: {
+          console.error(exception)
 
-        default:
           return handleServerError(response)
+        }
       }
     }
   }
@@ -349,5 +351,16 @@ function handleConflict (response: NextApiResponse) {
     .json({
       code: 'create-post-comment-cannot-add-comment',
       message: 'Cannot add comment to post',
+    })
+}
+
+function handleUnprocessableEntity (
+  response: NextApiResponse,
+  exception: GetPostsApplicationException
+) {
+  return response.status(422)
+    .json({
+      code: 'get-post-post-comments-unprocessable-entity',
+      message: exception.message,
     })
 }

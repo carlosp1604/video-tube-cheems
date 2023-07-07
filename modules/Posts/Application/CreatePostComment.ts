@@ -1,7 +1,7 @@
 import { CreatePostCommentRequestDto } from './Dtos/CreatePostCommentRequestDto'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
-import { CommentApplicationDto } from './Dtos/CommentApplicationDto'
-import { CommentApplicationDtoTranslator } from './Translators/CommentApplicationDtoTranslator'
+import { PostCommentApplicationDto } from './Dtos/PostCommentApplicationDto'
+import { PostCommentApplicationDtoTranslator } from './Translators/PostCommentApplicationDtoTranslator'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
@@ -15,7 +15,7 @@ export class CreatePostComment {
     private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async create (request: CreatePostCommentRequestDto): Promise<CommentApplicationDto> {
+  public async create (request: CreatePostCommentRequestDto): Promise<PostCommentApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
@@ -35,7 +35,7 @@ export class CreatePostComment {
 
       await this.postRepository.createComment(comment)
 
-      return CommentApplicationDtoTranslator.fromDomain(comment)
+      return PostCommentApplicationDtoTranslator.fromDomain(comment)
     } catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {
         throw exception

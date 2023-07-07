@@ -12,7 +12,7 @@ import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment
 import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment'
 import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
-import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments'
+import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments'
 import { DependencyInjector, makeInjector } from '~/injector/DependencyInjector'
 

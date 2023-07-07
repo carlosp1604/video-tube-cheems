@@ -1,6 +1,6 @@
 import { ChildCommentApplicationDto } from './Dtos/ChildCommentApplicationDto'
 import { GetPostPostChildCommentsRespondeDto } from './Dtos/GetPostPostChildCommentsResponseDto'
-import { GetPostPostCommentsApplicationException } from './GetPostPostCommentsApplicationException'
+import { GetPostPostCommentsApplicationException } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostCommentsApplicationException'
 import { ChildCommentApplicationDtoTranslator } from './Translators/ChildCommentApplicationDtoTranslator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { PostComment } from '~/modules/Posts/Domain/PostComment'

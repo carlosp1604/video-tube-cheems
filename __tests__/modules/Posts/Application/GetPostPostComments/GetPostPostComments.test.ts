@@ -132,7 +132,7 @@ describe('~/modules/Posts/Application/GetPostPostComments/GetPostPostComments.ts
         perPage: 20,
       }))
         .rejects
-        .toStrictEqual(GetPostPostCommentsApplicationException.invalidOffsetValue())
+        .toStrictEqual(GetPostPostCommentsApplicationException.invalidPageValue())
     })
 
     it('should throw exception if page value is invalid', async () => {
@@ -144,7 +144,7 @@ describe('~/modules/Posts/Application/GetPostPostComments/GetPostPostComments.ts
         perPage: 5,
       }))
         .rejects
-        .toStrictEqual(GetPostPostCommentsApplicationException.invalidLimitValue(minPerPage, maxPerPage))
+        .toStrictEqual(GetPostPostCommentsApplicationException.invalidPerPageValue(minPerPage, maxPerPage))
     })
 
     it('should throw exception if unexpected error occurred with persistence layer', async () => {

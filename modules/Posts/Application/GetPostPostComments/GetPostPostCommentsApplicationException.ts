@@ -4,7 +4,7 @@ export class GetPostPostCommentsApplicationException extends ApplicationExceptio
   public static invalidPerPageValueId = 'get_post_post_comments_invalid_per_page_value'
   public static invalidPageValueId = 'get_post_post_comments_invalid_page_value'
 
-  public static invalidLimitValue (
+  public static invalidPerPageValue (
     minLimit: number,
     maxLimit: number
   ): GetPostPostCommentsApplicationException {
@@ -14,7 +14,7 @@ export class GetPostPostCommentsApplicationException extends ApplicationExceptio
     )
   }
 
-  public static invalidOffsetValue (): GetPostPostCommentsApplicationException {
+  public static invalidPageValue (): GetPostPostCommentsApplicationException {
     return new GetPostPostCommentsApplicationException(
       'Page must be a integer greater or equal to 0',
       this.invalidPageValueId

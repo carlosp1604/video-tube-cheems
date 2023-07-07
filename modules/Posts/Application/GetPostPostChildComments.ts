@@ -40,7 +40,7 @@ export class GetPostPostChildComments {
 
   private static validateRequest (page: number, perPage: number): void {
     if (isNaN(page) || page <= 0) {
-      throw GetPostPostCommentsApplicationException.invalidOffsetValue()
+      throw GetPostPostCommentsApplicationException.invalidPageValue()
     }
 
     if (
@@ -48,7 +48,7 @@ export class GetPostPostChildComments {
       perPage < minPerPage ||
       perPage > maxPerPage
     ) {
-      throw GetPostPostCommentsApplicationException.invalidLimitValue(minPerPage, maxPerPage)
+      throw GetPostPostCommentsApplicationException.invalidPerPageValue(minPerPage, maxPerPage)
     }
   }
 }

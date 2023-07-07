@@ -1,9 +1,9 @@
 import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
-import { ChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/ChildCommentApplicationDto'
+import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
 import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 
-export class ChildCommentApplicationDtoTranslator {
-  public static fromDomain (childComment: PostChildComment): ChildCommentApplicationDto {
+export class PostChildCommentApplicationDtoTranslator {
+  public static fromDomain (childComment: PostChildComment): PostChildCommentApplicationDto {
     return {
       id: childComment.id,
       comment: childComment.comment,

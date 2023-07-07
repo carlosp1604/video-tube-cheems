@@ -1,11 +1,11 @@
 import { UserPostCommentComponentDtoTranslator } from './UserPostCommentComponentTranslatorDto'
-import { ChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/ChildCommentApplicationDto'
+import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostChildCommentComponentDtoTranslator {
   public static fromApplication (
-    applicationDto: ChildCommentApplicationDto,
+    applicationDto: PostChildCommentApplicationDto,
     locale: string
   ): PostChildCommentComponentDto {
     return {

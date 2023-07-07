@@ -14,7 +14,7 @@ import {
 import {
   GetPostPostChildCommentsApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
-import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments'
+import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildComments'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 import {

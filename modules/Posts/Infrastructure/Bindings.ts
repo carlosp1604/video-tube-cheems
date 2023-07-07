@@ -13,7 +13,7 @@ import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostCh
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment'
 import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
-import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments'
+import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildComments'
 import { DependencyInjector, makeInjector } from '~/injector/DependencyInjector'
 
 const postRepository: Provider<PostRepositoryInterface> =

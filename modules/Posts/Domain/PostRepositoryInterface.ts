@@ -41,11 +41,11 @@ export interface PostRepositoryInterface {
   findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | null>
 
   /**
-   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its ID
-   * @param postId Post ID
+   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its Slug
+   * @param slug Post Slug
    * @return PostWithCount if found or null
    */
-  findByIdWithCount(postId: Post['id']): Promise<PostWithCountInterface | null>
+  findBySlugWithCount(slug: Post['slug']): Promise<PostWithCountInterface | null>
 
   /**
    * Add a new Post Reaction

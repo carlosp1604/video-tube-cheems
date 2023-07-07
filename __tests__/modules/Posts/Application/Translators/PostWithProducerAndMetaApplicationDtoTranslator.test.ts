@@ -51,6 +51,7 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
     testPostBuilder = new TestPostBuilder()
       .withId('expected-post-id')
       .withTitle('expected-title')
+      .withSlug('expected-post-slug')
       .withDescription('expected-description')
       .withCreatedAt(nowDate)
       .withMeta(metaCollection)
@@ -66,6 +67,7 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
       createdAt: nowDate.toISO(),
       description: 'expected-description',
       id: 'expected-post-id',
+      slug: 'expected-post-slug',
       meta: [
         {
           createdAt: nowDate.toISO(),
@@ -109,6 +111,7 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
       createdAt: nowDate.toISO(),
       description: 'expected-description',
       id: 'expected-post-id',
+      slug: 'expected-post-slug',
       meta: [
         {
           createdAt: nowDate.toISO(),

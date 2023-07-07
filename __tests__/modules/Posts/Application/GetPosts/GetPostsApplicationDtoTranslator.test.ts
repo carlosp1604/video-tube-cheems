@@ -52,6 +52,7 @@ describe('~/modules/Posts/Application/GetPosts/GetPostsApplicationDtoTranslator.
         },
         publishedAt: nowDate.toISO(),
         title: 'expected-title',
+        slug: 'expected-post-slug',
       }
     )
   })
@@ -94,6 +95,7 @@ describe('~/modules/Posts/Application/GetPosts/GetPostsApplicationDtoTranslator.
           },
           publishedAt: nowDate.toISO(),
           title: 'expected-title',
+          slug: 'expected-post-slug',
         },
         postComments: 1,
         postViews: 20,

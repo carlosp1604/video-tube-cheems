@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { UserPostCommentComponentDtoTranslator } from './UserPostCommentComponentTranslatorDto'
 import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
 import { PostCommentCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentCardComponentDto'
@@ -16,7 +15,7 @@ export class PostCommentCardComponentDtoTranslator {
       id,
       comment,
       createdAt: new DateService()
-        .formatAgoLike(DateTime.fromISO(createdAt), locale),
+        .formatAgoLike(new Date(createdAt), locale),
       user: UserPostCommentComponentDtoTranslator.fromApplication(userApplicationDto),
     }
   }

@@ -11,7 +11,8 @@ export class PostAnimationDtoTranslator {
       return null
     }
 
-    const animationType = animation.type
+    // FIXME: ?¿?
+    const animationType = animation.value
       .split('.')
       .filter(Boolean)
       .slice(1)

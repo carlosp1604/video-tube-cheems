@@ -1,6 +1,7 @@
 import { ProducerApplicationDto } from './ProducerApplicationDto'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 
+// NOTE: We are not testing this due to this class does not have logic to be tested
 export class ProducerApplicationDtoTranslator {
   public static fromDomain (producer: Producer): ProducerApplicationDto {
     let parentProducer: ProducerApplicationDto | null = null

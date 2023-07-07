@@ -1,17 +1,16 @@
-import { DateTime } from 'luxon'
-import { ActorComponentDtoTranslator } from './ActorComponentDtoTranslator'
-import { TagComponentDtoTranslator } from './TagComponentDtoTranslator'
 import { VideoComponentDtoTranslator } from './VideoComponentDtoTranslator'
 import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
 import {
   PostReactionComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostReactionComponentDtoTranslator'
 import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
-import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { PostComponentProducerDto } from '~/modules/Producers/Infrastructure/Dtos/PostComponentProducerDto'
 import {
-  PostComponentProducerDtoTranslator
-} from '~/modules/Producers/Infrastructure/Translators/PostComponentProducerDtoTranslator'
+  PostComponentDto,
+  PostComponentDtoActorDto,
+  PostComponentDtoTagDto
+} from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
+import { PostComponentProducerDto } from '~/modules/Producers/Infrastructure/Dtos/PostComponentProducerDto'
+import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostComponentDtoTranslator {
   public static fromApplicationDto (
@@ -22,17 +21,32 @@ export class PostComponentDtoTranslator {
     userReaction: PostReactionApplicationDto | null,
     locale: string
   ): PostComponentDto {
-    const actors = applicationDto.actors.map((actor) => ActorComponentDtoTranslator.fromApplicationDto(actor))
-    const tags = applicationDto.tags.map((tag) => TagComponentDtoTranslator.fromApplicationDto(tag))
+    const actors: PostComponentDtoActorDto[] = applicationDto.actors.map((actor) => ({
+      name: actor.name,
+      id: actor.id,
+      // FIXME: Replace with a default avatar URL
+      imageUrl: actor.imageUrl ?? '',
+    }))
+
+    const tags: PostComponentDtoTagDto[] = applicationDto.tags.map((tag) => ({
+      name: tag.name,
+      id: tag.id,
+    }))
+
     let producer: PostComponentProducerDto | null = null
 
     if (applicationDto.producer !== null) {
-      producer = PostComponentProducerDtoTranslator.fromApplicationDto(applicationDto.producer)
+      producer = {
+        name: applicationDto.producer.name,
+        id: applicationDto.producer.id,
+        // FIXME: Replace with a default avatar URL
+        imageUrl: applicationDto.producer.imageUrl ?? '',
+      }
     }
 
     const video = VideoComponentDtoTranslator.fromApplicationDto(applicationDto)
 
-    const date = DateTime.fromISO(applicationDto.publishedAt).setLocale(locale).toLocaleString(DateTime.DATE_MED)
+    const date = (new DateService()).formatDateToDateMedFromIso(applicationDto.publishedAt, locale)
 
     return {
       id: applicationDto.id,

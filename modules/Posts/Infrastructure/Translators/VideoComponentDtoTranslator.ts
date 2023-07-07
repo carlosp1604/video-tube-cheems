@@ -26,10 +26,8 @@ export class VideoComponentDtoTranslator {
   }
 
   private static findMeta (type: string, applicationDto: PostApplicationDto): MetaApplicationDto | undefined {
-    const meta = applicationDto.meta.find((meta) => {
+    return applicationDto.meta.find((meta) => {
       return meta.type === type
     })
-
-    return meta
   }
 }

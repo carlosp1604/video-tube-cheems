@@ -18,6 +18,7 @@ export class Post {
   public readonly id: string
   public readonly title: string
   public readonly description: string
+  public readonly slug: string
   public readonly producerId: string | null
   public readonly createdAt: DateTime
   public updatedAt: DateTime
@@ -37,6 +38,7 @@ export class Post {
     id: string,
     title: string,
     description: string,
+    slug: string,
     producerId: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
@@ -53,6 +55,7 @@ export class Post {
     this.id = id
     this.title = title
     this.description = description
+    this.slug = slug
     this.producerId = producerId
     this.createdAt = createdAt
     this.updatedAt = updatedAt

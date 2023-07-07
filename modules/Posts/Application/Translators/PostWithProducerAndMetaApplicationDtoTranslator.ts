@@ -28,6 +28,7 @@ export class PostWithProducerAndMetaApplicationDtoTranslator {
       publishedAt,
       title: post.title,
       producer,
+      slug: post.slug,
     }
   }
 }

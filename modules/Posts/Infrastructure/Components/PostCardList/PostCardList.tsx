@@ -15,6 +15,7 @@ export const PostCardList: FC<Props> = ({ playerId, setPlayerId, posts }) => {
       { posts.map((post) => {
         return (
           <PostCard
+            showProducerImage={ true }
             setPlayerId={ setPlayerId }
             playerId={ playerId }
             post={ post }

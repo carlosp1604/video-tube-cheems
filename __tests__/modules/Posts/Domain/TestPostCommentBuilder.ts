@@ -75,6 +75,12 @@ export class TestPostCommentBuilder {
     return this
   }
 
+  public withUpdatedAt (updatedAt: DateTime): TestPostCommentBuilder {
+    this.updatedAt = updatedAt
+
+    return this
+  }
+
   public withUser (userRelationShip: Relationship<User>): TestPostCommentBuilder {
     this.user = userRelationShip
 

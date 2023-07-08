@@ -26,16 +26,16 @@ export default async function handler (
     return handleMethod(request, response)
   }
 
-  const { page, perPage, parentCommentId } = request.query
+  const { page, perPage, commentId } = request.query
 
-  if (!parentCommentId || !page || !perPage) {
+  if (!commentId || !page || !perPage) {
     return handleBadRequest(response)
   }
 
   const apiRequest: GetPostPostChildCommentsApiRequestDto = {
     page: parseInt(page.toString()),
     perPage: parseInt(perPage.toString()),
-    parentCommentId: parentCommentId ? parentCommentId.toString() : '',
+    parentCommentId: commentId ? commentId.toString() : '',
   }
 
   const validationError = GetPostPostChildCommentsApiRequestValidator.validate(apiRequest)

@@ -20,7 +20,6 @@ export class RepliesApiService {
   }
 
   public async getComments (
-    postId: string,
     parentCommentId: string,
     pageNumber: number,
     perPage: number = defaultPerPage
@@ -29,8 +28,7 @@ export class RepliesApiService {
 
     params.append('page', pageNumber.toString())
     params.append('perPage', perPage.toString())
-    params.append('parentCommentId', parentCommentId)
 
-    return ((await fetch(`/api/posts/${postId}/comments?${params}`)).json())
+    return ((await fetch(`/api/comments/${parentCommentId}/children?${params}`)).json())
   }
 }

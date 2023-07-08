@@ -124,6 +124,6 @@ container.register('addPostView', asClass(AddPostView))
 container.register('addPostReaction', asClass(CreatePostReaction))
 container.register('getPostUserReactionUseCase', asClass(GetPostUserReaction))
 container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))
-container.register('getPostPostChildCommentUseCase', asClass(GetPostPostChildComments))
+container.register('getPostPostChildCommentsUseCase', asClass(GetPostPostChildComments))
 
 export { container }

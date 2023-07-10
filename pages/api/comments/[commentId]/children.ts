@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   CreatePostCommentApplicationException
-} from '~/modules/Posts/Application/CreatePostCommentApplicationException'
+} from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationException'
 import {
   GetPostPostChildCommentsApiRequestDto
 } from '~/modules/Posts/Infrastructure/Dtos/GetPostPostChildCommentsApiRequestDto'

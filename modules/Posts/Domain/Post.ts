@@ -11,6 +11,7 @@ import { Actor } from '~/modules/Actors/Domain/Actor'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { PostView } from '~/modules/Posts/Domain/PostView'
+import { User } from '~/modules/Auth/Domain/User'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -102,9 +103,9 @@ export class Post {
 
   public addComment (
     comment: PostComment['comment'],
-    userId: PostComment['userId']
+    user: User
   ): PostComment {
-    const commentToAdd = this.buildComment(comment, userId)
+    const commentToAdd = this.buildComment(comment, user)
 
     this._comments.addItem(commentToAdd, commentToAdd.id)
 
@@ -242,7 +243,7 @@ export class Post {
 
   private buildComment (
     comment: PostComment['comment'],
-    userId: PostComment['userId']
+    user: User
   ): PostComment {
     const nowDate = DateTime.now()
 
@@ -250,10 +251,11 @@ export class Post {
       randomUUID(),
       comment,
       this.id,
-      userId,
+      user.id,
       nowDate,
       nowDate,
-      null
+      null,
+      Relationship.initializeRelation(user)
     )
   }
 

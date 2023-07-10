@@ -1,5 +1,5 @@
 import { GetPostBySlugApplicationException } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlugApplicationException'
-import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
+import { CreatePostCommentApplicationException } from './CreatePostComment/CreatePostCommentApplicationException'
 import { CreatePostChildCommentRequestDto } from './Dtos/CreatePostChildCommentRequestDto'
 import { PostChildCommentApplicationDtoTranslator } from './Translators/PostChildCommentApplicationDtoTranslator'
 import { PostChildCommentApplicationDto } from './Dtos/PostChildCommentApplicationDto'

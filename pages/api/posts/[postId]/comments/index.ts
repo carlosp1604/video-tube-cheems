@@ -7,7 +7,7 @@ import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import {
   CreatePostCommentApplicationException
-} from '~/modules/Posts/Application/CreatePostCommentApplicationException'
+} from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationException'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 import {
@@ -19,7 +19,7 @@ import {
 import {
   CreatePostCommentRequestDtoTranslator
 } from '~/modules/Posts/Infrastructure/CreatePostCommentRequestDtoTranslator'
-import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment'
+import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
 import {
   CreatePostChildCommentApiRequestDto
 } from '~/modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'

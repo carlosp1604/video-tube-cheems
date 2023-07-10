@@ -1,8 +1,8 @@
 import { GetPostBySlugApplicationException } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlugApplicationException'
 import { CreatePostCommentApplicationException } from './CreatePostCommentApplicationException'
 import { CreatePostChildCommentRequestDto } from './Dtos/CreatePostChildCommentRequestDto'
-import { ChildCommentApplicationDtoTranslator } from './Translators/ChildCommentApplicationDtoTranslator'
-import { ChildCommentApplicationDto } from './Dtos/ChildCommentApplicationDto'
+import { PostChildCommentApplicationDtoTranslator } from './Translators/PostChildCommentApplicationDtoTranslator'
+import { PostChildCommentApplicationDto } from './Dtos/PostChildCommentApplicationDto'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
@@ -17,7 +17,7 @@ export class CreatePostChildComment {
     private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async create (request: CreatePostChildCommentRequestDto): Promise<ChildCommentApplicationDto> {
+  public async create (request: CreatePostChildCommentRequestDto): Promise<PostChildCommentApplicationDto> {
     const post = await this.postRepository.findById(request.postId, this.options)
 
     if (post === null) {
@@ -38,7 +38,7 @@ export class CreatePostChildComment {
 
       await this.postRepository.createChildComment(comment)
 
-      return ChildCommentApplicationDtoTranslator.fromDomain(comment)
+      return PostChildCommentApplicationDtoTranslator.fromDomain(comment)
     } catch (exception: unknown) {
       if (!(exception instanceof PostDomainException)) {
         throw exception

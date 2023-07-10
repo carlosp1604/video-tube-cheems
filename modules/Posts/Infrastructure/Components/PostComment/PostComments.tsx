@@ -71,7 +71,7 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
       const response = await commentApiService.create(postId, comment, null)
 
       const componentResponse = PostCommentComponentDtoTranslator
-        .fromApplication({ childComments: 0, postComment: response }, locale)
+        .fromApplication({ childrenNumber: 0, postComment: response }, locale)
 
       setComments([componentResponse, ...comments])
       setCommentsNumber(commentsNumber + 1)
@@ -90,7 +90,7 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
   const updatePostComments = async () => {
     const newComments = await fetchPostComments()
 
-    const componentDtos = newComments.commentWithChildCount.map((applicationDto) => {
+    const componentDtos = newComments.postCommentsWithChildrenCount.map((applicationDto) => {
       return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
     })
 

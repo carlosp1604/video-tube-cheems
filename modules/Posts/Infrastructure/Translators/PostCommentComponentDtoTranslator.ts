@@ -1,10 +1,10 @@
-import { PostWithChildCommentCount } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
+import { PostWithChildCommentCountDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostCommentComponentDtoTranslator {
   public static fromApplication (
-    applicationDto: PostWithChildCommentCount,
+    applicationDto: PostWithChildCommentCountDto,
     locale: string
   ): PostCommentComponentDto {
     return {
@@ -18,7 +18,7 @@ export class PostCommentComponentDtoTranslator {
         name: applicationDto.postComment.user.name,
         imageUrl: applicationDto.postComment.user.imageUrl,
       },
-      repliesNumber: applicationDto.childComments,
+      repliesNumber: applicationDto.childrenNumber,
     }
   }
 }

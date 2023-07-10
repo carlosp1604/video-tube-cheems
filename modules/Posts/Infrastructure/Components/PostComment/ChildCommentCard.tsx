@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import styles from './CommentCard.module.scss'
 import { DateTime } from 'luxon'
-import { CommentApplicationDto } from '~/modules/Posts/Application/Dtos/CommentApplicationDto'
+import { PostCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostCommentApplicationDto'
 
 interface Props {
-  comment: CommentApplicationDto
+  comment: PostCommentApplicationDto
 }
 
 export const ChildCommentCard: FC<Props> = ({ comment }) => {

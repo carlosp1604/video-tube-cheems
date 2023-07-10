@@ -4,17 +4,10 @@ import {
   GetPostPostCommentsApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
 import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
-import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments'
+import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import {
   CreatePostCommentApplicationException
 } from '~/modules/Posts/Application/CreatePostCommentApplicationException'
-import {
-  GetPostPostChildCommentsApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/GetPostPostChildCommentsApiRequestDto'
-import {
-  GetPostPostChildCommentsApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
-import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 import {
@@ -41,24 +34,30 @@ import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
 import { getServerSession } from 'next-auth/next'
+import { container } from '~/awilix.container'
+import {
+  GetPostPostCommentsApplicationException
+} from '~/modules/Posts/Application/GetPostPostComments/GetPostPostCommentsApplicationException'
+import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 
 export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  if (request.method === 'POST') {
-    return handlePOST(request, response)
-  }
+  switch (request.method) {
+    case 'POST':
+      return handlePOST(request, response)
 
-  if (request.method === 'GET') {
-    return handleGET(request, response)
-  }
+    case 'GET':
+      return handleGET(request, response)
 
-  return handleMethod(request, response)
+    default:
+      return handleMethod(request, response)
+  }
 }
 
 async function handleGET (request: NextApiRequest, response: NextApiResponse) {
-  const { postId, page, perPage, parentCommentId } = request.query
+  const { postId, page, perPage } = request.query
 
   if (!postId || !page || !perPage) {
     return handleBadRequest(response)
@@ -77,91 +76,36 @@ async function handleGET (request: NextApiRequest, response: NextApiResponse) {
       return handleValidationError(request, response, validationError)
     }
 
-    const useCase = bindings.get<GetPostPostComments>('GetPostPostComments')
+    const useCase = container.resolve<GetPostPostComments>('getPostPostCommentsUseCase')
 
     try {
-      const comments = await useCase.get(
-        apiRequest.postId,
-        apiRequest.page,
-        apiRequest.perPage
-      )
+      const comments = await useCase.get({
+        postId: apiRequest.postId,
+        page: apiRequest.page,
+        perPage: apiRequest.perPage,
+      })
 
-      console.log(comments)
-
-      return response
-        .setHeader('Cache-Control', 'no-cache')
-        .status(200).json(comments)
+      return response.status(200).json(comments)
     } catch (exception: unknown) {
-      console.error(exception)
-      if (!(exception instanceof CreatePostCommentApplicationException)) {
+      if (!(exception instanceof GetPostPostCommentsApplicationException)) {
         return handleServerError(response)
       }
 
       switch (exception.id) {
-        case CreatePostCommentApplicationException.postNotFoundId:
-          return handleNotFound(response)
+        case GetPostPostCommentsApplicationException.invalidPageValueId:
+        case GetPostPostCommentsApplicationException.invalidPerPageValueId:
+          return handleUnprocessableEntity(response, exception)
 
-        case CreatePostCommentApplicationException.cannotAddCommentId:
-          return handleConflict(response)
+        default: {
+          console.error(exception)
 
-        default:
           return handleServerError(response)
+        }
       }
     }
   }
 
-  const handleGetPostChildComments = async () => {
-    const apiRequest: GetPostPostChildCommentsApiRequestDto = {
-      postId: postId.toString(),
-      page: parseInt(page.toString()),
-      perPage: parseInt(perPage.toString()),
-      parentCommentId: parentCommentId ? parentCommentId.toString() : '',
-    }
-
-    const validationError = GetPostPostChildCommentsApiRequestValidator.validate(apiRequest)
-
-    if (validationError) {
-      return handleValidationError(request, response, validationError)
-    }
-
-    const useCase = bindings.get<GetPostPostChildComments>('GetPostPostChildComments')
-
-    try {
-      const comments = await useCase.get(
-        apiRequest.parentCommentId,
-        apiRequest.page,
-        apiRequest.perPage
-      )
-
-      console.log(comments)
-
-      return response
-        .setHeader('Cache-Control', 'no-cache')
-        .status(200).json(comments)
-    } catch (exception: unknown) {
-      console.error(exception)
-      if (!(exception instanceof CreatePostCommentApplicationException)) {
-        return handleServerError(response)
-      }
-
-      switch (exception.id) {
-        case CreatePostCommentApplicationException.postNotFoundId:
-          return handleNotFound(response)
-
-        case CreatePostCommentApplicationException.cannotAddCommentId:
-          return handleConflict(response)
-
-        default:
-          return handleServerError(response)
-      }
-    }
-  }
-
-  if (!parentCommentId) {
-    return handleGetPostComments()
-  } else {
-    return handleGetPostChildComments()
-  }
+  return handleGetPostComments()
 }
 
 async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
@@ -284,8 +228,8 @@ function handleBadRequest (response: NextApiResponse) {
   return response
     .status(400)
     .json({
-      code: 'get-actor-bad-request',
-      message: 'Post ID, page number and perPage parameters are needed',
+      code: 'post-comment-bad-request',
+      message: 'postId, page and perPage parameters are required',
     })
 }
 
@@ -310,7 +254,7 @@ function handleAuthentication (request: NextApiRequest, response: NextApiRespons
   return response
     .status(401)
     .json({
-      code: 'create-post-comment-authentication-required',
+      code: 'post-comment-authentication-required',
       message: 'User must be authenticated to access to resource',
     })
 }
@@ -322,7 +266,7 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'create-post-comment-validation-exception',
+      code: 'post-comment-validation-exception',
       message: 'Invalid request body',
       errors: validationError.exceptions,
     })
@@ -331,7 +275,7 @@ function handleValidationError (
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'create-post-comment-server-error',
+      code: 'post-comment-server-error',
       message: 'Something went wrong while processing the request',
     })
 }
@@ -339,7 +283,7 @@ function handleServerError (response: NextApiResponse) {
 function handleNotFound (response: NextApiResponse) {
   return response.status(404)
     .json({
-      code: 'create-post-comment-not-found',
+      code: 'post-comment-resource-not-found',
       message: 'Resource was not found',
     })
 }
@@ -347,7 +291,18 @@ function handleNotFound (response: NextApiResponse) {
 function handleConflict (response: NextApiResponse) {
   return response.status(409)
     .json({
-      code: 'create-post-comment-cannot-add-comment',
+      code: 'post-comment-cannot-add-comment',
       message: 'Cannot add comment to post',
+    })
+}
+
+function handleUnprocessableEntity (
+  response: NextApiResponse,
+  exception: GetPostsApplicationException
+) {
+  return response.status(422)
+    .json({
+      code: 'post-comment-unprocessable-entity',
+      message: exception.message,
     })
 }

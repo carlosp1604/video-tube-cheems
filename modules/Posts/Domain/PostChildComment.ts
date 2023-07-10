@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { User } from '~/modules/Auth/Domain/User'
 import { PostCommentDomainException } from './PostCommentDomainException'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 
 export class PostChildComment {
   public readonly id: string
@@ -10,7 +11,9 @@ export class PostChildComment {
   public readonly createdAt: DateTime
   public updatedAt: DateTime
   public deletedAt: DateTime | null
-  public _user: User | null = null
+
+  /** Relationships **/
+  public _user: Relationship<User>
 
   public constructor (
     id: string,
@@ -19,7 +22,8 @@ export class PostChildComment {
     parentCommentId: string,
     createdAt: DateTime,
     updatedAt: DateTime,
-    deletedAt: DateTime | null
+    deletedAt: DateTime | null,
+    user: Relationship<User> = Relationship.notLoaded()
   ) {
     this.id = id
     this.comment = comment
@@ -28,13 +32,6 @@ export class PostChildComment {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
-  }
-
-  public setUser (user: User): void {
-    if (this._user !== null) {
-      throw PostCommentDomainException.userAlreadySet(this.id)
-    }
-
     this._user = user
   }
 
@@ -43,11 +40,11 @@ export class PostChildComment {
   }
 
   get user (): User {
-    if (this._user === null) {
+    if (!this._user.value) {
       throw PostCommentDomainException.userIsNotSet(this.id)
     }
 
-    return this._user
+    return this._user.value
   }
 
   public setUpdatedAt (value: PostChildComment['updatedAt']) {

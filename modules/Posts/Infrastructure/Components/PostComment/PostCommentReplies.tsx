@@ -14,7 +14,7 @@ import {
   PostChildCommentComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostChildCommentComponentTranslator'
 import {
-  GetPostPostChildCommentsRespondeDto
+  GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { useTranslation } from 'next-i18next'
@@ -94,12 +94,14 @@ export const CommentReplies: FC<Props> = ({
     }
   }
 
-  const fetchReplies = async (): Promise<GetPostPostChildCommentsRespondeDto> => {
-    return apiService.getComments(commentToReply?.postId ?? '', commentToReply?.id ?? '', pageNumber, defaultPerPage)
+  const fetchReplies = async (): Promise<GetPostPostChildCommentsResponseDto> => {
+    return apiService.getComments(commentToReply?.id ?? '', pageNumber, defaultPerPage)
   }
 
   const updateReplies = async () => {
     const newReplies = await fetchReplies()
+
+    console.log(newReplies)
 
     const componentDtos = newReplies.childComments.map((applicationDto) => {
       return PostChildCommentComponentDtoTranslator.fromApplication(

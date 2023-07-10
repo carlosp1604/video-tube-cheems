@@ -1,8 +1,7 @@
-import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
 import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
-import { ChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/ChildCommentApplicationDto'
+import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
 import {
-  GetPostPostChildCommentsRespondeDto
+  GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
 
 export class RepliesApiService {
@@ -10,7 +9,7 @@ export class RepliesApiService {
     postId: string,
     comment: string,
     parentCommentId: string
-  ): Promise<ChildCommentApplicationDto> {
+  ): Promise<PostChildCommentApplicationDto> {
     return (await fetch(`/api/posts/${postId}/comments`, {
       method: 'POST',
       body: JSON.stringify({
@@ -21,17 +20,15 @@ export class RepliesApiService {
   }
 
   public async getComments (
-    postId: string,
     parentCommentId: string,
     pageNumber: number,
     perPage: number = defaultPerPage
-  ): Promise<GetPostPostChildCommentsRespondeDto> {
+  ): Promise<GetPostPostChildCommentsResponseDto> {
     const params = new URLSearchParams()
 
     params.append('page', pageNumber.toString())
     params.append('perPage', perPage.toString())
-    params.append('parentCommentId', parentCommentId)
 
-    return ((await fetch(`/api/posts/${postId}/comments?${params}`)).json())
+    return ((await fetch(`/api/comments/${parentCommentId}/children?${params}`)).json())
   }
 }

@@ -1,13 +1,11 @@
-import { ChildCommentApplicationDto } from './ChildCommentApplicationDto'
 import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
 
-export interface CommentApplicationDto {
+export interface PostChildCommentApplicationDto {
   readonly id: string
   readonly comment: string
-  readonly postId: string
   readonly userId: string
+  readonly parentCommentId: string
   readonly createdAt: string
   readonly updatedAt: string
   readonly user: UserApplicationDto
-  readonly childComments: ChildCommentApplicationDto[]
 }

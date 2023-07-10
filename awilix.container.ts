@@ -23,6 +23,9 @@ import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
+import { MysqlPostCommentRepository } from '~/modules/Posts/Infrastructure/MysqlPostCommentRepository'
+import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildComments'
 
 /**
  * We create a container to register our classes dependencies
@@ -86,6 +89,7 @@ container.register('postRepository', asFunction(() => {
 container.register('actorRepository', asClass(MysqlActorRepository))
 container.register('producerRepository', asClass(MysqlProducerRepository))
 container.register('dateService', asClass(DateService))
+container.register('postCommentRepository', asClass(MysqlPostCommentRepository))
 
 /**
  * Use-cases
@@ -119,5 +123,7 @@ container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostView', asClass(AddPostView))
 container.register('addPostReaction', asClass(CreatePostReaction))
 container.register('getPostUserReactionUseCase', asClass(GetPostUserReaction))
+container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))
+container.register('getPostPostChildCommentsUseCase', asClass(GetPostPostChildComments))
 
 export { container }

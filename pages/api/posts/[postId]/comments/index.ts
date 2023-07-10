@@ -116,21 +116,25 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
   }
 
   const { postId } = request.query
+  const comment = request.body.comment
 
-  if (!postId) {
+  if (!postId || !comment) {
+    console.log(comment)
+
     return handleBadRequest(response)
   }
 
-  const handleCreateComment = async (apiRequest: CreatePostCommentApiRequestDto) => {
+  const handleCreateComment = async () => {
+    let apiRequest: CreatePostCommentApiRequestDto
+
     try {
-      apiRequest = JSON.parse(request.body) as CreatePostCommentApiRequestDto
       apiRequest = CreatePostCommentRequestSanitizer.sanitize({
-        ...apiRequest,
+        comment,
         userId: session.user.id,
         postId: String(postId),
       })
     } catch (exception: unknown) {
-      console.log(exception)
+      console.error(exception)
 
       return handleServerError(response)
     }
@@ -143,7 +147,7 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
 
     const applicationRequest = CreatePostCommentRequestDtoTranslator.fromApiDto(apiRequest)
 
-    const useCase = bindings.get<CreatePostComment>('CreatePostComment')
+    const useCase = container.resolve<CreatePostComment>('createPostCommentUseCase')
 
     try {
       const comment = await useCase.create(applicationRequest)
@@ -152,18 +156,24 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
     } catch (exception: unknown) {
       console.error(exception)
       if (!(exception instanceof CreatePostCommentApplicationException)) {
+        console.error(exception)
+
         return handleServerError(response)
       }
 
       switch (exception.id) {
+        // NOTE: If user is not found we assume is a server error
         case CreatePostCommentApplicationException.postNotFoundId:
           return handleNotFound(response)
 
         case CreatePostCommentApplicationException.cannotAddCommentId:
           return handleConflict(response)
 
-        default:
+        default: {
+          console.error(exception)
+
           return handleServerError(response)
+        }
       }
     }
   }
@@ -215,10 +225,10 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
     }
   }
 
-  const body = JSON.parse(request.body)
+  const body = request.body
 
   if (!body.parentCommentId) {
-    return handleCreateComment(body)
+    return handleCreateComment()
   } else {
     return handleCreateChildComment(body)
   }

@@ -90,7 +90,7 @@ export class Post {
   public addChildComment (
     parentCommentId: PostComment['id'],
     comment: PostComment['comment'],
-    userId: PostComment['userId']
+    user: User
   ): PostChildComment {
     const parentComment = this._comments.getItem(parentCommentId)
 
@@ -98,7 +98,7 @@ export class Post {
       throw PostDomainException.parentCommentNotFound(parentCommentId)
     }
 
-    return parentComment.addChildComment(comment, userId)
+    return parentComment.addChildComment(comment, user)
   }
 
   public addComment (

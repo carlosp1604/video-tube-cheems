@@ -1,16 +1,19 @@
-import { CreatePostCommentApplicationException } from '../CreatePostComment/CreatePostCommentApplicationException'
-import { CreatePostChildCommentRequestDto } from '../Dtos/CreatePostChildCommentRequestDto'
-import { PostChildCommentApplicationDtoTranslator } from '../Translators/PostChildCommentApplicationDtoTranslator'
-import { PostChildCommentApplicationDto } from '../Dtos/PostChildCommentApplicationDto'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
-import {
-  CreatePostCommentApplicationRequestDto
-} from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationRequestDto'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import {
+  CreatePostChildCommentApplicationRequestDto
+} from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationRequestDto'
+import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import {
+  CreatePostChildCommentApplicationException
+} from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationException'
+import {
+  PostChildCommentApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/PostChildCommentApplicationDtoTranslator'
+import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
+import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
 
 export class CreatePostChildComment {
   private options: RepositoryOptions[] =
@@ -22,57 +25,64 @@ export class CreatePostChildComment {
     private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async create (request: CreatePostChildCommentRequestDto): Promise<PostChildCommentApplicationDto> {
+  public async create (request: CreatePostChildCommentApplicationRequestDto): Promise<PostChildCommentApplicationDto> {
     const post = await this.getPost(request.postId)
 
     const user = await this.getUser(request.userId)
 
-    try {
-      const comment = post.addChildComment(request.parentCommentId, request.comment, request.userId)
+    const postChildComment = this.addChildComment(post, user, request)
 
-      comment.setUser(user)
+    await this.savePostChildComment(postChildComment)
 
-      await this.postRepository.createChildComment(comment)
-
-      return PostChildCommentApplicationDtoTranslator.fromDomain(comment)
-    } catch (exception: unknown) {
-      if (!(exception instanceof PostDomainException)) {
-        throw exception
-      }
-
-      throw CreatePostCommentApplicationException.cannotAddComment(request.postId, request.userId)
-    }
+    return PostChildCommentApplicationDtoTranslator.fromDomain(postChildComment)
   }
 
-  private async getPost (postId: CreatePostCommentApplicationRequestDto['postId']): Promise<Post> {
+  private async getPost (postId: CreatePostChildCommentApplicationRequestDto['postId']): Promise<Post> {
     const post = await this.postRepository.findById(postId, this.options)
 
     if (post === null) {
-      throw CreatePostCommentApplicationException.postNotFound(postId)
+      throw CreatePostChildCommentApplicationException.postNotFound(postId)
     }
 
     return post
   }
 
-  private async getUser (userId: CreatePostCommentApplicationRequestDto['userId']): Promise<User> {
+  private async getUser (userId: CreatePostChildCommentApplicationRequestDto['userId']): Promise<User> {
     const user = await this.userRepository.findById(userId)
 
     if (user === null) {
-      throw CreatePostCommentApplicationException.userNotFound(userId)
+      throw CreatePostChildCommentApplicationException.userNotFound(userId)
     }
 
     return user
   }
 
-  private addChildComment (post: Post, user: User, request: CreatePostCommentApplicationRequestDto): PostComment {
-    return post.addComment(request.comment, user)
+  private addChildComment (
+    post: Post,
+    user: User,
+    request: CreatePostChildCommentApplicationRequestDto
+  ): PostChildComment {
+    try {
+      return post.addChildComment(request.parentCommentId, request.comment, user)
+    } catch (exception: unknown) {
+      if (!(exception instanceof PostDomainException)) {
+        throw exception
+      }
+
+      if (exception.id === PostDomainException.parentCommentNotFoundId) {
+        throw CreatePostChildCommentApplicationException.parentCommentNotFound(request.parentCommentId)
+      }
+
+      throw exception
+    }
   }
 
-  private async savePostComment (postComment: PostComment): Promise<void> {
+  private async savePostChildComment (postChildComment: PostChildComment): Promise<void> {
     try {
-      await this.postRepository.createComment(postComment)
+      await this.postRepository.createChildComment(postChildComment)
     } catch (exception: unknown) {
-      throw CreatePostCommentApplicationException.cannotAddComment(postComment.postId, postComment.userId)
+      throw CreatePostChildCommentApplicationException
+        .cannotAddChildComment(postChildComment.parentCommentId, postChildComment.userId)
     }
   }
 }

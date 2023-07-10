@@ -29,7 +29,7 @@ import {
 import {
   CreatePostChildCommentRequestDtoTranslator
 } from '~/modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
-import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment'
+import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'

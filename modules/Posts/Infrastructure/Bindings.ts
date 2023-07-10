@@ -9,7 +9,7 @@ import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/Get
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { MysqlUserRepository } from '~/modules/Auth/Infrastructure/MysqlUserRepository'
 import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
-import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment'
+import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment'
 import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'

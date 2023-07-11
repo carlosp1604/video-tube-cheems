@@ -1,5 +1,5 @@
 import { DeletePostReactionRequestDto } from './Dtos/DeletePostReactionRequestDto'
-import { DeletePostReactionApplicationException } from './DeletePostReactionApplicationException'
+import { DeletePostReactionApplicationException } from './DeletePostComment/DeletePostReactionApplicationException'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'

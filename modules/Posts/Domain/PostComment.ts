@@ -52,14 +52,6 @@ export class PostComment {
     return newChildComment
   }
 
-  public deleteChildComment (childCommentId: PostChildComment['id']): void {
-    const childRemoved = this._childComments.removeItem(childCommentId)
-
-    if (!childRemoved) {
-      throw PostCommentDomainException.childCommentNotFound(this.id, childCommentId)
-    }
-  }
-
   public updateChild (
     postCommentId: PostComment['id'],
     comment: PostComment['comment']
@@ -68,7 +60,7 @@ export class PostComment {
     const childComment = this._childComments.getItem(postCommentId)
 
     if (!childComment) {
-      throw PostCommentDomainException.childCommentNotFound(this.id, postCommentId)
+      throw PostCommentDomainException.childCommentNotFound(postCommentId)
     }
 
     childComment.setComment(comment)
@@ -89,6 +81,31 @@ export class PostComment {
     }
 
     return this._user.value
+  }
+
+  public getChildComment (postChildCommentId: PostChildComment['id']): PostChildComment | null {
+    return this._childComments.getItem(postChildCommentId)
+  }
+
+  public removeChildComment (
+    postChildCommentId: PostChildComment['id'],
+    userId: PostChildComment['userId']
+  ): void {
+    const childCommentToDelete = this._childComments.getItem(postChildCommentId)
+
+    if (childCommentToDelete === null) {
+      throw PostCommentDomainException.childCommentNotFound(postChildCommentId)
+    }
+
+    if (childCommentToDelete.userId !== userId) {
+      throw PostCommentDomainException.userCannotDeleteChildComment(userId, postChildCommentId)
+    }
+
+    const commentRemoved = this._childComments.removeItem(postChildCommentId)
+
+    if (!commentRemoved) {
+      throw PostCommentDomainException.cannotDeleteChildComment(postChildCommentId)
+    }
   }
 
   get childComments (): PostChildComment[] {

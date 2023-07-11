@@ -12,6 +12,7 @@ import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
+import { PostCommentDomainException } from '~/modules/Posts/Domain/PostCommentDomainException'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -112,13 +113,55 @@ export class Post {
     return commentToAdd
   }
 
-  public deleteComment (
-    postCommentId: PostComment['id']
-  ): void {
+  public deleteComment (postCommentId: PostComment['id'], userId: PostComment['id']): void {
+    const commentToRemove = this._comments.getItem(postCommentId)
+
+    if (commentToRemove === null) {
+      throw PostDomainException.postCommentNotFound(postCommentId)
+    }
+
+    if (commentToRemove.userId !== userId) {
+      throw PostDomainException.userCannotDeleteComment(postCommentId, userId)
+    }
+
     const commentRemoved = this._comments.removeItem(postCommentId)
 
     if (!commentRemoved) {
       throw PostDomainException.cannotDeleteComment(postCommentId)
+    }
+  }
+
+  public deleteChildComment (
+    parentCommentId: PostComment['id'],
+    postCommentId: PostChildComment['id'],
+    userId: PostChildComment['userId']
+  ): void {
+    const parentComment = this._comments.getItem(parentCommentId)
+
+    if (parentComment === null) {
+      throw PostDomainException.parentCommentNotFound(parentCommentId)
+    }
+
+    try {
+      parentComment.removeChildComment(postCommentId, userId)
+    } catch (exception: unknown) {
+      if (!(exception instanceof PostCommentDomainException)) {
+        throw exception
+      }
+
+      if (exception.id === PostCommentDomainException.childCommentNotFoundId) {
+        throw PostDomainException.postCommentNotFound(postCommentId)
+      }
+
+      if (exception.id === PostCommentDomainException.userCannotDeleteChildCommentId) {
+        throw PostDomainException.userCannotDeleteComment(userId, postCommentId)
+      }
+
+      if (exception.id === PostCommentDomainException.cannotDeleteChildCommentId) {
+        throw PostDomainException.cannotDeleteComment(postCommentId)
+      }
+
+      throw exception
     }
   }
 

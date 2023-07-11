@@ -6,11 +6,11 @@ import {
   DeletePostCommentApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
 import { DeletePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/DeletePostRequestDtoTranslator'
-import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment'
+import { DeletePostComment } from '~/modules/Posts/Application/Dtos/DeletePostComment'
 import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   DeletePostCommentApplicationException
-} from '~/modules/Posts/Application/DeletePostCommentApplicationException'
+} from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationException'
 import { UpdatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/UpdatePostCommentApiRequestDto'
 import {
   UpdatePostCommentRequestSanitizer

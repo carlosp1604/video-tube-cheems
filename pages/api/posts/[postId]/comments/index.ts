@@ -119,8 +119,6 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
   const comment = request.body.comment
 
   if (!postId || !comment) {
-    console.log(comment)
-
     return handleBadRequest(response)
   }
 
@@ -207,8 +205,9 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
 
       return response.status(201).json(childComment)
     } catch (exception: unknown) {
-      console.error(exception)
       if (!(exception instanceof CreatePostCommentApplicationException)) {
+        console.error(exception)
+
         return handleServerError(response)
       }
 

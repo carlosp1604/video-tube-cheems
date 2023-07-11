@@ -95,7 +95,7 @@ export const CommentReplies: FC<Props> = ({
   }
 
   const fetchReplies = async (): Promise<GetPostPostChildCommentsResponseDto> => {
-    return apiService.getComments(commentToReply?.id ?? '', pageNumber, defaultPerPage)
+    return apiService.getComments(commentToReply?.postId ?? '', commentToReply?.id ?? '', pageNumber, defaultPerPage)
   }
 
   const updateReplies = async () => {

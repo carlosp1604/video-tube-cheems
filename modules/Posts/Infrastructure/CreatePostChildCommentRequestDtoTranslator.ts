@@ -1,8 +1,10 @@
 import { CreatePostChildCommentApiRequestDto } from './Dtos/CreatePostChildCommentApiRequestDto'
-import { CreatePostChildCommentRequestDto } from '~/modules/Posts/Application/Dtos/CreatePostChildCommentRequestDto'
+import {
+  CreatePostChildCommentApplicationRequestDto
+} from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationRequestDto'
 
 export class CreatePostChildCommentRequestDtoTranslator {
-  public static fromApiDto (request: CreatePostChildCommentApiRequestDto): CreatePostChildCommentRequestDto {
+  public static fromApiDto (request: CreatePostChildCommentApiRequestDto): CreatePostChildCommentApplicationRequestDto {
     return {
       postId: request.postId,
       userId: request.userId,

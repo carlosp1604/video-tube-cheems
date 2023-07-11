@@ -10,16 +10,17 @@ export class RepliesApiService {
     comment: string,
     parentCommentId: string
   ): Promise<PostChildCommentApplicationDto> {
-    return (await fetch(`/api/posts/${postId}/comments`, {
+    return (await fetch(`/api/posts/${postId}/comments/${parentCommentId}/children`, {
       method: 'POST',
-      body: JSON.stringify({
-        comment,
-        parentCommentId,
-      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ comment }),
     })).json()
   }
 
   public async getComments (
+    postId: string,
     parentCommentId: string,
     pageNumber: number,
     perPage: number = defaultPerPage
@@ -29,6 +30,6 @@ export class RepliesApiService {
     params.append('page', pageNumber.toString())
     params.append('perPage', perPage.toString())
 
-    return ((await fetch(`/api/comments/${parentCommentId}/children?${params}`)).json())
+    return ((await fetch(`/api/posts/${postId}/comments/${parentCommentId}/children?${params}`)).json())
   }
 }

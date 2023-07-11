@@ -26,6 +26,8 @@ import { DateService } from '~/helpers/Infrastructure/DateService'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import { MysqlPostCommentRepository } from '~/modules/Posts/Infrastructure/MysqlPostCommentRepository'
 import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildComments'
+import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
+import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 
 /**
  * We create a container to register our classes dependencies
@@ -125,5 +127,7 @@ container.register('addPostReaction', asClass(CreatePostReaction))
 container.register('getPostUserReactionUseCase', asClass(GetPostUserReaction))
 container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))
 container.register('getPostPostChildCommentsUseCase', asClass(GetPostPostChildComments))
+container.register('createPostCommentUseCase', asClass(CreatePostComment))
+container.register('createPostChildCommentUseCase', asClass(CreatePostChildComment))
 
 export { container }

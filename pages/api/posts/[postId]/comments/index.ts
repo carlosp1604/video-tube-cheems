@@ -7,7 +7,7 @@ import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import {
   CreatePostCommentApplicationException
-} from '~/modules/Posts/Application/CreatePostCommentApplicationException'
+} from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationException'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 import {
@@ -18,8 +18,8 @@ import {
 } from '~/modules/Posts/Infrastructure/Validators/CreatePostCommentApiRequestValidator'
 import {
   CreatePostCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/CreatePostCommentRequestDtoTranslator'
-import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment'
+} from '~/modules/Posts/Infrastructure/Translators/CreatePostCommentRequestDtoTranslator'
+import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
 import {
   CreatePostChildCommentApiRequestDto
 } from '~/modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'
@@ -28,8 +28,8 @@ import {
 } from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
 import {
   CreatePostChildCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
-import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment'
+} from '~/modules/Posts/Infrastructure/Translators/CreatePostChildCommentRequestDtoTranslator'
+import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
@@ -116,21 +116,23 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
   }
 
   const { postId } = request.query
+  const comment = request.body.comment
 
-  if (!postId) {
+  if (!postId || !comment) {
     return handleBadRequest(response)
   }
 
-  const handleCreateComment = async (apiRequest: CreatePostCommentApiRequestDto) => {
+  const handleCreateComment = async () => {
+    let apiRequest: CreatePostCommentApiRequestDto
+
     try {
-      apiRequest = JSON.parse(request.body) as CreatePostCommentApiRequestDto
       apiRequest = CreatePostCommentRequestSanitizer.sanitize({
-        ...apiRequest,
+        comment,
         userId: session.user.id,
         postId: String(postId),
       })
     } catch (exception: unknown) {
-      console.log(exception)
+      console.error(exception)
 
       return handleServerError(response)
     }
@@ -143,7 +145,7 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
 
     const applicationRequest = CreatePostCommentRequestDtoTranslator.fromApiDto(apiRequest)
 
-    const useCase = bindings.get<CreatePostComment>('CreatePostComment')
+    const useCase = container.resolve<CreatePostComment>('createPostCommentUseCase')
 
     try {
       const comment = await useCase.create(applicationRequest)
@@ -152,18 +154,24 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
     } catch (exception: unknown) {
       console.error(exception)
       if (!(exception instanceof CreatePostCommentApplicationException)) {
+        console.error(exception)
+
         return handleServerError(response)
       }
 
       switch (exception.id) {
+        // NOTE: If user is not found we assume is a server error
         case CreatePostCommentApplicationException.postNotFoundId:
           return handleNotFound(response)
 
         case CreatePostCommentApplicationException.cannotAddCommentId:
           return handleConflict(response)
 
-        default:
+        default: {
+          console.error(exception)
+
           return handleServerError(response)
+        }
       }
     }
   }
@@ -197,8 +205,9 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
 
       return response.status(201).json(childComment)
     } catch (exception: unknown) {
-      console.error(exception)
       if (!(exception instanceof CreatePostCommentApplicationException)) {
+        console.error(exception)
+
         return handleServerError(response)
       }
 
@@ -215,10 +224,10 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
     }
   }
 
-  const body = JSON.parse(request.body)
+  const body = request.body
 
   if (!body.parentCommentId) {
-    return handleCreateComment(body)
+    return handleCreateComment()
   } else {
     return handleCreateChildComment(body)
   }

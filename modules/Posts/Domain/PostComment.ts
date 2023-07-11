@@ -43,9 +43,9 @@ export class PostComment {
 
   public addChildComment (
     comment: PostChildComment['comment'],
-    userId: PostChildComment['userId']
+    user: User
   ): PostChildComment {
-    const newChildComment = this.buildChildComment(comment, userId)
+    const newChildComment = this.buildChildComment(comment, user)
 
     this._childComments.addItem(newChildComment, newChildComment.id)
 
@@ -101,18 +101,19 @@ export class PostComment {
 
   private buildChildComment (
     comment: PostComment['comment'],
-    userId: PostComment['userId']
+    user: User
   ): PostChildComment {
     const nowDate = DateTime.now()
 
     return new PostChildComment(
       randomUUID(),
       comment,
-      userId,
+      user.id,
       this.id,
       nowDate,
       nowDate,
-      null
+      null,
+      Relationship.initializeRelation(user)
     )
   }
 }

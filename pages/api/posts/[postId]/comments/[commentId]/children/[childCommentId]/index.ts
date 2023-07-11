@@ -11,18 +11,6 @@ import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   DeletePostCommentApplicationException
 } from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationException'
-import { UpdatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/UpdatePostCommentApiRequestDto'
-import {
-  UpdatePostCommentRequestSanitizer
-} from '~/modules/Posts/Infrastructure/Sanitizers/UpdatePostCommentRequestSanitizer'
-import {
-  UpdatePostCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/UpdatePostCommentApiRequestValidator'
-import { UpdatePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/UpdatePostRequestDtoTranslator'
-import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
-import {
-  UpdatePostCommentApplicationException
-} from '~/modules/Posts/Application/UpdatePostCommentApplicationException'
 import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
@@ -51,9 +39,9 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
     return handleAuthentication(request, response)
   }
 
-  const { postId, commentId } = request.query
+  const { postId, commentId, childCommentId } = request.query
 
-  if (!postId || !commentId) {
+  if (!postId || !commentId || !childCommentId) {
     return handleBadRequest(response)
   }
 
@@ -61,9 +49,9 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
 
   try {
     apiRequest = {
-      parentCommentId: null,
+      parentCommentId: String(commentId),
       userId: session.user.id,
-      postCommentId: String(commentId),
+      postCommentId: String(childCommentId),
       postId: String(postId),
     }
   } catch (exception: unknown) {
@@ -91,11 +79,15 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
 
     switch (exception.id) {
       case DeletePostCommentApplicationException.postNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-comment-post-not-found')
+        return handleNotFound(response, exception.message, 'post-child-comment-post-not-found')
+      }
+
+      case DeletePostCommentApplicationException.parentCommentNotFoundId: {
+        return handleNotFound(response, exception.message, 'post-child-comment-parent-comment-not-found')
       }
 
       case DeletePostCommentApplicationException.postCommentNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-comment-post-comment-not-found')
+        return handleNotFound(response, exception.message, 'post-child-comment-post-comment-not-found')
       }
 
       case DeletePostCommentApplicationException.userCannotDeleteCommentId: {
@@ -117,58 +109,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
 }
 
 async function handlePatchMethod (request: NextApiRequest, response: NextApiResponse) {
-  const session = await getServerSession(request, response, authOptions)
-
-  if (session === null) {
-    return handleAuthentication(request, response)
-  }
-
-  const { postId, commentId } = request.query
-
-  let apiRequest: UpdatePostCommentApiRequestDto
-
-  try {
-    apiRequest = request.body as UpdatePostCommentApiRequestDto
-    apiRequest = UpdatePostCommentRequestSanitizer.sanitize({
-      ...apiRequest,
-      userId: session.user.id,
-      postCommentId: String(commentId),
-      postId: String(postId),
-    })
-  } catch (exception: unknown) {
-    return handleServerError(response, exception)
-  }
-  const validationError = UpdatePostCommentApiRequestValidator.validate(apiRequest)
-
-  if (validationError) {
-    return handleValidationError(request, response, validationError)
-  }
-
-  const applicationRequest = UpdatePostRequestDtoTranslator.fromApiDto(apiRequest)
-
-  const useCase = bindings.get<UpdatePostComment>('UpdatePostComment')
-
-  try {
-    const comment = await useCase.update(applicationRequest)
-
-    return response.status(200).json(comment)
-  } catch (exception: unknown) {
-    console.error(exception)
-    if (!(exception instanceof UpdatePostCommentApplicationException)) {
-      return handleServerError(response, exception)
-    }
-
-    switch (exception.id) {
-      case UpdatePostCommentApplicationException.postNotFoundId:
-        return handleNotFound(response, exception.message, '')
-
-      case UpdatePostCommentApplicationException.cannotUpdateCommentId:
-        return handleConflict(response, exception.message)
-
-      default:
-        return handleServerError(response, exception)
-    }
-  }
+  throw Error('Not implemented')
 }
 
 function handleMethod (request: NextApiRequest, response: NextApiResponse) {
@@ -176,7 +117,7 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
     .status(405)
     .setHeader('Allow', 'PATCH, DELETE')
     .json({
-      code: 'post-comment-method-not-allowed',
+      code: 'post-child-comment-method-not-allowed',
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
@@ -192,7 +133,7 @@ function handleAuthentication (request: NextApiRequest, response: NextApiRespons
   return response
     .status(401)
     .json({
-      code: 'post-comment-authentication-required',
+      code: 'post-child-comment-authentication-required',
       message: 'User must be authenticated to access to resource',
     })
 }
@@ -204,7 +145,7 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'post-comment-validation-exception',
+      code: 'post-child-comment-validation-exception',
       message: 'Invalid request body',
       errors: validationError.exceptions,
     })
@@ -215,7 +156,7 @@ function handleServerError (response: NextApiResponse, exception: unknown) {
 
   return response.status(500)
     .json({
-      code: 'post-comment-server-error',
+      code: 'post-child-comment-server-error',
       message: 'Something went wrong while processing the request',
     })
 }
@@ -231,7 +172,7 @@ function handleNotFound (response: NextApiResponse, message: string, code: strin
 function handleConflict (response: NextApiResponse, message: string) {
   return response.status(409)
     .json({
-      code: 'post-comment-resource-conflict',
+      code: 'post-child-comment-resource-conflict',
       message,
     })
 }
@@ -240,8 +181,8 @@ function handleBadRequest (response: NextApiResponse) {
   return response
     .status(400)
     .json({
-      code: 'post-comment-bad-request',
-      message: 'postId and commentId parameters are required',
+      code: 'post-child-comment-bad-request',
+      message: 'postId, commentId and childCommentId parameters are required',
     })
 }
 
@@ -249,7 +190,7 @@ function handleForbidden (response: NextApiResponse) {
   return response
     .status(403)
     .json({
-      code: 'post-comment-forbidden',
+      code: 'post-child-comment-forbidden',
       message: 'User does not have access to the resource',
     })
 }

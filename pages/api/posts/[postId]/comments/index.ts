@@ -18,7 +18,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Validators/CreatePostCommentApiRequestValidator'
 import {
   CreatePostCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/CreatePostCommentRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Translators/CreatePostCommentRequestDtoTranslator'
 import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
 import {
   CreatePostChildCommentApiRequestDto
@@ -28,7 +28,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
 import {
   CreatePostChildCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Translators/CreatePostChildCommentRequestDtoTranslator'
 import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import {
   PostCommentApiRequestValidatorError

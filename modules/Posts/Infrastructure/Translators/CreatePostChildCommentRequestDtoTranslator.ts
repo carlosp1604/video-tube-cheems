@@ -1,7 +1,9 @@
-import { CreatePostChildCommentApiRequestDto } from './Dtos/CreatePostChildCommentApiRequestDto'
 import {
   CreatePostChildCommentApplicationRequestDto
 } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationRequestDto'
+import {
+  CreatePostChildCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'
 
 export class CreatePostChildCommentRequestDtoTranslator {
   public static fromApiDto (request: CreatePostChildCommentApiRequestDto): CreatePostChildCommentApplicationRequestDto {

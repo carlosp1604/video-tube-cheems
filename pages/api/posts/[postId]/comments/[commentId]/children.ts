@@ -28,7 +28,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Validators/CreatePostChildCommentApiRequestValidator'
 import {
   CreatePostChildCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/CreatePostChildCommentRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Translators/CreatePostChildCommentRequestDtoTranslator'
 import {
   CreatePostChildCommentApiRequestDto
 } from '~/modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'

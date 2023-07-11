@@ -1,5 +1,5 @@
-import { CreatePostCommentApiRequestDto } from './Dtos/CreatePostCommentApiRequestDto'
 import { CreatePostCommentApplicationRequestDto } from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationRequestDto'
+import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
 
 export class CreatePostCommentRequestDtoTranslator {
   public static fromApiDto (request: CreatePostCommentApiRequestDto): CreatePostCommentApplicationRequestDto {

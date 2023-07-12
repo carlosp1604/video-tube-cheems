@@ -177,7 +177,7 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
                   key={ comment.id }
                 />
                 <button
-                  className={ styles.postComments__replies_button }
+                  className={ styles.postComments__repliesButton }
                   onClick={ () => {
                     setCommentToReply(comment)
                     setRepliesOpen(true)

@@ -3,8 +3,7 @@
     @apply grid gap-2 items-center border-opacity-50;
     grid-template-areas:
       "user-logo  user-name-date"
-      "user-logo  comment"
-      "user-logo  child-comment-section";
+      "user-logo  comment";
     grid-auto-columns: auto 1fr;
   }
 

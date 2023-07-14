@@ -5,6 +5,6 @@ import { User } from '~/modules/Auth/Domain/User'
 export interface DeletePostCommentApplicationRequestDto {
   readonly postId: Post['id']
   readonly postCommentId: PostComment['id']
-  readonly parentCommentId: PostComment['id']
+  readonly parentCommentId: PostComment['id'] | null
   readonly userId: User['id']
 }

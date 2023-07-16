@@ -10,6 +10,7 @@ import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
+import { Toaster } from 'react-hot-toast'
 
 function App ({
   Component,
@@ -42,6 +43,9 @@ function App ({
             setOpenMenu={ setOpenMenu }
           />
           <main className={ styles.app__container } >
+            <Toaster
+              position={ 'bottom-center' }
+            />
             <Component { ...pageProps } />
           </main>
         </>

@@ -38,7 +38,6 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
 
     if (result?.error) {
       setLoginError(true)
-    } else {
       onSuccessLogin()
     }
   }

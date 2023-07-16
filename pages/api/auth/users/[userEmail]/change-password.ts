@@ -11,6 +11,16 @@ import {
   ChangeUserPasswordApplicationException
 } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPasswordApplicationException'
 import { container } from '~/awilix.container'
+import {
+  USER_BAD_REQUEST,
+  USER_INVALID_PASSWORD,
+  USER_INVALID_VERIFICATION_TOKEN,
+  USER_METHOD, USER_SERVER_ERROR,
+  USER_USER_NOT_FOUND, USER_VALIDATION
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+import {
+  ChangeUserPasswordApiRequestInterface
+} from '~/modules/Auth/Infrastructure/Dtos/ChangeUserPasswordApiRequestInterface'
 
 export default async function handler (
   request: NextApiRequest,
@@ -20,13 +30,24 @@ export default async function handler (
     return handleMethod(response)
   }
 
-  const validationExceptions = ChangeUserPasswordApiRequestValidator.validate(request.body)
+  const { userEmail } = request.query
 
-  if (validationExceptions) {
-    return handleBadRequest(response, validationExceptions)
+  if (!userEmail) {
+    return handleBadRequest(response)
   }
 
-  const applicationRequest = ChangeUserPasswordApplicationRequestTranslator.fromApi(request.body)
+  const apiRequest: ChangeUserPasswordApiRequestInterface = {
+    ...request.body,
+    email: String(userEmail),
+  }
+
+  const validationExceptions = ChangeUserPasswordApiRequestValidator.validate(apiRequest)
+
+  if (validationExceptions) {
+    return handleValidation(response, validationExceptions)
+  }
+
+  const applicationRequest = ChangeUserPasswordApplicationRequestTranslator.fromApi(apiRequest)
   const useCase: ChangeUserPassword = container.resolve<ChangeUserPassword>('changeUserPasswordUseCase')
 
   try {
@@ -38,8 +59,6 @@ export default async function handler (
       return handleInternalError(response)
     }
 
-    console.error(exception)
-
     switch (exception.id) {
       case ChangeUserPasswordApplicationException.userNotFoundId:
         return handleNotFound(response)
@@ -50,12 +69,15 @@ export default async function handler (
       case ChangeUserPasswordApplicationException.invalidPasswordId:
         return handleUnprocessableEntity(response)
 
-      default:
+      default: {
+        console.error(exception)
+
         return handleInternalError(response)
+      }
     }
   }
 
-  response.status(204).end()
+  return response.status(204).end()
 }
 
 function handleMethod (response: NextApiResponse) {
@@ -63,7 +85,7 @@ function handleMethod (response: NextApiResponse) {
     .setHeader('Allow', 'PATCH')
     .status(405)
     .json({
-      code: 'change-user-password-method-not-allowed',
+      code: USER_METHOD,
       message: 'HTTP method not allowed',
     })
 }
@@ -71,7 +93,7 @@ function handleMethod (response: NextApiResponse) {
 function handleNotFound (response: NextApiResponse) {
   return response.status(404)
     .json({
-      code: 'change-user-password-not-found',
+      code: USER_USER_NOT_FOUND,
       message: 'User associated to token was not found',
     })
 }
@@ -79,7 +101,7 @@ function handleNotFound (response: NextApiResponse) {
 function handleUnauthorized (response: NextApiResponse) {
   return response.status(401)
     .json({
-      code: 'change-user-password-unauthorized',
+      code: USER_INVALID_VERIFICATION_TOKEN,
       message: 'Token is invalid or expired',
     })
 }
@@ -87,20 +109,29 @@ function handleUnauthorized (response: NextApiResponse) {
 function handleUnprocessableEntity (response: NextApiResponse) {
   return response.status(422)
     .json({
-      code: 'change-user-password-unprocessable-entity',
+      code: USER_INVALID_PASSWORD,
       message: 'Provided password is not valid',
     })
 }
 
-function handleBadRequest (
+function handleBadRequest (response: NextApiResponse) {
+  return response
+    .status(400)
+    .json({
+      code: USER_BAD_REQUEST,
+      message: 'userEmail parameter is required',
+    })
+}
+
+function handleValidation (
   response: NextApiResponse,
   validationException: UserApiValidationException
 ) {
   return response
     .status(400)
     .json({
-      code: 'change-user-password-bad-request',
-      message: 'Invalid request',
+      code: USER_VALIDATION,
+      message: 'Invalid request body',
       errors: validationException.exceptions,
     })
 }
@@ -108,7 +139,7 @@ function handleBadRequest (
 function handleInternalError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'change-user-password-internal-server-error',
+      code: USER_SERVER_ERROR,
       message: 'Something went wrong while processing request',
     })
 }

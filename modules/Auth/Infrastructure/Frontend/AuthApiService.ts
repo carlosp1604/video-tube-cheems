@@ -58,13 +58,12 @@ export class AuthApiService {
   }
 
   public async changeUserPassword (email: string, password: string, token: string): Promise<Response> {
-    return fetch('/api/auth/users/change-password', {
+    return fetch(`/api/auth/users/${email}/change-password`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email,
         password,
         token,
       }),

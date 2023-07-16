@@ -4,7 +4,8 @@ import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
 
 export class DeletePostCommentApplicationException extends ApplicationException {
-  public static cannotDeleteCommentId = 'delete_post_comment_cannot_add_comment'
+  public static cannotDeleteCommentId = 'delete_post_comment_cannot_delete_comment'
+  public static cannotDeleteCommentFromPersistenceId = 'delete_post_comment_cannot_delete_comment_from_persistence'
   public static postNotFoundId = 'delete_post_comment_post_not_found'
   public static userNotFoundId = 'delete_post_comment_user_not_found'
   public static parentCommentNotFoundId = 'delete_post_comment_parent_comment_not_found'
@@ -12,12 +13,20 @@ export class DeletePostCommentApplicationException extends ApplicationException 
   public static userCannotDeleteCommentId = 'delete_post_comment_user_cannot_delete_post_comment'
 
   public static cannotDeleteComment (
-    postCommentId: PostComment['id'],
-    postId: Post['id']
+    postCommentId: PostComment['id']
   ): DeletePostCommentApplicationException {
     return new DeletePostCommentApplicationException(
-      `Cannot delete comment with ID ${postCommentId} from post with ID ${postId}`,
+      `Cannot delete comment with ID ${postCommentId} from it's post or parent`,
       this.cannotDeleteCommentId
+    )
+  }
+
+  public static cannotDeleteCommentFromPersistence (
+    postCommentId: PostComment['id']
+  ): DeletePostCommentApplicationException {
+    return new DeletePostCommentApplicationException(
+      `Cannot delete comment with ID ${postCommentId} from persistence layer`,
+      this.cannotDeleteCommentFromPersistenceId
     )
   }
 

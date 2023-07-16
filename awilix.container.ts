@@ -85,6 +85,15 @@ container.register('mailerSend', asFunction(() => {
     apiKey,
   })
 }))
+container.register('baseUrl', asFunction(() => {
+  const baseUrl = process.env.BASE_URL
+
+  if (!baseUrl) {
+    throw Error('Missing BASE_URL environment variable')
+  }
+
+  return baseUrl
+}))
 
 /**
  * Use-cases

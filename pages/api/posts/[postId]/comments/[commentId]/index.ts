@@ -27,15 +27,24 @@ import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
 import { container } from '~/awilix.container'
+import {
+  POST_COMMENT_AUTH_REQUIRED,
+  POST_COMMENT_BAD_REQUEST,
+  POST_COMMENT_CANNOT_DELETE_COMMENT,
+  POST_COMMENT_CANNOT_UPDATE_COMMENT,
+  POST_COMMENT_COMMENT_NOT_FOUND,
+  POST_COMMENT_FORBIDDEN,
+  POST_COMMENT_METHOD,
+  POST_COMMENT_POST_NOT_FOUND,
+  POST_COMMENT_SERVER_ERROR,
+  POST_COMMENT_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
   switch (request.method) {
-    case 'PATCH':
-      return handlePatchMethod(request, response)
-
     case 'DELETE':
       return handleDeleteMethod(request, response)
 
@@ -67,7 +76,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
       postId: String(postId),
     }
   } catch (exception: unknown) {
-    return handleServerError(response, exception)
+    return handleServerError(response)
   }
 
   const validationError = DeletePostCommentApiRequestValidator.validate(apiRequest)
@@ -86,29 +95,30 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
     if (!(exception instanceof DeletePostCommentApplicationException)) {
       console.error(exception)
 
-      return handleServerError(response, exception)
+      return handleServerError(response)
     }
 
     switch (exception.id) {
       case DeletePostCommentApplicationException.postNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-comment-post-not-found')
+        return handleNotFound(response, exception.message, POST_COMMENT_POST_NOT_FOUND)
       }
 
       case DeletePostCommentApplicationException.postCommentNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-comment-post-comment-not-found')
+        return handleNotFound(response, exception.message, POST_COMMENT_COMMENT_NOT_FOUND)
       }
 
       case DeletePostCommentApplicationException.userCannotDeleteCommentId: {
         return handleForbidden(response)
       }
 
-      case DeletePostCommentApplicationException.cannotDeleteCommentId:
-        return handleConflict(response, exception.message)
+      case DeletePostCommentApplicationException.cannotDeleteCommentId: {
+        return handleConflict(response, exception.message, POST_COMMENT_CANNOT_DELETE_COMMENT)
+      }
 
       default: {
         console.error(exception)
 
-        return handleServerError(response, exception)
+        return handleServerError(response)
       }
     }
   }
@@ -116,6 +126,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
   return response.status(200).json({})
 }
 
+// TODO: Fixme before post comment update is supported
 async function handlePatchMethod (request: NextApiRequest, response: NextApiResponse) {
   const session = await getServerSession(request, response, authOptions)
 
@@ -136,7 +147,7 @@ async function handlePatchMethod (request: NextApiRequest, response: NextApiResp
       postId: String(postId),
     })
   } catch (exception: unknown) {
-    return handleServerError(response, exception)
+    return handleServerError(response)
   }
   const validationError = UpdatePostCommentApiRequestValidator.validate(apiRequest)
 
@@ -153,20 +164,21 @@ async function handlePatchMethod (request: NextApiRequest, response: NextApiResp
 
     return response.status(200).json(comment)
   } catch (exception: unknown) {
-    console.error(exception)
     if (!(exception instanceof UpdatePostCommentApplicationException)) {
-      return handleServerError(response, exception)
+      console.error(exception)
+
+      return handleServerError(response)
     }
 
     switch (exception.id) {
       case UpdatePostCommentApplicationException.postNotFoundId:
-        return handleNotFound(response, exception.message, '')
+        return handleNotFound(response, exception.message, POST_COMMENT_POST_NOT_FOUND)
 
       case UpdatePostCommentApplicationException.cannotUpdateCommentId:
-        return handleConflict(response, exception.message)
+        return handleConflict(response, exception.message, POST_COMMENT_CANNOT_UPDATE_COMMENT)
 
       default:
-        return handleServerError(response, exception)
+        return handleServerError(response)
     }
   }
 }
@@ -174,15 +186,15 @@ async function handlePatchMethod (request: NextApiRequest, response: NextApiResp
 function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
-    .setHeader('Allow', 'PATCH, DELETE')
+    .setHeader('Allow', 'DELETE')
     .json({
-      code: 'post-comment-method-not-allowed',
+      code: POST_COMMENT_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = bindings.get<string>('BaseUrl')
+  const baseUrl = container.resolve<string>('baseUrl')
 
   response.setHeader(
     'WWW-Authenticate',
@@ -192,7 +204,7 @@ function handleAuthentication (request: NextApiRequest, response: NextApiRespons
   return response
     .status(401)
     .json({
-      code: 'post-comment-authentication-required',
+      code: POST_COMMENT_AUTH_REQUIRED,
       message: 'User must be authenticated to access to resource',
     })
 }
@@ -204,18 +216,16 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'post-comment-validation-exception',
+      code: POST_COMMENT_VALIDATION,
       message: 'Invalid request body',
       errors: validationError.exceptions,
     })
 }
 
-function handleServerError (response: NextApiResponse, exception: unknown) {
-  console.log(exception)
-
+function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'post-comment-server-error',
+      code: POST_COMMENT_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }
@@ -228,10 +238,10 @@ function handleNotFound (response: NextApiResponse, message: string, code: strin
     })
 }
 
-function handleConflict (response: NextApiResponse, message: string) {
+function handleConflict (response: NextApiResponse, message: string, code: string) {
   return response.status(409)
     .json({
-      code: 'post-comment-resource-conflict',
+      code,
       message,
     })
 }
@@ -240,7 +250,7 @@ function handleBadRequest (response: NextApiResponse) {
   return response
     .status(400)
     .json({
-      code: 'post-comment-bad-request',
+      code: POST_COMMENT_BAD_REQUEST,
       message: 'postId and commentId parameters are required',
     })
 }
@@ -249,7 +259,7 @@ function handleForbidden (response: NextApiResponse) {
   return response
     .status(403)
     .json({
-      code: 'post-comment-forbidden',
+      code: POST_COMMENT_FORBIDDEN,
       message: 'User does not have access to the resource',
     })
 }

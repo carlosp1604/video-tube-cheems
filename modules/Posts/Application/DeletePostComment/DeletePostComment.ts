@@ -70,7 +70,7 @@ export class DeletePostComment {
       }
 
       if (exception.id === PostDomainException.cannotDeleteCommentId) {
-        throw DeletePostCommentApplicationException.cannotDeleteComment(request.postCommentId, post.id)
+        throw DeletePostCommentApplicationException.cannotDeleteComment(request.postCommentId)
       }
 
       throw exception
@@ -98,7 +98,7 @@ export class DeletePostComment {
       }
 
       if (exception.id === PostDomainException.cannotDeleteCommentId) {
-        throw DeletePostCommentApplicationException.cannotDeleteComment(request.postCommentId, post.id)
+        throw DeletePostCommentApplicationException.cannotDeleteComment(request.postCommentId)
       }
 
       throw exception
@@ -111,8 +111,7 @@ export class DeletePostComment {
     } catch (exception: unknown) {
       console.error(exception)
 
-      throw DeletePostCommentApplicationException
-        .cannotDeleteComment(request.postCommentId, request.postId)
+      throw DeletePostCommentApplicationException.cannotDeleteCommentFromPersistence(request.postCommentId)
     }
   }
 }

@@ -7,7 +7,6 @@ import {
 } from '~/modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
 import { DeletePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/DeletePostRequestDtoTranslator'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
-import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   DeletePostCommentApplicationException
 } from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationException'
@@ -15,15 +14,20 @@ import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
 import { container } from '~/awilix.container'
+import {
+  POST_CHILD_COMMENT_AUTH_REQUIRED,
+  POST_CHILD_COMMENT_BAD_REQUEST, POST_CHILD_COMMENT_CANNOT_DELETE_CHILD_COMMENT,
+  POST_CHILD_COMMENT_FORBIDDEN, POST_CHILD_COMMENT_METHOD,
+  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
+  POST_CHILD_COMMENT_POST_COMMENT_NOT_FOUND,
+  POST_CHILD_COMMENT_POST_NOT_FOUND, POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
   response: NextApiResponse
 ) {
   switch (request.method) {
-    case 'PATCH':
-      return handlePatchMethod(request, response)
-
     case 'DELETE':
       return handleDeleteMethod(request, response)
 
@@ -79,15 +83,15 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
 
     switch (exception.id) {
       case DeletePostCommentApplicationException.postNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-child-comment-post-not-found')
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_POST_NOT_FOUND)
       }
 
       case DeletePostCommentApplicationException.parentCommentNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-child-comment-parent-comment-not-found')
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND)
       }
 
       case DeletePostCommentApplicationException.postCommentNotFoundId: {
-        return handleNotFound(response, exception.message, 'post-child-comment-post-comment-not-found')
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_POST_COMMENT_NOT_FOUND)
       }
 
       case DeletePostCommentApplicationException.userCannotDeleteCommentId: {
@@ -95,7 +99,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
       }
 
       case DeletePostCommentApplicationException.cannotDeleteCommentId:
-        return handleConflict(response, exception.message)
+        return handleConflict(response, exception.message, POST_CHILD_COMMENT_CANNOT_DELETE_CHILD_COMMENT)
 
       default: {
         console.error(exception)
@@ -108,22 +112,18 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
   return response.status(200).json({})
 }
 
-async function handlePatchMethod (request: NextApiRequest, response: NextApiResponse) {
-  throw Error('Not implemented')
-}
-
 function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
-    .setHeader('Allow', 'PATCH, DELETE')
+    .setHeader('Allow', 'DELETE')
     .json({
-      code: 'post-child-comment-method-not-allowed',
+      code: POST_CHILD_COMMENT_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = bindings.get<string>('BaseUrl')
+  const baseUrl = container.resolve<string>('baseUrl')
 
   response.setHeader(
     'WWW-Authenticate',
@@ -133,7 +133,7 @@ function handleAuthentication (request: NextApiRequest, response: NextApiRespons
   return response
     .status(401)
     .json({
-      code: 'post-child-comment-authentication-required',
+      code: POST_CHILD_COMMENT_AUTH_REQUIRED,
       message: 'User must be authenticated to access to resource',
     })
 }
@@ -145,7 +145,7 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'post-child-comment-validation-exception',
+      code: POST_CHILD_COMMENT_VALIDATION,
       message: 'Invalid request body',
       errors: validationError.exceptions,
     })
@@ -156,7 +156,7 @@ function handleServerError (response: NextApiResponse, exception: unknown) {
 
   return response.status(500)
     .json({
-      code: 'post-child-comment-server-error',
+      code: POST_CHILD_COMMENT_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }
@@ -169,10 +169,10 @@ function handleNotFound (response: NextApiResponse, message: string, code: strin
     })
 }
 
-function handleConflict (response: NextApiResponse, message: string) {
+function handleConflict (response: NextApiResponse, message: string, code: string) {
   return response.status(409)
     .json({
-      code: 'post-child-comment-resource-conflict',
+      code,
       message,
     })
 }
@@ -181,7 +181,7 @@ function handleBadRequest (response: NextApiResponse) {
   return response
     .status(400)
     .json({
-      code: 'post-child-comment-bad-request',
+      code: POST_CHILD_COMMENT_BAD_REQUEST,
       message: 'postId, commentId and childCommentId parameters are required',
     })
 }
@@ -190,7 +190,7 @@ function handleForbidden (response: NextApiResponse) {
   return response
     .status(403)
     .json({
-      code: 'post-child-comment-forbidden',
+      code: POST_CHILD_COMMENT_FORBIDDEN,
       message: 'User does not have access to the resource',
     })
 }

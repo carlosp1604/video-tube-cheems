@@ -51,6 +51,7 @@ export const FormInputSection: FC<Props> = ({
         ` }
         placeholder={ placeholder }
         onChange={ handleOnChange }
+        spellCheck={ false }
       />
       <label className={ `
         ${styles.formInputSection__inputErrorMessage}

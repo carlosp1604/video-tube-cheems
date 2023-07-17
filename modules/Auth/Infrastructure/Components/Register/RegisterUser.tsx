@@ -8,6 +8,15 @@ import {
   passwordValidator,
   usernameValidator
 } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import {
+  USER_EMAIL_ALREADY_REGISTERED,
+  USER_INVALID_EMAIL,
+  USER_INVALID_NAME,
+  USER_INVALID_PASSWORD,
+  USER_INVALID_USERNAME,
+  USER_USERNAME_ALREADY_REGISTERED
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+import toast from 'react-hot-toast'
 
 export interface Props {
   email: string
@@ -16,7 +25,6 @@ export interface Props {
 }
 
 export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
-  const [errorMessage, setErrorMessage] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [name, setName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -25,14 +33,12 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
   const [invalidName, setInvalidName] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
   const [invalidPasswordRepeat, setInvalidPasswordRepeat] = useState<boolean>(false)
-  const [userCreationError, setUserCreationError] = useState<boolean>(false)
 
   const authApiService = new AuthApiService()
 
   const { t } = useTranslation('user_signup')
 
   const onSubmit = async (event: FormEvent) => {
-    setUserCreationError(false)
     event.preventDefault()
 
     if (code === '') {
@@ -51,57 +57,65 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
       )
 
       if (!result.ok) {
-        if (result.status === 409) {
-          const jsonResponse = await result.json()
+        switch (result.status) {
+          case 401: {
+            toast.error(t('signup_invalid_code_message'))
 
-          setUserCreationError(true)
-
-          if (jsonResponse.code === 'create-user-conflict-email-already-registered') {
-            setErrorMessage(t('signup_email_already_registered_message') ?? '')
-          } else {
-            setErrorMessage(t('signup_username_already_registered_message') ?? '')
+            break
           }
 
-          return
-        }
+          case 409: {
+            const jsonResponse = await result.json()
 
-        if (result.status === 422) {
-          const jsonResponse = await result.json()
+            switch (jsonResponse.code) {
+              case USER_EMAIL_ALREADY_REGISTERED:
+                toast.error(t('signup_email_already_registered_message'))
+                break
+              case USER_USERNAME_ALREADY_REGISTERED:
+                toast.error(t('signup_username_already_registered_message'))
+                break
 
-          setUserCreationError(true)
+              default:
+                toast.error(t('signup_server_error_message'))
+            }
 
-          switch (jsonResponse.code) {
-            case 'create-user-unprocessable-entity-invalid-name':
-              setErrorMessage(t('signup_invalid_name_message') ?? '')
-              break
-            case 'create-user-unprocessable-entity-invalid-username':
-              setErrorMessage(t('signup_invalid_username_message') ?? '')
-              break
-            case 'create-user-unprocessable-entity-invalid-email':
-              setErrorMessage(t('signup_invalid_email_message') ?? '')
-              break
-            case 'create-user-unprocessable-entity-invalid-password':
-              setErrorMessage(t('signup_invalid_password_message') ?? '')
-              break
-
-            default:
-              setErrorMessage(t('signup_server_error_message') ?? '')
-              break
+            break
           }
-          setUserCreationError(true)
 
-          return
+          case 422: {
+            const jsonResponse = await result.json()
+
+            switch (jsonResponse.code) {
+              case USER_INVALID_NAME:
+                toast.error(t('signup_invalid_name_message'))
+                break
+
+              case USER_INVALID_USERNAME:
+                toast.error(t('signup_invalid_username_message'))
+                break
+
+              case USER_INVALID_EMAIL:
+                toast.error(t('signup_invalid_email_message'))
+                break
+
+              case USER_INVALID_PASSWORD:
+                toast.error(t('signup_invalid_password_message'))
+                break
+
+              default:
+                toast.error(t('signup_server_error_message'))
+                break
+            }
+
+            break
+          }
+
+          default: {
+            toast.error(t('signup_server_error_message'))
+
+            break
+          }
         }
-
-        if (result.status === 401) {
-          setErrorMessage(t('signup_invalid_code_message') ?? '')
-          setUserCreationError(true)
-
-          return
-        }
-
-        setErrorMessage(t('signup_server_error_message') ?? '')
-        setUserCreationError(true)
 
         return
       }
@@ -109,8 +123,7 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
       onConfirm()
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('signup_server_error_message') ?? '')
-      setUserCreationError(true)
+      toast.error(t('signup_server_error_message'))
     }
   }
 
@@ -146,13 +159,6 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
           { t('signup_subtitle', { email }) }
         </small>
       </h1>
-
-      <p className={ `
-        ${styles.register__error}
-        ${userCreationError ? styles.register__error_visible : ''}
-      ` }>
-        { errorMessage }
-      </p>
 
       <FormInputSection
         label={ t('signup_name_input_label') }

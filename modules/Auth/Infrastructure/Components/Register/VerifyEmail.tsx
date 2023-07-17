@@ -4,6 +4,12 @@ import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
+import {
+  USER_CANNOT_SEND_VERIFICATION_EMAIL,
+  USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
+  USER_TOKEN_ALREADY_ISSUED
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+import toast from 'react-hot-toast'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -14,16 +20,11 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
 
   const [email, setEmail] = useState<string>('')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
-  const [verificationError, setVerificationError] = useState<boolean>(false)
   const [resendEmail, setResendEmail] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] =
-    useState<string>('')
 
   const authApiService = new AuthApiService()
 
   const onSubmit = async (event: FormEvent) => {
-    setVerificationError(false)
-    setErrorMessage('')
     event.preventDefault()
 
     if (email === '') {
@@ -34,40 +35,58 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
 
       if (!result.ok) {
-        if (result.status === 409) {
-          const jsonResponse = await result.json()
+        switch (result.status) {
+          case 409: {
+            const jsonResponse = await result.json()
 
-          setVerificationError(true)
+            switch (jsonResponse.code) {
+              case USER_TOKEN_ALREADY_ISSUED: {
+                setResendEmail(true)
+                toast.error(t('verify_email_email_already_sent_message'))
+                break
+              }
 
-          if (jsonResponse.code === 'verify-email-address-conflict-token-already-issued') {
-            setResendEmail(true)
-            setErrorMessage(t('verify_email_email_already_sent_message') ?? '')
-          } else {
-            setErrorMessage(t('verify_email_email_not_available_message') ?? '')
+              case USER_EMAIL_ALREADY_REGISTERED: {
+                toast.error(t('verify_email_email_not_available_message'))
+                break
+              }
+
+              default: {
+                toast.error(t('verify_email_server_error_message'))
+                break
+              }
+            }
+            break
           }
 
-          return
-        }
+          case 422: {
+            const jsonResponse = await result.json()
 
-        if (result.status === 422) {
-          const jsonResponse = await result.json()
+            switch (jsonResponse.code) {
+              case USER_INVALID_EMAIL: {
+                toast.error(t('verify_email_invalid_email_message') ?? '')
+                break
+              }
 
-          setVerificationError(true)
+              case USER_CANNOT_SEND_VERIFICATION_EMAIL:
+              case USER_INVALID_TOKEN_TYPE: {
+                toast.error(t('verify_email_email_could_not_be_sent_message'))
+                break
+              }
 
-          switch (jsonResponse.code) {
-            case 'verify-email-address-invalid-email':
-              setErrorMessage(t('verify_email_invalid_email_message') ?? '')
-              break
-            default:
-              setErrorMessage(t('verify_email_server_error_message') ?? '')
-              break
+              default: {
+                toast.error(t('verify_email_server_error_message'))
+                break
+              }
+            }
+
+            break
           }
-
-          return
+          default: {
+            toast.error(t('verify_email_server_error_message'))
+            break
+          }
         }
-
-        setErrorMessage(t('verify_email_server_error_message') ?? '')
-        setVerificationError(true)
 
         return
       }
@@ -75,8 +94,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       onConfirm(email)
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('verify_email_server_error_message') ?? '')
-      setVerificationError(true)
+      toast.error(t('verify_email_server_error_message'))
     }
   }
 
@@ -101,13 +119,6 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
           { t('verify_email_subtitle') }
         </small>
       </div>
-
-      <p className={ `
-        ${styles.register__error}
-        ${verificationError ? styles.register__error_visible : ''}
-      ` }>
-        { errorMessage }
-      </p>
 
       <FormInputSection
         label={ t('verify_email_email_input_label') }

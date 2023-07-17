@@ -54,9 +54,6 @@ export class MailerSendUserEmailSender implements UserEmailSenderInterface {
       .setTemplateId(VerificationTokenEmailTemplateId)
 
     // TODO: Handle possible errors
-    const response = await this.mailerSend.email.send(emailParams)
-
-    console.log(response.statusCode)
-    console.log(response.body)
+    await this.mailerSend.email.send(emailParams)
   }
 }

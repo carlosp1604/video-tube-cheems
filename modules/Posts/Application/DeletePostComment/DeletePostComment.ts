@@ -4,9 +4,6 @@ import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Doma
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 import { Post } from '~/modules/Posts/Domain/Post'
-import {
-  CreatePostCommentApplicationException
-} from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationException'
 import { User } from '~/modules/Auth/Domain/User'
 
 export class DeletePostComment {
@@ -24,7 +21,7 @@ export class DeletePostComment {
 
     const user = await this.getUser(request.userId)
 
-    if (request.parentCommentId !== null) {
+    if (request.parentCommentId === null) {
       this.deletePostComment(post, user, request)
     } else {
       this.deletePostChildComment(post, user, request)
@@ -37,7 +34,7 @@ export class DeletePostComment {
     const post = await this.postRepository.findById(postId, this.options)
 
     if (post === null) {
-      throw CreatePostCommentApplicationException.postNotFound(postId)
+      throw DeletePostCommentApplicationException.postNotFound(postId)
     }
 
     return post
@@ -47,7 +44,7 @@ export class DeletePostComment {
     const user = await this.userRepository.findById(userId)
 
     if (user === null) {
-      throw CreatePostCommentApplicationException.userNotFound(userId)
+      throw DeletePostCommentApplicationException.userNotFound(userId)
     }
 
     return user

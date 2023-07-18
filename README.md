@@ -429,14 +429,14 @@ Otherwise, you will receive an error message
 
 | HTTP Code | Code                                                   | Message                                                                                                                         |
 |-----------|--------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``get-posts-bad-request``                              | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 400       | ``post-validation-exception``                          | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
 | 422       | ``post-unprocessable-entity-invalid-sorting-criteria`` | Sorting criteria `sortingCriteria` is not a valid sorting criteria                                                              |
 | 422       | ``post-unprocessable-entity-invalid-sorting-option``   | Sorting option `sortingOption` is not a valid sorting option                                                                    |
 | 422       | ``post-unprocessable-entity-invalid-filter-type``      | Filter `filter` is not a valid filter                                                                                           |
 | 422       | ``post-unprocessable-entity-invalid-filter-value``     | Filter must be a not empty string and must not include special characters                                                       |
 | 422       | ``post-unprocessable-entity-invalid-per-page``         | PerPage must be a positive integer in range 10 - 256                                                                            |
 | 422       | ``post-unprocessable-entity-invalid-page``             | Page must be a integer greater or equal to 0                                                                                    |
-| 500       | ``get-user-server-error``                              | Something went wrong while processing request                                                                                   |
+| 500       | ``post-server-error``                                  | Something went wrong while processing request                                                                                   |
 
 ### Add a post comment
 Add a new post comment providing the postId and the comment text

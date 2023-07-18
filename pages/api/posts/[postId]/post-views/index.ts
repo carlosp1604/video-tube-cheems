@@ -9,6 +9,14 @@ import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView
 import {
   AddPostViewApplicationException
 } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
+import { AddPostViewApiRequest } from '~/modules/Posts/Infrastructure/Dtos/AddPostViewApiRequest'
+import {
+  POST_BAD_REQUEST, POST_METHOD,
+  POST_POST_NOT_FOUND,
+  POST_SERVER_ERROR, POST_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
@@ -18,13 +26,26 @@ export default async function handler (
     return handleMethod(request, response)
   }
 
-  const validationError = AddPostViewApiRequestValidator.validate(request.body)
+  const { postId } = request.query
+
+  if (!postId) {
+    return handleBadRequest(response)
+  }
+
+  const session = await getServerSession(request, response, authOptions)
+
+  const apiRequest: AddPostViewApiRequest = {
+    userId: session !== null ? session.user.id : null,
+    postId: String(postId),
+  }
+
+  const validationError = AddPostViewApiRequestValidator.validate(apiRequest)
 
   if (validationError) {
     return handleValidationError(response, validationError)
   }
 
-  const applicationRequest = AddPostViewRequestTranslator.fromApiDto(request.body)
+  const applicationRequest = AddPostViewRequestTranslator.fromApiDto(apiRequest)
 
   const useCase = container.resolve<AddPostView>('addPostView')
 
@@ -33,20 +54,21 @@ export default async function handler (
 
     return response.status(200).json(posts)
   } catch (exception: unknown) {
-    console.error(exception)
     if (!(exception instanceof AddPostViewApplicationException)) {
+      console.error(exception)
+
       return handleServerError(response)
     }
 
     switch (exception.id) {
       case AddPostViewApplicationException.postNotFoundId:
-      case AddPostViewApplicationException.userNotFoundId:
         return handleNotFound(response, exception)
 
-      default:
+      default: {
         console.error(exception)
 
         return handleServerError(response)
+      }
     }
   }
 }
@@ -56,7 +78,7 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
     .status(405)
     .setHeader('Allow', 'POST')
     .json({
-      code: 'post-views-method-not-allowed',
+      code: POST_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
@@ -67,9 +89,17 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'post-views-bad-request',
-      message: 'Invalid request body',
+      code: POST_VALIDATION,
+      message: 'Invalid request',
       errors: validationError.exceptions,
+    })
+}
+
+function handleBadRequest (response: NextApiResponse) {
+  return response.status(400)
+    .json({
+      code: POST_BAD_REQUEST,
+      message: 'postId parameter is required',
     })
 }
 
@@ -79,7 +109,7 @@ function handleNotFound (
 ) {
   return response.status(404)
     .json({
-      code: 'post-views-not-found',
+      code: POST_POST_NOT_FOUND,
       message: exception.message,
     })
 }
@@ -87,7 +117,7 @@ function handleNotFound (
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'post-views-server-error',
+      code: POST_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }

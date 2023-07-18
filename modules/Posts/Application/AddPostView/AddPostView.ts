@@ -6,7 +6,9 @@ import { randomUUID } from 'crypto'
 import { DateTime } from 'luxon'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { AddPostViewApplicationException } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
+import {
+  AddPostViewApplicationException
+} from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
 
 export class AddPostView {
   // eslint-disable-next-line no-useless-constructor

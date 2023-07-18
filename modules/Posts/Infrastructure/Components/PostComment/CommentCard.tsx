@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react'
+import { FC } from 'react'
 import styles from './CommentCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import { PostCommentCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentCardComponentDto'
@@ -8,12 +8,8 @@ interface Props {
   comment: PostCommentCardComponentDto
 }
 
-export const CommentCard: FC<Props> = ({
-  comment,
-}) => {
-  const responseLink: ReactElement | string = ''
-
-  let avatar = null
+export const CommentCard: FC<Props> = ({ comment }) => {
+  let avatar
 
   if (comment.user.imageUrl !== null) {
     avatar = (
@@ -49,7 +45,6 @@ export const CommentCard: FC<Props> = ({
       <div className={ styles.commentCard__comment }>
         { comment.comment }
       </div>
-      { responseLink }
     </div>
   )
 }

@@ -12,7 +12,7 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+You can start editing the page by modifying `pages/index.ts`. The page auto-updates as you edit the file.
 
 [API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
@@ -80,17 +80,16 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                                       | Message                                                                                                                         |
-|-----------|------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``verify-email-address-bad-request``                       | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request  |
-| 404       | ``verify-email-address-not-found``                         | User associated to given email was not found                                                                                    |
-| 409       | ``verify-email-address-conflict-token-already-issued``     | Verification token for user with email ``email`` was already sent                                                               |
-| 409       | ``verify-email-address-conflict-email-already-registered`` | ``email`` is already registered                                                                                                 |
-| 422       | ``verify-email-address-cannot-create-verification-token``  | Verification token for user with email ``email`` could not be created                                                           |
-| 422       | ``verify-email-address-cannot-send-verification-token``    | Verification token for user with email ``email`` could not be sent                                                              |
-| 422       | ``verify-email-address-invalid-email``                     | Verification token for user with email ``email`` could not be created                                                           |
-| 422       | ``verify-email-address-invalid-token-type``                | Cannot create verification token due to invalid email address: ``email``                                                        |
-| 500       | ``verify-email-address-internal-server-error``             | Something went wrong while processing request                                                                                   |
+| HTTP Code | Code                                                         | Message                                                                                                                              |
+|-----------|--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``user-request-validation-exception``                        | Invalid request body. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 404       | ``user-user-resource-not-found``                             | User associated to given email was not found                                                                                         |
+| 409       | ``user-conflict-token-already-issued``                       | Verification token for user with email ``email`` was already sent                                                                    |
+| 409       | ``user-conflict-email-already-registered``                   | ``email`` is already registered                                                                                                      |
+| 422       | ``user-unprocessable-entity-cannot-send-verification-token`` | Verification token for user with email ``email`` could not be sent                                                                   |
+| 422       | ``user-unprocessable-entity-invalid-email``                  | Verification token for user with email ``email`` could not be created                                                                |
+| 422       | ``user-unprocessable-entity-invalid-email-token-type``       | Cannot create verification token due to invalid email address: ``email``                                                             |
+| 500       | ``user-server-error``                                        | Something went wrong while processing request                                                                                        |
 
 ### Validate Token
 When a token is created its lifetime is 30 min. In order to validate the token you receive in your email address you can call to this endpoint with the user email and the token.
@@ -125,11 +124,13 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                       | Message                                                                                                                          |
-|-----------|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``validate-token-bad-request``             | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request   |
-| 404       | ``validate-token-not-found``               | Token not found. Either because the token does not exist, is expired, or cannot be used in this context                          |
-| 500       | ``validate-token-internal-server-error``   | Something went wrong while processing request                                                                                    |
+| HTTP Code | Code                                  | Message                                                                                                                         |
+|-----------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``user-bad-request``                  | email and token parameters are required                                                                                         |
+| 400       | ``user-request-validation-exception`` | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``user-unauthorized-invalid-token``   | Token is invalid, expired or cannot be used for the required operation                                                          |
+| 404       | ``user-token-resource-not-found``     | Token not found. Either because the token does not exist, is expired, or cannot be used in this context                         |
+| 500       | ``user-server-error``                 | Something went wrong while processing request                                                                                   |
 
 
 ### Create user
@@ -181,28 +182,27 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                                  | Message                                                                                                                        |
-|-----------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``create-user-bad-request``                           | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request |
-| 401       | ``create-user-unauthorized``                          | Token is invalid or expired                                                                                                    |
-| 409       | ``create-user-conflict-email-already-registered``     | Email: ``email`` is already registered                                                                                         |
-| 409       | ``create-user-conflict-username-already-registered``  | Username: ``username`` is already registered                                                                                   |
-| 422       | ``create-user-unprocessable-entity-invalid-name``     | Invalid name: ``name``                                                                                                         |
-| 422       | ``create-user-unprocessable-entity-invalid-username`` | Invalid username: ``username``                                                                                                 |
-| 422       | ``create-user-unprocessable-entity-invalid-email``    | Invalid email: ``email``                                                                                                       |
-| 422       | ``create-user-unprocessable-entity-invalid-password`` | Invalid password: ``password``                                                                                                 |
-| 500       | ``verify-email-address-internal-server-error``        | Something went wrong while processing request                                                                                  |
+| HTTP Code | Code                                           | Message                                                                                                                              |
+|-----------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``user-request-validation-exception``          | Invalid request body. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``user-unauthorized-invalid-token``            | Token is invalid or expired                                                                                                          |
+| 409       | ``user-conflict-email-already-registered``     | Email: ``email`` is already registered                                                                                               |
+| 409       | ``user-conflict-username-already-registered``  | Username: ``username`` is already registered                                                                                         |
+| 422       | ``user-unprocessable-entity-invalid-name``     | Invalid name: ``name``                                                                                                               |
+| 422       | ``user-unprocessable-entity-invalid-username`` | Invalid username: ``username``                                                                                                       |
+| 422       | ``user-unprocessable-entity-invalid-email``    | Invalid email: ``email``                                                                                                             |
+| 422       | ``user-unprocessable-entity-invalid-password`` | Invalid password: ``password``                                                                                                       |
+| 500       | ``user-server-error``                          | Something went wrong while processing request                                                                                        |
 
 ### Change user password
 To change the user account password you have to send the user email and the new password along with the token you received in your email address.
 
 ```
-PATCH /api/auth/users/change-password
+PATCH /api/auth/users/{userEmail}/change-password
 ```
 
 ```
 {
-  "email": string
   "password": string
   "token": string
 }
@@ -210,7 +210,7 @@ PATCH /api/auth/users/change-password
 
 | Parameter | Required   | Type/Possible values |
 |-----------|------------|----------------------| 
-| email     | ``true``   | ``string``           |
+| userEmail | ``true``   | ``string``           |
 | password  | ``true``   | ``string``           |
 | token     | ``true``   | ``string``           |
 
@@ -236,13 +236,14 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                                  | Message                                                                                                                        |
-|-----------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``change-user-password-bad-request``                  | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request |
-| 401       | ``change-user-password-unauthorized``                 | Token is invalid or expired                                                                                                    |
-| 404       | ``change-user-password-not-found``                    | User associated to token was not found                                                                                         |
-| 422       | ``change-user-password-unprocessable-entity``         | Provided password is not valid                                                                                                 |
-| 500       | ``change-user-password-internal-server-error``        | Something went wrong while processing request                                                                                  |
+| HTTP Code | Code                                           | Message                                                                                                                               |
+|-----------|------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``user-bad-request``                           | userEmail parameter is required                                                                                                       |
+| 400       | ``user-request-validation-exception``          | Invalid request body. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request  |
+| 401       | ``user-unauthorized-invalid-token``            | Token is invalid or expired                                                                                                           |
+| 404       | ``user-user-resource-not-found``               | User associated to token was not found                                                                                                |
+| 422       | ``user-unprocessable-entity-invalid-password`` | Provided password is not valid                                                                                                        |
+| 500       | ``user-server-error``                          | Something went wrong while processing request                                                                                         |
 
 ### Get logged user data
 This endpoint returns the information of the logged user. Before calling to this endpoint you must sign in.
@@ -253,7 +254,7 @@ GET /api/auth
 
 
 #### Responses
-The next body will be returned if everything is ok.
+The following body will be returned if everything is ok.
 
 ```
 {
@@ -279,11 +280,11 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                 | Message                                       |
-|-----------|--------------------------------------|-----------------------------------------------| 
-| 401       | ``get-user-authentication-required`` | User not authenticated                        |
-| 404       | ``get-user-resource-not-found``      | User with ID {userId} was not found           |
-| 500       | ``get-user-server-error``            | Something went wrong while processing request |
+| HTTP Code | Code                               | Message                                        |
+|-----------|------------------------------------|------------------------------------------------| 
+| 401       | ``user-authentication-required``   | User not authenticated                         |
+| 404       | ``user-user-resource-not-found``   | User with ID `userId` was not found            |
+| 500       | ``user-server-error``              | Something went wrong while processing request  |
 
 ### Get user data by its username
 To get the data from a specific user you must provide its username
@@ -298,7 +299,7 @@ GET /api/users/{username}
 
 
 #### Responses
-The next body will be returned if everything is ok.
+The following body will be returned if everything is ok.
 
 ```
 {
@@ -331,14 +332,15 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                            | Message                                                                                                                        |
-|-----------|---------------------------------|--------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``get-user-bad-request``        | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request |
-| 404       | ``get-user-resource-not-found`` | User with username {username} was not found                                                                                    |
-| 500       | ``get-user-server-error``       | Something went wrong while processing request                                                                                  |
+| HTTP Code | Code                                  | Message                                                                                                                         |
+|-----------|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``user-bad-request``                  | username parameter is required                                                                                                  |
+| 400       | ``user-bad-request``                  | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 404       | ``user-request-validation-exception`` | User with username {username} was not found                                                                                     |
+| 500       | ``user-server-error``                 | Something went wrong while processing request                                                                                   |
 
-### Get user data by its username
-To get the data from a specific user you must provide its username
+### Get posts
+To get a list of posts you must provide some parameters
 
 ```
 GET /api/posts?order={order}&orderBy={orderBy}&{...filters}
@@ -425,8 +427,249 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                | Message                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|-----------|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``get-posts-bad-request``           | Invalid request. This message will be accompanied by the ``error`` field that will indicate the specific errors in the request                                                                                                                                                                                                                                                                                                                     |
-| 422       | ``get-posts-unprocessable-entity``  | Some parameter value from the request is invalid.<br/>-PerPage must be a positive integer in range [{minLimit} - {maxLimit}]<br/>-Page must be a integer greater or equal to 0<br/>-Filter {filter} is not a valid filter<br/>-Filter must be a not empty string and must not include special characters<br/>-Sorting option {sortingOption} is not a valid sorting option<br/>-Sorting criteria {sortingCriteria} is not a valid sorting criteria |
-| 500       | ``get-user-server-error``           | Something went wrong while processing request                                                                                                                                                                                                                                                                                                                                                                                                      |
+| HTTP Code | Code                                                   | Message                                                                                                                         |
+|-----------|--------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``get-posts-bad-request``                              | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 422       | ``post-unprocessable-entity-invalid-sorting-criteria`` | Sorting criteria `sortingCriteria` is not a valid sorting criteria                                                              |
+| 422       | ``post-unprocessable-entity-invalid-sorting-option``   | Sorting option `sortingOption` is not a valid sorting option                                                                    |
+| 422       | ``post-unprocessable-entity-invalid-filter-type``      | Filter `filter` is not a valid filter                                                                                           |
+| 422       | ``post-unprocessable-entity-invalid-filter-value``     | Filter must be a not empty string and must not include special characters                                                       |
+| 422       | ``post-unprocessable-entity-invalid-per-page``         | PerPage must be a positive integer in range 10 - 256                                                                            |
+| 422       | ``post-unprocessable-entity-invalid-page``             | Page must be a integer greater or equal to 0                                                                                    |
+| 500       | ``get-user-server-error``                              | Something went wrong while processing request                                                                                   |
+
+### Add a post comment
+Add a new post comment providing the postId and the comment text
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+POST /api/posts/{postId}/comments
+```
+
+```
+{
+  "comment": string
+}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| postId    | ``true`` | ``string``           |
+| comment   | ``true`` | ``string``           |
+
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    id: string
+    comment: string
+    postId: string
+    userId: string
+    createdAt: string
+    updatedAt: string
+    user: {
+        id: string
+        name: string
+        username: string
+        email: string
+        imageUrl: string | null
+        language: string
+        emailVerified: string | null
+        createdAt: string
+        updatedAt: string
+    }
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                     | Message                                                                                                                         |
+|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-comment-bad-request``             | postId and comment parameters are required                                                                                      |
+| 400       | ``post-comment-validation-exception``    | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-comment-authentication-required`` | User must be authenticated to access to resource                                                                                |
+| 404       | ``post-comment-post-not-found``          | Post with ID `postId` was not found                                                                                             |
+| 500       | ``post-comment-server-error``            | Something went wrong while processing request                                                                                   |
+
+### Add a post child comment (reply)
+Add a new post child comment providing the postId, commentId and the comment text
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+POST /api/posts/{postId}/comments/{commentId}/children
+```
+
+```
+{
+  "comment": string
+}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| postId    | ``true`` | ``string``           |
+| commentId | ``true`` | ``string``           |
+| comment   | ``true`` | ``string``           |
+
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    id: string
+    comment: string
+    parentCommentId: string
+    userId: string
+    createdAt: string
+    updatedAt: string
+    user: {
+        id: string
+        name: string
+        username: string
+        email: string
+        imageUrl: string | null
+        language: string
+        emailVerified: string | null
+        createdAt: string
+        updatedAt: string
+    }
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                             | Message                                                                                                                           |
+|-----------|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-child-comment-bad-request``               | commentId, postId and comment parameters are required                                                                             |
+| 400       | ``post-child-comment-validation-exception``      | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request   |
+| 401       | ``post-child-comment-authentication-required``   | User must be authenticated to access to resource                                                                                  |
+| 404       | ``post-child-comment-post-not-found``            | Post with ID `postId` was not found                                                                                               |
+| 404       | ``post-child-comment-parent-comment-not-found``  | PostComment with ID `postCommentId` was not found                                                                                 |
+| 500       | ``post-child-comment-server-error``              | Something went wrong while processing request                                                                                     |
+
+### Delete a post comment
+To delete a post comment from a post you must provide postId and commentId
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+DELETE /api/posts/{postId}/comments/{commentId}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| postId    | ``true`` | ``string``           |
+| commentId | ``true`` | ``string``           |
+
+
+#### Responses
+If post comment is removed correctly a 204 No Content will be returned.
+
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                            | Message                                                                                                                         |
+|-----------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-comment-bad-request``                    | postId and commentId parameters are required                                                                                    |
+| 400       | ``post-comment-validation-exception``           | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-comment-authentication-required``        | User must be authenticated to access to resource                                                                                |
+| 403       | ``post-comment-forbidden``                      | User does not have access to the resource                                                                                       |
+| 404       | ``post-comment-post-not-found``                 | Post with ID `postId` was not found                                                                                             |
+| 404       | ``post-comment-post-comment-not-found``         | Post comment with ID `postId` was not found                                                                                     |
+| 409       | ``post-comment-conflict-cannot-delete-comment`` | Cannot delete comment with ID `postCommentId` from it's post or parent                                                          |
+| 500       | ``post-comment-server-error``                   | Something went wrong while processing request                                                                                   |
+
+### Delete a post child comment (reply)
+To delete a post child comment from a parent comment you must provide postId, commentId and childCommentId
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+DELETE /api/posts/{postId}/comments/{commentId}/children/{childCommentId}
+```
+
+| Parameter      | Required | Type/Possible values |
+|----------------|----------|----------------------| 
+| postId         | ``true`` | ``string``           |
+| commentId      | ``true`` | ``string``           |
+| childCommentId | ``true`` | ``string``           |
+
+
+#### Responses
+If post child comment is removed correctly a 204 No Content will be returned.
+
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                                 | Message                                                                                                                         |
+|-----------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-child-comment-bad-request``                   | postId, commentId and childCommentId parameters are required                                                                    |
+| 400       | ``post-child-comment-validation-exception``          | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-child-comment-authentication-required``       | User must be authenticated to access to resource                                                                                |
+| 403       | ``post-child-comment-forbidden-resource``            | User does not have access to the resource                                                                                       |
+| 404       | ``post-child-comment-post-not-found``                | Post with ID `postId` was not found                                                                                             |
+| 404       | ``post-child-comment-parent-comment-not-found``      | Parent comment with ID `postId` was not found                                                                                   |
+| 404       | ``post-child-comment-post-comment-not-found``        | Post comment with ID `postId` was not found                                                                                     |
+| 409       | ``post-child-comment-cannot-delete-child-comment``   | Cannot delete comment with ID `postCommentId` from it's post or parent                                                          |
+| 500       | ``post-child-comment-server-error``                  | Something went wrong while processing request                                                                                   |

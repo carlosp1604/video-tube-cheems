@@ -69,7 +69,10 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
 
         <button
           className={ styles.userMenu__signOutButton }
-          onClick={ () => signOut({ redirect: false }) }
+          onClick={ () => {
+            signOut({ redirect: false })
+              .then(() => setIsOpen(false))
+          } }
         >
           <CiLogout className={ styles.userMenu__icon }/>
           { t('user_sign_out_button') }

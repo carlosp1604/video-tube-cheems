@@ -4,6 +4,12 @@ import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiSe
 import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import {
+  USER_CANNOT_SEND_VERIFICATION_EMAIL,
+  USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
+  USER_TOKEN_ALREADY_ISSUED
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+import toast from 'react-hot-toast'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -11,9 +17,7 @@ export interface Props {
 
 export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
   const [email, setEmail] = useState<string>('')
-  const [errorMessage, setErrorMessage] = useState<string>('')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
-  const [verificationError, setVerificationError] = useState<boolean>(false)
   const [resendEmail, setResendEmail] = useState<boolean>(false)
 
   const authApiService = new AuthApiService()
@@ -21,7 +25,6 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
   const { t } = useTranslation('user_retrieve_password')
 
   const onSubmit = async (event: FormEvent) => {
-    setVerificationError(false)
     event.preventDefault()
 
     if (email === '') {
@@ -29,53 +32,61 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
-      const result = await authApiService.verifyEmailForRecoverPassword(email, resendEmail)
+      const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
 
       if (!result.ok) {
-        if (result.status === 404) {
-          setErrorMessage(t('verify_email_email_user_not_found_message') ?? '')
-          setVerificationError(true)
+        switch (result.status) {
+          case 409: {
+            const jsonResponse = await result.json()
 
-          return
-        }
+            switch (jsonResponse.code) {
+              case USER_TOKEN_ALREADY_ISSUED: {
+                setResendEmail(true)
+                toast.error(t('verify_email_email_already_sent_message'))
+                break
+              }
 
-        if (result.status === 409) {
-          const jsonResponse = await result.json()
+              case USER_EMAIL_ALREADY_REGISTERED: {
+                toast.error(t('verify_email_email_not_available_message'))
+                break
+              }
 
-          setVerificationError(true)
-
-          if (jsonResponse.code === 'verify-email-address-conflict-token-already-issued') {
-            setResendEmail(true)
-            setErrorMessage(t('verify_email_email_already_sent_message') ?? '')
-
-            return
+              default: {
+                toast.error(t('verify_email_server_error_message'))
+                break
+              }
+            }
+            break
           }
 
-          setErrorMessage(t('verify_email_server_error_message') ?? '')
-          setVerificationError(true)
+          case 422: {
+            const jsonResponse = await result.json()
 
-          return
-        }
+            switch (jsonResponse.code) {
+              case USER_INVALID_EMAIL: {
+                toast.error(t('verify_email_invalid_email_message') ?? '')
+                break
+              }
 
-        if (result.status === 422) {
-          const jsonResponse = await result.json()
+              case USER_CANNOT_SEND_VERIFICATION_EMAIL:
+              case USER_INVALID_TOKEN_TYPE: {
+                toast.error(t('verify_email_email_could_not_be_sent_message'))
+                break
+              }
 
-          setVerificationError(true)
+              default: {
+                toast.error(t('verify_email_server_error_message'))
+                break
+              }
+            }
 
-          switch (jsonResponse.code) {
-            case 'verify-email-address-invalid-email':
-              setErrorMessage(t('verify_email_invalid_email_message') ?? '')
-              break
-            default:
-              setErrorMessage(t('verify_email_server_error_message') ?? '')
-              break
+            break
           }
-
-          return
+          default: {
+            toast.error(t('verify_email_server_error_message'))
+            break
+          }
         }
-
-        setErrorMessage(t('verify_email_server_error_message') ?? '')
-        setVerificationError(true)
 
         return
       }
@@ -83,8 +94,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
       onConfirm(email)
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('verify_email_server_error_message') ?? '')
-      setVerificationError(true)
+      toast.error(t('verify_email_server_error_message'))
     }
   }
 
@@ -109,13 +119,6 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
           { t('verify_email_subtitle') }
         </small>
       </h1>
-
-      <p className={ `
-        ${styles.retrievePassword__error}
-        ${verificationError ? styles.retrievePassword__error_visible : ''}
-      ` }>
-        { errorMessage }
-      </p>
 
       <FormInputSection
         label={ t('verify_email_email_input_label') }

@@ -3,8 +3,7 @@
     @apply grid gap-2 items-center border-opacity-50;
     grid-template-areas:
       "user-logo  user-name-date"
-      "user-logo  comment"
-      "user-logo  child-comment-section";
+      "user-logo  comment";
     grid-auto-columns: auto 1fr;
   }
 
@@ -46,13 +45,5 @@
       "user-logo  user-name-date"
       "user-logo  comment";
     grid-auto-rows: auto 1fr;
-  }
-
-  &__replies_button {
-    @apply text-xs mr-auto mb-2 font-semibold text-brand-300 cursor-pointer;
-
-    &:hover, &:focus {
-      @apply text-brand-900;
-    }
   }
 }

@@ -19,7 +19,6 @@ import {
 import { container } from '~/awilix.container'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   CreatePostChildCommentRequestSanitizer
 } from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
@@ -36,6 +35,15 @@ import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostCh
 import {
   CreatePostChildCommentApplicationException
 } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationException'
+import {
+  POST_CHILD_COMMENT_AUTH_REQUIRED,
+  POST_CHILD_COMMENT_BAD_REQUEST,
+  POST_CHILD_COMMENT_INVALID_PAGE,
+  POST_CHILD_COMMENT_INVALID_PER_PAGE, POST_CHILD_COMMENT_METHOD,
+  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
+  POST_CHILD_COMMENT_POST_NOT_FOUND,
+  POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
@@ -63,7 +71,7 @@ async function handleGet (request: NextApiRequest, response: NextApiResponse) {
   const apiRequest: GetPostPostChildCommentsApiRequestDto = {
     page: parseInt(page.toString()),
     perPage: parseInt(perPage.toString()),
-    parentCommentId: commentId ? commentId.toString() : '',
+    parentCommentId: String(commentId),
   }
 
   const validationError = GetPostPostChildCommentsApiRequestValidator.validate(apiRequest)
@@ -81,17 +89,19 @@ async function handleGet (request: NextApiRequest, response: NextApiResponse) {
       perPage: apiRequest.perPage,
     })
 
-    return response
-      .status(200).json(comments)
+    return response.status(200).json(comments)
   } catch (exception: unknown) {
     if (!(exception instanceof CreatePostCommentApplicationException)) {
+      console.error(exception)
+
       return handleServerError(response)
     }
 
     switch (exception.id) {
       case GetPostPostChildCommentsApplicationException.invalidPageValueId:
+        return handleUnprocessableEntity(response, exception, POST_CHILD_COMMENT_INVALID_PAGE)
       case GetPostPostChildCommentsApplicationException.invalidPerPageValueId:
-        return handleUnprocessableEntity(response, exception)
+        return handleUnprocessableEntity(response, exception, POST_CHILD_COMMENT_INVALID_PER_PAGE)
 
       default: {
         console.error(exception)
@@ -156,11 +166,9 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
     switch (exception.id) {
       // NOTE: If user is not found we assume is a server error
       case CreatePostChildCommentApplicationException.postNotFoundId:
+        return handleNotFound(response, exception, POST_CHILD_COMMENT_POST_NOT_FOUND)
       case CreatePostChildCommentApplicationException.parentCommentNotFoundId:
-        return handleNotFound(response, exception)
-
-      case CreatePostChildCommentApplicationException.cannotAddCommentId:
-        return handleConflict(response)
+        return handleNotFound(response, exception, POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND)
 
       default: {
         console.error(exception)
@@ -175,8 +183,8 @@ function handleBadRequest (response: NextApiResponse) {
   return response
     .status(400)
     .json({
-      code: 'post-child-comment-bad-request',
-      message: 'parentCommentId, page and perPage parameters are required',
+      code: POST_CHILD_COMMENT_BAD_REQUEST,
+      message: 'commentId, postId and comment parameters are required',
     })
 }
 
@@ -185,7 +193,7 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
     .status(405)
     .setHeader('Allow', ['POST', 'GET'])
     .json({
-      code: 'post-child-comment-method-not-allowed',
+      code: POST_CHILD_COMMENT_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
@@ -197,8 +205,8 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'post-child-comment-validation-exception',
-      message: 'Invalid request body',
+      code: POST_CHILD_COMMENT_VALIDATION,
+      message: 'Invalid request',
       errors: validationError.exceptions,
     })
 }
@@ -206,40 +214,37 @@ function handleValidationError (
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'post-child-comment-server-error',
+      code: POST_CHILD_COMMENT_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }
 
 function handleUnprocessableEntity (
   response: NextApiResponse,
-  exception: GetPostsApplicationException
+  exception: GetPostsApplicationException,
+  code: string
 ) {
   return response.status(422)
     .json({
-      code: 'post-child-comment-unprocessable-entity',
+      code,
       message: exception.message,
     })
 }
 
-function handleNotFound (response: NextApiResponse, exception: CreatePostChildCommentApplicationException) {
+function handleNotFound (
+  response: NextApiResponse,
+  exception: CreatePostChildCommentApplicationException,
+  code: string
+) {
   return response.status(404)
     .json({
-      code: 'post-child-comment-resource-not-found',
+      code,
       message: exception.message,
-    })
-}
-
-function handleConflict (response: NextApiResponse) {
-  return response.status(409)
-    .json({
-      code: 'post-child-comment-cannot-add-comment',
-      message: 'Cannot add comment to post',
     })
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = bindings.get<string>('BaseUrl')
+  const baseUrl = container.resolve<string>('baseUrl')
 
   response.setHeader(
     'WWW-Authenticate',
@@ -249,7 +254,7 @@ function handleAuthentication (request: NextApiRequest, response: NextApiRespons
   return response
     .status(401)
     .json({
-      code: 'post-child-comment-authentication-required',
+      code: POST_CHILD_COMMENT_AUTH_REQUIRED,
       message: 'User must be authenticated to access to resource',
     })
 }

@@ -13,15 +13,17 @@ export const PostCardCarousel: FC<Props> = ({ posts }) => {
   return (
     <Carousel onEndReached={ undefined }>
       { posts.map((post) => {
-        return (
-          <PostCard
-            setPlayerId={ setPlayerId }
-            playerId={ playerId }
-            post={ post }
-            key={ post.id }
-            showProducerImage={ false }
-          />
-        )
+        return ({
+          key: post.id,
+          component:
+            <PostCard
+              setPlayerId={ setPlayerId }
+              playerId={ playerId }
+              post={ post }
+              key={ post.id }
+              showProducerImage={ false }
+          />,
+        })
       }) }
     </Carousel>
 

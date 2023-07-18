@@ -45,7 +45,7 @@ export class CreatePostChildCommentApplicationException extends ApplicationExcep
   ): CreatePostChildCommentApplicationException {
     return new CreatePostChildCommentApplicationException(
       `PostComment with ID ${postCommentId} was not found`,
-      this.userNotFoundId
+      this.parentCommentNotFoundId
     )
   }
 }

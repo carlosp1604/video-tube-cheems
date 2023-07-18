@@ -14,6 +14,8 @@ export class PostDomainException extends DomainException {
   public static userHasNotReactedId = 'post_domain_user_has_not_reacted'
   public static cannotDeleteReactionId = 'post_domain_cannot_delete_reaction'
   public static producerAlreadySetId = 'post_domain_producer_already_set'
+  public static postCommentNotFoundId = 'post_domain_post_comment_not_found'
+  public static userCannotDeleteCommentId = 'post_domain_user_cannot_delete_comment'
 
   public static parentCommentNotFound (parentCommentId: PostComment['id']): PostDomainException {
     return new PostDomainException(
@@ -82,6 +84,23 @@ export class PostDomainException extends DomainException {
     return new PostDomainException(
       `Post with ID ${postId} has already a producer setted`,
       this.producerAlreadySetId
+    )
+  }
+
+  public static postCommentNotFound (postCommentId: PostComment['id']): PostDomainException {
+    return new PostDomainException(
+      `PostComment with ID ${postCommentId} was not found`,
+      this.postCommentNotFoundId
+    )
+  }
+
+  public static userCannotDeleteComment (
+    userId: User['id'],
+    postCommentId: PostComment['id']
+  ): PostDomainException {
+    return new PostDomainException(
+      `PostComment with ID ${postCommentId} does not belong to user with ID ${userId}`,
+      this.userCannotDeleteCommentId
     )
   }
 }

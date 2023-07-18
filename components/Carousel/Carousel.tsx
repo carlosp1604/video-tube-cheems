@@ -3,8 +3,13 @@ import styles from './Carousel.module.scss'
 import { BsCaretLeft, BsCaretRight } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 
+export interface KeyedComponent {
+  key: string
+  component: ReactNode
+}
+
 interface Props {
-  children: ReactNode[]
+  children: KeyedComponent[]
   onEndReached: (() => void) | undefined
 }
 
@@ -82,9 +87,9 @@ export const Carousel: FC<Props> = ({ children, onEndReached }) => {
         { children.map((child) => {
           return (
             <div
-              key={ null }
+              key={ child.key }
               className={ styles.carousel__sliderItem }>
-              { child }
+              { child.component }
             </div>
           )
         }) }

@@ -4,6 +4,7 @@ import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiSe
 import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
+import toast from 'react-hot-toast'
 
 export interface Props {
   email: string
@@ -12,19 +13,16 @@ export interface Props {
 }
 
 export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
-  const [errorMessage, setErrorMessage] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [passwordRepeat, setPasswordRepeat] = useState<string>('')
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
   const [invalidPasswordRepeat, setInvalidPasswordRepeat] = useState<boolean>(false)
-  const [passwordChangeError, setPasswordChangeError] = useState<boolean>(false)
 
   const authApiService = new AuthApiService()
 
   const { t } = useTranslation('user_retrieve_password')
 
   const onSubmit = async (event: FormEvent) => {
-    setPasswordChangeError(false)
     event.preventDefault()
 
     if (token === '') {
@@ -35,27 +33,27 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
       const result = await authApiService.changeUserPassword(email, password, token)
 
       if (!result.ok) {
-        if (result.status === 404) {
-          setErrorMessage(t('change_password_user_not_found_message', { email }) ?? '')
-          setPasswordChangeError(true)
+        switch (result.status) {
+          case 404: {
+            toast.error(t('change_password_user_not_found_message', { email }))
+            break
+          }
 
-          return
+          case 401: {
+            toast.error(t('change_password_user_not_found_message', { email }))
+            break
+          }
+
+          case 422: {
+            toast.error(t('change_password_invalid_password_message'))
+            break
+          }
+
+          default: {
+            toast.error(t('change_password_server_error_message'))
+            break
+          }
         }
-
-        if (result.status === 401) {
-          setErrorMessage(t('change_password_invalid_code_message') ?? '')
-          setPasswordChangeError(true)
-        }
-
-        if (result.status === 422) {
-          setErrorMessage(t('change_password_invalid_password_message') ?? '')
-          setPasswordChangeError(true)
-
-          return
-        }
-
-        setErrorMessage(t('change_password_server_error_message') ?? '')
-        setPasswordChangeError(true)
 
         return
       }
@@ -63,8 +61,7 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
       onConfirm()
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('change_password_server_error_message') ?? '')
-      setPasswordChangeError(true)
+      toast.error(t('change_password_server_error_message'))
     }
   }
 
@@ -100,13 +97,6 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
           { t('change_password_subtitle', { email }) }
         </small>
       </h1>
-
-      <p className={ `
-        ${styles.retrievePassword__error}
-        ${passwordChangeError ? styles.retrievePassword__error_visible : ''}
-      ` }>
-        { errorMessage }
-      </p>
 
       <FormInputSection
         label={ t('change_password_password_input_label') }

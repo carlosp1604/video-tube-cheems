@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
+import toast from 'react-hot-toast'
 
 export interface Props {
   email: string
@@ -12,16 +13,13 @@ export interface Props {
 
 export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
   const [code, setCode] = useState<string>('')
-  const [errorMessage, setErrorMessage] = useState<string>('')
   const [invalidCode, setInvalidCode] = useState<boolean>(false)
-  const [validationError, setValidationError] = useState<boolean>(false)
 
   const { t } = useTranslation('user_signup')
 
   const authApiService = new AuthApiService()
 
   const onSubmit = async (event: FormEvent) => {
-    setValidationError(false)
     event.preventDefault()
 
     if (code === '') {
@@ -32,15 +30,16 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
       const result = await authApiService.validateVerificationCode(email, code)
 
       if (!result.ok) {
-        if (result.status === 404) {
-          setErrorMessage(t('validate_code_invalid_code_message') ?? '')
-          setValidationError(true)
+        switch (result.status) {
+          case 401:
+          case 404:
+            toast.error(t('validate_code_invalid_code_message'))
+            break
 
-          return
+          default:
+            toast.error(t('validate_code_server_error_message'))
+            break
         }
-
-        setErrorMessage(t('validate_code_server_error_message') ?? '')
-        setValidationError(true)
 
         return
       }
@@ -48,8 +47,7 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
       onConfirm(code)
     } catch (exception: unknown) {
       console.error(exception)
-      setErrorMessage(t('validate_code_server_error_message') ?? '')
-      setValidationError(true)
+      toast.error(t('validate_code_server_error_message'))
     }
   }
 
@@ -68,13 +66,6 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
           { t('validate_code_subtitle') }
         </small>
       </h1>
-
-      <p className={ `
-        ${styles.register__error}
-        ${validationError ? styles.register__error_visible : ''}
-      ` }>
-        { errorMessage }
-      </p>
 
       <FormInputSection
         label={ t('validate_code_code_input_label') }

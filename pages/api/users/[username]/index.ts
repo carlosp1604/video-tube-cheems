@@ -8,6 +8,12 @@ import {
 import {
   GetUserByUsernameApplicationException
 } from '~/modules/Auth/Application/GetUser/GetUserByUsernameApplicationException'
+import {
+  USER_BAD_REQUEST,
+  USER_METHOD,
+  USER_SERVER_ERROR,
+  USER_USER_NOT_FOUND, USER_VALIDATION
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
@@ -19,11 +25,15 @@ export default async function handler (
 
   const username = request.query.username
 
+  if (!username) {
+    return handleBadRequest(response)
+  }
+
   const validationException =
-    GetUserByUsernameApiRequestValidator.validate(username ? username.toString() : '')
+    GetUserByUsernameApiRequestValidator.validate(String(username))
 
   if (validationException) {
-    return handleBadRequest(response, validationException)
+    return handleValidation(response, validationException)
   }
 
   const getUser = container.resolve<GetUserByUsername>('getUserByUsername')
@@ -46,7 +56,7 @@ export default async function handler (
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'get-user-server-error',
+      code: USER_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }
@@ -54,29 +64,39 @@ function handleServerError (response: NextApiResponse) {
 function handleNotFound (response: NextApiResponse, message: string) {
   return response.status(404)
     .json({
-      code: 'get-user-resource-not-found',
+      code: USER_USER_NOT_FOUND,
       message,
     })
 }
 
 function handleMethod (response: NextApiResponse) {
   return response
-    .setHeader('Allow', 'PATCH')
+    .setHeader('Allow', 'GET')
     .status(405)
     .json({
-      code: 'get-user-method-not-allowed',
+      code: USER_METHOD,
       message: 'HTTP method not allowed',
     })
 }
 
 function handleBadRequest (
+  response: NextApiResponse) {
+  return response
+    .status(400)
+    .json({
+      code: USER_BAD_REQUEST,
+      message: 'username parameter is required',
+    })
+}
+
+function handleValidation (
   response: NextApiResponse,
   validationException: UserApiValidationException
 ) {
   return response
     .status(400)
     .json({
-      code: 'get-user-bad-request',
+      code: USER_VALIDATION,
       message: 'Invalid request',
       errors: validationException.exceptions,
     })

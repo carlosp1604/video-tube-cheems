@@ -62,7 +62,5 @@ export const authOptions: NextAuthOptions = {
 }
 
 export default async function auth (request: NextApiRequest, response: NextApiResponse) {
-  response.setHeader('Cache-Control', 'no-store, max-age=0')
-
   return await NextAuth(request, response, authOptions)
 }

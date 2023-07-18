@@ -11,6 +11,11 @@ import {
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
 import { container } from '~/awilix.container'
+import {
+  POST_INVALID_FILTER_TYPE, POST_INVALID_FILTER_VALUE, POST_INVALID_PAGE, POST_INVALID_PER_PAGE,
+  POST_INVALID_SORTING_CRITERIA,
+  POST_INVALID_SORTING_OPTION, POST_METHOD, POST_SERVER_ERROR, POST_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
@@ -47,12 +52,22 @@ export default async function handler (
 
     switch (exception.id) {
       case GetPostsApplicationException.invalidSortingCriteriaId:
+        return handleUnprocessableEntity(response, exception, POST_INVALID_SORTING_CRITERIA)
+
       case GetPostsApplicationException.invalidSortingOptionId:
+        return handleUnprocessableEntity(response, exception, POST_INVALID_SORTING_OPTION)
+
       case GetPostsApplicationException.invalidFilterTypeId:
+        return handleUnprocessableEntity(response, exception, POST_INVALID_FILTER_TYPE)
+
       case GetPostsApplicationException.invalidFilterValueId:
+        return handleUnprocessableEntity(response, exception, POST_INVALID_FILTER_VALUE)
+
       case GetPostsApplicationException.invalidPerPageValueId:
+        return handleUnprocessableEntity(response, exception, POST_INVALID_PER_PAGE)
+
       case GetPostsApplicationException.invalidPageValueId:
-        return handleUnprocessableEntity(response, exception)
+        return handleUnprocessableEntity(response, exception, POST_INVALID_PAGE)
 
       default: {
         console.error(exception)
@@ -79,16 +94,16 @@ function parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto>
     if (queryFilter) {
       filters.push({
         type: filter,
-        value: queryFilter.toString(),
+        value: String(queryFilter),
       })
     }
   }
 
   return {
-    ...page ? { page: parseInt(page.toString()) } : {},
-    ...perPage ? { perPage: parseInt(perPage.toString()) } : {},
-    ...orderBy ? { orderBy: orderBy.toString() } : {},
-    ...order ? { order: order.toString() } : {},
+    ...page ? { page: parseInt(String(page)) } : {},
+    ...perPage ? { perPage: parseInt(String(perPage)) } : {},
+    ...orderBy ? { orderBy: String(orderBy) } : {},
+    ...order ? { order: String(order) } : {},
     filters,
   }
 }
@@ -98,7 +113,7 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
     .status(405)
     .setHeader('Allow', 'GET')
     .json({
-      code: 'get-posts-method-not-allowed',
+      code: POST_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
@@ -109,7 +124,7 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'get-posts-bad-request',
+      code: POST_VALIDATION,
       message: 'Invalid request body',
       errors: validationError.exceptions,
     })
@@ -117,11 +132,12 @@ function handleValidationError (
 
 function handleUnprocessableEntity (
   response: NextApiResponse,
-  exception: GetPostsApplicationException
+  exception: GetPostsApplicationException,
+  code: string
 ) {
   return response.status(422)
     .json({
-      code: 'get-posts-unprocessable-entity',
+      code,
       message: exception.message,
     })
 }
@@ -129,7 +145,7 @@ function handleUnprocessableEntity (
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'get-posts-server-error',
+      code: POST_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }

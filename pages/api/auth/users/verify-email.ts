@@ -11,6 +11,14 @@ import {
 import {
   VerifyEmailAddressApplicationRequestTranslator
 } from '~/modules/Auth/Infrastructure/Translators/VerifyEmailAddressApplicationRequestTranslator'
+import {
+  USER_CANNOT_SEND_VERIFICATION_EMAIL,
+  USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
+  USER_METHOD,
+  USER_SERVER_ERROR, USER_TOKEN_ALREADY_ISSUED,
+  USER_USER_NOT_FOUND,
+  USER_VALIDATION
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
@@ -41,14 +49,21 @@ export default async function handler (
     switch (exception.id) {
       case VerifyEmailAddressApplicationException.userNotFoundId:
         return handleNotFound(response)
+
       case VerifyEmailAddressApplicationException.existingTokenActiveId:
+        return handleConflict(exception, response, USER_TOKEN_ALREADY_ISSUED)
+
       case VerifyEmailAddressApplicationException.emailAlreadyRegisteredId:
-        return handleConflict(exception, response)
-      case VerifyEmailAddressApplicationException.cannotCreateVerificationTokenId:
+        return handleConflict(exception, response, USER_EMAIL_ALREADY_REGISTERED)
+
       case VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmailId:
+        return handleUnprocessableEntity(response, exception, USER_CANNOT_SEND_VERIFICATION_EMAIL)
+
       case VerifyEmailAddressApplicationException.invalidEmailAddressId:
+        return handleUnprocessableEntity(response, exception, USER_INVALID_EMAIL)
+
       case VerifyEmailAddressApplicationException.invalidTokenTypeId:
-        return handleUnprocessableEntity(response, exception)
+        return handleUnprocessableEntity(response, exception, USER_INVALID_TOKEN_TYPE)
 
       default: {
         console.error(exception)
@@ -58,21 +73,13 @@ export default async function handler (
     }
   }
 
-  response.status(201).end()
+  return response.status(201).end()
 }
 
-function handleConflict (exception: VerifyEmailAddressApplicationException, response: NextApiResponse) {
-  let exceptionCode: string
-
-  if (exception.id === VerifyEmailAddressApplicationException.existingTokenActiveId) {
-    exceptionCode = 'verify-email-address-conflict-token-already-issued'
-  } else {
-    exceptionCode = 'verify-email-address-conflict-email-already-registered'
-  }
-
+function handleConflict (exception: VerifyEmailAddressApplicationException, response: NextApiResponse, code: string) {
   return response.status(409)
     .json({
-      code: exceptionCode,
+      code,
       message: exception.message,
     })
 }
@@ -82,7 +89,7 @@ function handleMethod (response: NextApiResponse) {
     .setHeader('Allow', 'POST')
     .status(405)
     .json({
-      code: 'verify-email-address-method-not-allowed',
+      code: USER_METHOD,
       message: 'HTTP method not allowed',
     })
 }
@@ -94,39 +101,20 @@ function handleBadRequestValidationError (
   return response
     .status(400)
     .json({
-      code: 'verify-email-address-bad-request',
-      message: 'Invalid request',
+      code: USER_VALIDATION,
+      message: 'Invalid request body',
       errors: validationException.exceptions,
     })
 }
 
-function handleUnprocessableEntity (response: NextApiResponse, exception: VerifyEmailAddressApplicationException) {
-  let exceptionCode: string
-
-  switch (exception.id) {
-    case VerifyEmailAddressApplicationException.cannotCreateVerificationTokenId:
-      exceptionCode = 'verify-email-address-cannot-create-verification-token'
-      break
-
-    case VerifyEmailAddressApplicationException.cannotSendVerificationTokenEmailId:
-      exceptionCode = 'verify-email-address-cannot-send-verification-token'
-      break
-
-    case VerifyEmailAddressApplicationException.invalidEmailAddressId:
-      exceptionCode = 'verify-email-address-invalid-email-address'
-      break
-
-    case VerifyEmailAddressApplicationException.invalidTokenTypeId:
-      exceptionCode = 'verify-email-address-invalid-email-token-type'
-      break
-
-    default:
-      exceptionCode = 'verify-email-address-unprocessable-entity'
-  }
-
+function handleUnprocessableEntity (
+  response: NextApiResponse,
+  exception: VerifyEmailAddressApplicationException,
+  code: string
+) {
   return response.status(422)
     .json({
-      code: exceptionCode,
+      code,
       message: exception.message,
     })
 }
@@ -134,7 +122,7 @@ function handleUnprocessableEntity (response: NextApiResponse, exception: Verify
 function handleNotFound (response: NextApiResponse) {
   return response.status(404)
     .json({
-      code: 'verify-email-address-not-found',
+      code: USER_USER_NOT_FOUND,
       message: 'User associated to given email was not found',
     })
 }
@@ -142,7 +130,7 @@ function handleNotFound (response: NextApiResponse) {
 function handleInternalError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'verify-email-address-internal-server-error',
+      code: USER_SERVER_ERROR,
       message: 'Something went wrong while processing request',
     })
 }

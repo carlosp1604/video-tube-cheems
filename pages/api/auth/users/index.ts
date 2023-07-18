@@ -7,6 +7,15 @@ import { CreateUserApplicationException } from '~/modules/Auth/Application/Creat
 import {
   CreateUserApplicationRequestTranslator
 } from '~/modules/Auth/Infrastructure/Translators/CreateUserApplicationRequestTranslator'
+import {
+  USER_INVALID_EMAIL,
+  USER_INVALID_NAME,
+  USER_INVALID_PASSWORD,
+  USER_INVALID_USERNAME,
+  USER_INVALID_VERIFICATION_TOKEN,
+  USER_EMAIL_ALREADY_REGISTERED,
+  USER_USERNAME_ALREADY_REGISTERED, USER_METHOD, USER_SERVER_ERROR, USER_VALIDATION
+} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,
@@ -19,7 +28,7 @@ export default async function handler (
   const validationExceptions = CreateUserApiRequestValidator.validate(request.body)
 
   if (validationExceptions) {
-    return handleBadRequest(response, validationExceptions)
+    return handleValidation(response, validationExceptions)
   }
 
   const applicationRequest = CreateUserApplicationRequestTranslator.fromApi(request.body)
@@ -36,15 +45,25 @@ export default async function handler (
 
     switch (exception.id) {
       case CreateUserApplicationException.emailAlreadyRegisteredId:
+        return handleConflict(response, exception, USER_EMAIL_ALREADY_REGISTERED)
+
       case CreateUserApplicationException.usernameAlreadyRegisteredId:
-        return handleConflict(response, exception)
+        return handleConflict(response, exception, USER_USERNAME_ALREADY_REGISTERED)
+
       case CreateUserApplicationException.verificationTokenIsNotValidId:
         return handleUnauthorized(response)
+
       case CreateUserApplicationException.invalidUsernameId:
+        return handleUnprocessableEntity(response, exception, USER_INVALID_USERNAME)
+
       case CreateUserApplicationException.invalidEmailId:
+        return handleUnprocessableEntity(response, exception, USER_INVALID_EMAIL)
+
       case CreateUserApplicationException.invalidPasswordId:
+        return handleUnprocessableEntity(response, exception, USER_INVALID_PASSWORD)
+
       case CreateUserApplicationException.invalidNameId:
-        return handleUnprocessableEntity(response, exception)
+        return handleUnprocessableEntity(response, exception, USER_INVALID_NAME)
 
       default: {
         console.error(exception)
@@ -54,7 +73,7 @@ export default async function handler (
     }
   }
 
-  response.status(201).end()
+  return response.status(201).end()
 }
 
 function handleMethod (response: NextApiResponse) {
@@ -62,20 +81,20 @@ function handleMethod (response: NextApiResponse) {
     .setHeader('Allow', 'POST')
     .status(405)
     .json({
-      code: 'create-user-method-not-allowed',
+      code: USER_METHOD,
       message: 'HTTP method not allowed',
     })
 }
 
-function handleBadRequest (
+function handleValidation (
   response: NextApiResponse,
   validationException: UserApiValidationException
 ) {
   return response
     .status(400)
     .json({
-      code: 'create-user-bad-request',
-      message: 'Invalid request',
+      code: USER_VALIDATION,
+      message: 'Invalid request body',
       errors: validationException.exceptions,
     })
 }
@@ -83,54 +102,27 @@ function handleBadRequest (
 function handleInternalError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'create-user-internal-server-error',
+      code: USER_SERVER_ERROR,
       message: 'Something went wrong while processing request',
     })
 }
 
-function handleConflict (response: NextApiResponse, exception: CreateUserApplicationException) {
-  let exceptionCode: string
-
-  if (exception.id === CreateUserApplicationException.emailAlreadyRegisteredId) {
-    exceptionCode = 'create-user-conflict-email-already-registered'
-  } else {
-    exceptionCode = 'create-user-conflict-username-already-registered'
-  }
-
+function handleConflict (response: NextApiResponse, exception: CreateUserApplicationException, code: string) {
   return response.status(409)
     .json({
-      code: exceptionCode,
+      code,
       message: exception.message,
     })
 }
 
-function handleUnprocessableEntity (response: NextApiResponse, exception: CreateUserApplicationException) {
-  let exceptionCode: string
-
-  switch (exception.id) {
-    case CreateUserApplicationException.invalidNameId:
-      exceptionCode = 'create-user-unprocessable-entity-invalid-name'
-      break
-
-    case CreateUserApplicationException.invalidUsernameId:
-      exceptionCode = 'create-user-unprocessable-entity-invalid-username'
-      break
-
-    case CreateUserApplicationException.invalidEmailId:
-      exceptionCode = 'create-user-unprocessable-entity-invalid-email'
-      break
-
-    case CreateUserApplicationException.invalidPasswordId:
-      exceptionCode = 'create-user-unprocessable-entity-invalid-password'
-      break
-
-    default:
-      exceptionCode = 'create-user-unprocessable-entity'
-  }
-
+function handleUnprocessableEntity (
+  response: NextApiResponse,
+  exception: CreateUserApplicationException,
+  code: string
+) {
   return response.status(422)
     .json({
-      code: exceptionCode,
+      code,
       message: exception.message,
     })
 }
@@ -138,7 +130,7 @@ function handleUnprocessableEntity (response: NextApiResponse, exception: Create
 function handleUnauthorized (response: NextApiResponse) {
   return response.status(401)
     .json({
-      code: 'create-user-unauthorized',
+      code: USER_INVALID_VERIFICATION_TOKEN,
       message: 'Token is invalid or expired',
     })
 }

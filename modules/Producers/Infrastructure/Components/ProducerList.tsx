@@ -16,21 +16,23 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer, setActivePr
   return (
     <Carousel onEndReached={ undefined }>
       { producers.map((producer) => {
-        return (
-          <button
-          className={ `
-            ${styles.producerList__category}
-            ${activeProducer.id === producer.id ? styles.producerList__categoryActive : ''}
-          ` }
-          key={ producer.id }
-          onClick={ () => setActiveProducer(producer) }
-          style={ {
-            '--category-color': producer.brandHexColor,
-          } as CSSProperties }
-        >
-          { producer.id === '' ? t('all_producers_title') : producer.name }
-        </button>
-        )
+        return ({
+          key: producer.id,
+          component:
+            <button
+              className={ `
+                ${styles.producerList__category}
+                ${activeProducer.id === producer.id ? styles.producerList__categoryActive : ''}
+              ` }
+              key={ producer.id }
+              onClick={ () => setActiveProducer(producer) }
+              style={ {
+                '--category-color': producer.brandHexColor,
+              } as CSSProperties }
+            >
+              { producer.id === '' ? t('all_producers_title') : producer.name }
+            </button>,
+        })
       }) }
     </Carousel>
   )

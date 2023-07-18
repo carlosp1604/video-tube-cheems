@@ -6,12 +6,7 @@ export const usePostCommentable = () => {
   const commentable = useRef(true)
 
   useEffect(() => {
-    if (status === 'SIGNED_IN') {
-      commentable.current = true
-    }
-    else {
-      commentable.current = false
-    }
+    commentable.current = status === 'SIGNED_IN'
   }, [status])
 
   return commentable.current

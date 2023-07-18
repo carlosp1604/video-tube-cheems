@@ -28,6 +28,7 @@ import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPos
 import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
 import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import { MailerSend } from 'mailersend'
+import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
 
 /**
  * We create a container to register our classes dependencies
@@ -84,6 +85,15 @@ container.register('mailerSend', asFunction(() => {
     apiKey,
   })
 }))
+container.register('baseUrl', asFunction(() => {
+  const baseUrl = process.env.BASE_URL
+
+  if (!baseUrl) {
+    throw Error('Missing BASE_URL environment variable')
+  }
+
+  return baseUrl
+}))
 
 /**
  * Use-cases
@@ -121,5 +131,6 @@ container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))
 container.register('getPostPostChildCommentsUseCase', asClass(GetPostPostChildComments))
 container.register('createPostCommentUseCase', asClass(CreatePostComment))
 container.register('createPostChildCommentUseCase', asClass(CreatePostChildComment))
+container.register('deletePostCommentUseCase', asClass(DeletePostComment))
 
 export { container }

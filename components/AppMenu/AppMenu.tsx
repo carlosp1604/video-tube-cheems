@@ -42,7 +42,9 @@ export const AppMenu: FC = () => {
       userAvatar = (
         <button
           className={ styles.appMenu__userAvatarButton }
-          onClick={ () => setUserMenuOpen(true) }
+          onClick={ () => {
+            setUserMenuOpen(true)
+          } }
         >
           <img
             className={ styles.appMenu__userAvatarImage }

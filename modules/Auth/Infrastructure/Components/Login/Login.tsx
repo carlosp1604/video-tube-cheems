@@ -4,6 +4,7 @@ import styles from './Login.module.scss'
 import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
+import toast from 'react-hot-toast'
 
 export interface Props {
   onClickSignup: () => void
@@ -14,14 +15,12 @@ export interface Props {
 export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSuccessLogin }) => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [loginError, setLoginError] = useState<boolean>(false)
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
 
   const { t } = useTranslation('user_login')
 
   const onSubmit = async (event: FormEvent) => {
-    setLoginError(false)
     event.preventDefault()
 
     if (password === '' || email === '') {
@@ -37,7 +36,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       })
 
     if (result?.error) {
-      setLoginError(true)
+      toast.error(t('sign_in_error_message'))
     } else {
       onSuccessLogin()
     }
@@ -61,13 +60,6 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
           { t('subtitle') }
         </small>
       </h1>
-
-      <p className={ `
-        ${styles.login__error}
-        ${loginError ? styles.login__error_visible : ''}
-      ` }>
-        { t('sign_in_error_message') }
-      </p>
 
       <FormInputSection
         label={ t('email_input_label') }

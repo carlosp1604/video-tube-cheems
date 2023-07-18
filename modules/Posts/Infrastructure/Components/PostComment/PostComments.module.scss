@@ -59,13 +59,21 @@
     @apply flex flex-col;
   }
 
-  &__replies_button {
-    @apply text-xs mr-auto ml-8 font-medium text-brand-300 cursor-pointer
-      transition;
+  &__comment-options {
+    @apply flex flex-row justify-start gap-x-5 items-center;
+  }
+
+  &__replies-button {
+    @apply text-xs ml-8 font-medium text-brand-300 cursor-pointer
+      transition m-0;
 
     &:hover, &:focus {
       @apply text-brand-900 transition;
     }
+  }
+
+  &__option-button {
+    @apply flex flex-row text-base-400 text-xs m-0 gap-x-1 items-center;
   }
 
   &__comments-title-bar {

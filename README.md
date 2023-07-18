@@ -299,7 +299,7 @@ GET /api/users/{username}
 
 
 #### Responses
-The next body will be returned if everything is ok.
+The following body will be returned if everything is ok.
 
 ```
 {
@@ -427,8 +427,249 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                | Message                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-|-----------|-------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``get-posts-bad-request``           | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request                                                                                                                                                                                                                                                                                                                    |
-| 422       | ``get-posts-unprocessable-entity``  | Some parameter value from the request is invalid.<br/>-PerPage must be a positive integer in range [{minLimit} - {maxLimit}]<br/>-Page must be a integer greater or equal to 0<br/>-Filter {filter} is not a valid filter<br/>-Filter must be a not empty string and must not include special characters<br/>-Sorting option {sortingOption} is not a valid sorting option<br/>-Sorting criteria {sortingCriteria} is not a valid sorting criteria |
-| 500       | ``get-user-server-error``           | Something went wrong while processing request                                                                                                                                                                                                                                                                                                                                                                                                      |
+| HTTP Code | Code                                                   | Message                                                                                                                         |
+|-----------|--------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``get-posts-bad-request``                              | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 422       | ``post-unprocessable-entity-invalid-sorting-criteria`` | Sorting criteria `sortingCriteria` is not a valid sorting criteria                                                              |
+| 422       | ``post-unprocessable-entity-invalid-sorting-option``   | Sorting option `sortingOption` is not a valid sorting option                                                                    |
+| 422       | ``post-unprocessable-entity-invalid-filter-type``      | Filter `filter` is not a valid filter                                                                                           |
+| 422       | ``post-unprocessable-entity-invalid-filter-value``     | Filter must be a not empty string and must not include special characters                                                       |
+| 422       | ``post-unprocessable-entity-invalid-per-page``         | PerPage must be a positive integer in range 10 - 256                                                                            |
+| 422       | ``post-unprocessable-entity-invalid-page``             | Page must be a integer greater or equal to 0                                                                                    |
+| 500       | ``get-user-server-error``                              | Something went wrong while processing request                                                                                   |
+
+### Add a post comment
+Add a new post comment providing the postId and the comment text
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+POST /api/posts/{postId}/comments
+```
+
+```
+{
+  "comment": string
+}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| postId    | ``true`` | ``string``           |
+| comment   | ``true`` | ``string``           |
+
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    id: string
+    comment: string
+    postId: string
+    userId: string
+    createdAt: string
+    updatedAt: string
+    user: {
+        id: string
+        name: string
+        username: string
+        email: string
+        imageUrl: string | null
+        language: string
+        emailVerified: string | null
+        createdAt: string
+        updatedAt: string
+    }
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                     | Message                                                                                                                         |
+|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-comment-bad-request``             | postId and comment parameters are required                                                                                      |
+| 400       | ``post-comment-validation-exception``    | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-comment-authentication-required`` | User must be authenticated to access to resource                                                                                |
+| 404       | ``post-comment-post-not-found``          | Post with ID `postId` was not found                                                                                             |
+| 500       | ``post-comment-server-error``            | Something went wrong while processing request                                                                                   |
+
+### Add a post child comment (reply)
+Add a new post child comment providing the postId, commentId and the comment text
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+POST /api/posts/{postId}/comments/{commentId}/children
+```
+
+```
+{
+  "comment": string
+}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| postId    | ``true`` | ``string``           |
+| commentId | ``true`` | ``string``           |
+| comment   | ``true`` | ``string``           |
+
+
+#### Responses
+The next body will be returned if everything is ok.
+
+```
+{
+    id: string
+    comment: string
+    parentCommentId: string
+    userId: string
+    createdAt: string
+    updatedAt: string
+    user: {
+        id: string
+        name: string
+        username: string
+        email: string
+        imageUrl: string | null
+        language: string
+        emailVerified: string | null
+        createdAt: string
+        updatedAt: string
+    }
+}
+```
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                             | Message                                                                                                                           |
+|-----------|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-child-comment-bad-request``               | commentId, postId and comment parameters are required                                                                             |
+| 400       | ``post-child-comment-validation-exception``      | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request   |
+| 401       | ``post-child-comment-authentication-required``   | User must be authenticated to access to resource                                                                                  |
+| 404       | ``post-child-comment-post-not-found``            | Post with ID `postId` was not found                                                                                               |
+| 404       | ``post-child-comment-parent-comment-not-found``  | PostComment with ID `postCommentId` was not found                                                                                 |
+| 500       | ``post-child-comment-server-error``              | Something went wrong while processing request                                                                                     |
+
+### Delete a post comment
+To delete a post comment from a post you must provide postId and commentId
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+DELETE /api/posts/{postId}/comments/{commentId}
+```
+
+| Parameter | Required | Type/Possible values |
+|-----------|----------|----------------------| 
+| postId    | ``true`` | ``string``           |
+| commentId | ``true`` | ``string``           |
+
+
+#### Responses
+If post comment is removed correctly a 204 No Content will be returned.
+
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                            | Message                                                                                                                         |
+|-----------|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-comment-bad-request``                    | postId and commentId parameters are required                                                                                    |
+| 400       | ``post-comment-validation-exception``           | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-comment-authentication-required``        | User must be authenticated to access to resource                                                                                |
+| 403       | ``post-comment-forbidden``                      | User does not have access to the resource                                                                                       |
+| 404       | ``post-comment-post-not-found``                 | Post with ID `postId` was not found                                                                                             |
+| 404       | ``post-comment-post-comment-not-found``         | Post comment with ID `postId` was not found                                                                                     |
+| 409       | ``post-comment-conflict-cannot-delete-comment`` | Cannot delete comment with ID `postCommentId` from it's post or parent                                                          |
+| 500       | ``post-comment-server-error``                   | Something went wrong while processing request                                                                                   |
+
+### Delete a post child comment (reply)
+To delete a post child comment from a parent comment you must provide postId, commentId and childCommentId
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+DELETE /api/posts/{postId}/comments/{commentId}/children/{childCommentId}
+```
+
+| Parameter      | Required | Type/Possible values |
+|----------------|----------|----------------------| 
+| postId         | ``true`` | ``string``           |
+| commentId      | ``true`` | ``string``           |
+| childCommentId | ``true`` | ``string``           |
+
+
+#### Responses
+If post child comment is removed correctly a 204 No Content will be returned.
+
+
+Otherwise, you will receive an error message
+
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                                 | Message                                                                                                                         |
+|-----------|------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-child-comment-bad-request``                   | postId, commentId and childCommentId parameters are required                                                                    |
+| 400       | ``post-child-comment-validation-exception``          | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-child-comment-authentication-required``       | User must be authenticated to access to resource                                                                                |
+| 403       | ``post-child-comment-forbidden-resource``            | User does not have access to the resource                                                                                       |
+| 404       | ``post-child-comment-post-not-found``                | Post with ID `postId` was not found                                                                                             |
+| 404       | ``post-child-comment-parent-comment-not-found``      | Parent comment with ID `postId` was not found                                                                                   |
+| 404       | ``post-child-comment-post-comment-not-found``        | Post comment with ID `postId` was not found                                                                                     |
+| 409       | ``post-child-comment-cannot-delete-child-comment``   | Cannot delete comment with ID `postCommentId` from it's post or parent                                                          |
+| 500       | ``post-child-comment-server-error``                  | Something went wrong while processing request                                                                                   |

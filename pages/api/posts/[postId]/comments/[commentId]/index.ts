@@ -217,7 +217,7 @@ function handleValidationError (
   return response.status(400)
     .json({
       code: POST_COMMENT_VALIDATION,
-      message: 'Invalid request body',
+      message: 'Invalid request',
       errors: validationError.exceptions,
     })
 }

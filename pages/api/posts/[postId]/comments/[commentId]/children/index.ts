@@ -184,7 +184,7 @@ function handleBadRequest (response: NextApiResponse) {
     .status(400)
     .json({
       code: POST_CHILD_COMMENT_BAD_REQUEST,
-      message: 'parentCommentId, page and perPage parameters are required',
+      message: 'commentId, postId and comment parameters are required',
     })
 }
 
@@ -206,7 +206,7 @@ function handleValidationError (
   return response.status(400)
     .json({
       code: POST_CHILD_COMMENT_VALIDATION,
-      message: 'Invalid request body',
+      message: 'Invalid request',
       errors: validationError.exceptions,
     })
 }

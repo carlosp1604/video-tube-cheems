@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { getMobileMenuOptions } from '~/components/AppMenu/MobileMenuOptions'
 import { MenuOptionInterface } from '~/components/MenuOptions/MenuOptionInterface'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionInterface
@@ -41,9 +42,13 @@ export const MenuSideBar: FC = () => {
     <aside className={ styles.menuSideBar__container }>
       <div className={ styles.menuSideBar__asideSlideOut }>
         <div className={ styles.menuSideBar__logoContainer }>
-          <img
+          <Image
+            alt={ '' }
             className={ styles.menuSideBar__logo }
             src='/img/cheems-logo.png'
+            width={ 0 }
+            height={ 0 }
+            sizes={ '100vw' }
           />
         </div>
 

@@ -17,6 +17,8 @@ import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
 import { calculatePagesNumber } from '~/modules/Shared/Infrastructure/Pagination'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { useTranslation } from 'next-i18next'
+import { FiTrash } from 'react-icons/fi'
+import { DeleteComment } from '~/modules/Posts/Infrastructure/Components/PostComment/DeleteComment'
 
 interface Props {
   postId: string
@@ -35,6 +37,7 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
   const [comment, setComment] = useState<string>('')
   const commentsAreaRef = useRef<HTMLDivElement>(null)
   const commentApiService = new CommentsApiService()
+  const [deleteCommentOpen, setDeleteCommentOpen] = useState<boolean>(false)
 
   const { t } = useTranslation('post_comments')
 
@@ -138,6 +141,11 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
   }
 
   return (
+    <>
+    <DeleteComment
+      isOpen={ deleteCommentOpen }
+      setIsOpen={ setDeleteCommentOpen }
+    />
     <div className={ `
         ${styles.postComments__backdrop}
         ${isOpen ? styles.postComments__backdrop__open : ''}
@@ -169,25 +177,41 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
           { comments.map((comment) => {
             return (
               <div
-                className={ styles.postComments__commentWithReplies }
+                className={ styles.postComments__commentWithOptions }
                 key={ comment.id }
               >
                 <CommentCard
                   comment={ comment }
                   key={ comment.id }
                 />
-                <button
-                  className={ styles.postComments__repliesButton }
-                  onClick={ () => {
-                    setCommentToReply(comment)
-                    setRepliesOpen(true)
-                  } }
-                >
-                  { comment.repliesNumber > 0
-                    ? t('comment_replies_button', { replies: comment.repliesNumber })
-                    : t('comment_reply_button')
+                <div className={ styles.postComments__commentOptions }>
+                  <button
+                    className={ styles.postComments__repliesButton }
+                    onClick={ () => {
+                      setCommentToReply(comment)
+                      setRepliesOpen(true)
+                    } }
+                  >
+                    { comment.repliesNumber > 0
+                      ? t('comment_replies_button', { replies: comment.repliesNumber })
+                      : t('comment_reply_button')
+                    }
+                  </button>
+                  {
+                    comment.user.id !== user?.id
+                      ? null
+                      : <button
+                        className={ styles.postComments__optionButton }
+                        onClick={ () => {
+                          setDeleteCommentOpen(true)
+                        } }
+                      >
+                        <FiTrash />
+                        { 'Eliminar' }
+
+                      </button>
                   }
-                </button>
+                </div>
               </div>
             )
           }) }
@@ -220,5 +244,6 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -46,12 +46,4 @@
       "user-logo  comment";
     grid-auto-rows: auto 1fr;
   }
-
-  &__replies_button {
-    @apply text-xs mr-auto mb-2 font-semibold text-brand-300 cursor-pointer;
-
-    &:hover, &:focus {
-      @apply text-brand-900;
-    }
-  }
 }

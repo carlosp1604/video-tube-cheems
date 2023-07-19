@@ -5,7 +5,6 @@ import 'video.js/dist/video-js.css'
 import ReactJWPlayer from 'react-jw-player'
 import styles from './VideoPlayer.module.scss'
 import { VideoQualityDto } from '~/modules/Posts/Infrastructure/Dtos/VideoComponentDto'
-import { useSession } from 'next-auth/react'
 
 interface VideoPlayerProps {
   videoQualities: VideoQualityDto[]
@@ -15,8 +14,6 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster, onVideoPlay, videoId }) => {
-  const { data } = useSession()
-
   const advertising = {
     client: 'vast',
     schedule: {
@@ -36,22 +33,12 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster,
   })
 
   const onPlay = async () => {
-    let userId: string | null = null
-
-    if (data !== null) {
-      userId = data.user.id
-    }
-
     try {
       await fetch(`/api/posts/${videoId}/post-views`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          postId: videoId,
-          userId,
-        }),
       })
 
       onVideoPlay()

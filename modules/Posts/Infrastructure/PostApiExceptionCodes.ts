@@ -8,6 +8,8 @@ export const POST_INVALID_FILTER_TYPE = 'post-unprocessable-entity-invalid-filte
 export const POST_INVALID_FILTER_VALUE = 'post-unprocessable-entity-invalid-filter-value'
 export const POST_INVALID_PER_PAGE = 'post-unprocessable-entity-invalid-per-page'
 export const POST_INVALID_PAGE = 'post-unprocessable-entity-invalid-page'
+export const POST_POST_NOT_FOUND = 'post-post-not-found'
+export const POST_BAD_REQUEST = 'post-bad-request'
 
 /** Posts Comments **/
 export const POST_COMMENT_AUTH_REQUIRED = 'post-comment-authentication-required'

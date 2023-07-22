@@ -2,7 +2,7 @@ import { z, ZodError } from 'zod'
 import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
 import { CreatePostReactionApiRequest } from '~/modules/Posts/Infrastructure/Dtos/CreatePostReactionApiRequest'
 
-export class AddPostReactionApiRequestValidator {
+export class CreatePostReactionApiRequestValidator {
   private static addPostReactionApiRequestSchema = z.object({
     postId: z.string().uuid(),
     userId: z.string().uuid(),

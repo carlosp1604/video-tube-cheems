@@ -1,24 +1,36 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
 import { container } from '~/awilix.container'
 import {
-  AddPostReactionApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/AddPostReactionApiRequestValidator'
-import { AddPostReactionRequestTranslator } from '~/modules/Posts/Infrastructure/AddPostReactionRequestTranslator'
+  CreatePostReactionApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/CreatePostReactionApiRequestValidator'
+import {
+  CreatePostReactionRequestTranslator
+} from '~/modules/Posts/Infrastructure/Translators/CreatePostReactionRequestTranslator'
 import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReaction'
 import {
   CreatePostReactionApplicationException
 } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReactionApplicationException'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { USER_AUTH_REQUIRED } from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
 import {
-  POST_BAD_REQUEST, POST_METHOD,
-  POST_POST_NOT_FOUND, POST_REACTION_ALREADY_EXISTS,
-  POST_SERVER_ERROR, POST_VALIDATION
+  POST_REACTION_ALREADY_EXISTS,
+  POST_REACTION_AUTH_REQUIRED, POST_REACTION_BAD_REQUEST, POST_REACTION_METHOD,
+  POST_REACTION_NOT_FOUND, POST_REACTION_POST_NOT_FOUND, POST_REACTION_SERVER_ERROR,
+  POST_REACTION_VALIDATION
 } from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 import { CreatePostReactionApiRequest } from '~/modules/Posts/Infrastructure/Dtos/CreatePostReactionApiRequest'
+import {
+  DeletePostReactionRequestTranslator
+} from '~/modules/Posts/Infrastructure/Translators/DeletePostReactionRequestTranslator'
+import { DeletePostReactionApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/DeletePostReactionApiRequestDto'
+import {
+  DeletePosReactionApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/DeletePosReactionApiRequestValidator'
+import { DeletePostReaction } from '~/modules/Posts/Application/DeletePostReaction/DeletePostReaction'
+import {
+  DeletePostReactionApplicationException
+} from '~/modules/Posts/Application/DeletePostReaction/DeletePostReactionApplicationException'
 
 export default async function handler (
   request: NextApiRequest,
@@ -27,6 +39,9 @@ export default async function handler (
   switch (request.method) {
     case 'POST':
       return handlePost(request, response)
+
+    case 'DELETE':
+      return handleDelete(request, response)
 
     default:
       return handleMethod(request, response)
@@ -52,13 +67,13 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
     reactionType: request.body.reactionType,
   }
 
-  const validationError = AddPostReactionApiRequestValidator.validate(createPostReactionApiRequest)
+  const validationError = CreatePostReactionApiRequestValidator.validate(createPostReactionApiRequest)
 
   if (validationError) {
     return handleValidationError(response, validationError)
   }
 
-  const applicationRequest = AddPostReactionRequestTranslator.fromApiDto(createPostReactionApiRequest)
+  const applicationRequest = CreatePostReactionRequestTranslator.fromApiDto(createPostReactionApiRequest)
 
   const useCase = container.resolve<CreatePostReaction>('createPostReactionUseCase')
 
@@ -75,10 +90,62 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
 
     switch (exception.id) {
       case CreatePostReactionApplicationException.postNotFoundId:
-        return handleNotFound(response, exception)
+        return handleNotFound(response, exception.message, POST_REACTION_POST_NOT_FOUND)
 
       case CreatePostReactionApplicationException.userAlreadyReactedId:
         return handleConflict(response, exception.message)
+
+      default:
+        return handleServerError(response)
+    }
+  }
+}
+
+async function handleDelete (request: NextApiRequest, response: NextApiResponse) {
+  const session = await getServerSession(request, response, authOptions)
+
+  if (session === null) {
+    return handleAuthorizationRequired(response)
+  }
+
+  const { postId } = request.query
+
+  if (!postId) {
+    return handleBadRequest(response)
+  }
+
+  const deletePostReactionApiRequest: DeletePostReactionApiRequestDto = {
+    postId: String(postId),
+    userId: session.user.id,
+  }
+
+  const validationError = DeletePosReactionApiRequestValidator.validate(deletePostReactionApiRequest)
+
+  if (validationError) {
+    return handleValidationError(response, validationError)
+  }
+
+  const applicationRequest = DeletePostReactionRequestTranslator.fromApiDto(deletePostReactionApiRequest)
+
+  const useCase = container.resolve<DeletePostReaction>('deletePostReactionUseCase')
+
+  try {
+    const reaction = await useCase.delete(applicationRequest)
+
+    return response.status(204).json(reaction)
+  } catch (exception: unknown) {
+    if (!(exception instanceof DeletePostReactionApplicationException)) {
+      console.error(exception)
+
+      return handleServerError(response)
+    }
+
+    switch (exception.id) {
+      case DeletePostReactionApplicationException.postNotFoundId:
+        return handleNotFound(response, exception.message, POST_REACTION_POST_NOT_FOUND)
+
+      case DeletePostReactionApplicationException.userHasNotReactedId:
+        return handleNotFound(response, exception.message, POST_REACTION_NOT_FOUND)
 
       default:
         return handleServerError(response)
@@ -91,7 +158,7 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
     .status(405)
     .setHeader('Allow', 'POST')
     .json({
-      code: POST_METHOD,
+      code: POST_REACTION_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
@@ -102,7 +169,7 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: POST_VALIDATION,
+      code: POST_REACTION_VALIDATION,
       message: 'Invalid request',
       errors: validationError.exceptions,
     })
@@ -110,12 +177,13 @@ function handleValidationError (
 
 function handleNotFound (
   response: NextApiResponse,
-  exception: GetPostsApplicationException
+  message: string,
+  code: string
 ) {
   return response.status(404)
     .json({
-      code: POST_POST_NOT_FOUND,
-      message: exception.message,
+      code,
+      message,
     })
 }
 
@@ -133,7 +201,7 @@ function handleConflict (
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: POST_SERVER_ERROR,
+      code: POST_REACTION_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }
@@ -146,7 +214,7 @@ function handleAuthorizationRequired (response: NextApiResponse) {
   return response
     .status(401)
     .json({
-      code: USER_AUTH_REQUIRED,
+      code: POST_REACTION_AUTH_REQUIRED,
       message: 'User not authenticated',
     })
 }
@@ -154,7 +222,7 @@ function handleAuthorizationRequired (response: NextApiResponse) {
 function handleBadRequest (response: NextApiResponse) {
   return response.status(400)
     .json({
-      code: POST_BAD_REQUEST,
+      code: POST_REACTION_BAD_REQUEST,
       message: 'postId parameter is required',
     })
 }

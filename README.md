@@ -715,12 +715,51 @@ Otherwise, you will receive an error message
 }
 ```
 
-| HTTP Code | Code                                     | Message                                                                                                                         |
-|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
-| 400       | ``post-bad-request``                     | postId parameter is required                                                                                                    |
-| 400       | ``post-validation-exception``            | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
-| 401       | ``post-comment-authentication-required`` | User must be authenticated to access to resource                                                                                |
-| 404       | ``post-post-not-found``                  | Post with ID `postId` was not found                                                                                             |
-| 409       | ``post-conflict-user-already-exists``    | User with ID `userId` already reacted to post with ID `postId`                                                                  |
-| 500       | ``post-server-error``                    | Something went wrong while processing request                                                                                   |
+| HTTP Code | Code                                               | Message                                                                                                                         |
+|-----------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-reaction-bad-request``                      | postId parameter is required                                                                                                    |
+| 400       | ``post-reaction-validation-exception``             | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-reaction-authentication-required``          | User must be authenticated to access to resource                                                                                |
+| 404       | ``post-reaction-post-not-found``                   | Post with ID `postId` was not found                                                                                             |
+| 409       | ``post-reaction-conflict-reaction-already-exists`` | User with ID `userId` already reacted to post with ID `postId`                                                                  |
+| 500       | ``post-reaction-server-error``                     | Something went wrong while processing request                                                                                   |
 
+### Delete a post reaction 
+You can remove a post reaction providing the postId.
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+DELETE /api/posts/{postId}/reactions
+```
+
+| Parameter    | Required | Type/Possible values |
+|--------------|----------|----------------------| 
+| postId       | ``true`` | ``string``           |
+
+
+#### Responses
+If post reaction is removed a 204 No Content will be returned.
+
+Otherwise, you will receive an error message
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                               | Message                                                                                                                         |
+|-----------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-reaction-bad-request``                      | postId parameter is required                                                                                                    |
+| 400       | ``post-reaction-validation-exception``             | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 404       | ``post-reaction-post-not-found``                   | Post with ID `postId` was not found                                                                                             |
+| 404       | ``post-reaction-reaction-not-found``               | User with ID `userId` has not reacted to post with ID `postId`                                                                  |
+| 500       | ``post-reaction-server-error``                     | Something went wrong while processing request                                                                                   |

@@ -6,8 +6,8 @@ import { User } from '~/modules/Auth/Domain/User'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 import {
-  DeletePostReactionRequestDto
-} from '~/modules/Posts/Application/DeletePostReaction/DeletePostReactionRequestDto'
+  DeletePostReactionApplicationRequestDto
+} from '~/modules/Posts/Application/DeletePostReaction/DeletePostReactionApplicationRequestDto'
 import { DeletePostReaction } from '~/modules/Posts/Application/DeletePostReaction/DeletePostReaction'
 import {
   DeletePostReactionApplicationException
@@ -21,7 +21,7 @@ describe('~/modules/Posts/Application/DeletePostReaction/DeletePostReaction.ts',
     id: 'expected-post-id',
   })
 
-  let request: DeletePostReactionRequestDto
+  let request: DeletePostReactionApplicationRequestDto
 
   const buildUseCase = (): DeletePostReaction => {
     return new DeletePostReaction(postRepositoryInterface, userRepositoryInterface)

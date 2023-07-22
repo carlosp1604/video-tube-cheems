@@ -1,4 +1,4 @@
-import { DeletePostCommentApiRequestDto } from './Dtos/DeletePostCommentApiRequestDto'
+import { DeletePostCommentApiRequestDto } from '../Dtos/DeletePostCommentApiRequestDto'
 import { DeletePostCommentApplicationRequestDto } from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationRequestDto'
 
 export class DeletePostRequestDtoTranslator {

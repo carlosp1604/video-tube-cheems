@@ -1,4 +1,4 @@
-import { DeletePostReactionRequestDto } from './DeletePostReactionRequestDto'
+import { DeletePostReactionApplicationRequestDto } from './DeletePostReactionApplicationRequestDto'
 import { DeletePostReactionApplicationException } from './DeletePostReactionApplicationException'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
@@ -15,7 +15,7 @@ export class DeletePostReaction {
     private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async delete (request: DeletePostReactionRequestDto): Promise<void> {
+  public async delete (request: DeletePostReactionApplicationRequestDto): Promise<void> {
     const [post, user] = await Promise.all([
       this.getPost(request.postId),
       this.getUser(request.userId),
@@ -26,7 +26,7 @@ export class DeletePostReaction {
     await this.postRepository.deleteReaction(request.userId, request.postId)
   }
 
-  private async getPost (postId: DeletePostReactionRequestDto['postId']): Promise<Post> {
+  private async getPost (postId: DeletePostReactionApplicationRequestDto['postId']): Promise<Post> {
     const post = await this.postRepository.findById(postId, this.options)
 
     if (post === null) {
@@ -36,7 +36,7 @@ export class DeletePostReaction {
     return post
   }
 
-  private async getUser (userId: DeletePostReactionRequestDto['userId']): Promise<User> {
+  private async getUser (userId: DeletePostReactionApplicationRequestDto['userId']): Promise<User> {
     const user = await this.userRepository.findById(userId)
 
     if (user === null) {

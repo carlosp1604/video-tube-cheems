@@ -2,6 +2,7 @@
 export const POST_VALIDATION = 'post-validation-exception'
 export const POST_SERVER_ERROR = 'post-server-error'
 export const POST_METHOD = 'post-method-not-allowed'
+export const POST_REACTION_ALREADY_EXISTS = 'post-conflict-user-already-exists'
 export const POST_INVALID_SORTING_CRITERIA = 'post-unprocessable-entity-invalid-sorting-criteria'
 export const POST_INVALID_SORTING_OPTION = 'post-unprocessable-entity-invalid-sorting-option'
 export const POST_INVALID_FILTER_TYPE = 'post-unprocessable-entity-invalid-filter-type'

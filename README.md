@@ -673,3 +673,54 @@ Otherwise, you will receive an error message
 | 404       | ``post-child-comment-post-comment-not-found``        | Post comment with ID `postId` was not found                                                                                     |
 | 409       | ``post-child-comment-cannot-delete-child-comment``   | Cannot delete comment with ID `postCommentId` from it's post or parent                                                          |
 | 500       | ``post-child-comment-server-error``                  | Something went wrong while processing request                                                                                   |
+
+### Create a post reaction (ONLY LIKE IS SUPPORTED)
+Create a new reaction given the postId and the reactionType (at the moment only LIKE type is supported)
+
+*NOTE: AUTHENTICATION IS REQUIRED*
+```
+POST /api/posts/{postId}/reactions
+```
+
+| Parameter    | Required | Type/Possible values |
+|--------------|----------|----------------------| 
+| postId       | ``true`` | ``string``           |
+| reactionType | ``true`` | ``string``           |
+
+
+#### Responses
+If post reaction is created you will get a 201 Created with the following body:
+
+``` 
+{
+    postId: string
+    userId: string
+    reactionType: string
+}
+```
+
+Otherwise, you will receive an error message
+
+```
+{
+    "code": string
+    "message": string
+    "errors": [
+        {
+            "message": string
+            "parameter": string
+        },
+        ...
+    ]
+}
+```
+
+| HTTP Code | Code                                     | Message                                                                                                                         |
+|-----------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------| 
+| 400       | ``post-bad-request``                     | postId parameter is required                                                                                                    |
+| 400       | ``post-validation-exception``            | Invalid request. This message will be accompanied by the ``errors`` field that will indicate the specific errors in the request |
+| 401       | ``post-comment-authentication-required`` | User must be authenticated to access to resource                                                                                |
+| 404       | ``post-post-not-found``                  | Post with ID `postId` was not found                                                                                             |
+| 409       | ``post-conflict-user-already-exists``    | User with ID `userId` already reacted to post with ID `postId`                                                                  |
+| 500       | ``post-server-error``                    | Something went wrong while processing request                                                                                   |
+

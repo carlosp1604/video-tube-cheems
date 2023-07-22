@@ -1,10 +1,10 @@
-import { AddPostReactionApiRequest } from '~/modules/Posts/Infrastructure/Dtos/AddPostReactionApiRequest'
+import { CreatePostReactionApiRequest } from '~/modules/Posts/Infrastructure/Dtos/CreatePostReactionApiRequest'
 import {
-  AddPostReactionApplicationRequest
-} from '~/modules/Posts/Application/CreatePostReaction/AddPostReactionApplicationRequest'
+  CreatePostReactionApplicationRequest
+} from '~/modules/Posts/Application/CreatePostReaction/CreatePostReactionApplicationRequest'
 
 export class AddPostReactionRequestTranslator {
-  public static fromApiDto (request: AddPostReactionApiRequest): AddPostReactionApplicationRequest {
+  public static fromApiDto (request: CreatePostReactionApiRequest): CreatePostReactionApplicationRequest {
     return {
       postId: request.postId,
       userId: request.userId,

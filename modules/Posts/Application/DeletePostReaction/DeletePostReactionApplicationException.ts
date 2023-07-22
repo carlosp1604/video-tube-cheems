@@ -3,9 +3,9 @@ import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
 
 export class DeletePostReactionApplicationException extends ApplicationException {
-  public static cannotDeleteReactionId = 'create_reaction_cannot_delete_reaction'
-  public static postNotFoundId = 'create_reaction_comment_post_not_found'
-  public static userNotFoundId = 'create_reaction_comment_user_not_found'
+  public static postNotFoundId = 'delete_reaction_comment_post_not_found'
+  public static userNotFoundId = 'delete_reaction_comment_user_not_found'
+  public static userHasNotReactedId = 'delete_reaction_user_has_not_reacted'
 
   public static postNotFound (postId: Post['id']): DeletePostReactionApplicationException {
     return new DeletePostReactionApplicationException(
@@ -21,10 +21,10 @@ export class DeletePostReactionApplicationException extends ApplicationException
     )
   }
 
-  public static cannotDeleteReaction (userId: User['id'], postId: Post['id']): DeletePostReactionApplicationException {
+  public static userHasNotReacted (userId: User['id'], postId: Post['id']): DeletePostReactionApplicationException {
     return new DeletePostReactionApplicationException(
-      `Cannot delete reaction from user with ID ${userId} in post with ID ${postId}`,
-      this.cannotDeleteReactionId
+      `User with ID ${userId} has not reacted to post with ID ${postId}`,
+      this.userHasNotReactedId
     )
   }
 }

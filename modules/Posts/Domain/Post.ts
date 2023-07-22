@@ -248,7 +248,7 @@ export class Post {
     const reactionRemoved = this._reactions.removeItem(userId)
 
     if (!reactionRemoved) {
-      throw PostDomainException.cannotDeleteReaction(userId, this.id)
+      throw PostDomainException.userHasNotReacted(userId, this.id)
     }
   }
 

@@ -10,6 +10,15 @@ import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReacti
 import {
   CreatePostReactionApplicationException
 } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReactionApplicationException'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
+import { USER_AUTH_REQUIRED } from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+import {
+  POST_BAD_REQUEST, POST_METHOD,
+  POST_POST_NOT_FOUND, POST_REACTION_ALREADY_EXISTS,
+  POST_SERVER_ERROR, POST_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+import { CreatePostReactionApiRequest } from '~/modules/Posts/Infrastructure/Dtos/CreatePostReactionApiRequest'
 
 export default async function handler (
   request: NextApiRequest,
@@ -19,30 +28,45 @@ export default async function handler (
     case 'POST':
       return handlePost(request, response)
 
-      // case 'DELETE':
-
     default:
       return handleMethod(request, response)
   }
 }
 
 async function handlePost (request: NextApiRequest, response: NextApiResponse) {
-  const validationError = AddPostReactionApiRequestValidator.validate(request.body)
+  const session = await getServerSession(request, response, authOptions)
+
+  if (session === null) {
+    return handleAuthorizationRequired(response)
+  }
+
+  const { postId } = request.query
+
+  if (!postId) {
+    return handleBadRequest(response)
+  }
+
+  const createPostReactionApiRequest: CreatePostReactionApiRequest = {
+    postId: String(postId),
+    userId: session.user.id,
+    reactionType: request.body.reactionType,
+  }
+
+  const validationError = AddPostReactionApiRequestValidator.validate(createPostReactionApiRequest)
 
   if (validationError) {
     return handleValidationError(response, validationError)
   }
 
-  const applicationRequest = AddPostReactionRequestTranslator.fromApiDto(request.body)
+  const applicationRequest = AddPostReactionRequestTranslator.fromApiDto(createPostReactionApiRequest)
 
-  const useCase = container.resolve<CreatePostReaction>('addPostReaction')
+  const useCase = container.resolve<CreatePostReaction>('createPostReactionUseCase')
 
   try {
     const reaction = await useCase.create(applicationRequest)
 
-    return response.status(200).json(reaction)
+    return response.status(201).json(reaction)
   } catch (exception: unknown) {
-    console.error(exception)
     if (!(exception instanceof CreatePostReactionApplicationException)) {
       console.error(exception)
 
@@ -51,11 +75,10 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
 
     switch (exception.id) {
       case CreatePostReactionApplicationException.postNotFoundId:
-      case CreatePostReactionApplicationException.userNotFoundId:
         return handleNotFound(response, exception)
 
       case CreatePostReactionApplicationException.userAlreadyReactedId:
-        return handleConflict(response, exception)
+        return handleConflict(response, exception.message)
 
       default:
         return handleServerError(response)
@@ -66,9 +89,9 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
 function handleMethod (request: NextApiRequest, response: NextApiResponse) {
   return response
     .status(405)
-    .setHeader('Allow', 'POST, DELETE')
+    .setHeader('Allow', 'POST')
     .json({
-      code: 'post-reactions-method-not-allowed',
+      code: POST_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
     })
 }
@@ -79,8 +102,8 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: 'post-reactions-bad-request',
-      message: 'Invalid request body',
+      code: POST_VALIDATION,
+      message: 'Invalid request',
       errors: validationError.exceptions,
     })
 }
@@ -91,26 +114,47 @@ function handleNotFound (
 ) {
   return response.status(404)
     .json({
-      code: 'post-reactions-not-found',
+      code: POST_POST_NOT_FOUND,
       message: exception.message,
     })
 }
 
 function handleConflict (
   response: NextApiResponse,
-  exception: GetPostsApplicationException
+  message: string
 ) {
   return response.status(409)
     .json({
-      code: 'post-reactions-not-found',
-      message: exception.message,
+      code: POST_REACTION_ALREADY_EXISTS,
+      message,
     })
 }
 
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: 'post-reactions-server-error',
+      code: POST_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
+    })
+}
+
+function handleAuthorizationRequired (response: NextApiResponse) {
+  const baseUrl = container.resolve('baseUrl')
+
+  response.setHeader('WWW-Authenticate', `Basic realm="${baseUrl}"`)
+
+  return response
+    .status(401)
+    .json({
+      code: USER_AUTH_REQUIRED,
+      message: 'User not authenticated',
+    })
+}
+
+function handleBadRequest (response: NextApiResponse) {
+  return response.status(400)
+    .json({
+      code: POST_BAD_REQUEST,
+      message: 'postId parameter is required',
     })
 }

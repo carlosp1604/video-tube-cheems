@@ -5,6 +5,7 @@ import 'video.js/dist/video-js.css'
 import ReactJWPlayer from 'react-jw-player'
 import styles from './VideoPlayer.module.scss'
 import { VideoQualityDto } from '~/modules/Posts/Infrastructure/Dtos/VideoComponentDto'
+import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 
 interface VideoPlayerProps {
   videoQualities: VideoQualityDto[]
@@ -24,6 +25,8 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster,
     },
   }
 
+  const postsApiService = new PostsApiService()
+
   const sources = videoQualities.map((quality) => {
     return {
       file: quality.value,
@@ -34,12 +37,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster,
 
   const onPlay = async () => {
     try {
-      await fetch(`/api/posts/${videoId}/post-views`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      await postsApiService.addPostView(videoId)
 
       onVideoPlay()
     } catch (exception: unknown) {

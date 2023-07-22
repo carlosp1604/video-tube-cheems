@@ -26,13 +26,13 @@ export default async function handler (
     return handleMethod(request, response)
   }
 
+  const session = await getServerSession(request, response, authOptions)
+
   const { postId } = request.query
 
   if (!postId) {
     return handleBadRequest(response)
   }
-
-  const session = await getServerSession(request, response, authOptions)
 
   const apiRequest: AddPostViewApiRequest = {
     userId: session !== null ? session.user.id : null,
@@ -47,7 +47,7 @@ export default async function handler (
 
   const applicationRequest = AddPostViewRequestTranslator.fromApiDto(apiRequest)
 
-  const useCase = container.resolve<AddPostView>('addPostView')
+  const useCase = container.resolve<AddPostView>('addPostViewUseCase')
 
   try {
     const posts = await useCase.add(applicationRequest)

@@ -1,15 +1,7 @@
 import { NextPage } from 'next'
 import styles from './VideoPage.module.scss'
-import { useState, ReactElement } from 'react'
-import {
-  BsArrowUpRight,
-  BsBookmarks,
-  BsChatSquareText,
-  BsCursor,
-  BsDownload,
-  BsHeart,
-  BsMegaphone
-} from 'react-icons/bs'
+import { ReactElement, useState } from 'react'
+import { BsArrowUpRight, BsBookmarks, BsChatSquareText, BsCursor, BsDownload, BsHeart, BsMegaphone } from 'react-icons/bs'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
@@ -17,11 +9,12 @@ import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/Post
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
 import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
 import { useTranslation } from 'next-i18next'
-import { useSession } from 'next-auth/react'
-import { PostReactionComponentDto, ReactionType } from '~/modules/Posts/Infrastructure/Dtos/PostReactionComponentDto'
+import { PostReactionComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostReactionComponentDto'
 import {
   PostReactionComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostReactionComponentDtoTranslator'
+import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { Reaction } from '~/modules/Posts/Domain/PostReaction'
 
 export interface VideoPageProps {
   post: PostComponentDto
@@ -38,7 +31,7 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
   const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(post.userReaction)
 
   const { t } = useTranslation('video_page')
-  const { data } = useSession()
+  const postsApiService = new PostsApiService()
 
   let producerSection: ReactElement | string = ''
   let actorsSection: ReactElement[] | string = ''
@@ -92,31 +85,14 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
   }
 
   const onClickReactButton = async () => {
-    let userId: string | null = null
-
-    if (data === null) {
-      return
-    }
-
-    userId = data.user.id
-
     if (userReaction !== null) {
       // FIXME: If user has reacted we must ignore the event (while only like reaction is supported)
     } else {
       try {
-        // FIXME: Use an api service instead of make call to api
-        const userReaction = await (await fetch(`/api/posts/${post.id}/reactions`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            postId: post.id,
-            userId,
-            // TODO: Support more reaction types
-            reactionType: ReactionType.LIKE,
-          }),
-        })).json()
+        // FIXME: ReactionType
+        const response = await postsApiService.createPostReaction(post.id, Reaction.LIKE)
+
+        const userReaction = await response.json()
 
         setUserReaction(PostReactionComponentDtoTranslator.fromApplicationDto(userReaction))
         setReactionsNumber(reactionsNumber + 1)
@@ -140,7 +116,7 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
         />
       </div>
 
-      <div className={ styles.videoPage__videoData }>
+      <div className={ styles.videoPage__videoData } key={ post.id }>
         <h1 className={ styles.videoPage__videoTitle }>
           { post.title }
         </h1>

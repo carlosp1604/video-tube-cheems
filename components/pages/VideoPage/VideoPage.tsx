@@ -86,7 +86,13 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
 
   const onClickReactButton = async () => {
     if (userReaction !== null) {
-      // FIXME: If user has reacted we must ignore the event (while only like reaction is supported)
+      try {
+        await postsApiService.deletePostReaction(post.id)
+        setUserReaction(null)
+        setReactionsNumber(reactionsNumber - 1)
+      } catch (exception: unknown) {
+        console.error(exception)
+      }
     } else {
       try {
         // FIXME: ReactionType

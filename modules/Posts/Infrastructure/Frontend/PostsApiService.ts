@@ -53,4 +53,10 @@ export class PostsApiService {
       }),
     })
   }
+
+  public async deletePostReaction (postId: string): Promise<Response> {
+    return fetch(`/api/posts/${postId}/reactions`, {
+      method: 'DELETE',
+    })
+  }
 }

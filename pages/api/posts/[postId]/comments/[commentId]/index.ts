@@ -5,7 +5,7 @@ import { DeletePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/D
 import {
   DeletePostCommentApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
-import { DeletePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/DeletePostRequestDtoTranslator'
+import { DeletePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/DeletePostRequestDtoTranslator'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
 import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {

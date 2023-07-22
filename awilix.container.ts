@@ -29,6 +29,7 @@ import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment
 import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import { MailerSend } from 'mailersend'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
+import { DeletePostReaction } from '~/modules/Posts/Application/DeletePostReaction/DeletePostReaction'
 
 /**
  * We create a container to register our classes dependencies
@@ -132,5 +133,6 @@ container.register('getPostPostChildCommentsUseCase', asClass(GetPostPostChildCo
 container.register('createPostCommentUseCase', asClass(CreatePostComment))
 container.register('createPostChildCommentUseCase', asClass(CreatePostChildComment))
 container.register('deletePostCommentUseCase', asClass(DeletePostComment))
+container.register('deletePostReactionUseCase', asClass(DeletePostReaction))
 
 export { container }

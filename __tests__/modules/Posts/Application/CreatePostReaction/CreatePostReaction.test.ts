@@ -75,7 +75,7 @@ describe('~/modules/Posts/Application/CreatePostReaction/CreatePostReaction.ts',
       expect(spy).toBeCalledWith(postReaction)
     })
 
-    it('should call to repositories correctly', async () => {
+    it('should return the correct data', async () => {
       const useCase = buildUseCase()
 
       jest.spyOn(PostReactionApplicationDtoTranslator, 'fromDomain').mockReturnValueOnce({

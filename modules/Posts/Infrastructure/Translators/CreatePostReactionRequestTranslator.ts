@@ -3,7 +3,7 @@ import {
   CreatePostReactionApplicationRequest
 } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReactionApplicationRequest'
 
-export class AddPostReactionRequestTranslator {
+export class CreatePostReactionRequestTranslator {
   public static fromApiDto (request: CreatePostReactionApiRequest): CreatePostReactionApplicationRequest {
     return {
       postId: request.postId,

@@ -2,7 +2,6 @@
 export const POST_VALIDATION = 'post-validation-exception'
 export const POST_SERVER_ERROR = 'post-server-error'
 export const POST_METHOD = 'post-method-not-allowed'
-export const POST_REACTION_ALREADY_EXISTS = 'post-conflict-user-already-exists'
 export const POST_INVALID_SORTING_CRITERIA = 'post-unprocessable-entity-invalid-sorting-criteria'
 export const POST_INVALID_SORTING_OPTION = 'post-unprocessable-entity-invalid-sorting-option'
 export const POST_INVALID_FILTER_TYPE = 'post-unprocessable-entity-invalid-filter-type'
@@ -11,6 +10,16 @@ export const POST_INVALID_PER_PAGE = 'post-unprocessable-entity-invalid-per-page
 export const POST_INVALID_PAGE = 'post-unprocessable-entity-invalid-page'
 export const POST_POST_NOT_FOUND = 'post-post-not-found'
 export const POST_BAD_REQUEST = 'post-bad-request'
+
+/** Post Reactions **/
+export const POST_REACTION_ALREADY_EXISTS = 'post-reaction-conflict-reaction-already-exists'
+export const POST_REACTION_NOT_FOUND = 'post-reaction-reaction-not-found'
+export const POST_REACTION_POST_NOT_FOUND = 'post-reaction-post-not-found'
+export const POST_REACTION_BAD_REQUEST = 'post-reaction-bad-request'
+export const POST_REACTION_VALIDATION = 'post-reaction-validation-exception'
+export const POST_REACTION_AUTH_REQUIRED = 'post-reaction-authentication-required'
+export const POST_REACTION_METHOD = 'post-reaction-method-not-allowed'
+export const POST_REACTION_SERVER_ERROR = 'post-reaction-server-error'
 
 /** Posts Comments **/
 export const POST_COMMENT_AUTH_REQUIRED = 'post-comment-authentication-required'

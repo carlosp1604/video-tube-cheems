@@ -398,7 +398,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param postId Post ID
    */
   public async deleteReaction (userId: PostReaction['userId'], postId: PostReaction['postId']): Promise<void> {
-    throw Error()
+    await prisma.postReaction.delete({
+      where: {
+        postId_userId: {
+          postId,
+          userId,
+        },
+      },
+    })
   }
 
   /**

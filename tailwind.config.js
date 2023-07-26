@@ -105,6 +105,7 @@ module.exports = {
         'floating-action-app-menu',
         'sort-menu-dropdown',
         'sidebar-menu',
+        'menu-dropdown',
         'app-menu',
         'mobile-menu',
         'video-comments',

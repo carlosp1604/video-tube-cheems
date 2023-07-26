@@ -107,7 +107,7 @@ export const PostCard: FC<Props> = ({
         { producerImage }
         <div className={ styles.postCard__videoData }>
           <Link
-            href={ `/posts/videos/${post.id}` }
+            href={ `/posts/videos/${post.slug}` }
             className={ styles.postCard__videoTitleLink }
             title={ post.title }
           >

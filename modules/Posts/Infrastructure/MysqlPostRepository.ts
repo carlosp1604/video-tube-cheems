@@ -447,9 +447,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         id: childComment.parentCommentId,
       },
       data: {
-        parentComment: {
+        childComments: {
           create: {
-            ...prismaChildCommentModel,
+            id: prismaChildCommentModel.id,
+            comment: prismaChildCommentModel.comment,
+            userId: prismaChildCommentModel.userId,
+            createdAt: prismaChildCommentModel.createdAt,
+            updatedAt: prismaChildCommentModel.updatedAt,
+            deletedAt: prismaChildCommentModel.deletedAt,
           },
         },
       },
@@ -473,9 +478,16 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param commentId Post Comment ID
    */
   public async deleteComment (commentId: PostComment['id']): Promise<void> {
-    await prisma.postComment.delete({
+    await prisma.postComment.deleteMany({
       where: {
-        id: commentId,
+        OR: [
+          {
+            id: commentId,
+          },
+          {
+            parentCommentId: commentId,
+          },
+        ],
       },
     })
   }

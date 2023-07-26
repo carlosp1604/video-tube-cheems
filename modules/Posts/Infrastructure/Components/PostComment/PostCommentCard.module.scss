@@ -1,9 +1,9 @@
-.comment-card {
+.post-comment-card {
   &__container {
     @apply grid gap-2 items-center border-opacity-50;
     grid-template-areas:
-      "user-logo  user-name-date"
-      "user-logo  comment";
+      "user-logo  user-name-date  options"
+      "user-logo  comment         options";
     grid-auto-columns: auto 1fr;
   }
 
@@ -18,7 +18,7 @@
   }
 
   &__user-name-date {
-    @apply flex gap-x-1 justify-start items-center;
+    @apply flex flex-wrap gap-x-1 justify-start items-center;
     grid-area: user-name-date;
   }
 

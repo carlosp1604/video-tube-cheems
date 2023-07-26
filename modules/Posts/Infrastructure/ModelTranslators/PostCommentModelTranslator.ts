@@ -43,7 +43,7 @@ export class PostCommentModelTranslator {
       postCommentWithChildren.childComments.forEach((childComment) => {
         childrenCollection.addItemFromPersistenceLayer(
           PostChildCommentModelTranslator.toDomain(childComment, ['comments.user']),
-          childComment.userId
+          childComment.id
         )
       })
     }

@@ -1,0 +1,49 @@
+.post-child-comment-card {
+  &__container {
+    @apply grid gap-2 items-center border-opacity-50;
+    grid-template-areas:
+      "user-logo  user-name-date  options"
+      "user-logo  comment         options";
+    grid-auto-columns: auto 1fr;
+  }
+
+  &__user-logo {
+    @apply h-6 w-6 self-start rounded-full;
+    grid-area: user-logo;
+  }
+
+  &__child-comment-user-logo {
+    @apply h-6 w-6 self-start rounded-full;
+    grid-area: user-logo;
+  }
+
+  &__user-name-date {
+    @apply flex flex-wrap gap-x-1 justify-start items-center;
+    grid-area: user-name-date;
+  }
+
+  &__user-name {
+    @apply text-xs text-base-400;
+  }
+
+  &__comment-date {
+    @apply text-xs text-base-400 leading-snug font-thin;
+  }
+
+  &__separator-icon {
+    @apply text-base-600;
+  }
+
+  &__comment {
+    @apply text-sm font-light whitespace-pre-line;
+    grid-area: comment;
+  }
+
+  &__child-comment {
+    @apply grid gap-2 items-center;
+    grid-template-areas:
+      "user-logo  user-name-date"
+      "user-logo  comment";
+    grid-auto-rows: auto 1fr;
+  }
+}

@@ -1,14 +1,8 @@
 import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
 import styles from './PostComments.module.scss'
-import { BsChatDots, BsX } from 'react-icons/bs'
-import { CommentCard } from './CommentCard'
+import { BsX } from 'react-icons/bs'
 import { useRouter } from 'next/router'
-import { CommentReplies } from './PostCommentReplies'
-import { AutoSizableTextArea } from './AutoSizableTextArea'
-import Avatar from 'react-avatar'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
-import { useUserContext } from '~/hooks/UserContext'
-import { usePostCommentable } from '~/hooks/CommentableContext'
 import {
   PostCommentComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCommentComponentDtoTranslator'
@@ -17,81 +11,98 @@ import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
 import { calculatePagesNumber } from '~/modules/Shared/Infrastructure/Pagination'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { useTranslation } from 'next-i18next'
-import { FiTrash } from 'react-icons/fi'
-import { DeleteComment } from '~/modules/Posts/Infrastructure/Components/PostComment/DeleteComment'
+import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
+import toast from 'react-hot-toast'
+import { PostCommentList } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentList'
+import { PostChildComments } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildComments'
 
 interface Props {
   postId: string
-  isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>
   setCommentsNumber: Dispatch<SetStateAction<number>>
   commentsNumber: number
 }
 
-export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setCommentsNumber, commentsNumber }) => {
+export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, commentsNumber }) => {
   const [repliesOpen, setRepliesOpen] = useState<boolean>(false)
   const [commentToReply, setCommentToReply] = useState<PostCommentComponentDto | null>(null)
   const [comments, setComments] = useState<PostCommentComponentDto[]>([])
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const [pageNumber, setPageNumber] = useState<number>(1)
-  const [comment, setComment] = useState<string>('')
   const commentsAreaRef = useRef<HTMLDivElement>(null)
   const commentApiService = new CommentsApiService()
-  const [deleteCommentOpen, setDeleteCommentOpen] = useState<boolean>(false)
 
   const { t } = useTranslation('post_comments')
 
   const router = useRouter()
   const locale = router.locale ?? 'en'
-  const { user } = useUserContext()
-  const commentable = usePostCommentable()
 
-  let avatar = null
+  const createComment = async (comment: string) => {
+    if (comment === '') {
+      toast.error(t('empty_comment_is_not_allowed_error_message'))
 
-  if (user !== null) {
-    if (user?.image !== null) {
-      avatar = (
-        <img
-          className={ styles.commentCard__userLogo }
-          src={ user.image ?? '' }
-          alt={ user.name }
-        />
-      )
-    } else {
-      avatar = (
-        <Avatar
-          className={ styles.commentCard__userLogo }
-          round={ true }
-          size={ '34' }
-          name={ user.name }
-          textSizeRatio={ 2 }
-        />)
+      return
     }
-  }
 
-  const createComment = async () => {
     try {
       const response = await commentApiService.create(postId, comment, null)
 
-      const componentResponse = PostCommentComponentDtoTranslator
-        .fromApplication({ childrenNumber: 0, postComment: response }, locale)
+      if (response.ok) {
+        const postComment = await response.json()
 
-      setComments([componentResponse, ...comments])
-      setCommentsNumber(commentsNumber + 1)
-      setComment('')
+        const componentResponse = PostCommentComponentDtoTranslator
+          .fromApplication({ childrenNumber: 0, postComment }, locale)
 
-      commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+        setComments([componentResponse, ...comments])
+        setCommentsNumber(commentsNumber + 1)
+
+        commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
+        return
+      }
+
+      switch (response.status) {
+        case 400:
+          toast(t('bad_request_error_message'))
+          break
+
+        case 401:
+          toast(t('user_must_be_authenticated_error_message'))
+          break
+
+        case 404:
+          toast(t('create_post_comment_post_not_found_error_message'))
+          break
+
+        default:
+          toast(t('server_error_error_message'))
+          break
+      }
+
+      return
     } catch (exception: unknown) {
-      console.log(exception)
+      console.error(exception)
+      toast(t('server_error_error_message'))
     }
   }
 
-  async function fetchPostComments (): Promise<GetPostPostCommentsResponseDto> {
-    return commentApiService.getComments(postId, pageNumber, defaultPerPage)
+  async function fetchPostComments (): Promise<GetPostPostCommentsResponseDto | null> {
+    try {
+      return commentApiService.getComments(postId, pageNumber, defaultPerPage)
+    } catch (exception: unknown) {
+      console.error(exception)
+      toast(t('server_error_error_message'))
+
+      return null
+    }
   }
 
   const updatePostComments = async () => {
     const newComments = await fetchPostComments()
+
+    if (newComments === null) {
+      return
+    }
 
     const componentDtos = newComments.postCommentsWithChildrenCount.map((applicationDto) => {
       return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
@@ -105,23 +116,19 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
     setCommentsNumber(newComments.postPostCommentsCount)
   }
 
-  // NOTE: When comment section is open, we fetch the post comments
-  // NOTE: When comment section is closed, we reset the post comments
   useEffect(() => {
-    if (isOpen) {
-      updatePostComments()
-    } else {
-      setPageNumber(1)
-      setComments([])
-    }
-  }, [isOpen])
+    updatePostComments()
+  }, [])
 
   let replies = null
 
   if (repliesOpen && commentToReply !== null) {
     replies = (
-      <CommentReplies
-        onClickClose={ () => setIsOpen(false) }
+      <PostChildComments
+        onClickClose={ () => {
+          setRepliesOpen(false)
+          setIsOpen(false)
+        } }
         onClickRetry={ () => setRepliesOpen(false) }
         onAddReply={ () => {
           const commentIndex = comments.indexOf(commentToReply)
@@ -131,25 +138,28 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
 
             commentToUpdate.repliesNumber = commentToUpdate.repliesNumber + 1
             comments[commentIndex] = commentToUpdate
+            setComments(comments)
           }
         } }
-        onDeleteReply={ undefined }
+        onDeleteReply={ () => {
+          const commentIndex = comments.indexOf(commentToReply)
+
+          if (commentIndex !== -1) {
+            const commentToUpdate = comments[commentIndex]
+
+            commentToUpdate.repliesNumber = commentToUpdate.repliesNumber - 1
+            comments[commentIndex] = commentToUpdate
+            setComments(comments)
+          }
+        } }
         commentToReply={ commentToReply }
-        isOpen={ repliesOpen }
       />
     )
   }
 
   return (
-    <>
-    <DeleteComment
-      isOpen={ deleteCommentOpen }
-      setIsOpen={ setDeleteCommentOpen }
-    />
-    <div className={ `
-        ${styles.postComments__backdrop}
-        ${isOpen ? styles.postComments__backdrop__open : ''}
-      ` }
+    <div
+      className={ styles.postComments__backdrop }
       onClick={ () => setIsOpen(false) }
     >
       { replies }
@@ -168,82 +178,42 @@ export const PostComments: FC<Props> = ({ postId, isOpen, setIsOpen, setComments
           <BsX
             className={ styles.postComments__commentsCloseIcon }
             onClick={ () => setIsOpen(false) }
+            title={ t('close_comment_section_button') }
           />
         </div>
         <div
           className={ styles.postComments__comments }
           ref={ commentsAreaRef }
         >
-          { comments.map((comment) => {
-            return (
-              <div
-                className={ styles.postComments__commentWithOptions }
-                key={ comment.id }
-              >
-                <CommentCard
-                  comment={ comment }
-                  key={ comment.id }
-                />
-                <div className={ styles.postComments__commentOptions }>
-                  <button
-                    className={ styles.postComments__repliesButton }
-                    onClick={ () => {
-                      setCommentToReply(comment)
-                      setRepliesOpen(true)
-                    } }
-                  >
-                    { comment.repliesNumber > 0
-                      ? t('comment_replies_button', { replies: comment.repliesNumber })
-                      : t('comment_reply_button')
-                    }
-                  </button>
-                  {
-                    comment.user.id !== user?.id
-                      ? null
-                      : <button
-                        className={ styles.postComments__optionButton }
-                        onClick={ () => {
-                          setDeleteCommentOpen(true)
-                        } }
-                      >
-                        <FiTrash />
-                        { 'Eliminar' }
-
-                      </button>
-                  }
-                </div>
-              </div>
-            )
-          }) }
+          <PostCommentList
+            key={ postId }
+            onDeletePostComment={ (postCommentId: string) => {
+              setComments(comments.filter((comment) => comment.id !== postCommentId))
+              setCommentsNumber(commentsNumber - 1)
+              toast.success(t('post_comment_deleted_success_message'))
+            } }
+            postComments={ comments }
+            onClickReply={ (comment: PostCommentComponentDto) => {
+              setCommentToReply(comment)
+              setRepliesOpen(true)
+            } }
+          />
           <button className={ `
-              ${styles.postComments__loadMore}
-              ${canLoadMore ? styles.postComments__loadMore__open : ''}
-            ` }
+            ${styles.postComments__loadMore}
+            ${canLoadMore ? styles.postComments__loadMore__visible : ''}
+          ` }
             onClick={ () => updatePostComments() }
           >
             { t('comment_section_load_more') }
           </button>
         </div>
 
-        <div className={ `
-            ${styles.postComments__addCommentSection}
-            ${commentable ? styles.postComments__addCommentSection__open : ''}
-        ` }>
-          { avatar }
-          <AutoSizableTextArea
-            placeHolder={ t('add_reply_placeholder') }
-            comment={ comment }
-            onCommentChange={ (value) => setComment(value) }
-          />
-          <button className={ styles.postComments__addCommentButton }>
-            <BsChatDots
-              className={ styles.postComments__addCommentIcon }
-              onClick={ createComment }
-            />
-          </button>
-        </div>
+        <AddCommentInput
+          onAddComment={ async (comment: string) => {
+            await createComment(comment)
+          } }
+        />
       </div>
     </div>
-    </>
   )
 }

@@ -59,4 +59,20 @@ export class PostsApiService {
       method: 'DELETE',
     })
   }
+
+  public async deletePostComment (
+    postId: string,
+    postCommentId: string,
+    parentCommentId: string | null
+  ): Promise<Response> {
+    let fetchRoute = `/api/posts/${postId}/comments/${postCommentId}`
+
+    if (parentCommentId !== null) {
+      fetchRoute = `/api/posts/${postId}/comments/${parentCommentId}/children/${postCommentId}`
+    }
+
+    return fetch(fetchRoute, {
+      method: 'DELETE',
+    })
+  }
 }

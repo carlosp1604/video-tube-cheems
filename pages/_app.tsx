@@ -11,6 +11,7 @@ import { Settings } from 'luxon'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Toaster } from 'react-hot-toast'
+import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
 
 function App ({
   Component,
@@ -31,24 +32,26 @@ function App ({
   return (
     <SessionProvider session={ session }>
       <UserProvider>
-        <>
-          <AppMenu />
-          <MenuSideBar />
-          <MobileMenu
-            openMenu={ openMenu }
-            setOpenMenu={ setOpenMenu }
-          />
-          <FloatingActionAppMenu
-            openMenu={ openMenu }
-            setOpenMenu={ setOpenMenu }
-          />
-          <main className={ styles.app__container } >
-            <Toaster
-              position={ 'bottom-center' }
+        <LoginProvider>
+          <>
+            <AppMenu />
+            <MenuSideBar />
+            <MobileMenu
+              openMenu={ openMenu }
+              setOpenMenu={ setOpenMenu }
             />
-            <Component { ...pageProps } />
-          </main>
-        </>
+            <FloatingActionAppMenu
+              openMenu={ openMenu }
+              setOpenMenu={ setOpenMenu }
+            />
+            <main className={ styles.app__container } >
+              <Toaster
+                position={ 'bottom-center' }
+              />
+              <Component { ...pageProps } />
+            </main>
+          </>
+        </LoginProvider>
       </UserProvider>
     </SessionProvider>
   )

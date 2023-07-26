@@ -1,9 +1,9 @@
-.post-comments {
+.post-child-comments {
   &__backdrop {
-    @apply fixed inset-0 bg-body/50 z-video-comments w-full;
+    @apply fixed inset-0 bg-transparent z-comment-replies;
 
     @screen md {
-      @apply static relative h-[500px] m-auto mb-5;
+      @apply absolute py-5;
     }
   }
 
@@ -11,24 +11,21 @@
     @apply flex flex-col fixed bottom-0 overflow-hidden bg-body transition
       rounded-t-lg w-full h-2/3 border-t border-base-800;
 
-      @screen md {
-        @apply static rounded-lg border h-full;
-      }
+    @screen md {
+      @apply static rounded-lg border h-full;
+    }
   }
 
-  &__comments-title-bar {
-    @apply flex items-center justify-between pt-2 pb-1 border-b border-base-800 px-4;
+  &__title-bar {
+    @apply flex items-center justify-between
+      bg-body pt-2 pb-1 border-b border-base-800 px-4;
   }
 
-  &__comments-title {
+  &__title {
     @apply flex text-base gap-x-4 items-center text-base-400 font-bold;
   }
 
-  &__comments-quantity {
-    @apply text-brand-500 text-xs font-medium;
-  }
-
-  &__comments-close-icon {
+  &__title-bar-icon {
     @apply h-9 w-9 rounded-full p-1 cursor-pointer transition text-base-400;
 
     &:hover, &:focus {
@@ -36,13 +33,13 @@
     }
   }
 
-  &__comments {
-    @apply flex-grow overflow-y-scroll scrollbar-hide pt-4 pb-4 px-5;
+  &__post-child-comments {
+    @apply flex flex-col flex-grow;
   }
 
   &__load-more {
     @apply hidden text-center bg-base-700 mt-2 py-1 px-4 font-bold text-xs
-      uppercase rounded-lg transition-colors mx-auto;
+    uppercase rounded-lg transition-colors mx-auto;
 
     &:hover, &:focus {
       @apply bg-brand-500 transition-colors;

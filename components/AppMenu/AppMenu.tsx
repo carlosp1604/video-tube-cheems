@@ -11,10 +11,11 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useUserContext } from '~/hooks/UserContext'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { useLoginContext } from '~/hooks/LoginContext'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false)
+  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
 
   const { user } = useUserContext()

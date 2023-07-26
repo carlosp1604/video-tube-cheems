@@ -1,0 +1,27 @@
+.post-comment-list {
+  &__container {
+    @apply flex flex-col gap-y-4 bg-body;
+  }
+
+  &__post-comment-container {
+    @apply border-b border-base-800;
+
+    &:last-of-type {
+      @apply border-0;
+    }
+  }
+
+  &__comment-with-options {
+    @apply grid items-start;
+    grid-template-columns: 1fr auto;
+  }
+
+  &__replies-button {
+    @apply text-xs ml-8 mb-2 font-medium text-brand-300 cursor-pointer
+    transition;
+
+    &:hover, &:focus {
+      @apply text-brand-900 transition;
+    }
+  }
+}

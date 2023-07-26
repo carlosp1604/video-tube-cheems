@@ -1,5 +1,4 @@
 import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
-import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
 import {
   GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
@@ -9,14 +8,14 @@ export class RepliesApiService {
     postId: string,
     comment: string,
     parentCommentId: string
-  ): Promise<PostChildCommentApplicationDto> {
-    return (await fetch(`/api/posts/${postId}/comments/${parentCommentId}/children`, {
+  ): Promise<Response> {
+    return fetch(`/api/posts/${postId}/comments/${parentCommentId}/children`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ comment }),
-    })).json()
+    })
   }
 
   public async getComments (

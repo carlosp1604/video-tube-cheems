@@ -6,14 +6,22 @@
   }
 
   &__add-comment-button {
-    @apply rounded-full bg-brand-500 text-base-100;
+    @apply rounded-full bg-brand-500 text-base-100 transition-colors;
   }
 
   &__add-comment-icon {
-    @apply h-8 w-8 p-2;
+    @apply h-8 w-8 p-2 rounded-full transition-colors;
 
     @screen md {
       @apply h-10 w-10 p-3;
+    }
+
+    &:hover, &:focus {
+      @apply bg-brand-700 ;
+    }
+
+    &:active {
+      @apply text-brand-300;
     }
   }
 

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { SafePlayVideo, SafeStopVideo } from '~/modules/Shared/Infrastructure/SafeVideoElement'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 
 interface Props {
   playerId: string
@@ -29,10 +30,13 @@ export const PostCard: FC<Props> = ({
   let producerImage: ReactElement | null = null
 
   let media: ReactElement = (
-    <img
+    <Image
       src={ post.thumb }
       alt={ post.title }
       className={ styles.postCard__media }
+      width={ 0 }
+      height={ 0 }
+      sizes={ '100vw' }
     />
   )
 
@@ -56,10 +60,13 @@ export const PostCard: FC<Props> = ({
     producerImage = (
       // TODO: FIX THIS WHEN PRODUCER PAGE IS READY
       <Link href={ '/' } title={ post.producer.name }>
-        <img
+        <Image
           className={ styles.postCard__producerLogo }
           src={ post.producer?.imageUrl ?? '' }
           alt={ post.producer?.name }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
         />
       </Link>
     )

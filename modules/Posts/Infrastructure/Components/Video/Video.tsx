@@ -20,6 +20,14 @@ import {
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { Reaction } from '~/modules/Posts/Domain/PostReaction'
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
+import Image from 'next/image'
+import toast from 'react-hot-toast'
+import { useLoginContext } from '~/hooks/LoginContext'
+import { useSession } from 'next-auth/react'
+import {
+  POST_REACTION_NOT_FOUND,
+  POST_REACTION_POST_NOT_FOUND
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 export interface Props {
   post: PostComponentDto
@@ -34,19 +42,25 @@ export const Video: FC<Props> = ({ post }) => {
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [commentsNumber, setCommentsNumber] = useState<number>(post.comments)
 
-  const { t } = useTranslation('video_page')
+  const { t } = useTranslation('video')
+  const { setLoginModalOpen } = useLoginContext()
   const postsApiService = new PostsApiService()
 
-  let producerSection: ReactElement | string = ''
-  let actorsSection: ReactElement[] | string = ''
+  const { status } = useSession()
+
+  let producerSection: ReactElement | null = null
+  let actorsSection: ReactElement[] | null = null
 
   if (post.producer !== null) {
     producerSection = (
       <div className={ styles.video__producerItem }>
-        <img
+        <Image
           alt={ post.producer.name }
           className={ styles.video__producerLogo }
           src={ post.producer.imageUrl }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
         />
         <span className={ styles.video__producerName }>
           { post.producer.name }
@@ -68,10 +82,13 @@ export const Video: FC<Props> = ({ post }) => {
           className={ styles.video__actorsItem }
           key={ actor.id }
         >
-          <img
+          <Image
             className={ styles.video__actorLogo }
             src={ actor.imageUrl }
             alt={ actor.name }
+            width={ 0 }
+            height={ 0 }
+            sizes={ '100vw' }
           />
           <span className={ styles.video__actorName }>
           { actor.name }
@@ -103,25 +120,90 @@ export const Video: FC<Props> = ({ post }) => {
   }
 
   const onClickReactButton = async () => {
+    if (status !== 'authenticated') {
+      toast.error(t('user_must_be_authenticated_error_message'))
+
+      return
+    }
+
     if (userReaction !== null) {
       try {
-        await postsApiService.deletePostReaction(post.id)
-        setUserReaction(null)
-        setReactionsNumber(reactionsNumber - 1)
+        const response = await postsApiService.deletePostReaction(post.id)
+
+        if (!response.ok) {
+          switch (response.status) {
+            case 400:
+              toast.error(t('bad_request_error_message'))
+              break
+
+            case 404: {
+              const jsonResponse = await response.json()
+
+              switch (jsonResponse.code) {
+                case POST_REACTION_POST_NOT_FOUND:
+                  toast.error(t('post_does_not_exist_error_message'))
+                  break
+
+                case POST_REACTION_NOT_FOUND:
+                  toast.error(t('post_reaction_does_not_exist'))
+                  break
+
+                default:
+                  toast.error(t('server_error_error_message'))
+                  break
+              }
+              break
+            }
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
+        } else {
+          setUserReaction(null)
+          setReactionsNumber(reactionsNumber - 1)
+        }
       } catch (exception: unknown) {
         console.error(exception)
+        toast.error(t('server_error_error_message'))
       }
     } else {
       try {
         // FIXME: ReactionType
         const response = await postsApiService.createPostReaction(post.id, Reaction.LIKE)
 
-        const userReaction = await response.json()
+        if (!response.ok) {
+          switch (response.status) {
+            case 400:
+              toast.error(t('bad_request_error_message'))
+              break
 
-        setUserReaction(PostReactionComponentDtoTranslator.fromApplicationDto(userReaction))
-        setReactionsNumber(reactionsNumber + 1)
+            case 401:
+              setLoginModalOpen(true)
+              toast.error(t('user_must_be_authenticated_error_message'))
+              break
+
+            case 404:
+              toast.error(t('post_does_not_exist_error_message'))
+              break
+
+            case 409:
+              toast.error(t('user_already_reacted_to_post_error_message'))
+              break
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
+        } else {
+          const userReaction = await response.json()
+
+          setUserReaction(PostReactionComponentDtoTranslator.fromApplicationDto(userReaction))
+          setReactionsNumber(reactionsNumber + 1)
+        }
       } catch (exception: unknown) {
         console.error(exception)
+        toast.error(t('server_error_error_message'))
       }
     }
   }
@@ -225,7 +307,7 @@ export const Video: FC<Props> = ({ post }) => {
           ${styles.video__videoDescription}
           ${descriptionOpen ? styles.video__videoDescription__open : ''}
         ` }
-             onClick={ () => setDescriptionOpen(!descriptionOpen) }
+         onClick={ () => setDescriptionOpen(!descriptionOpen) }
         >
           { post.description }
           <span className={ styles.video__videoDescriptionShowMore }>

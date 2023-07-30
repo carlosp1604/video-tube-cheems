@@ -68,6 +68,7 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
             'menu_options',
             'post_comments',
             'video_page',
+            'video',
             'carousel',
             'post_card',
             'user_signup',

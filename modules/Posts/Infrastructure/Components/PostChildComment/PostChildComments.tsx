@@ -16,6 +16,10 @@ import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import toast from 'react-hot-toast'
 import { PostChildCommentList } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentList'
+import {
+  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
+  POST_CHILD_COMMENT_POST_NOT_FOUND
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 
 interface Props {
   commentToReply: PostCommentComponentDto
@@ -67,28 +71,42 @@ export const PostChildComments: FC<Props> = ({
         return
       }
 
-      // TODO: Arreglar mensajes aqui
-
       switch (response.status) {
         case 400:
-          toast(t('bad_request_error_message'))
+          toast.error(t('bad_request_error_message'))
           break
 
         case 401:
-          toast(t('user_must_be_authenticated_error_message'))
+          toast.error(t('user_must_be_authenticated_error_message'))
           break
 
-        case 404:
-          toast(t('create_post_comment_post_not_found_error_message'))
+        case 404: {
+          const jsonResponse = await response.json()
+
+          switch (jsonResponse.code) {
+            case POST_CHILD_COMMENT_POST_NOT_FOUND:
+              toast.error(t('create_post_child_comment_post_not_found_error_message'))
+              break
+
+            case POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND:
+              toast.error(t('create_post_child_comment_parent_comment_not_found_error_message'))
+              break
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
+
           break
+        }
 
         default:
-          toast(t('server_error_error_message'))
+          toast.error(t('server_error_error_message'))
           break
       }
     } catch (exception: unknown) {
       console.error(exception)
-      toast(t('server_error_error_message'))
+      toast.error(t('server_error_error_message'))
     }
   }
 
@@ -97,7 +115,7 @@ export const PostChildComments: FC<Props> = ({
       return apiService.getComments(commentToReply.postId, commentToReply.id, pageNumber, defaultPerPage)
     } catch (exception: unknown) {
       console.error(exception)
-      toast(t('server_error_error_message'))
+      toast.error(t('server_error_error_message'))
 
       return null
     }

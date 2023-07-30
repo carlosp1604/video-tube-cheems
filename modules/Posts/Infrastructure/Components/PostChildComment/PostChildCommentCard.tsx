@@ -3,6 +3,7 @@ import styles from './PostChildCommentCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import Avatar from 'react-avatar'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
+import Image from 'next/image'
 
 interface Props {
   postChildComment: PostChildCommentComponentDto
@@ -13,10 +14,13 @@ export const PostChildCommentCard: FC<Props> = ({ postChildComment }) => {
 
   if (postChildComment.user.imageUrl !== null) {
     avatar = (
-      <img
+      <Image
         className={ styles.postChildCommentCard__userLogo }
         src={ postChildComment.user.imageUrl ?? '' }
         alt={ postChildComment.user.name }
+        width={ 0 }
+        height={ 0 }
+        sizes={ '100vw' }
       />
     )
   } else {

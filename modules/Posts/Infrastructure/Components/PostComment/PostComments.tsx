@@ -63,26 +63,26 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
 
       switch (response.status) {
         case 400:
-          toast(t('bad_request_error_message'))
+          toast.error(t('bad_request_error_message'))
           break
 
         case 401:
-          toast(t('user_must_be_authenticated_error_message'))
+          toast.error(t('user_must_be_authenticated_error_message'))
           break
 
         case 404:
-          toast(t('create_post_comment_post_not_found_error_message'))
+          toast.error(t('create_post_comment_post_not_found_error_message'))
           break
 
         default:
-          toast(t('server_error_error_message'))
+          toast.error(t('server_error_error_message'))
           break
       }
 
       return
     } catch (exception: unknown) {
       console.error(exception)
-      toast(t('server_error_error_message'))
+      toast.error(t('server_error_error_message'))
     }
   }
 
@@ -91,7 +91,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
       return commentApiService.getComments(postId, pageNumber, defaultPerPage)
     } catch (exception: unknown) {
       console.error(exception)
-      toast(t('server_error_error_message'))
+      toast.error(t('server_error_error_message'))
 
       return null
     }

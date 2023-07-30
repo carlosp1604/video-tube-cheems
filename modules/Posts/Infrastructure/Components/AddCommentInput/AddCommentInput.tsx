@@ -7,6 +7,7 @@ import { useUserContext } from '~/hooks/UserContext'
 import { usePostCommentable } from '~/hooks/CommentableContext'
 import { useTranslation } from 'next-i18next'
 import { useLoginContext } from '~/hooks/LoginContext'
+import Image from 'next/image'
 
 interface Props {
   onAddComment: (comment: string) => void
@@ -26,10 +27,13 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
   if (user !== null) {
     if (user?.image !== null) {
       avatar = (
-        <img
+        <Image
           className={ styles.commentCard__userLogo }
           src={ user.image ?? '' }
           alt={ user.name }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
         />
       )
     } else {
@@ -44,7 +48,7 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
     }
   }
 
-  let content: ReactNode | null = null
+  let content: ReactNode | null
 
   if (commentable) {
     content = (
@@ -62,6 +66,7 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
               onAddComment(comment)
               setComment('')
             } }
+            title={ t('add_comment_button_title') }
           />
         </button>
       </div>

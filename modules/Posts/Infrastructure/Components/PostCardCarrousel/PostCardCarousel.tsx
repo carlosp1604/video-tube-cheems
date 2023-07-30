@@ -26,6 +26,5 @@ export const PostCardCarousel: FC<Props> = ({ posts }) => {
         })
       }) }
     </Carousel>
-
   )
 }

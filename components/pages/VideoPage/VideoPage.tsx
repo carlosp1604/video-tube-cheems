@@ -4,7 +4,7 @@ import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCompon
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
 import { useTranslation } from 'next-i18next'
-import { Video } from '~/modules/Posts/Infrastructure/Components/Video/Video'
+import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
 
 export interface VideoPageProps {
   post: PostComponentDto
@@ -16,7 +16,7 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
 
   return (
     <div className={ styles.videoPage__container }>
-      <Video
+      <Post
         post={ post }
         key={ post.id }
       />

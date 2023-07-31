@@ -1,0 +1,174 @@
+.post {
+  $parentBlock: &;
+
+  &__container {
+    @apply flex flex-col gap-y-4 mx-auto transition pt-10 w-full;
+  }
+
+  &__video-container {
+    @apply flex flex-row gap-x-4;
+  }
+
+  &__right-container {
+    @apply flex flex-col gap-y-4 overflow-x-scroll whitespace-nowrap scrollbar-hide;
+    grid-area: right-container;
+  }
+
+  &__post-data {
+    @apply flex flex-col gap-y-2;
+  }
+
+  &__post-title {
+    @apply font-black text-sm;
+
+    @screen md {
+      @apply text-base;
+    }
+
+    @screen lg {
+      @apply text-xl;
+    }
+  }
+
+  &__post-info {
+    @apply flex flex-row gap-x-4;
+  }
+
+  &__post-info-item {
+    @apply flex flex-row items-center font-light text-base-400 gap-x-1 text-xs;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+  }
+
+  &__options-container {
+    @apply flex flex-nowrap gap-x-2 overflow-x-scroll scrollbar-hide -mx-5 pl-5;
+  }
+
+  &__option-item {
+    @apply flex flex-row flex-shrink-0 items-center gap-x-2
+    rounded-full bg-base-800 py-2 cursor-pointer text-xs px-3
+    transition-colors;
+
+    @screen lg {
+      @apply text-sm;
+    }
+
+    &:hover, &:focus, &_active {
+      @apply text-brand-400 transition-colors;
+    }
+
+    &_active {
+      @apply text-brand-400 bg-base-900 transition-colors;
+    }
+  }
+
+  &__post-extra-data {
+    @apply hidden flex-col gap-y-6 h-0 p-4
+      overflow-hidden bg-base-900 rounded-lg;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+
+    &__open {
+      @apply flex h-fit transition-all duration-500;
+    }
+  }
+
+  &__extra-data-button {
+    @apply flex items-center gap-x-2 justify-center pb-0.5 mb-2 border-b
+      border-base-800 text-xs font-bold transition-colors;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    &:hover, &:focus {
+      @apply cursor-pointer text-base-500 transition-colors;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+
+    &_open {
+      @apply border-0;
+    }
+  }
+
+  &__extra-data-icon {
+    @apply text-brand-400 text-xl transition;
+
+    &_open {
+      @apply rotate-180 transition;
+    }
+  }
+
+  &__data-item {
+    @apply flex flex-col gap-y-2 font-bold text-xs;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__producer-item {
+    @apply flex gap-x-4 items-center my-2
+      font-medium ml-0 mx-auto;
+  }
+
+  &__producer-item-link {
+    &:hover, &:focus {
+      @apply text-brand-400;
+    }
+  }
+
+  &__producer-logo {
+    @apply rounded-full w-10 h-10 object-cover;
+  }
+
+  &__actors-container {
+    @apply grid gap-2;
+    grid-template-columns: repeat(2, 1fr);
+
+    @screen md {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @screen lg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__actor-logo {
+    @apply rounded-full w-10 h-10 object-cover mr-4;
+  }
+
+  &__actors-item-link {
+    @apply flex items-center rounded-lg p-1 font-normal;
+
+    &:hover, &:focus {
+      @apply bg-base-800;
+    }
+  }
+
+  &__post-description {
+    @apply text-base-500 rounded-lg font-normal;
+  }
+
+  &__option-item:hover, &__option-item:focus {
+    #{$parentBlock}__option-item-icon {
+      @apply text-brand-400 overflow-hidden;
+    }
+  }
+}

@@ -48,6 +48,10 @@
   &__menu-item-content {
     @apply flex flex-row py-3 gap-x-7 items-center truncate mx-4 px-1 border-base-700
       border-opacity-0 border-b;
+
+    &:hover, &:focus {
+      @apply text-base-100;
+    }
   }
 
   &__menu-item-icon {
@@ -75,7 +79,7 @@
   }
 
   &__container:hover, &__container:focus {
-    @apply border-opacity-100 transition-all duration-200 bg-base-800;
+    @apply transition-all duration-200 bg-base-800;
 
     #{$parentBlock}__aside-slide-out {
       @apply w-64 transition-all delay-1000 duration-100 bg-opacity-60;

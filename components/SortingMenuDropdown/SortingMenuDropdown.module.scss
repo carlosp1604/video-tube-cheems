@@ -18,28 +18,32 @@
   }
 
   &__dropdown-container {
-    @apply absolute right-0 z-sort-menu-dropdown mt-2 origin-top-right rounded-md bg-body
-      w-32 border border-base-700 backdrop-blur-3xl backdrop-filter bg-opacity-90
-      scale-0 opacity-0 transition-all overflow-hidden;
+    @apply absolute right-0 z-sort-menu-dropdown mt-2 origin-top-right rounded-lg
+      w-32 border border-base-700 bg-body transition-all overflow-hidden hidden;
 
     &:focus {
       @apply outline-none;
     }
 
     &_open {
-      @apply scale-100 opacity-100 transition-all;
+      @apply block transition-all;
     }
   }
 
   &__dropdown-item {
-    @apply text-base-100 block px-4 py-3 text-sm font-medium transition-colors;
+    @apply text-base-300 block whitespace-nowrap rounded-lg px-4 py-1.5 m-1 text-xs
+     transition-colors text-left;
 
     &:hover, &:focus {
-      @apply bg-base-700 transition-colors cursor-pointer;
+      @apply bg-base-700 transition-colors cursor-pointer backdrop-blur-sm backdrop-filter bg-opacity-60;
     }
 
     &_active {
-      @apply bg-brand-300;
+      @apply bg-brand-400 text-base-100 font-bold;
+    }
+
+    @screen md {
+      @apply text-sm;
     }
   }
 }

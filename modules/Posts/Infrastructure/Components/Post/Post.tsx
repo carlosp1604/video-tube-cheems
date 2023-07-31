@@ -1,10 +1,8 @@
-import styles from './Video.module.scss'
-import { FC, ReactElement, useState } from 'react'
+import styles from './Post.module.scss'
+import { FC, ReactElement, useEffect, useState } from 'react'
 import {
-  BsArrowUpRight,
-  BsBookmarks,
+  BsBookmarks, BsCaretDown,
   BsChatSquareText,
-  BsCursor,
   BsDownload,
   BsHeart,
   BsMegaphone
@@ -28,79 +26,75 @@ import {
   POST_REACTION_NOT_FOUND,
   POST_REACTION_POST_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+import Link from 'next/link'
 
 export interface Props {
   post: PostComponentDto
 }
 
-export const Video: FC<Props> = ({ post }) => {
+export const Post: FC<Props> = ({ post }) => {
   const [reactionsNumber, setReactionsNumber] = useState<number>(post.reactions)
   const [viewsNumber, setViewsNumber] = useState<number>(post.views)
-  const [descriptionOpen, setDescriptionOpen] = useState<boolean>(false)
-  const [producerOpen, setProducerOpen] = useState<boolean>(false)
+  const [extraDataOpen, setExtraDataOpen] = useState<boolean>(false)
   const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(post.userReaction)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [commentsNumber, setCommentsNumber] = useState<number>(post.comments)
 
-  const { t } = useTranslation('video')
+  const { t } = useTranslation('post')
   const { setLoginModalOpen } = useLoginContext()
   const postsApiService = new PostsApiService()
 
   const { status } = useSession()
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      setUserReaction(null)
+    }
+
+    // TODO: If authenticated then we must fetch user post data
+  }, [status])
 
   let producerSection: ReactElement | null = null
   let actorsSection: ReactElement[] | null = null
 
   if (post.producer !== null) {
     producerSection = (
-      <div className={ styles.video__producerItem }>
+      <Link
+        href={ '/' }
+        className={ styles.post__producerItem }
+        title={ post.producer.name }
+      >
         <Image
           alt={ post.producer.name }
-          className={ styles.video__producerLogo }
+          className={ styles.post__producerLogo }
           src={ post.producer.imageUrl }
           width={ 0 }
           height={ 0 }
           sizes={ '100vw' }
         />
-        <span className={ styles.video__producerName }>
-          { post.producer.name }
-          <a
-            href={ '/' }
-            className={ styles.video__profile }>
-            { t('actors_producer_profile_button_title') }
-            <BsArrowUpRight />
-          </a>
-        </span>
-      </div>
+        { post.producer.name }
+      </Link>
     )
   }
 
   if (post.actors.length > 0) {
     actorsSection = post.actors.map((actor) => {
       return (
-        <div
-          className={ styles.video__actorsItem }
+        <Link
+          href={ '/' }
+          className={ styles.post__actorsItemLink }
           key={ actor.id }
         >
           <Image
-            className={ styles.video__actorLogo }
+            className={ styles.post__actorLogo }
             src={ actor.imageUrl }
             alt={ actor.name }
             width={ 0 }
             height={ 0 }
             sizes={ '100vw' }
           />
-          <span className={ styles.video__actorName }>
           { actor.name }
-            <a
-              href={ `/actors/${actor.id}` }
-              className={ styles.video__profile }
-            >
-              { t('actors_producer_profile_button_title') }
-              <BsArrowUpRight />
-            </a>
-          </span>
-        </div>
+        </Link>
       )
     })
   }
@@ -209,8 +203,8 @@ export const Video: FC<Props> = ({ post }) => {
   }
 
   return (
-    <div className={ styles.video__container }>
-      <div className={ styles.video__videoContainer } >
+    <div className={ styles.post__container }>
+      <div className={ styles.post__videoContainer } >
         <VideoPlayer
           key={ post.id }
           videoQualities={ post.video.qualities }
@@ -222,102 +216,119 @@ export const Video: FC<Props> = ({ post }) => {
         />
       </div>
 
-      <div className={ styles.video__videoData } key={ post.id }>
-        <h1 className={ styles.video__videoTitle }>
+      <div className={ styles.post__postData } key={ post.id }>
+        <h1 className={ styles.post__postTitle }>
           { post.title }
         </h1>
-        <div className={ styles.video__videoInfo }>
-          <span className={ styles.video__videoInfoItem }>
+        <div className={ styles.post__postInfo }>
+          <span className={ styles.post__postInfoItem }>
             { post.date }
           </span>
-          <span className={ styles.video__videoInfoItem }>
-            { t('video_views_title', { views: viewsNumber }) }
+          <span className={ styles.post__postInfoItem }>
+            { t('post_views_title', { views: viewsNumber }) }
           </span>
-          <span className={ styles.video__videoInfoItem }>
+          <span className={ styles.post__postInfoItem }>
             { reactionsNumber } <BsHeart />
           </span>
-          <span className={ styles.video__videoInfoItem }>
+          <span className={ styles.post__postInfoItem }>
             { commentsNumber } <BsChatSquareText />
           </span>
         </div>
 
-        <div className={ styles.video__videoOptions }>
-          <span className={ `
-            ${styles.video__videoOptionIcon}
-            ${userReaction !== null ? styles.video__videoOptionIcon_userReacted : ''}
-          ` }
+        <div className={ styles.post__optionsContainer }>
+          <span
+            className={ `
+              ${styles.post__optionItem}
+              ${userReaction !== null ? styles.post__optionItem_active : ''}
+            ` }
             onClick={ onClickReactButton }
           >
-            <BsHeart className={ styles.video__heartIcon }/>
+            <BsHeart className={ styles.post__optionItemIcon }/>
+            { t('post_like_button_title') }
           </span>
           <span
-            className={ styles.video__videoOptionIcon }
+            className={ styles.post__optionItem }
             onClick={ () => setCommentsOpen(!commentsOpen) }
           >
-            <BsChatSquareText className={ styles.video__commentIcon }/>
+            <BsChatSquareText className={ styles.post__optionItemIcon }/>
+            { t('post_comments_button_title') }
           </span>
-          <span className={ styles.video__videoOptionIcon }>
-            <BsCursor className={ styles.video__shareIcon }/>
+          {
+            /**
+            <span className={ styles.post__optionItem }>
+              <BsCursor className={ styles.post__optionItemIcon }/>
+              Compartir
+            </span>
+            **/
+          }
+          <span className={ styles.post__optionItem }>
+            <BsBookmarks className={ styles.post__optionItemIcon }/>
+            { t('post_save_button_title') }
           </span>
-          <span className={ styles.video__videoOptionIcon }>
-            <BsBookmarks className={ styles.video__saveIcon }/>
+          <span className={ styles.post__optionItem }>
+            <BsDownload className={ styles.post__optionItemIcon }/>
+            { t('post_download_button_title') }
           </span>
-          <span className={ styles.video__videoOptionIcon }>
-            <BsDownload className={ styles.video__downloadIcon }/>
-          </span>
-          <span className={ styles.video__videoOptionIcon }>
-            <BsMegaphone className={ styles.video__reportIcon }/>
+          <span className={ styles.post__optionItem }>
+            <BsMegaphone className={ styles.post__optionItemIcon }/>
+            { t('post_report_button_title') }
           </span>
         </div>
 
+        { producerSection }
+
         <div className={ `
-          ${styles.video__videoActorTagsCat}
-          ${producerOpen ? styles.video__videoActorTagsCat__open : ''}
+          ${styles.post__postExtraData}
+          ${extraDataOpen ? styles.post__postExtraData__open : ''}
         ` }
-             onClick={ () => setProducerOpen(!producerOpen) }
         >
-          <div className={ styles.video__dataItem }>
-            { post.producer !== null ? t('video_description_producer_title') : '' }
-            { producerSection }
-          </div>
+          {
+            post.actors.length > 0
+              ? <div className={ styles.post__dataItem }>
+                  { t('post_extra_data_actors_title') }
+                  <div className={ styles.post__actorsContainer }>
+                    { actorsSection }
+                  </div>
+                </div>
+              : null
+          }
 
-          <div className={ styles.video__dataItem }>
-            { post.actors.length > 0 ? t('video_description_actors_title') : '' }
-            { actorsSection }
-          </div>
+          { post.tags.length > 0
+            ? <div className={ styles.post__dataItem }>
+                { t('post_extra_data_tags_title') }
+                <TagList tags={ post.tags } />
+              </div>
+            : null
+          }
 
-          <div className={ styles.video__dataItem }>
-            { post.tags.length > 0 ? t('video_description_tags_title') : '' }
-            <TagList tags={ post.tags } />
-          </div>
+          {
+            post.description !== ''
+              ? <div className={ styles.post__dataItem }>
+                  { t('post_extra_data_description_title') }
+                  <span className={ styles.post__postDescription }>
+                    { post.description }
+                  </span>
+                </div>
+              : null
+          }
 
-          <div className={ styles.video__videoActorTagsCatShowMore }>
-            <button
-              className={ styles.video__videoActorTagsShowMoreButton }
-              onClick={ () => setProducerOpen(!producerOpen) }
-            >
-              { producerOpen
-                ? t('video_actors_producer_section_hide')
-                : t('video_actors_producer_section_show_more') }
-            </button>
-          </div>
         </div>
 
-        <div className={ `
-          ${styles.video__videoDescription}
-          ${descriptionOpen ? styles.video__videoDescription__open : ''}
-        ` }
-         onClick={ () => setDescriptionOpen(!descriptionOpen) }
+        <div
+          className={ `
+            ${styles.post__extraDataButton}
+            ${extraDataOpen ? styles.post__extraDataButton_open : ''}
+          ` }
+          onClick={ () => setExtraDataOpen(!extraDataOpen) }
         >
-          { post.description }
-          <span className={ styles.video__videoDescriptionShowMore }>
-            <button
-              className={ styles.video__videoDescriptionShowMoreButton }
-              onClick={ () => setDescriptionOpen(!descriptionOpen) }
-            >
-              { descriptionOpen ? t('video_description_hide') : t('video_description_show_more') }
-            </button>
-          </span>
+          { extraDataOpen
+            ? t('post_extra_data_section_hide')
+            : t('post_extra_data_section_show_more')
+          }
+          <BsCaretDown className={ `
+            ${styles.post__extraDataIcon}
+            ${extraDataOpen ? styles.post__extraDataIcon_open : ''}
+          ` }/>
         </div>
       </div>
       { commentsComponent }

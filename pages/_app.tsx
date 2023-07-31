@@ -8,10 +8,10 @@ import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
-import { AppMenu } from '~/components/AppMenu/AppMenu'
-import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Toaster } from 'react-hot-toast'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
+import { AppMenu } from '~/components/AppMenu/AppMenu'
+import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 
 function App ({
   Component,

@@ -1,7 +1,8 @@
 .video-page {
   &__container {
-    @apply container px-5;
+    @apply flex flex-col container px-5 gap-y-2;
   }
+
   &__related-videos-title {
     @apply uppercase text-base font-black;
 

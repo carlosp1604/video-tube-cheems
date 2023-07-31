@@ -5,11 +5,11 @@ body {
 
 a {
   &:hover {
-    @apply text-base-300 transition;
+    @apply text-brand-300 transition-colors;
   }
 
   &:active {
-    @apply text-brand-500 transition;
+    @apply text-brand-500 transition-colors;
   }
 }
 

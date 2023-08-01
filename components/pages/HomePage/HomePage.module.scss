@@ -1,5 +1,5 @@
 .home {
   &__container {
-    @apply container flex flex-col gap-y-4 px-5 mx-auto mt-10;
+    @apply container grid gap-y-4 px-5 mx-auto mt-10;
   }
 }

@@ -33,9 +33,9 @@ function App ({
     <SessionProvider session={ session }>
       <UserProvider>
         <LoginProvider>
-          <>
+          <div className={ styles.app__layout }>
             <AppMenu />
-            <MenuSideBar />
+
             <MobileMenu
               openMenu={ openMenu }
               setOpenMenu={ setOpenMenu }
@@ -48,9 +48,11 @@ function App ({
               <Toaster
                 position={ 'bottom-center' }
               />
+              <MenuSideBar />
+
               <Component { ...pageProps } />
             </main>
-          </>
+          </div>
         </LoginProvider>
       </UserProvider>
     </SessionProvider>

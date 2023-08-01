@@ -3,7 +3,7 @@
     @apply fixed inset-0 bg-transparent z-comment-replies;
 
     @screen md {
-      @apply absolute py-5;
+      @apply absolute;
     }
   }
 

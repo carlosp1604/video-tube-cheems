@@ -3,7 +3,12 @@
     @apply min-h-screen;
 
     @screen lg {
-      @apply ml-16;
+      @apply grid;
+      grid-template-columns: auto 1fr;
     }
+  }
+
+  &__layout {
+    @apply min-h-screen flex flex-col;
   }
 }

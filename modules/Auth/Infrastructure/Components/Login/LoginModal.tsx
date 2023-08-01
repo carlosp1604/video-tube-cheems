@@ -21,7 +21,7 @@ export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
       onClickSignup={ () => setOpenRegisterModal(true) }
       onSuccessLogin={ () => {
         setIsOpen(false)
-        window.location.reload()
+        // window.location.reload()
       } }
     />
   )

@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply fixed hidden top-0 left-0 z-sidebar-menu font-normal border-base-700 border-opacity-30
+    @apply block hidden z-sidebar-menu font-normal border-base-700 border-opacity-0
       transition-all duration-1000 text-base-400;
 
     @screen lg {
@@ -11,27 +11,12 @@
   }
 
   &__aside-slide-out {
-    @apply grid h-screen bg-body overflow-hidden w-16 transition-width duration-200;
-    grid-template-areas:
-      "logo"
-      "menu-container"
-      "footer"
-      "copyright";
-    grid-template-rows: auto 1fr auto auto;
-  }
-
-  &__logo-container {
-    @apply border-b border-gray-600 border-opacity-30 px-14 py-1.5 opacity-0;
-    grid-area: logo;
-  }
-
-  &__logo {
-    @apply h-10 w-10;
+    @apply sticky top-0 h-screen bg-body overflow-hidden w-16
+      transition-width duration-200;
   }
 
   &__menu-container {
-    @apply flex flex-col;
-    grid-area: menu-container;
+    @apply flex flex-col px-0.5 w-full;
   }
 
   &__menu-item {
@@ -41,16 +26,16 @@
     }
 
     &-active {
-      @apply bg-base-700 text-base-100;
+      @apply bg-brand-400 text-brand-50 rounded-lg;
     }
   }
 
   &__menu-item-content {
-    @apply flex flex-row py-3 gap-x-7 items-center truncate mx-4 px-1 border-base-700
-      border-opacity-0 border-b;
+    @apply flex flex-col py-2 items-center justify-center border-base-700
+      border-opacity-0 border-b gap-y-1;
 
     &:hover, &:focus {
-      @apply text-base-100;
+      @apply text-base-100 flex flex-row;
     }
   }
 
@@ -59,13 +44,12 @@
   }
 
   &__menu-item-text {
-    @apply text-base;
+    @apply text-[10px] text-center leading-snug;
   }
 
   &__footer-container {
     @apply flex flex-row gap-x-2 items-center px-8 py-3 border-opacity-0
       border-base-700 justify-center border-t flex-wrap;
-    grid-area: footer;
   }
 
   &__footer-item {
@@ -74,35 +58,42 @@
 
   &__copyright-container {
     @apply border-base-700 border-t border-opacity-0 text-transparent font-light
-      text-sm px-8 py-4;
-    grid-area: copyright;
+      text-sm px-8 py-4 whitespace-normal;
   }
 
   &__container:hover, &__container:focus {
-    @apply transition-all duration-200 bg-base-800;
+    @apply transition-all duration-200 bg-base-800 border-opacity-30;
 
     #{$parentBlock}__aside-slide-out {
-      @apply w-64 transition-all delay-1000 duration-100 bg-opacity-60;
+      @apply w-auto transition-all duration-100 bg-opacity-60;
     }
 
     #{$parentBlock}__menu-item-content {
-      @apply border-opacity-20 transition-border duration-700 delay-700;
+      @apply flex flex-row justify-start gap-x-2 px-5 py-3 border-opacity-20 transition-border duration-700 delay-700;
     }
 
     #{$parentBlock}__footer-container {
-      @apply border-opacity-100 transition-all delay-1000 ;
+      @apply border-opacity-100 transition-all;
+    }
+
+    #{$parentBlock}__menu-item-text {
+      @apply text-sm;
     }
 
     #{$parentBlock}__footer-item {
-      @apply text-base-500 transition-all delay-1000 ;
+      @apply text-base-500 transition-all;
     }
 
     #{$parentBlock}__copyright-container {
-      @apply border-opacity-100 text-base-600 transition-all delay-1000 duration-100;
+      @apply border-opacity-100 text-base-600 transition-all duration-100;
     }
 
-    #{$parentBlock}__logo-container {
-      @apply opacity-100 transition-all delay-1000 duration-500;
+    #{$parentBlock}__top-container {
+      @apply opacity-100 py-1.5;
+    }
+
+    #{$parentBlock}__logo {
+      @apply block transition-all;
     }
   }
 

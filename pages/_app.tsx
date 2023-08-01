@@ -34,7 +34,7 @@ function App ({
       <UserProvider>
         <LoginProvider>
           <div className={ styles.app__layout }>
-            <AppMenu />
+            <MenuSideBar />
 
             <MobileMenu
               openMenu={ openMenu }
@@ -48,7 +48,7 @@ function App ({
               <Toaster
                 position={ 'bottom-center' }
               />
-              <MenuSideBar />
+              <AppMenu />
 
               <Component { ...pageProps } />
             </main>

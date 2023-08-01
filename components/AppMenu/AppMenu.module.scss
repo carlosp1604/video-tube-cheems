@@ -1,6 +1,6 @@
 .app-menu {
   &__layer {
-    @apply sticky top-0 z-app-menu border-b border-base-800 border-opacity-0
+    @apply sticky top-0 w-full z-app-menu border-b border-base-800 border-opacity-100
       transition duration-500 backdrop-filter backdrop-blur-2xl bg-opacity-90 bg-body;
 
     &:hover {

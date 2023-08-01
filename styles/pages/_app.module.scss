@@ -1,5 +1,5 @@
 .app {
-  &__container {
+  &__layout {
     @apply min-h-screen;
 
     @screen lg {
@@ -8,7 +8,7 @@
     }
   }
 
-  &__layout {
-    @apply min-h-screen flex flex-col;
+  &__container {
+    @apply min-h-screen grid;
   }
 }

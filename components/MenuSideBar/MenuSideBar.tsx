@@ -50,7 +50,10 @@ export const MenuSideBar: FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
   return (
-    <aside className={ styles.menuSideBar__container }>
+    <aside className={ `
+      ${styles.menuSideBar__container}
+      ${menuOpen ? styles.menuSideBar__container_open : ''}
+    ` }>
       <div className={ `
         ${styles.menuSideBar__asideSlideOut}
         ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}

@@ -16,7 +16,15 @@
   }
 
   &__menu-icon {
-    @apply h-6 w-6;
+    @apply h-6 w-6 text-base-500 transition-colors;
+
+    &:hover, &:focus {
+      @apply text-base-100 transition-colors;
+    }
+
+    &:active {
+      @apply text-brand-500;
+    }
   }
 
   &__search-input {

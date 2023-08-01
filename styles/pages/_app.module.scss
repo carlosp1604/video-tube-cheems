@@ -1,7 +1,5 @@
 .app {
   &__layout {
-    @apply min-h-screen;
-
     @screen lg {
       @apply grid;
       grid-template-columns: auto 1fr;
@@ -9,6 +7,6 @@
   }
 
   &__container {
-    @apply min-h-screen grid;
+    @apply min-h-screen;
   }
 }

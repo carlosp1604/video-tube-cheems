@@ -1,8 +1,4 @@
 import { VideoComponentDtoTranslator } from './VideoComponentDtoTranslator'
-import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
-import {
-  PostReactionComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostReactionComponentDtoTranslator'
 import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 import {
   PostComponentDto,
@@ -18,7 +14,6 @@ export class PostComponentDtoTranslator {
     commentsNumber: number,
     reactionsNumber: number,
     postViews: number,
-    userReaction: PostReactionApplicationDto | null,
     locale: string
   ): PostComponentDto {
     const actors: PostComponentDtoActorDto[] = applicationDto.actors.map((actor) => ({
@@ -60,9 +55,6 @@ export class PostComponentDtoTranslator {
       title: applicationDto.title,
       views: postViews,
       comments: commentsNumber,
-      userReaction: userReaction
-        ? PostReactionComponentDtoTranslator.fromApplicationDto(userReaction)
-        : null,
     }
   }
 }

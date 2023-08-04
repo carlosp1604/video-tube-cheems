@@ -1,5 +1,4 @@
 import { VideoComponentDto } from './VideoComponentDto'
-import { PostReactionComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostReactionComponentDto'
 
 export interface PostComponentDtoActorDto {
   readonly id: string
@@ -30,5 +29,4 @@ export interface PostComponentDto {
   readonly actors: PostComponentDtoActorDto[]
   readonly tags: PostComponentDtoTagDto[]
   readonly producer: PostComponentDtoProducerDto | null
-  readonly userReaction: PostReactionComponentDto | null
 }

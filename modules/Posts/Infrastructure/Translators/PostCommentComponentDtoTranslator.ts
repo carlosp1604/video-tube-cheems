@@ -12,7 +12,7 @@ export class PostCommentComponentDtoTranslator {
       postId: applicationDto.postComment.postId,
       comment: applicationDto.postComment.comment,
       createdAt: new DateService()
-        .formatAgoLike(new Date(applicationDto.postComment.createdAt), locale),
+        .formatHugeDate(new Date(applicationDto.postComment.createdAt), locale),
       user: {
         id: applicationDto.postComment.user.id,
         name: applicationDto.postComment.user.name,

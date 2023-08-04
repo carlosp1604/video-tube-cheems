@@ -1,5 +1,6 @@
 import { ChangeEvent, FC, KeyboardEvent, useState } from 'react'
 import styles from './SearchBar.module.scss'
+import { IconButton } from '~/components/IconButton/IconButton'
 import { CiSearch } from 'react-icons/ci'
 
 interface Props {
@@ -24,19 +25,14 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
 
   return (
     <div className={ styles.searchBar__container }>
-      <button
-        className={ styles.searchBar__searchButton }
+      <IconButton
         onClick={ () => {
           if (expandable) {
             setOpenSearchBar(!openSearchBar)
           }
         } }
-      >
-        <CiSearch
-          className={ styles.searchBar__menuIcon }
-          rotate={ openSearchBar ? 180 : 0 }
-        />
-      </button>
+        icon={ <CiSearch /> }
+      />
       <input
         className={ ` 
           ${styles.searchBar__searchInput}

@@ -28,6 +28,10 @@
 
   &__comment-date {
     @apply text-xs text-base-400 leading-snug font-thin;
+
+    @screen md {
+      @apply font-light;
+    }
   }
 
   &__separator-icon {

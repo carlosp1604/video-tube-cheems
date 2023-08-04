@@ -1,9 +1,9 @@
 import { VerificationTokenRepositoryInterface } from '~/modules/Auth/Domain/VerificationTokenRepositoryInterface'
 import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
-import { prisma } from '~/persistence/prisma'
 import {
   PrismaVerificationTokenModelTranslator
 } from '~/modules/Auth/Infrastructure/PrismaVerificationTokenModelTranslator'
+import { prisma } from '~/persistence/prisma'
 
 export class MysqlVerificationTokenRepository implements VerificationTokenRepositoryInterface {
   /**

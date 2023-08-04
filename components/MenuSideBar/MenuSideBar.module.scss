@@ -9,7 +9,7 @@
     }
 
     &_open {
-      @apply bg-base-800;
+      @apply bg-base-900;
     }
   }
 
@@ -18,20 +18,12 @@
       transition-width duration-200;
 
     &_open {
-      @apply w-auto transition-all duration-100 bg-opacity-60;
+      @apply w-auto transition-all duration-100 bg-opacity-60 bg-base-900;
     }
   }
 
   &__menu-icon {
-    @apply h-10 w-10 ml-3 p-2 my-1.5 rounded-full transition-colors;
-
-    &:hover, &:focus {
-      @apply bg-base-800 cursor-pointer transition-colors text-base-100;
-    }
-
-    &:active {
-      @apply bg-base-700 text-brand-400 transition-colors;
-    }
+    @apply ml-2;
   }
 
   &__menu-container {

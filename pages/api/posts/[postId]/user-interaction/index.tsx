@@ -1,21 +1,23 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostsApiRequestValidator } from '~/modules/Posts/Infrastructure/Validators/GetPostsApiRequestValidator'
-import { GetPostsRequestDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/GetPostsRequestDtoTranslator'
-import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
-import { NextApiRequestQuery } from 'next/dist/server/api-utils'
-import {
-  GetPostsApiFilterRequestDto,
-  GetPostsApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import {
+  POST_USER_INTERACTION_AUTH_REQUIRED,
+  POST_USER_INTERACTION_BAD_REQUEST, POST_USER_INTERACTION_METHOD, POST_USER_INTERACTION_SERVER_ERROR,
+  POST_USER_INTERACTION_VALIDATION
+} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { container } from '~/awilix.container'
 import {
-  POST_INVALID_FILTER_TYPE, POST_INVALID_FILTER_VALUE, POST_INVALID_PAGE, POST_INVALID_PER_PAGE,
-  POST_INVALID_SORTING_CRITERIA,
-  POST_INVALID_SORTING_OPTION, POST_METHOD, POST_SERVER_ERROR, POST_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+  GetPostUserInteractionApiRequestDto
+} from '~/modules/Posts/Infrastructure/Dtos/GetPostUserInteractionApiRequestDto'
+import {
+  GetPostUserInteractionApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Validators/GetPostUserInteractionApiRequestValidator'
+import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
+import {
+  GetPostUserInteractionDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/GetPostUserInteractionDtoTranslator'
 
 export default async function handler (
   request: NextApiRequest,
@@ -25,86 +27,41 @@ export default async function handler (
     return handleMethod(request, response)
   }
 
-  const parsedQuery = parseQuery(request.query)
+  const session = await getServerSession(request, response, authOptions)
 
-  const validationError = GetPostsApiRequestValidator.validate(parsedQuery)
+  if (session === null) {
+    return handleAuthentication(request, response)
+  }
+
+  const { postId } = request.query
+
+  if (!postId) {
+    return handleBadRequest(response)
+  }
+
+  const apiRequest: GetPostUserInteractionApiRequestDto = {
+    postId: String(postId),
+    userId: session.user.id,
+  }
+
+  const validationError = GetPostUserInteractionApiRequestValidator.validate(apiRequest)
 
   if (validationError) {
     return handleValidationError(response, validationError)
   }
 
-  const apiRequest = parsedQuery as GetPostsApiRequestDto
+  const applicationRequest = GetPostUserInteractionDtoTranslator.fromApiDto(apiRequest)
 
-  const applicationRequest = GetPostsRequestDtoTranslator.fromApiDto(apiRequest)
-
-  const useCase = container.resolve<GetPosts>('getPostsUseCase')
+  const useCase = container.resolve<GetPostUserReaction>('getPostUserReactionUseCase')
 
   try {
-    const posts = await useCase.get(applicationRequest)
+    const reaction = await useCase.get(applicationRequest)
 
-    return response.status(200).json(posts)
+    return response.status(200).json(reaction)
   } catch (exception: unknown) {
-    if (!(exception instanceof GetPostsApplicationException)) {
-      console.error(exception)
+    console.error(exception)
 
-      return handleServerError(response)
-    }
-
-    switch (exception.id) {
-      case GetPostsApplicationException.invalidSortingCriteriaId:
-        return handleUnprocessableEntity(response, exception, POST_INVALID_SORTING_CRITERIA)
-
-      case GetPostsApplicationException.invalidSortingOptionId:
-        return handleUnprocessableEntity(response, exception, POST_INVALID_SORTING_OPTION)
-
-      case GetPostsApplicationException.invalidFilterTypeId:
-        return handleUnprocessableEntity(response, exception, POST_INVALID_FILTER_TYPE)
-
-      case GetPostsApplicationException.invalidFilterValueId:
-        return handleUnprocessableEntity(response, exception, POST_INVALID_FILTER_VALUE)
-
-      case GetPostsApplicationException.invalidPerPageValueId:
-        return handleUnprocessableEntity(response, exception, POST_INVALID_PER_PAGE)
-
-      case GetPostsApplicationException.invalidPageValueId:
-        return handleUnprocessableEntity(response, exception, POST_INVALID_PAGE)
-
-      default: {
-        console.error(exception)
-
-        return handleServerError(response)
-      }
-    }
-  }
-}
-
-function parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto> {
-  const {
-    page,
-    perPage,
-    order,
-    orderBy,
-  } = query
-
-  const filters: GetPostsApiFilterRequestDto[] = []
-
-  for (const filter of Object.values(PostFilterOptions)) {
-    const queryFilter = query[`${filter}`]
-
-    if (queryFilter) {
-      filters.push({
-        type: filter,
-        value: String(queryFilter),
-      })
-    }
-  }
-
-  return {
-    ...page ? { page: parseInt(String(page)) } : {},
-    ...perPage ? { perPage: parseInt(String(perPage)) } : {},
-    ...orderBy ? { orderBy: String(orderBy) } : {},
-    ...order ? { order: String(order) } : {},
-    filters,
+    return handleServerError(response)
   }
 }
 
@@ -113,8 +70,24 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
     .status(405)
     .setHeader('Allow', 'GET')
     .json({
-      code: POST_METHOD,
+      code: POST_USER_INTERACTION_METHOD,
       message: `Cannot ${request.method} ${request.url?.toString()}`,
+    })
+}
+
+function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
+  const baseUrl = container.resolve<string>('baseUrl')
+
+  response.setHeader(
+    'WWW-Authenticate',
+    `Basic realm="${baseUrl}"`
+  )
+
+  return response
+    .status(401)
+    .json({
+      code: POST_USER_INTERACTION_AUTH_REQUIRED,
+      message: 'User must be authenticated to access to resource',
     })
 }
 
@@ -124,28 +97,24 @@ function handleValidationError (
 ) {
   return response.status(400)
     .json({
-      code: POST_VALIDATION,
-      message: 'Invalid request body',
+      code: POST_USER_INTERACTION_VALIDATION,
+      message: 'Invalid request',
       errors: validationError.exceptions,
     })
 }
 
-function handleUnprocessableEntity (
-  response: NextApiResponse,
-  exception: GetPostsApplicationException,
-  code: string
-) {
-  return response.status(422)
+function handleBadRequest (response: NextApiResponse) {
+  return response.status(400)
     .json({
-      code,
-      message: exception.message,
+      code: POST_USER_INTERACTION_BAD_REQUEST,
+      message: 'postId parameter is required',
     })
 }
 
 function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
-      code: POST_SERVER_ERROR,
+      code: POST_USER_INTERACTION_SERVER_ERROR,
       message: 'Something went wrong while processing the request',
     })
 }

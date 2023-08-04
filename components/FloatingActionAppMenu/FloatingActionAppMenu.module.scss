@@ -1,19 +1,26 @@
 .floating-action-app-menu {
+  $parentBlock: &;
+
   &__container {
-    @apply flex fixed items-center z-floating-action-app-menu bottom-10
-      right-8 w-14 h-14 rounded-full transition duration-500 bg-brand-600
-      backdrop-filter backdrop-blur-3xl bg-opacity-70;
+    @apply fixed z-floating-action-app-menu bottom-10 right-6 rounded-full
+      transition-colors bg-brand-400
+      backdrop-filter backdrop-blur-sm bg-opacity-50 ring-1 ring-brand-400 shadow shadow-md shadow-base-800;
 
     @screen lg {
       @apply hidden;
     }
 
-    &:hover {
-      @apply bg-brand-400 transition duration-500 cursor-pointer;
-    }
   }
 
   &__icon {
-    @apply text-base-300 mx-auto text-2xl;
+    @apply text-base-300 mx-auto text-2xl h-14 w-14 p-4;
+  }
+
+  &__container:hover, &__container:focus {
+    @apply bg-brand-500 ring-brand-500 transition-colors;
+
+    #{$parentBlock}__icon {
+      @apply transition-colors text-body transition-colors;
+    }
   }
 }

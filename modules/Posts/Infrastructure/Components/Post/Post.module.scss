@@ -6,7 +6,11 @@
   }
 
   &__video-container {
-    @apply flex flex-row gap-x-4;
+    @apply flex flex-row gap-x-4 -mx-5;
+
+    @screen md {
+      @apply mx-0;
+    }
   }
 
   &__right-container {

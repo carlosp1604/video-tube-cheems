@@ -36,7 +36,7 @@ export const Post: FC<Props> = ({ post }) => {
   const [reactionsNumber, setReactionsNumber] = useState<number>(post.reactions)
   const [viewsNumber, setViewsNumber] = useState<number>(post.views)
   const [extraDataOpen, setExtraDataOpen] = useState<boolean>(false)
-  const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(post.userReaction)
+  const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(null)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [commentsNumber, setCommentsNumber] = useState<number>(post.comments)
 
@@ -51,7 +51,31 @@ export const Post: FC<Props> = ({ post }) => {
       setUserReaction(null)
     }
 
-    // TODO: If authenticated then we must fetch user post data
+    if (status === 'authenticated') {
+      postsApiService.getPostUserInteraction(post.id)
+        .then(async (response) => {
+          if (response.ok) {
+            const jsonResponse = await response.json()
+
+            if (jsonResponse === null) {
+              setUserReaction(null)
+
+              return
+            }
+
+            const userReactionDto = PostReactionComponentDtoTranslator.fromApplicationDto(jsonResponse)
+
+            setUserReaction(userReactionDto)
+          } else {
+            const jsonResponse = await response.json()
+
+            console.error(jsonResponse)
+          }
+        })
+        .catch((exception) => {
+          console.error(exception)
+        })
+    }
   }, [status])
 
   let producerSection: ReactElement | null = null
@@ -214,6 +238,7 @@ export const Post: FC<Props> = ({ post }) => {
             setViewsNumber(viewsNumber + 1)
           } }
         />
+
       </div>
 
       <div className={ styles.post__postData } key={ post.id }>

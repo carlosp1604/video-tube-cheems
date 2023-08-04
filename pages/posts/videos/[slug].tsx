@@ -8,10 +8,6 @@ import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Trans
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
-import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
 
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
   let slug = context.query.slug
@@ -25,21 +21,13 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
   }
 
   slug = slug.toString()
-  const session = await getServerSession(context.req, context.res, authOptions)
 
   const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')
   const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPostsUseCase')
-  const getPostUserReaction = container.resolve<GetPostUserReaction>('getPostUserReactionUseCase')
 
   try {
     const postWithCount = await useCase.get({ slug })
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
-
-    let userReaction: PostReactionApplicationDto | null = null
-
-    if (session !== null) {
-      userReaction = await getPostUserReaction.get({ postId: postWithCount.post.id, userId: session.user.id })
-    }
 
     return {
       props: {
@@ -48,7 +36,6 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
           postWithCount.comments,
           postWithCount.reactions,
           postWithCount.views,
-          userReaction,
           locale
         ),
         relatedPosts: relatedPosts.posts.map((relatedPost) => {

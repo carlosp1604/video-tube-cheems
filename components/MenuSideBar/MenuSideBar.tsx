@@ -6,6 +6,7 @@ import { getMobileMenuOptions } from '~/components/AppMenu/MobileMenuOptions'
 import { MenuOptionInterface } from '~/components/MenuOptions/MenuOptionInterface'
 import { useTranslation } from 'next-i18next'
 import { BsList } from 'react-icons/bs'
+import { IconButton } from '~/components/IconButton/IconButton'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionInterface
@@ -58,10 +59,13 @@ export const MenuSideBar: FC = () => {
         ${styles.menuSideBar__asideSlideOut}
         ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
       ` }>
-        <BsList
-          className={ styles.menuSideBar__menuIcon }
-          onClick={ () => setMenuOpen(!menuOpen) }
-        />
+        <span className={ styles.menuSideBar__menuIcon }>
+          <IconButton
+            onClick={ () => setMenuOpen(!menuOpen) }
+            icon={ <BsList /> }
+          />
+        </span>
+
         <div className={ `
           ${styles.menuSideBar__menuContainer}
           ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}

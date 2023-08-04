@@ -3,30 +3,6 @@
     @apply flex flex-row items-center justify-center gap-x-3;
   }
 
-  &__search-button {
-    @apply p-3 rounded-full transition-colors;
-
-    &:hover, &:focus {
-      @apply bg-base-800 transition-colors;
-    }
-
-    &:active {
-      @apply bg-base-700 text-brand-500 transition-colors;
-    }
-  }
-
-  &__menu-icon {
-    @apply h-6 w-6 text-base-500 transition-colors;
-
-    &:hover, &:focus {
-      @apply text-base-100 transition-colors;
-    }
-
-    &:active {
-      @apply text-brand-500;
-    }
-  }
-
   &__search-input {
     @apply w-0 -m-2 transition-all duration-300 text-base-100 bg-body
       caret-base-100 italic border-transparent outline-0 transition-all;

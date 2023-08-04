@@ -75,4 +75,10 @@ export class PostsApiService {
       method: 'DELETE',
     })
   }
+
+  public async getPostUserInteraction (postId: string): Promise<Response> {
+    const fetchRoute = `/api/posts/${postId}/user-interaction`
+
+    return fetch(fetchRoute)
+  }
 }

@@ -9,12 +9,12 @@ interface Props {
 
 export const FloatingActionAppMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
   return (
-    <section
+    <button
       className={ styles.floatingActionAppMenu__container }
       onClick={ () => {
         setOpenMenu(!openMenu)
       } }>
       <BsGrid3X3Gap className={ styles.floatingActionAppMenu__icon }/>
-    </section>
+    </button>
   )
 }

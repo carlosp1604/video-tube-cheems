@@ -9,6 +9,8 @@
   "post_extra_data_section_show_more": "Show more",
   "post_extra_data_tags_title": "Tags",
   "post_like_button_title": "Like",
+  "post_reaction_added_correctly_message": "Thanks for your reaction",
+  "post_reaction_deleted_correctly_message": "Reaction removed successfully",
   "post_report_button_title": "Report",
   "post_save_button_title": "Save",
   "post_views_title": "{{views}} views",

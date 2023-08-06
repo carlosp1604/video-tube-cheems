@@ -4,11 +4,12 @@
   }
 
   &__dropdown-button {
-    @apply flex flex-col justify-center items-center truncate justify-center;
-  }
+    @apply flex flex-col justify-center items-center truncate
+      justify-center text-xs font-thin leading-none text-base-100;
 
-  &__title {
-    @apply text-xs font-semibold text-base-500;
+    @screen md {
+      @apply font-semibold;
+    }
   }
 
   &__dropdown-container {

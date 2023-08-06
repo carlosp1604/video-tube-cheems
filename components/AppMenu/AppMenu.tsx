@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Avatar from 'react-avatar'
 import styles from './AppMenu.module.scss'
 import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
@@ -13,6 +12,8 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { CiUser } from 'react-icons/ci'
+import toast from 'react-hot-toast'
+import Avatar from 'react-avatar'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
@@ -61,18 +62,15 @@ export const AppMenu: FC = () => {
       )
     } else {
       userAvatar = (
-        <button
-          className={ styles.appMenu__userAvatarButton }
+        <div
+          className={ styles.appMenu__userAvatarContainer }
           onClick={ () => setUserMenuOpen(true) }
         >
           <Avatar
-            className={ styles.appMenu__userAvatarImage }
-            round={ true }
-            size={ '40' }
             name={ user.name }
-            textSizeRatio={ 3 }
+            textSizeRatio={ 6 }
           />
-        </button>
+        </div>
       )
     }
 
@@ -87,6 +85,8 @@ export const AppMenu: FC = () => {
 
   const onSearch = async () => {
     if (title === '') {
+      toast.error(t('empty_search_error_message'))
+
       return
     }
 

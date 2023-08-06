@@ -46,7 +46,17 @@ function App ({
             />
             <main className={ styles.app__container } >
               <Toaster
-                position={ 'bottom-center' }
+                position={ 'top-center' }
+                containerStyle={ {
+                  marginTop: '40px',
+                } }
+                toastOptions={ {
+                  className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1',
+                  iconTheme: {
+                    secondary: '#FAFAF9',
+                    primary: '#b88b5c',
+                  },
+                } }
               />
               <AppMenu />
 

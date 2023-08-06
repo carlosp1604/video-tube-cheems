@@ -18,24 +18,22 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
   return (
     <div
       className={ styles.sortingMenuDropdown__container }
-      onClick={ () => setOpenMenu(!openMenu) }
       title={ t('dropdown_button_title') }
     >
-      <button className={ styles.sortingMenuDropdown__dropdownButton }>
+      <span className={ styles.sortingMenuDropdown__dropdownButton }>
         <IconButton
-          onClick={ undefined }
+          onClick={ () => setOpenMenu(!openMenu) }
           icon={ <BsSortDown className={ styles.sortingMenuDropdown__dropdownButtonIcon }/> }
         />
-        <span className={ styles.sortingMenuDropdown__title }>
-          { 'Ordenar' }
-        </span>
-      </button>
+        { t('dropdown_explanation_title') }
+      </span>
 
       <div className={ `
         ${styles.sortingMenuDropdown__dropdownContainer}
         ${openMenu ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
       ` }
         onMouseLeave={ () => setOpenMenu(false) }
+        onClick={ () => setOpenMenu(!openMenu) }
       >
         { options.map((option) => {
           return (

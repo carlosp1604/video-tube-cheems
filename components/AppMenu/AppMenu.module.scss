@@ -1,7 +1,7 @@
 .app-menu {
   &__layer {
     @apply sticky top-0 w-full z-app-menu border-b border-base-800 border-opacity-100
-      transition duration-500 backdrop-filter backdrop-blur-md bg-opacity-90 bg-body;
+      transition duration-500 backdrop-filter backdrop-blur-sm bg-opacity-80 bg-body;
 
     &:hover {
       @apply border-opacity-100 transition duration-500;
@@ -77,12 +77,17 @@
     }
   }
 
-  &__user-avatar-button {
-    @apply h-10 w-10 rounded-full overflow-hidden transition-transform;
+  &__user-avatar-container {
+    @apply flex h-8 w-8 items-center justify-center rounded-full overflow-hidden
+    transition-transform;
+
+    &:hover, &:focus {
+      @apply scale-110 transition-transform cursor-pointer;
+    }
   }
 
   &__user-avatar-image {
-    @apply h-full w-full object-cover;
+    @apply h-full w-full object-cover self-center;
 
     &:hover, &:focus {
       @apply scale-110 transition-transform;

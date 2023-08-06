@@ -180,6 +180,7 @@ export const Post: FC<Props> = ({ post }) => {
         } else {
           setUserReaction(null)
           setReactionsNumber(reactionsNumber - 1)
+          toast.success(t('post_reaction_deleted_correctly_message'))
         }
       } catch (exception: unknown) {
         console.error(exception)
@@ -218,6 +219,7 @@ export const Post: FC<Props> = ({ post }) => {
 
           setUserReaction(PostReactionComponentDtoTranslator.fromApplicationDto(userReaction))
           setReactionsNumber(reactionsNumber + 1)
+          toast.success(t('post_reaction_added_correctly_message'))
         }
       } catch (exception: unknown) {
         console.error(exception)

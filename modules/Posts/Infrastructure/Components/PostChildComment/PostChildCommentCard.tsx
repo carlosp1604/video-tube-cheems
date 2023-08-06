@@ -1,9 +1,9 @@
 import { FC } from 'react'
 import styles from './PostChildCommentCard.module.scss'
 import { BsDot } from 'react-icons/bs'
-import Avatar from 'react-avatar'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
 import Image from 'next/image'
+import Avatar from 'react-avatar'
 
 interface Props {
   postChildComment: PostChildCommentComponentDto
@@ -25,13 +25,13 @@ export const PostChildCommentCard: FC<Props> = ({ postChildComment }) => {
     )
   } else {
     avatar = (
-      <Avatar
-        className={ styles.postChildCommentCard__userLogo }
-        round={ true }
-        size={ '24' }
-        name={ postChildComment.user.name }
-        textSizeRatio={ 2 }
-    />)
+      <div className={ styles.postChildCommentCard__userAvatarContainer }>
+        <Avatar
+          name={ postChildComment.user.name }
+          textSizeRatio={ 7 }
+        />
+      </div>
+    )
   }
 
   return (

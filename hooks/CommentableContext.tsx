@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react'
-import { useUserContext } from './UserContext'
+import { useSession } from 'next-auth/react'
 
 export const usePostCommentable = () => {
-  const { status } = useUserContext()
+  const { status } = useSession()
   const commentable = useRef(true)
 
   useEffect(() => {
-    commentable.current = status === 'SIGNED_IN'
+    commentable.current = status === 'authenticated'
   }, [status])
 
   return commentable.current

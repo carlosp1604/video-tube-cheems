@@ -45,6 +45,7 @@ model Post {
   comments    PostComment[]
   reactions   PostReaction[]
   views       PostView[]
+  translations Translatation[] @relation("PostTranslation")
 
   @@map("posts")
 }
@@ -186,4 +187,26 @@ model PostView {
   createdAt DateTime @map("created_at")
 
   @@map("post_views")
+}
+
+enum TranslatableType {
+  Post
+  Actor
+  Producer
+}
+
+model Translatation {
+  translatableId    String @map("translatable_id")
+  field             String
+  value             String
+  translatableType  TranslatableType @map("translatable_type")
+
+  Post              Post?  @relation("PostTranslation", fields: [translatableId], references: [id], map: "post_translation")
+  language          String
+  createdAt         DateTime @map("created_at")
+  updatedAt         DateTime @map("updated_at")
+
+  @@id([translatableId, field, translatableType])
+
+  @@map("translations")
 }

@@ -10,7 +10,7 @@
   }
 
   &__video-link {
-    @apply absolute inset-0 opacity-0 z-card-link;
+    @apply z-card-link;
   }
 
   &__video-wrapper {

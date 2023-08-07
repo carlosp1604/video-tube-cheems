@@ -24,6 +24,7 @@ export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
       <span className={ styles.videoPage__relatedVideosTitle }>
         { t('video_related_videos_title') }
       </span>
+
       <PostCardCarousel posts={ relatedPosts } />
     </div>
   )

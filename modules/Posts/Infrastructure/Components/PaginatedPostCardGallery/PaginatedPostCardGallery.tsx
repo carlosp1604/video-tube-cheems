@@ -38,7 +38,6 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialPostsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
   const [currentPosts, setCurrentPosts] = useState<PostCardComponentDto[]>(initialPosts)
-  const [playerId, setPlayerId] = useState<string>('')
   const [activeSortingOption, setActiveSortingOption] = useState<SortingOption>(defaultSortingOption)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
 
@@ -143,11 +142,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         />
       </div>
 
-      <PostCardList
-        posts={ currentPosts }
-        playerId={ playerId }
-        setPlayerId={ setPlayerId }
-      />
+      <PostCardList posts={ currentPosts } />
 
       { paginationBar }
     </div>

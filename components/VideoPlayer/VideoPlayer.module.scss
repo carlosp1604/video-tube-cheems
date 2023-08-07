@@ -2,4 +2,8 @@
   &__container {
     @apply rounded-xl overflow-hidden w-full;
   }
+
+  &__player {
+    @apply object-fill;
+  }
 }

@@ -8,9 +8,10 @@ import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
+import { Toaster } from 'react-hot-toast'
+import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
-import { Toaster } from 'react-hot-toast'
 
 function App ({
   Component,
@@ -31,24 +32,38 @@ function App ({
   return (
     <SessionProvider session={ session }>
       <UserProvider>
-        <>
-          <AppMenu />
-          <MenuSideBar />
-          <MobileMenu
-            openMenu={ openMenu }
-            setOpenMenu={ setOpenMenu }
-          />
-          <FloatingActionAppMenu
-            openMenu={ openMenu }
-            setOpenMenu={ setOpenMenu }
-          />
-          <main className={ styles.app__container } >
-            <Toaster
-              position={ 'bottom-center' }
+        <LoginProvider>
+          <div className={ styles.app__layout }>
+            <MenuSideBar />
+
+            <MobileMenu
+              openMenu={ openMenu }
+              setOpenMenu={ setOpenMenu }
             />
-            <Component { ...pageProps } />
-          </main>
-        </>
+            <FloatingActionAppMenu
+              openMenu={ openMenu }
+              setOpenMenu={ setOpenMenu }
+            />
+            <main className={ styles.app__container } >
+              <Toaster
+                position={ 'top-center' }
+                containerStyle={ {
+                  marginTop: '40px',
+                } }
+                toastOptions={ {
+                  className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1',
+                  iconTheme: {
+                    secondary: '#FAFAF9',
+                    primary: '#b88b5c',
+                  },
+                } }
+              />
+              <AppMenu />
+
+              <Component { ...pageProps } />
+            </main>
+          </div>
+        </LoginProvider>
       </UserProvider>
     </SessionProvider>
   )

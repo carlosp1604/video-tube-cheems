@@ -1,0 +1,23 @@
+.menu-dropdown {
+  &__container {
+    @apply relative inline-block;
+  }
+
+  &__dropdown-container {
+    @apply absolute right-0 mt-2 rounded-md bg-base-900 text-left
+      transition-all overflow-hidden hidden w-48 border border-base-800;
+
+    &_open {
+      @apply block transition-all;
+    }
+  }
+
+  &__dropdown-item {
+    @apply flex flex-row gap-x-2 items-center text-base-500
+      px-2 py-1 text-sm font-medium transition-colors m-1 rounded-md;
+
+    &:hover, &:focus {
+      @apply cursor-pointer bg-base-800 text-base-300;
+    }
+  }
+}

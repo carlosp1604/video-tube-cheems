@@ -1,0 +1,45 @@
+.add-comment-input {
+  &__add-comment-section {
+    @apply flex items-center gap-x-4 bg-body p-2 left-0 right-0
+      border-t border-base-800;
+    grid-area: add-comment;
+  }
+
+  &__add-comment-button {
+    @apply rounded-full bg-brand-500 text-base-100 transition-colors;
+  }
+
+  &__add-comment-icon {
+    @apply h-8 w-8 p-2 rounded-full transition-colors;
+
+    @screen md {
+      @apply h-10 w-10 p-3;
+    }
+
+    &:hover, &:focus {
+      @apply bg-brand-700 ;
+    }
+
+    &:active {
+      @apply text-brand-300;
+    }
+  }
+
+  &__login-to-comment-section {
+    @apply mr-0 ml-0 text-center p-2 border-t border-base-800
+      text-base-400 text-xs font-bold;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__login-button {
+    @apply ml-2 border border-brand-400 p-2 rounded-lg bg-base-800
+      text-base-300 transition-colors;
+
+    &:hover, &:focus {
+      @apply bg-brand-400 transition-colors;
+    }
+  }
+}

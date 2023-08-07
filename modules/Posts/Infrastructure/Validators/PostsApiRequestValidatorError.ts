@@ -6,6 +6,7 @@ export class PostsApiRequestValidatorError extends ZodApiValidationException {
   public static addPostViewRequestId = 'validator_exception_add_post_view_request'
   public static addPostReactionRequestId = 'validator_exception_add_reaction_request'
   public static deletePostReactionRequestId = 'validator_exception_delete_post_reaction_request'
+  public static getPostUserInteractionRequestId = 'validator_get_post_user_interaction_request'
 
   public static getPostsValidation (issues: ZodIssue[]): PostsApiRequestValidatorError {
     return new PostsApiRequestValidatorError(
@@ -31,6 +32,13 @@ export class PostsApiRequestValidatorError extends ZodApiValidationException {
   public static deletePostReactionRequest (issues: ZodIssue[]): PostsApiRequestValidatorError {
     return new PostsApiRequestValidatorError(
       this.deletePostReactionRequestId,
+      issues
+    )
+  }
+
+  public static getPostUserInteractionRequest (issues: ZodIssue[]): PostsApiRequestValidatorError {
+    return new PostsApiRequestValidatorError(
+      this.getPostUserInteractionRequestId,
       issues
     )
   }

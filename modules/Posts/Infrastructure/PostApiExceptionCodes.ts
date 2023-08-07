@@ -21,7 +21,14 @@ export const POST_REACTION_AUTH_REQUIRED = 'post-reaction-authentication-require
 export const POST_REACTION_METHOD = 'post-reaction-method-not-allowed'
 export const POST_REACTION_SERVER_ERROR = 'post-reaction-server-error'
 
-/** Posts Comments **/
+/** Post User Interaction **/
+export const POST_USER_INTERACTION_AUTH_REQUIRED = 'post-user-interaction-authentication-required'
+export const POST_USER_INTERACTION_VALIDATION = 'post-user-interaction-validation-exception'
+export const POST_USER_INTERACTION_BAD_REQUEST = 'post-user-interaction-bad-request'
+export const POST_USER_INTERACTION_SERVER_ERROR = 'post-user-interaction-server-error'
+export const POST_USER_INTERACTION_METHOD = 'post-user-interaction-method-not-allowed'
+
+/** Post Comments **/
 export const POST_COMMENT_AUTH_REQUIRED = 'post-comment-authentication-required'
 export const POST_COMMENT_VALIDATION = 'post-comment-validation-exception'
 export const POST_COMMENT_SERVER_ERROR = 'post-comment-server-error'

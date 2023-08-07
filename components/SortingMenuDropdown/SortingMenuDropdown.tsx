@@ -1,8 +1,9 @@
 import { FC, useState } from 'react'
 import styles from './SortingMenuDropdown.module.scss'
-import { BsFilter } from 'react-icons/bs'
+import { BsSortDown } from 'react-icons/bs'
 import { SortingOption } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 import { useTranslation } from 'next-i18next'
+import { IconButton } from '~/components/IconButton/IconButton'
 
 interface Props {
   activeOption: SortingOption
@@ -17,17 +18,22 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
   return (
     <div
       className={ styles.sortingMenuDropdown__container }
-      onClick={ () => setOpenMenu(!openMenu) }
       title={ t('dropdown_button_title') }
     >
-      <button className={ styles.sortingMenuDropdown__dropdownButton }>
-        <BsFilter className={ styles.sortingMenuDropdown__dropdownButtonIcon }/>
-      </button>
+      <span className={ styles.sortingMenuDropdown__dropdownButton }>
+        <IconButton
+          onClick={ () => setOpenMenu(!openMenu) }
+          icon={ <BsSortDown /> }
+        />
+        { t(activeOption.translationKey) }
+      </span>
+
       <div className={ `
         ${styles.sortingMenuDropdown__dropdownContainer}
         ${openMenu ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
       ` }
         onMouseLeave={ () => setOpenMenu(false) }
+        onClick={ () => setOpenMenu(!openMenu) }
       >
         { options.map((option) => {
           return (

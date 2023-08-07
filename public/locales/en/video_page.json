@@ -1,12 +1,3 @@
 {
-  "actors_producer_profile_button_title": "Profile",
-  "video_actors_producer_section_hide": "Hide",
-  "video_actors_producer_section_show_more": "Show more",
-  "video_description_actors_title": "Stars",
-  "video_description_hide": "Hide",
-  "video_description_producer_title": "Producer",
-  "video_description_show_more": "Show more",
-  "video_description_tags_title": "Tags",
-  "video_related_videos_title": "Related videos",
-  "video_views_title": "{{views}} views"
+  "video_related_videos_title": "Related videos"
 }

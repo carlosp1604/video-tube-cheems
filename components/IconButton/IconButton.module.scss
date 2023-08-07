@@ -1,0 +1,13 @@
+.icon-button {
+  &__button {
+    @apply p-3 rounded-full transition-colors text-base-400 text-2xl;
+
+    &:hover, &:focus {
+      @apply bg-base-800 transition-colors text-base-100;
+    }
+
+    &:active {
+      @apply bg-base-700 text-brand-500 transition-colors;
+    }
+  }
+}

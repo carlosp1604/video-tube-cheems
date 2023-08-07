@@ -32,7 +32,8 @@
   &__slide-out {
     @apply grid z-mobile-menu fixed bottom-0 leading-none translate-y-full
       w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden 
-      border-base-700 backdrop-filter backdrop-blur-3xl bg-opacity-95;
+      border-base-700 backdrop-filter backdrop-blur-3xl bg-opacity-95 overflow-y-scroll
+      scrollbar-hide;
     grid-template-areas:
       "menu"
       "footer"

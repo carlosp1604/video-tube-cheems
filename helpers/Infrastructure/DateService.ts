@@ -7,10 +7,9 @@ export class DateService implements DateServiceInterface {
       throw Error('Date to format must be less or equal to current date')
     }
 
-    return DateTime.fromJSDate(date).toRelative(
+    return DateTime.fromJSDate(date).toRelativeCalendar(
       {
         locale,
-        round: true,
       }) ?? ''
   }
 

@@ -1,45 +1,37 @@
 .sorting-menu-dropdown {
   &__container {
-    @apply relative inline-block text-left;
-  }
-
-  &__dropdown-button-icon {
-    @apply h-5 w-5;
+    @apply relative inline-block text-left whitespace-nowrap;
   }
 
   &__dropdown-button {
-    @apply flex flex-row justify-center items-center truncate justify-center rounded-lg bg-body
-      px-3 py-2 text-sm font-semibold border border-base-700 gap-x-1.5
-      text-base-100 transition-colors;
+    @apply flex flex-col justify-center items-center truncate
+      justify-center text-xs font-thin leading-none text-base-100;
 
-    &:hover, &:focus {
-      @apply bg-base-700 transition-colors;
+    @screen md {
+      @apply font-semibold text-brand-300;
     }
   }
 
   &__dropdown-container {
-    @apply absolute right-0 z-sort-menu-dropdown mt-2 origin-top-right rounded-md bg-body
-      w-32 border border-base-700 backdrop-blur-3xl backdrop-filter bg-opacity-90
-      scale-0 opacity-0 transition-all overflow-hidden;
-
-    &:focus {
-      @apply outline-none;
-    }
+    @apply absolute right-0 z-sort-menu-dropdown mt-2 rounded-md
+      w-auto border border-base-800 bg-body transition-all overflow-hidden hidden
+      bg-base-900 text-left;
 
     &_open {
-      @apply scale-100 opacity-100 transition-all;
+      @apply block transition-all;
     }
   }
 
   &__dropdown-item {
-    @apply text-base-100 block px-4 py-3 text-sm font-medium transition-colors;
+    @apply flex flex-row gap-x-2 items-center text-base-500
+    px-2 py-1 text-sm font-medium transition-colors m-1 rounded-md;
 
     &:hover, &:focus {
-      @apply bg-base-700 transition-colors cursor-pointer;
+      @apply cursor-pointer bg-base-800 text-base-300;
     }
 
     &_active {
-      @apply bg-brand-300;
+      @apply bg-brand-500 text-base-100 font-bold;
     }
   }
 }

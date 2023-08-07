@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { SafePlayVideo, SafeStopVideo } from '~/modules/Shared/Infrastructure/SafeVideoElement'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
+import Avatar from 'react-avatar'
 
 interface Props {
   playerId: string
@@ -25,14 +27,16 @@ export const PostCard: FC<Props> = ({
 
   const { t } = useTranslation('post_card')
 
-  // TODO: Set a default image for producers without image
   let producerImage: ReactElement | null = null
 
   let media: ReactElement = (
-    <img
+    <Image
       src={ post.thumb }
       alt={ post.title }
       className={ styles.postCard__media }
+      width={ 0 }
+      height={ 0 }
+      sizes={ '100vw' }
     />
   )
 
@@ -52,14 +56,33 @@ export const PostCard: FC<Props> = ({
     )
   }
 
-  if (post.producer !== null && post.producer.imageUrl && showProducerImage) {
+  if (post.producer !== null && post.producer.imageUrl !== null && showProducerImage) {
     producerImage = (
       // TODO: FIX THIS WHEN PRODUCER PAGE IS READY
       <Link href={ '/' } title={ post.producer.name }>
-        <img
+        <Image
           className={ styles.postCard__producerLogo }
           src={ post.producer?.imageUrl ?? '' }
           alt={ post.producer?.name }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
+        />
+      </Link>
+    )
+  }
+
+  if (post.producer !== null && post.producer.imageUrl === null && showProducerImage) {
+    producerImage = (
+      <Link
+        className={ styles.postCard__producerAvatarContainer }
+        href={ '/' }
+        title={ post.producer.name }
+      >
+        <Avatar
+          name={ post.producer.name }
+          size={ '40' }
+          round={ true }
         />
       </Link>
     )
@@ -67,8 +90,9 @@ export const PostCard: FC<Props> = ({
 
   useEffect(() => {
     if (playerId === post.id && player.current) {
-      SafePlayVideo(player.current, setPlayPromise)
-      setPlaying(true)
+      SafePlayVideo(player.current, setPlayPromise).then(() => {
+        setPlaying(true)
+      })
 
       return
     }
@@ -77,19 +101,31 @@ export const PostCard: FC<Props> = ({
       SafeStopVideo(player.current, playPromise)
       setPlaying(false)
     }
-  })
+  }, [playing, playerId])
 
   return (
     <div className={ styles.postCard__container }>
       <div
         className={ styles.postCard__videoContainer }
-        onMouseOver={ async () =>
-          player.current ? await SafePlayVideo(player.current, setPlayPromise) : ''
-        }
-        onMouseLeave={ () =>
-          player.current ? SafeStopVideo(player.current, playPromise) : ''
-        }
-        onTouchMove={ () => setPlayerId(post.id) }
+        onMouseOver={ async () => {
+          if (player.current) {
+            await SafePlayVideo(player.current, setPlayPromise)
+            setPlayerId(post.id)
+            setPlaying(true)
+          }
+        } }
+        onMouseLeave={ () => {
+          if (player.current) {
+            SafeStopVideo(player.current, playPromise)
+            setPlayerId('')
+            setPlaying(false)
+          }
+        } }
+        onTouchStartCapture={ () => {
+          if (!playing && playerId !== post.id) {
+            setPlayerId(post.id)
+          }
+        } }
       >
         <p className={ styles.postCard__videoTime } >
           { post.duration }
@@ -107,7 +143,7 @@ export const PostCard: FC<Props> = ({
         { producerImage }
         <div className={ styles.postCard__videoData }>
           <Link
-            href={ `/posts/videos/${post.id}` }
+            href={ `/posts/videos/${post.slug}` }
             className={ styles.postCard__videoTitleLink }
             title={ post.title }
           >

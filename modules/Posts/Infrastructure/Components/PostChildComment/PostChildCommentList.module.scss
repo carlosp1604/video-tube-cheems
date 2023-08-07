@@ -1,0 +1,22 @@
+.post-comment-child-list {
+  &__container {
+    @apply flex flex-col gap-y-4;
+  }
+
+  &__post-comment-container {
+    @apply bg-base-700 px-5 py-3;
+  }
+
+  &__post-child-comment-container {
+    @apply border-b border-base-800 pl-8 pb-2 px-5;
+
+    &:last-of-type {
+      @apply border-0;
+    }
+  }
+
+  &__comment-with-options {
+    @apply grid items-start;
+    grid-template-columns: 1fr auto;
+  }
+}

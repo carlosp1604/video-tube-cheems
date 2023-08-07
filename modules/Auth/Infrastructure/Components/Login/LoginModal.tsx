@@ -19,7 +19,10 @@ export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
     <Login
       onClickForgotPassword={ () => setOpenRetrievePasswordModal(true) }
       onClickSignup={ () => setOpenRegisterModal(true) }
-      onSuccessLogin={ () => setIsOpen(false) }
+      onSuccessLogin={ () => {
+        setIsOpen(false)
+        // window.location.reload()
+      } }
     />
   )
 

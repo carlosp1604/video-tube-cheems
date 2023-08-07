@@ -1,20 +1,23 @@
 import Link from 'next/link'
-import Avatar from 'react-avatar'
 import styles from './AppMenu.module.scss'
-import { CiUser } from 'react-icons/ci'
 import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
 import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
 import { useSession } from 'next-auth/react'
-import { FC, useState } from 'react'
+import { FC, ReactElement, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useUserContext } from '~/hooks/UserContext'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { useLoginContext } from '~/hooks/LoginContext'
+import { IconButton } from '~/components/IconButton/IconButton'
+import { CiUser } from 'react-icons/ci'
+import toast from 'react-hot-toast'
+import Avatar from 'react-avatar'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
-  const [loginModalOpen, setLoginModalOpen] = useState<boolean>(false)
+  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
 
   const { user } = useUserContext()
@@ -22,18 +25,22 @@ export const AppMenu: FC = () => {
   const router = useRouter()
   const session = useSession()
 
-  let userAvatar = (
-    <button
-      className={ styles.appMenu__menuButton }
-      onClick={ () => setLoginModalOpen(true) }
-      disabled={ session.status === 'loading' }
-    >
-      { session.status === 'loading'
-        ? <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/>
-        : <CiUser className={ styles.appMenu__menuIcon }/>
-      }
-    </button>
-  )
+  let userAvatar: ReactElement | null = null
+
+  if (session.status === 'loading') {
+    userAvatar = (
+      <IconButton onClick={ undefined } icon={ <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/> } />
+    )
+  }
+
+  if (session.status === 'unauthenticated') {
+    userAvatar = (
+      <IconButton
+        onClick={ () => setLoginModalOpen(!loginModalOpen) }
+        icon={ <CiUser className={ styles.appMenu__menuIcon } /> }
+      />
+    )
+  }
 
   let userMenu = null
 
@@ -55,18 +62,16 @@ export const AppMenu: FC = () => {
       )
     } else {
       userAvatar = (
-        <button
-          className={ styles.appMenu__userAvatarButton }
+        <div
+          className={ styles.appMenu__userAvatarContainer }
           onClick={ () => setUserMenuOpen(true) }
         >
           <Avatar
-            className={ styles.appMenu__userAvatarImage }
-            round={ true }
-            size={ '40' }
             name={ user.name }
-            textSizeRatio={ 3 }
+            textSizeRatio={ 6 }
+            size={ '80' }
           />
-        </button>
+        </div>
       )
     }
 
@@ -81,6 +86,8 @@ export const AppMenu: FC = () => {
 
   const onSearch = async () => {
     if (title === '') {
+      toast.error(t('empty_search_error_message'))
+
       return
     }
 

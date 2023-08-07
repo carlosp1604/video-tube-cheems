@@ -1,85 +1,23 @@
 .post-comments {
   &__backdrop {
-    @apply fixed inset-0 bg-body/50 z-video-comments
-      translate-y-full transition-all;
+    @apply fixed inset-0 bg-body/50 z-video-comments w-full;
 
-    &__open {
-      @apply translate-y-0 transition-all;
+    @screen md {
+      @apply static relative h-[500px] m-auto mb-5;
     }
-
-    @screen lg {
-      @apply -translate-y-0 translate-x-full;
-
-      &__open {
-        @apply translate-x-0;
-      }
-    }
-  }
-
-  &__replies-backdrop {
-    @apply fixed inset-0 bg-transparent z-comment-replies
-      translate-x-full transition-all;
-
-    &__open {
-      @apply translate-x-0;
-    }
-
-    @screen lg {
-      @apply -translate-y-0 translate-x-full;
-
-      &__open {
-        @apply translate-x-0;
-      }
-    }
-  }
-
-  &__replied-comment {
-    @apply bg-base-800 px-5 py-3 border-b border-base-800;
-    grid-area: replied-comment;
   }
 
   &__container {
-    @apply grid fixed bottom-0 overflow-hidden bg-body transition 
+    @apply flex flex-col fixed bottom-0 overflow-hidden bg-body transition
       rounded-t-lg w-full h-2/3 border-t border-base-800;
-      grid-template-areas:
-      "title"
-      "replied-comment"
-      "comments"
-      "load-more-button"
-      "add-comment-button"
-      "add-comment";
-      grid-template-rows: auto auto 1fr auto auto auto;
 
-      @screen lg {
-        @apply w-1/3 h-full right-0 rounded-r-none border-l border-base-800; 
+      @screen md {
+        @apply static rounded-lg border h-full;
       }
   }
 
-  &__comment-with-replies {
-    @apply flex flex-col;
-  }
-
-  &__comment-options {
-    @apply flex flex-row justify-start gap-x-5 items-center;
-  }
-
-  &__replies-button {
-    @apply text-xs ml-8 font-medium text-brand-300 cursor-pointer
-      transition m-0;
-
-    &:hover, &:focus {
-      @apply text-brand-900 transition;
-    }
-  }
-
-  &__option-button {
-    @apply flex flex-row text-base-400 text-xs m-0 gap-x-1 items-center;
-  }
-
   &__comments-title-bar {
-    @apply flex items-center justify-between sticky top-0 
-      bg-body pt-2 pb-1 border-b border-base-800 px-4;
-    grid-area: title;
+    @apply flex items-center justify-between pt-2 pb-1 border-b border-base-800 px-4;
   }
 
   &__comments-title {
@@ -98,53 +36,20 @@
     }
   }
 
-  &__add-comment-section {
-    @apply hidden items-center gap-x-4 bg-body p-2 left-0 right-0
-      border-t border-base-800;
-    grid-area: add-comment;
-
-    &__open {
-      @apply flex;
-    }
-  }
-
-  &__comment-input {
-    @apply flex-grow h-12 px-4 py-3 bg-base-800 text-base-300 rounded-3xl
-      scrollbar-hide text-xs;
-
-    &:active, &:focus, &:hover {
-      @apply outline-none border-base-700;
-    }
-  }
-
-  &__add-comment-button {
-    @apply rounded-full bg-brand-500 text-base-100;  
-  }
-
-  &__add-comment-icon {
-    @apply h-10 w-10 p-3;
-  }
-
   &__comments {
-    @apply flex flex-col gap-y-6 px-4 py-4 overflow-y-scroll scrollbar-hide;
-    grid-area: comments;
-  }
-
-  &__replies {
-    @apply flex flex-col gap-y-6 pr-4 pl-12 py-4 overflow-x-scroll scrollbar-hide;
-    grid-area: comments;
-  }
-
-  &__user-logo {
-    @apply h-6 w-6 rounded-full;
+    @apply flex-grow overflow-y-scroll scrollbar-hide pt-4 pb-4 px-5;
   }
 
   &__load-more {
-    @apply hidden justify-center bg-base-700 p-1 font-bold text-xs
-      uppercase;
+    @apply hidden text-center bg-base-700 mt-2 py-1 px-4 font-bold text-xs
+      uppercase rounded-lg transition-colors mx-auto;
 
-      &__open {
-        @apply flex;
-      }
+    &:hover, &:focus {
+      @apply bg-brand-500 transition-colors;
+    }
+
+    &__visible {
+      @apply flex;
+    }
   }
 }

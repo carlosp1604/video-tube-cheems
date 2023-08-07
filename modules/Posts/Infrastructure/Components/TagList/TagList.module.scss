@@ -1,11 +1,11 @@
 .tag-list {
   &__container {
-    @apply flex gap-x-2 flex-wrap items-center;
+    @apply flex gap-2 flex-wrap items-center;
   }
 
   &__tag-container {
     @apply p-2 rounded-lg border border-base-700
-      transition-all;
+      transition-all font-normal;
 
     &:hover {
       @apply bg-base-700 transition-all;

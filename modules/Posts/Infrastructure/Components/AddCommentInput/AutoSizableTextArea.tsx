@@ -1,5 +1,5 @@
-import { ChangeEvent, Dispatch, FC, SetStateAction, useEffect, useRef } from 'react'
-import styles from './PostComments.module.scss'
+import { ChangeEvent, FC, useEffect, useRef } from 'react'
+import styles from './AutoSizableTextArea.module.scss'
 
 interface AutoSizableTextAreaProps {
   placeHolder: string
@@ -32,7 +32,7 @@ export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({
 
   return (
     <textarea
-      className={ styles.postComments__commentInput }
+      className={ styles.autoSizableTextArea__commentInput }
       placeholder={ placeHolder }
       onChange={ handleOnChange }
       value={ comment }

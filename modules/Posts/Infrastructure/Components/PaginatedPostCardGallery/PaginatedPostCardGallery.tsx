@@ -20,6 +20,7 @@ import {
 import { useFirstRender } from '~/hooks/FirstRender'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { useTranslation } from 'next-i18next'
+import { BsDot } from 'react-icons/bs'
 
 interface Props {
   title: string
@@ -129,6 +130,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
       <div className={ styles.paginatedPostCardGallery__header }>
         <h1 className={ styles.paginatedPostCardGallery__title }>
           { title }
+          <BsDot className={ styles.paginatedPostCardGallery__separatorIcon }/>
           <small className={ styles.paginatedPostCardGallery__videosQuantity }>
             { t('paginated_gallery_videos_count_title', { videosNumber: postsNumber }) }
           </small>

@@ -28,8 +28,9 @@
     @apply bg-body border-2 border-base-700 p-1.5 rounded-lg outline-0 text-sm
       transition-colors;
 
-    &:focus, &:hover {
+    &:focus, &:hover, &::-moz-focus-outer {
       @apply border-brand-700 transition-colors;
+
     }
 
     &_error {

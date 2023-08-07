@@ -2,7 +2,7 @@ import { VideoComponentDto } from './VideoComponentDto'
 
 export interface PostComponentDtoActorDto {
   readonly id: string
-  readonly imageUrl: string
+  readonly imageUrl: string | null
   readonly name: string
 }
 
@@ -13,7 +13,7 @@ export interface PostComponentDtoTagDto {
 
 export interface PostComponentDtoProducerDto {
   readonly id: string
-  readonly imageUrl: string
+  readonly imageUrl: string | null
   readonly name: string
 }
 

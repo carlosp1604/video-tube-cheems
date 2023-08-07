@@ -69,6 +69,7 @@ export const AppMenu: FC = () => {
           <Avatar
             name={ user.name }
             textSizeRatio={ 6 }
+            size={ '80' }
           />
         </div>
       )

@@ -9,7 +9,7 @@
 
   &__slider {
     @apply flex flex-row flex-shrink-0 gap-x-2.5 whitespace-nowrap top-0
-      overflow-x-scroll scroll-smooth scrollbar-hide px-5 ;
+      overflow-x-scroll scroll-smooth scrollbar-hide px-5;
 
     @screen lg {
       @apply mx-0 pl-0;

@@ -52,42 +52,36 @@ export const MenuSideBar: FC = () => {
 
   return (
     <aside className={ `
-      ${styles.menuSideBar__container}
-      ${menuOpen ? styles.menuSideBar__container_open : ''}
+      ${styles.menuSideBar__asideSlideOut}
+      ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
     ` }>
+      <div className={ styles.menuSideBar__menuIcon }>
+        <IconButton
+          onClick={ () => setMenuOpen(!menuOpen) }
+          icon={ <BsList /> }
+        />
+      </div>
+
       <div className={ `
-        ${styles.menuSideBar__asideSlideOut}
-        ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
+        ${styles.menuSideBar__menuContainer}
+        ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}
       ` }>
-        <span className={ styles.menuSideBar__menuIcon }>
-          <IconButton
-            onClick={ () => setMenuOpen(!menuOpen) }
-            icon={ <BsList /> }
-          />
-        </span>
+        { getMobileMenuOptions(pathname).map((menuOption) => {
+          return (
+            <MenuSideBarOption
+              menuOption={ menuOption }
+              menuOpen={ menuOpen }
+              key={ menuOption.translationKey }
+            />
+          )
+        }) }
+      </div>
 
-        <div className={ `
-          ${styles.menuSideBar__menuContainer}
-          ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}
-        ` }>
-          { getMobileMenuOptions(pathname).map((menuOption) => {
-            return (
-              <MenuSideBarOption
-                menuOption={ menuOption }
-                menuOpen={ menuOpen }
-                key={ menuOption.translationKey }
-              />
-            )
-          }) }
-        </div>
-
-        <div className={ `
-          ${styles.menuSideBar__copyrightContainer}
-          ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
-        ` }>
-          Cheems © 2023.
-        </div>
-
+      <div className={ `
+        ${styles.menuSideBar__copyrightContainer}
+        ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
+      ` }>
+        Cheems © 2023.
       </div>
     </aside>
   )

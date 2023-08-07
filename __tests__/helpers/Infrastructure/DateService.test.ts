@@ -11,14 +11,14 @@ describe('~/helpers/Infrastructure/DateService.ts', () => {
     const nowDate = DateTime.now()
 
     const testData = [
-      [nowDate.minus({ hour: 1 }).toJSDate(), 'es', 'hace 1 hora'],
-      [nowDate.minus({ day: 1 }).toJSDate(), 'es', 'hace 1 día'],
-      [nowDate.minus({ month: 1 }).toJSDate(), 'es', 'hace 1 mes'],
-      [nowDate.minus({ year: 1 }).toJSDate(), 'es', 'hace 1 año'],
-      [nowDate.minus({ hour: 1 }).toJSDate(), 'en', '1 hour ago'],
-      [nowDate.minus({ day: 1 }).toJSDate(), 'en', '1 day ago'],
-      [nowDate.minus({ month: 1 }).toJSDate(), 'en', '1 month ago'],
-      [nowDate.minus({ year: 1 }).toJSDate(), 'en', '1 year ago'],
+      [nowDate.minus({ hour: 1 }).toJSDate(), 'es', 'hoy'],
+      [nowDate.minus({ day: 1 }).toJSDate(), 'es', 'ayer'],
+      [nowDate.minus({ month: 1 }).toJSDate(), 'es', 'el mes pasado'],
+      [nowDate.minus({ year: 1 }).toJSDate(), 'es', 'el año pasado'],
+      [nowDate.minus({ hour: 1 }).toJSDate(), 'en', 'today'],
+      [nowDate.minus({ day: 1 }).toJSDate(), 'en', 'yesterday'],
+      [nowDate.minus({ month: 1 }).toJSDate(), 'en', 'last month'],
+      [nowDate.minus({ year: 1 }).toJSDate(), 'en', 'last year'],
     ]
 
     it.each(testData)('should format data correctly', (date, locale, output) => {

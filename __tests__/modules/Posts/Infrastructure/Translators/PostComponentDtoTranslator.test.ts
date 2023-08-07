@@ -2,23 +2,13 @@ import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplica
 import { DateTime } from 'luxon'
 import { VideoComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/VideoComponentDtoTranslator'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
-import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
-import { Reaction } from '~/modules/Posts/Domain/PostReaction'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
 describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.ts', () => {
   let postApplicationDto: PostApplicationDto
-  let userReaction: PostReactionApplicationDto
-
   const nowDate = DateTime.now()
 
   beforeEach(() => {
-    userReaction = {
-      postId: 'expected-post-id',
-      userId: 'expected-user-id',
-      reactionType: Reaction.LIKE,
-    }
-
     postApplicationDto = {
       id: 'expected-post-id',
       title: 'expected-post-title',
@@ -105,7 +95,6 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
       1,
       1,
       1,
-      userReaction,
       'es'
     )
 
@@ -134,11 +123,6 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
         },
       ],
       title: 'expected-post-title',
-      userReaction: {
-        postId: 'expected-post-id',
-        reactionType: 'like',
-        userId: 'expected-user-id',
-      },
       video: {
         download: 'expected-download-url',
         poster: 'expected-post-thumb',
@@ -168,11 +152,8 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
       1,
       1,
       1,
-      null,
       'es'
     )
-
-    // TODO: check default avatar is set when model does not include an imageUrl
 
     expect(componentDto).toStrictEqual({
       actors: [
@@ -195,7 +176,6 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
         },
       ],
       title: 'expected-post-title',
-      userReaction: null,
       video: {
         download: 'expected-download-url',
         poster: 'expected-post-thumb',

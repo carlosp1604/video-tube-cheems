@@ -4,15 +4,31 @@
   }
 
   &__header {
-    @apply flex justify-between items-end gap-x-4 items-center mb-4;
+    @apply flex justify-between items-end gap-x-4 mb-4;
   }
 
   &__title {
     @apply flex flex-col text-base-100 text-2xl
       uppercase font-black;
+
+    @screen md {
+      @apply flex flex-row items-center gap-x-3;
+    }
+  }
+
+  &__separator-icon {
+    @apply hidden;
+
+    @screen md {
+      @apply block text-xs text-base-500;
+    }
   }
 
   &__videos-quantity {
     @apply normal-case text-xs font-thin;
+
+    @screen md {
+      @apply font-semibold text-brand-300;
+    }
   }
 }

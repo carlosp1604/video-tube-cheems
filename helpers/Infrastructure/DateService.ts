@@ -13,12 +13,6 @@ export class DateService implements DateServiceInterface {
       }) ?? ''
   }
 
-  public formatHugeDate (date: Date, locale: string): string {
-    return DateTime.fromJSDate(date)
-      .setLocale(locale)
-      .toLocaleString(DateTime.DATETIME_MED)
-  }
-
   public formatSecondsToHHMMSSFormat (seconds: number): string {
     if (seconds < 3600) {
       return new Date(seconds * 1000).toISOString().substring(14, 19)

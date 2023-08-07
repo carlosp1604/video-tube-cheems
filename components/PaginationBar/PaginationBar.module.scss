@@ -1,7 +1,7 @@
 .pagination-bar {
   &__container {
-    @apply flex flex-row mx-auto items-center justify-center gap-x-2 pb-10
-      border-t pt-2 mx-0 border-base-700;
+    @apply flex flex-row mx-auto items-center justify-center gap-x-1 pb-10
+      border-t pt-2 mx-0 border-base-800;
 
     @screen md {
       @apply gap-x-4;
@@ -9,11 +9,11 @@
   }
 
   &__page-number-button {
-    @apply p-0.5 px-1.5 rounded-md border-2 border-transparent transition
+    @apply p-1 px-2.5 rounded-md border-2 border-transparent transition
       text-base-600 text-sm transition-colors;
 
     @screen md {
-      @apply p-2 px-4 text-xl;
+      @apply p-1.5 px-3 text-base;
     }
 
     &__active {
@@ -34,7 +34,7 @@
     }
 
     @screen md {
-       @apply text-2xl;
+      @apply text-xl;
     }
   }
 

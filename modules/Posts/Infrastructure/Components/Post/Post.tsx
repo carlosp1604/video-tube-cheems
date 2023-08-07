@@ -27,6 +27,7 @@ import {
   POST_REACTION_POST_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 import Link from 'next/link'
+import Avatar from 'react-avatar'
 
 export interface Props {
   post: PostComponentDto
@@ -82,12 +83,10 @@ export const Post: FC<Props> = ({ post }) => {
   let actorsSection: ReactElement[] | null = null
 
   if (post.producer !== null) {
-    producerSection = (
-      <Link
-        href={ '/' }
-        className={ styles.post__producerItem }
-        title={ post.producer.name }
-      >
+    let producerAvatarSection: ReactElement
+
+    if (post.producer.imageUrl !== null) {
+      producerAvatarSection = (
         <Image
           alt={ post.producer.name }
           className={ styles.post__producerLogo }
@@ -96,6 +95,23 @@ export const Post: FC<Props> = ({ post }) => {
           height={ 0 }
           sizes={ '100vw' }
         />
+      )
+    } else {
+      producerAvatarSection = (
+        <Avatar
+          round={ true }
+          size={ '40' }
+          name={ post.producer.name }
+        />
+      )
+    }
+    producerSection = (
+      <Link
+        href={ '/' }
+        className={ styles.post__producerItem }
+        title={ post.producer.name }
+      >
+        { producerAvatarSection }
         { post.producer.name }
       </Link>
     )
@@ -103,12 +119,10 @@ export const Post: FC<Props> = ({ post }) => {
 
   if (post.actors.length > 0) {
     actorsSection = post.actors.map((actor) => {
-      return (
-        <Link
-          href={ '/' }
-          className={ styles.post__actorsItemLink }
-          key={ actor.id }
-        >
+      let avatarSection: ReactElement
+
+      if (actor.imageUrl !== null) {
+        avatarSection = (
           <Image
             className={ styles.post__actorLogo }
             src={ actor.imageUrl }
@@ -117,6 +131,24 @@ export const Post: FC<Props> = ({ post }) => {
             height={ 0 }
             sizes={ '100vw' }
           />
+        )
+      } else {
+        avatarSection = (
+          <Avatar
+            round={ true }
+            size={ '40' }
+            name={ actor.name }
+          />
+        )
+      }
+
+      return (
+        <Link
+          href={ '/' }
+          className={ styles.post__actorsItemLink }
+          key={ actor.id }
+        >
+          { avatarSection }
           { actor.name }
         </Link>
       )

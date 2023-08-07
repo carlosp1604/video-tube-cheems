@@ -2,10 +2,9 @@ import { VideoComponentDtoTranslator } from './VideoComponentDtoTranslator'
 import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 import {
   PostComponentDto,
-  PostComponentDtoActorDto,
+  PostComponentDtoActorDto, PostComponentDtoProducerDto,
   PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { PostComponentProducerDto } from '~/modules/Producers/Infrastructure/Dtos/PostComponentProducerDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostComponentDtoTranslator {
@@ -19,8 +18,7 @@ export class PostComponentDtoTranslator {
     const actors: PostComponentDtoActorDto[] = applicationDto.actors.map((actor) => ({
       name: actor.name,
       id: actor.id,
-      // FIXME: Replace with a default avatar URL
-      imageUrl: actor.imageUrl ?? '',
+      imageUrl: actor.imageUrl,
     }))
 
     const tags: PostComponentDtoTagDto[] = applicationDto.tags.map((tag) => ({
@@ -28,14 +26,13 @@ export class PostComponentDtoTranslator {
       id: tag.id,
     }))
 
-    let producer: PostComponentProducerDto | null = null
+    let producer: PostComponentDtoProducerDto | null = null
 
     if (applicationDto.producer !== null) {
       producer = {
         name: applicationDto.producer.name,
         id: applicationDto.producer.id,
-        // FIXME: Replace with a default avatar URL
-        imageUrl: applicationDto.producer.imageUrl ?? '',
+        imageUrl: applicationDto.producer.imageUrl,
       }
     }
 

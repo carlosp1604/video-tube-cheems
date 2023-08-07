@@ -37,6 +37,15 @@
     }
   }
 
+  &__producer-avatar-container {
+    @apply flex items-center justify-center h-8 w-8 rounded-full mr-2 overflow-hidden;
+    grid-area: producer-logo;
+
+    @screen md {
+      @apply w-10 h-10;
+    }
+  }
+
   &__video-data {
     @apply flex flex-col truncate;
     grid-area: video-data;

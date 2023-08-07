@@ -78,8 +78,12 @@
   }
 
   &__user-avatar-container {
-    @apply flex h-8 w-8 items-center justify-center rounded-full overflow-hidden
+    @apply flex h-6 w-6 items-center justify-center rounded-full overflow-hidden
     transition-transform;
+
+    @screen md {
+      @apply h-8 w-8;
+    }
 
     &:hover, &:focus {
       @apply scale-110 transition-transform cursor-pointer;

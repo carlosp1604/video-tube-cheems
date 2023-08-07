@@ -23,9 +23,9 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
       <span className={ styles.sortingMenuDropdown__dropdownButton }>
         <IconButton
           onClick={ () => setOpenMenu(!openMenu) }
-          icon={ <BsSortDown className={ styles.sortingMenuDropdown__dropdownButtonIcon }/> }
+          icon={ <BsSortDown /> }
         />
-        { t('dropdown_explanation_title') }
+        { t(activeOption.translationKey) }
       </span>
 
       <div className={ `

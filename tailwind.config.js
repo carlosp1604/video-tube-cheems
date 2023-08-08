@@ -99,8 +99,8 @@ module.exports = {
         visibility: 'visibility',
       },
       zIndex: classNamesToZIndex([
-        'post-card-time',
         'card-link',
+        'post-card-time',
         'carousel-button',
         'floating-action-app-menu',
         'sort-menu-dropdown',

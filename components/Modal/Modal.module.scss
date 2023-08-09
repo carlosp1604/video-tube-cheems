@@ -1,7 +1,7 @@
 .modal {
   &__container {
     @apply max-w-sm border border-base-700 rounded-lg bg-body hidden
-      opacity-0 scale-50 backdrop-filter backdrop-blur-3xl bg-opacity-80;
+      opacity-0 scale-50 backdrop-filter backdrop-blur-md bg-opacity-80;
 
     @screen md {
       @apply max-w-md;

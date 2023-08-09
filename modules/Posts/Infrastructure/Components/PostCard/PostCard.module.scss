@@ -18,7 +18,7 @@
   }
 
   &__media {
-    @apply h-full w-full object-cover;
+    @apply h-full w-full object-cover rounded-lg;
   }
 
   &__video-data-container {

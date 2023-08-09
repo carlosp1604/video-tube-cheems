@@ -35,7 +35,7 @@ export const PostCard: FC<Props> = ({
   if (post.animation !== null) {
     media = (
       <HoverVideoPlayer
-        className={ styles.postCard__media }
+        className={ styles.postCard__videoWrapper }
         videoClassName={ styles.postCard__media }
         controls={ false }
         videoSrc={ post.animation?.value }
@@ -53,6 +53,9 @@ export const PostCard: FC<Props> = ({
         disableRemotePlayback={ true }
         disablePictureInPicture={ true }
         loop={ true }
+        preload={ 'metadata' }
+        unloadVideoOnPaused={ true }
+        playbackStartDelay={ 0 }
       />
     )
   }
@@ -99,9 +102,7 @@ export const PostCard: FC<Props> = ({
           href={ `/posts/videos/${post.slug}` }
           className={ styles.postCard__videoLink }
         >
-        <div className={ styles.postCard__videoWrapper }>
           { media }
-        </div>
         </Link>
       </div>
 

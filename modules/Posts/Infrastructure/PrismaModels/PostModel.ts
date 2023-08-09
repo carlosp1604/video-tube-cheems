@@ -46,3 +46,7 @@ export type PostWithProducer = Prisma.PostGetPayload<{
 export type PostWithProducerWithParent = Prisma.PostGetPayload<{
   include: { producer: { include: { parentProducer: true }} }
 }>
+
+export type PostWithTranslations = Prisma.PostGetPayload<{
+  include: { translations: true }
+}>

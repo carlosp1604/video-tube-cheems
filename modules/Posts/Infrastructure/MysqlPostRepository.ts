@@ -141,6 +141,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           },
         },
         meta: true,
+        translations: true,
         tags: {
           include: {
             tag: true,
@@ -159,6 +160,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         'producer',
         'actors',
         'tags',
+        'translations',
       ]),
       postReactions: post._count.reactions,
       postComments: post._count.comments,
@@ -272,6 +274,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     let includes: Prisma.PostInclude | null | undefined = {
       meta: true,
       producer: true,
+      translations: true,
     }
 
     const includeFilters = MysqlPostRepository.buildIncludes(filters)
@@ -324,6 +327,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         post: PostModelTranslator.toDomain(post, [
           'meta',
           'producer',
+          'translations',
         ]),
         postReactions: post._count.reactions,
         postComments: post._count.comments,
@@ -555,6 +559,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         },
         meta: true,
         producer: true,
+        translations: true,
       },
       take: 50,
     })
@@ -564,6 +569,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         post: PostModelTranslator.toDomain(post, [
           'meta',
           'producer',
+          'translations',
         ]),
         postReactions: post._count.reactions,
         postComments: post._count.comments,

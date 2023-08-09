@@ -31,7 +31,7 @@
     "awilix": "^8.0.1",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
-    "fluid-player": "^3.15.0",
+    "fluid-player": "^3.21.0",
     "knex": "^2.3.0",
     "luxon": "^3.1.1",
     "mailersend": "^2.1.2",

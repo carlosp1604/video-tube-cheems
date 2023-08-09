@@ -13,6 +13,7 @@ import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 import { PostCommentDomainException } from '~/modules/Posts/Domain/PostCommentDomainException'
+import { Translation } from '~/modules/Translations/Domain/Translation'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -35,6 +36,7 @@ export class Post {
   private _reactions: Collection<PostReaction, PostReaction['userId']>
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
+  private _translations: Collection<Translation, string>
 
   public constructor (
     id: string,
@@ -52,7 +54,8 @@ export class Post {
     comments: Collection<PostComment, PostComment['id']> = Collection.notLoaded(),
     reactions: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded(),
     views: Collection<PostView, PostView['id']> = Collection.notLoaded(),
-    producer: Relationship<Producer | null> = Relationship.notLoaded()
+    producer: Relationship<Producer | null> = Relationship.notLoaded(),
+    translations: Collection<Translation, string> = Collection.notLoaded()
   ) {
     this.id = id
     this.title = title
@@ -70,6 +73,7 @@ export class Post {
     this._reactions = reactions
     this._views = views
     this._producer = producer
+    this._translations = translations
   }
 
   public addMeta (postMeta: PostMeta): void {
@@ -270,6 +274,22 @@ export class Post {
 
   get producer (): Producer | null {
     return this._producer.value ?? null
+  }
+
+  get translations (): Map<Translation['language'], Translation[]> {
+    const translations = new Map<Translation['language'], Translation[]>()
+
+    this._translations.values.forEach((translation) => {
+      const languageTranslations = translations.get(translation.language)
+
+      if (languageTranslations) {
+        languageTranslations.push(translation)
+      } else {
+        translations.set(translation.language, [translation])
+      }
+    })
+
+    return translations
   }
 
   public setProducer (producer: Producer): void {

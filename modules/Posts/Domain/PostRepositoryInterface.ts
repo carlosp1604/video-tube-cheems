@@ -17,6 +17,7 @@ export type RepositoryOptions =
   'producer' |
   'comments' |
   'reactions' |
+  'translations' |
   'comments.user' |
   'reactions.user' |
   'comments.childComments' |

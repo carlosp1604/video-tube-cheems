@@ -8,7 +8,6 @@ import {
   BsMegaphone
 } from 'react-icons/bs'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
 import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
 import { useTranslation } from 'next-i18next'
 import { PostReactionComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostReactionComponentDto'
@@ -28,6 +27,7 @@ import {
 } from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
 import Link from 'next/link'
 import Avatar from 'react-avatar'
+import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
 
 export interface Props {
   post: PostComponentDto

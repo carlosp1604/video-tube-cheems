@@ -12,7 +12,7 @@ import {
   PostWithMeta,
   PostWithProducerWithParent,
   PostWithReactions,
-  PostWithTags
+  PostWithTags, PostWithTranslations
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostModel'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ProducerModelTranslator } from '~/modules/Producers/Infrastructure/ProducerModelTranslator'
@@ -24,6 +24,8 @@ import { Actor } from '~/modules/Actors/Domain/Actor'
 import { PostComment } from '~/modules/Posts/Domain/PostComment'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 import { PostReaction } from '~/modules/Posts/Domain/PostReaction'
+import { Translation } from '~/modules/Translations/Domain/Translation'
+import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
 
 export class PostModelTranslator {
   public static toDomain (
@@ -47,6 +49,8 @@ export class PostModelTranslator {
     let commentsCollection: Collection<PostComment, PostComment['id']> = Collection.notLoaded()
     let reactionsCollection: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded()
     let producerRelationship: Relationship<Producer | null> = Relationship.notLoaded()
+    let translationsCollection: Collection<Translation, string> =
+      Collection.notLoaded()
 
     if (options.includes('meta')) {
       metaCollection = Collection.initializeCollection()
@@ -117,6 +121,20 @@ export class PostModelTranslator {
       }
     }
 
+    if (options.includes('translations')) {
+      const postWithTranslations = prismaPostModel as PostWithTranslations
+
+      translationsCollection = Collection.initializeCollection()
+
+      postWithTranslations.translations.forEach((translation) => {
+        const domainTranslation = TranslationModelTranslator.toDomain(translation)
+
+        translationsCollection.addItemFromPersistenceLayer(
+          domainTranslation, translation.language + translation.field
+        )
+      })
+    }
+
     return new Post(
       prismaPostModel.id,
       prismaPostModel.title,
@@ -133,7 +151,8 @@ export class PostModelTranslator {
       commentsCollection,
       reactionsCollection,
       Collection.notLoaded(),
-      producerRelationship
+      producerRelationship,
+      translationsCollection
     )
   }
 

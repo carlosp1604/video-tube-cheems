@@ -11,7 +11,7 @@ export async function up (knex: Knex): Promise<void> {
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
       table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable()
 
-      table.primary(['translatable_id', 'field', 'translatable_type'])
+      table.primary(['translatable_id', 'field', 'translatable_type', 'language'])
     })
 }
 

@@ -29,22 +29,22 @@ model Producer {
 }
 
 model Post {
-  id          String         @id
-  title       String
-  description String
-  slug        String         @unique
-  createdAt   DateTime       @map("created_at")
-  updatedAt   DateTime       @map("updated_at")
-  deletedAt   DateTime?      @map("deleted_at")
-  publishedAt DateTime?      @map("published_at")
-  producer    Producer?      @relation(fields: [producerId], references: [id])
-  producerId  String?        @map("producer_id")
-  meta        PostMeta[]
-  tags        PostPostTag[]
-  actors      PostActor[]
-  comments    PostComment[]
-  reactions   PostReaction[]
-  views       PostView[]
+  id           String          @id
+  title        String
+  description  String
+  slug         String          @unique
+  createdAt    DateTime        @map("created_at")
+  updatedAt    DateTime        @map("updated_at")
+  deletedAt    DateTime?       @map("deleted_at")
+  publishedAt  DateTime?       @map("published_at")
+  producer     Producer?       @relation(fields: [producerId], references: [id])
+  producerId   String?         @map("producer_id")
+  meta         PostMeta[]
+  tags         PostPostTag[]
+  actors       PostActor[]
+  comments     PostComment[]
+  reactions    PostReaction[]
+  views        PostView[]
   translations Translatation[] @relation("PostTranslation")
 
   @@map("posts")
@@ -196,17 +196,16 @@ enum TranslatableType {
 }
 
 model Translatation {
-  translatableId    String @map("translatable_id")
-  field             String
-  value             String
-  translatableType  TranslatableType @map("translatable_type")
+  translatableId   String           @map("translatable_id")
+  field            String
+  value            String
+  translatableType TranslatableType @map("translatable_type")
 
-  Post              Post?  @relation("PostTranslation", fields: [translatableId], references: [id], map: "post_translation")
-  language          String
-  createdAt         DateTime @map("created_at")
-  updatedAt         DateTime @map("updated_at")
+  Post      Post?    @relation("PostTranslation", fields: [translatableId], references: [id], map: "post_translation")
+  language  String
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
 
-  @@id([translatableId, field, translatableType])
-
+  @@id([translatableId, field, translatableType, language])
   @@map("translations")
 }

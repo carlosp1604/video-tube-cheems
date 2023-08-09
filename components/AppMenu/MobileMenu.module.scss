@@ -31,15 +31,13 @@
 
   &__slide-out {
     @apply grid z-mobile-menu fixed bottom-0 leading-none translate-y-full
-      w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden 
-      border-base-700 backdrop-filter backdrop-blur-3xl bg-opacity-95 overflow-y-scroll
-      scrollbar-hide;
+      w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden
+      border-base-700 overflow-y-scroll scrollbar-hide;
     grid-template-areas:
       "menu"
       "footer"
       "copyright";
     grid-auto-rows: 1fr auto auto;
-    height: auto;
 
     @screen md {
       @apply top-0 left-0 -translate-x-full translate-y-0 rounded-none border-r;
@@ -138,7 +136,7 @@
   }
 
   &__copyright-container {
-    @apply border-base-700 border-t text-base-700 font-light text-sm
+    @apply border-base-700 border-t text-base-500 font-light text-sm
       px-8 py-4;
     grid-area: copyright;
   }

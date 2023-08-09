@@ -111,7 +111,11 @@ export const AppMenu: FC = () => {
     <>
       { userMenu }
       <LoginModal isOpen={ loginModalOpen } setIsOpen={ setLoginModalOpen }/>
-      <nav className={ styles.appMenu__layer }>
+      <nav className={ styles.appMenu__layer }
+        onScroll={ () => {
+          console.log('scroll')
+        } }
+      >
         <div className={ styles.appMenu__container }>
           <Link href='/'>
             <img
@@ -132,6 +136,57 @@ export const AppMenu: FC = () => {
           </div>
         </div>
       </nav>
+      {
+        /**
+         <div className={ styles.appMenu__utilLinksContainer }>
+         <Link
+         href={ '/' }
+         title={ 'Live cams' }
+         className={ styles.appMenu__utilLink }
+         >
+         <BsCameraVideo />
+         Live cams
+         </Link>
+
+         <Link
+         href={ '/' }
+         title={ 'asdasdas' }
+         className={ styles.appMenu__utilLink }
+         >
+         <BsSearch />
+         asdasda
+         </Link>
+
+         <Link
+         href={ '/' }
+         title={ 'asdasdas' }
+         className={ styles.appMenu__utilLink }
+         >
+         <BsSearch />
+         asdasda
+         </Link>
+
+         <Link
+         href={ '/' }
+         title={ 'asdasdas' }
+         className={ styles.appMenu__utilLink }
+         >
+         <BsSearch />
+         asdasda
+         </Link>
+
+         <Link
+         href={ '/' }
+         title={ 'asdasdas' }
+         className={ styles.appMenu__utilLink }
+         >
+         <BsSearch />
+         asdasda
+         </Link>
+
+         </div>
+         */
+      }
     </>
   )
 }

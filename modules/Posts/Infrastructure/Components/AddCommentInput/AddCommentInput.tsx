@@ -48,7 +48,17 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
     }
   }
 
-  let content: ReactNode | null
+  let content: ReactNode = (
+    <div className={ styles.addCommentInput__loginToCommentSection }>
+      { t('add_comment_section_login_title') }
+      <button
+        className={ styles.addCommentInput__loginButton }
+        onClick={ () => setLoginModalOpen(true) }
+      >
+        { t('add_comment_section_login_button_title') }
+      </button>
+    </div>
+  )
 
   if (commentable) {
     content = (
@@ -68,18 +78,6 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
             } }
             title={ t('add_comment_button_title') }
           />
-        </button>
-      </div>
-    )
-  } else {
-    content = (
-      <div className={ styles.addCommentInput__loginToCommentSection }>
-        { t('add_comment_section_login_title') }
-        <button
-          className={ styles.addCommentInput__loginButton }
-          onClick={ () => setLoginModalOpen(true) }
-        >
-          { t('add_comment_section_login_button_title') }
         </button>
       </div>
     )

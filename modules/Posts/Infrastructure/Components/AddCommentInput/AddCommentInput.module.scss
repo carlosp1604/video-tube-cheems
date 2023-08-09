@@ -42,4 +42,12 @@
       @apply bg-brand-400 transition-colors;
     }
   }
+
+  &__loading-section {
+    @apply flex justify-center border-t border-base-800 p-2.5;
+  }
+
+  &__loading-icon {
+    @apply text-3xl animate-spin place-self-center;
+  }
 }

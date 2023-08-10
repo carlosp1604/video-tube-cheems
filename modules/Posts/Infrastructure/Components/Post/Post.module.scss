@@ -90,10 +90,14 @@
   }
 
   &__extra-data-button-container {
-    @apply flex justify-center pb-0.5 mb-2 border-b border-base-800 -mt-3;
+    @apply flex justify-center pb-0.5 mb-2 border-b border-base-800 -mt-4;
 
     &_open {
       @apply border-0 -mt-0;
+    }
+
+    &_no-producer {
+      @apply -mt-0;
     }
   }
 

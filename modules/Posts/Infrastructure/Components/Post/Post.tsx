@@ -372,11 +372,11 @@ export const Post: FC<Props> = ({ post }) => {
           }
 
         </div>
-
         <div
           className={ `
             ${styles.post__extraDataButtonContainer}
             ${extraDataOpen ? styles.post__extraDataButtonContainer_open : ''}
+            ${post.producer === null ? styles.post__extraDataButtonContainer_noProducer : ''}
           ` }
         >
           <button className={ `

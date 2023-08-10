@@ -1,8 +1,8 @@
 import styles from './Post.module.scss'
 import { FC, ReactElement, useEffect, useState } from 'react'
 import {
-  BsBookmarks, BsCaretDown,
-  BsChatSquareText,
+  BsBookmarks,
+  BsChatSquareText, BsChevronDown, BsChevronUp,
   BsDownload,
   BsHeart,
   BsMegaphone
@@ -375,19 +375,26 @@ export const Post: FC<Props> = ({ post }) => {
 
         <div
           className={ `
+            ${styles.post__extraDataButtonContainer}
+            ${extraDataOpen ? styles.post__extraDataButtonContainer_open : ''}
+          ` }
+        >
+          <button className={ `
             ${styles.post__extraDataButton}
             ${extraDataOpen ? styles.post__extraDataButton_open : ''}
           ` }
-          onClick={ () => setExtraDataOpen(!extraDataOpen) }
-        >
-          { extraDataOpen
-            ? t('post_extra_data_section_hide')
-            : t('post_extra_data_section_show_more')
-          }
-          <BsCaretDown className={ `
-            ${styles.post__extraDataIcon}
-            ${extraDataOpen ? styles.post__extraDataIcon_open : ''}
-          ` }/>
+            onClick={ () => setExtraDataOpen(!extraDataOpen) }
+          >
+            { extraDataOpen
+              ? t('post_extra_data_section_hide')
+              : t('post_extra_data_section_show_more')
+            }
+            {
+              extraDataOpen
+                ? <BsChevronUp className={ styles.post__extraDataIcon }/>
+                : <BsChevronDown className={ styles.post__extraDataIcon }/>
+            }
+          </button>
         </div>
       </div>
       { commentsComponent }

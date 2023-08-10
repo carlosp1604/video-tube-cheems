@@ -14,7 +14,10 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer, setActivePr
   const { t } = useTranslation('all_producers')
 
   return (
-    <Carousel onEndReached={ undefined }>
+    <Carousel
+      onEndReached={ undefined }
+      itemsAutoWidth={ true }
+    >
       { producers.map((producer) => {
         return ({
           key: producer.id,

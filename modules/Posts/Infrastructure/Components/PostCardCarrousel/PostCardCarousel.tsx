@@ -9,7 +9,10 @@ interface Props {
 
 export const PostCardCarousel: FC<Props> = ({ posts }) => {
   return (
-    <Carousel onEndReached={ undefined }>
+    <Carousel
+      onEndReached={ undefined }
+      itemsAutoWidth={ false }
+    >
       { posts.map((post) => {
         return ({
           key: post.id,

@@ -1,5 +1,6 @@
 import { MetaApplicationDto } from './MetaApplicationDto'
 import { ProducerApplicationDto } from '~/modules/Producers/Application/ProducerApplicationDto'
+import { ModelTranslationsApplicationDto } from '~/modules/Translations/Application/ModelTranslationsApplicationDto'
 
 export interface PostWithProducerAndMetaApplicationDto {
   readonly id: string
@@ -10,4 +11,5 @@ export interface PostWithProducerAndMetaApplicationDto {
   readonly producer: ProducerApplicationDto | null
   readonly meta: MetaApplicationDto[]
   readonly createdAt: string
+  readonly translations: ModelTranslationsApplicationDto[]
 }

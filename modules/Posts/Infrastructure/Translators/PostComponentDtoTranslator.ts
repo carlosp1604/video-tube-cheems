@@ -40,16 +40,34 @@ export class PostComponentDtoTranslator {
 
     const date = (new DateService()).formatDateToDateMedFromIso(applicationDto.publishedAt, locale)
 
+    const languageHasTranslations = applicationDto.translations.find((translation) => translation.language === locale)
+
+    let titleTranslation = applicationDto.title
+    let descriptionTranslation = applicationDto.description
+
+    if (languageHasTranslations) {
+      const titleFieldTranslation = languageHasTranslations.translations.find((translation) => translation.field === 'title')
+      const descriptionFieldTranslation = languageHasTranslations.translations.find((translation) => translation.field === 'description')
+
+      if (titleFieldTranslation) {
+        titleTranslation = titleFieldTranslation.value
+      }
+
+      if (descriptionFieldTranslation) {
+        descriptionTranslation = descriptionFieldTranslation.value
+      }
+    }
+
     return {
       id: applicationDto.id,
       actors,
       video,
       tags,
       producer,
-      description: applicationDto.description,
+      description: descriptionTranslation,
       date,
       reactions: reactionsNumber,
-      title: applicationDto.title,
+      title: titleTranslation,
       views: postViews,
       comments: commentsNumber,
     }

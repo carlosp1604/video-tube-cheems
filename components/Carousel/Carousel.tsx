@@ -1,6 +1,6 @@
 import { createRef, FC, ReactNode, useEffect, useState } from 'react'
 import styles from './Carousel.module.scss'
-import { BsCaretLeft, BsCaretRight } from 'react-icons/bs'
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 
 export interface KeyedComponent {
@@ -57,7 +57,7 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
       onMouseOver={ () => setShowScrollButtons(true) }
       onMouseLeave={ () => setShowScrollButtons(false) }
     >
-      <BsCaretLeft
+      <BsChevronLeft
         className={ `
           ${styles.carousel__leftScrollButton}
           ${scrollX === 0 ? styles.carousel__leftScrollButton__hidden : ''}        
@@ -66,7 +66,7 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
         onClick={ () => handleScrollXLeftClick() }
         title={ t('carousel_left_button_title') ?? '' }
       />
-      <BsCaretRight
+      <BsChevronRight
         className={ `
           ${styles.carousel__rightScrollButton}
           ${scrollXBottom ? styles.carousel__rightScrollButton__hidden : ''}        

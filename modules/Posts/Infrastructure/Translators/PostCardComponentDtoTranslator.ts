@@ -49,13 +49,24 @@ export class PostCardComponentDtoTranslator {
       }
     }
 
+    let titleTranslation = applicationDto.title
+    const languageHasTranslations = applicationDto.translations.find((translation) => translation.language === locale)
+
+    if (languageHasTranslations) {
+      const fieldTranslation = languageHasTranslations.translations.find((translation) => translation.field === 'title')
+
+      if (fieldTranslation) {
+        titleTranslation = fieldTranslation.value
+      }
+    }
+
     return {
       id: applicationDto.id,
       animation,
       date,
       producer,
       thumb: thumb ? thumb.value : '',
-      title: applicationDto.title,
+      title: titleTranslation,
       views: postViews,
       duration: formattedDuration,
       slug: applicationDto.slug,

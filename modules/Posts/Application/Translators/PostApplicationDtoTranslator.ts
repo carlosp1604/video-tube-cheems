@@ -4,6 +4,7 @@ import { Post } from '~/modules/Posts/Domain/Post'
 import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
 import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Application/ProducerApplicationDtoTranslator'
+import { PostTranslationsTranslatorDto } from '~/modules/Posts/Application/Translators/PostTranslationsTranslatorDto'
 
 // NOTE: We are not testing this due to this class does not have logic to be tested
 export class PostApplicationDtoTranslator {
@@ -27,6 +28,7 @@ export class PostApplicationDtoTranslator {
         ? ProducerApplicationDtoTranslator.fromDomain(post.producer)
         : null,
       slug: post.slug,
+      translations: PostTranslationsTranslatorDto.fromDomain(post),
     }
   }
 }

@@ -10,10 +10,11 @@ export interface KeyedComponent {
 
 interface Props {
   children: KeyedComponent[]
+  itemsAutoWidth: boolean
   onEndReached: (() => void) | undefined
 }
 
-export const Carousel: FC<Props> = ({ children, onEndReached }) => {
+export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) => {
   const [scrollX, setScrollX] = useState(0)
   const [scrollXBottom, setScrollXBottom] = useState(false)
   const [showScrollButtons, setShowScrollButtons] = useState(false)
@@ -88,7 +89,8 @@ export const Carousel: FC<Props> = ({ children, onEndReached }) => {
           return (
             <div
               key={ child.key }
-              className={ styles.carousel__sliderItem }>
+              className={ `
+                ${itemsAutoWidth ? styles.carousel__sliderItemAuto : styles.carousel__sliderItem}` }>
               { child.component }
             </div>
           )

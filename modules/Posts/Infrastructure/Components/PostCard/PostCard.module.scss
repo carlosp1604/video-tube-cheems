@@ -10,15 +10,15 @@
   }
 
   &__video-link {
-    @apply absolute inset-0 opacity-0 z-card-link;
+    @apply z-card-link;
   }
 
   &__video-wrapper {
-    @apply aspect-video w-full h-fit overflow-hidden rounded-lg;
+    @apply aspect-video w-full overflow-hidden rounded-lg;
   }
 
   &__media {
-    @apply h-full w-full object-cover;
+    @apply h-full w-full object-cover rounded-lg;
   }
 
   &__video-data-container {

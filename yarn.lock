@@ -5215,6 +5215,11 @@ react-hot-toast@^2.4.1:
   dependencies:
     goober "^2.1.10"
 
+react-hover-video-player@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/react-hover-video-player/-/react-hover-video-player-10.0.1.tgz#5cdf5fb2c95185e932e9793cf84cd30fd12204bd"
+  integrity sha512-n1loMfpykE12Jj4U8YS6T9nvzDsmeKSaKcZest+SyQkvEwh8IqCunFx4QXQ/ls878DMOgN48WhMxikk2cDE1BA==
+
 react-i18next@^11.15.5:
   version "11.18.6"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.18.6.tgz#e159c2960c718c1314f1e8fcaa282d1c8b167887"

@@ -52,40 +52,42 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                 menuOptions={ getMobileMenuOptions(pathname) }
               />
 
-            <div className={ styles.mobileMenu__footerContainer }>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-              <span className={ styles.mobileMenu__footerItem }>
-                Home
-              </span>
-            </div>
-
+              {
+                /**
+                 <div className={ styles.mobileMenu__footerContainer }>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 <span className={ styles.mobileMenu__footerItem }>
+                 Home
+                 </span>
+                 </div>
+                 */
+              }
               <div className={ styles.mobileMenu__copyrightContainer }>
                 Cheems © 2023. Made with ❤️ by CP.
               </div>
-
             </div>
           </CSSTransition>
         </div>

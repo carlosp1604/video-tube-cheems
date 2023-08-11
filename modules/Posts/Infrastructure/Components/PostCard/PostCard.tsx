@@ -1,30 +1,22 @@
-import { createRef, Dispatch, FC, SetStateAction, useState, ReactElement, useEffect } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './PostCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import Link from 'next/link'
-import { SafePlayVideo, SafeStopVideo } from '~/modules/Shared/Infrastructure/SafeVideoElement'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import Avatar from 'react-avatar'
+import HoverVideoPlayer from 'react-hover-video-player'
 
 interface Props {
-  playerId: string
-  setPlayerId: Dispatch<SetStateAction<string>>
   post: PostCardComponentDto
   showProducerImage: boolean
 }
 
 export const PostCard: FC<Props> = ({
   post,
-  playerId,
-  setPlayerId,
   showProducerImage = true,
 }) => {
-  const player = createRef<HTMLVideoElement>()
-  const [playPromise, setPlayPromise] = useState<Promise<void>>(Promise.resolve())
-  const [playing, setPlaying] = useState<boolean>(false)
-
   const { t } = useTranslation('post_card')
 
   let producerImage: ReactElement | null = null
@@ -42,16 +34,28 @@ export const PostCard: FC<Props> = ({
 
   if (post.animation !== null) {
     media = (
-      <video
-        className={ styles.postCard__media }
+      <HoverVideoPlayer
+        className={ styles.postCard__videoWrapper }
+        videoClassName={ styles.postCard__media }
         controls={ false }
-        src={ post.animation?.value }
-        poster={ post.thumb }
-        muted
-        ref={ player }
+        videoSrc={ post.animation?.value }
+        pausedOverlay={
+          <Image
+            src={ post.thumb }
+            alt={ post.title }
+            className={ styles.postCard__media }
+            width={ 0 }
+            height={ 0 }
+            sizes={ '100vw' }
+          />
+        }
+        muted={ true }
         disableRemotePlayback={ true }
         disablePictureInPicture={ true }
         loop={ true }
+        preload={ 'metadata' }
+        unloadVideoOnPaused={ true }
+        playbackStartDelay={ 0 }
       />
     )
   }
@@ -88,55 +92,18 @@ export const PostCard: FC<Props> = ({
     )
   }
 
-  useEffect(() => {
-    if (playerId === post.id && player.current) {
-      SafePlayVideo(player.current, setPlayPromise).then(() => {
-        setPlaying(true)
-      })
-
-      return
-    }
-
-    if (playing && player.current) {
-      SafeStopVideo(player.current, playPromise)
-      setPlaying(false)
-    }
-  }, [playing, playerId])
-
   return (
     <div className={ styles.postCard__container }>
-      <div
-        className={ styles.postCard__videoContainer }
-        onMouseOver={ async () => {
-          if (player.current) {
-            await SafePlayVideo(player.current, setPlayPromise)
-            setPlayerId(post.id)
-            setPlaying(true)
-          }
-        } }
-        onMouseLeave={ () => {
-          if (player.current) {
-            SafeStopVideo(player.current, playPromise)
-            setPlayerId('')
-            setPlaying(false)
-          }
-        } }
-        onTouchStartCapture={ () => {
-          if (!playing && playerId !== post.id) {
-            setPlayerId(post.id)
-          }
-        } }
-      >
+      <div className={ styles.postCard__videoContainer }>
         <p className={ styles.postCard__videoTime } >
           { post.duration }
         </p>
         <Link
           href={ `/posts/videos/${post.slug}` }
           className={ styles.postCard__videoLink }
-        />
-        <div className={ styles.postCard__videoWrapper }>
+        >
           { media }
-        </div>
+        </Link>
       </div>
 
       <div className={ styles.postCard__videoDataContainer }>

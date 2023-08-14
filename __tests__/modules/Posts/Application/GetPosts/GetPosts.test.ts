@@ -16,6 +16,8 @@ import { GetPostsApplicationDtoTranslator } from '~/modules/Posts/Application/Ge
 import { DateTime } from 'luxon'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
+import { Translation } from '~/modules/Translations/Domain/Translation'
+import { TestTranslationBuilder } from '~/__tests__/modules/Translations/Domain/TestTranslationBuilder'
 
 describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
   const postRepository = mock<PostRepositoryInterface>()
@@ -42,9 +44,21 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
       postsPerPage: 10,
     }
 
-    const collection = Collection.initializeCollection<PostMeta, PostMeta['type']>()
+    const postMetaCollection = Collection.initializeCollection<PostMeta, PostMeta['type']>()
+    const translationsCollection = Collection.initializeCollection<Translation, string>()
 
-    collection.addItemFromPersistenceLayer(new TestPostMetaBuilder().build(), 'expected-type')
+    postMetaCollection.addItemFromPersistenceLayer(new TestPostMetaBuilder().build(), 'expected-type')
+    translationsCollection.addItemFromPersistenceLayer(
+      new TestTranslationBuilder()
+        .withTranslatableId('expected-post-id')
+        .withTranslatableType('Post')
+        .withField('title')
+        .withValue('Some expected post title')
+        .withLanguage('es')
+        .withCreatedAt(nowDate)
+        .build(),
+      'expected-translation-key'
+    )
 
     post = new TestPostBuilder()
       .withId('expected-post-id')
@@ -53,7 +67,8 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
           .withParentProducer(Relationship.initializeRelation(null))
           .build()
       ))
-      .withMeta(collection)
+      .withMeta(postMetaCollection)
+      .withTranslations(translationsCollection)
       .build()
 
     postsWithCount = [
@@ -136,6 +151,20 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
             },
             publishedAt: nowDate.toISO(),
             title: 'expected-title',
+            translations: [
+              {
+                translations: [
+                  {
+                    createdAt: nowDate.toISO(),
+                    language: 'es',
+                    value: 'Some expected post title',
+                    translatableId: 'expected-post-id',
+                    field: 'title',
+                  },
+                ],
+                language: 'es',
+              },
+            ],
             slug: 'expected-post-slug',
           },
           postComments: 1,
@@ -184,6 +213,20 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
             },
             publishedAt: nowDate.toISO(),
             title: 'expected-title',
+            translations: [
+              {
+                translations: [
+                  {
+                    createdAt: nowDate.toISO(),
+                    language: 'es',
+                    value: 'Some expected post title',
+                    translatableId: 'expected-post-id',
+                    field: 'title',
+                  },
+                ],
+                language: 'es',
+              },
+            ],
             slug: 'expected-post-slug',
           },
           postComments: 1,

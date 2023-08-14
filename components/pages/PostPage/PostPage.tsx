@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import styles from './VideoPage.module.scss'
+import styles from './PostPage.module.scss'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
@@ -8,20 +8,32 @@ import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
 
 export interface VideoPageProps {
   post: PostComponentDto
+  postViewsNumber: number
+  postReactionsNumber: number
+  postCommentsNumber: number
   relatedPosts: PostCardComponentDto[]
 }
 
-export const VideoPage: NextPage<VideoPageProps> = ({ post, relatedPosts }) => {
-  const { t } = useTranslation('video_page')
+export const PostPage: NextPage<VideoPageProps> = ({
+  post,
+  relatedPosts,
+  postCommentsNumber,
+  postViewsNumber,
+  postReactionsNumber,
+}) => {
+  const { t } = useTranslation('post_page')
 
   return (
-    <div className={ styles.videoPage__container }>
+    <div className={ styles.postPage__container }>
       <Post
         post={ post }
         key={ post.id }
+        postCommentsNumber={ postCommentsNumber }
+        postReactionsNumber={ postReactionsNumber }
+        postViewsNumber={ postViewsNumber }
       />
 
-      <span className={ styles.videoPage__relatedVideosTitle }>
+      <span className={ styles.postPage__relatedVideosTitle }>
         { t('video_related_videos_title') }
       </span>
 

@@ -181,7 +181,7 @@
   }
 
   &__post-description {
-    @apply text-base-500 rounded-lg font-normal;
+    @apply text-base-500 rounded-lg font-normal whitespace-pre-wrap;
   }
 
   &__option-item:hover, &__option-item:focus {

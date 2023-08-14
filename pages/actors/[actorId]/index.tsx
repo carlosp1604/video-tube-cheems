@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
         actor: ActorPageComponentDtoTranslator.fromApplicationDto(actor),
         posts: posts.posts.map((post) => {
           return PostCardComponentDtoTranslator
-            .fromApplication(post.post, post.postReactions, post.postComments, 0, locale)
+            .fromApplication(post.post, 0, locale)
         }),
         postsNumber: posts.postsNumber,
       },

@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'all_producers',
     'app_menu',
-    'menu_options',
+    'menu',
     'sorting_menu_dropdown',
     'user_menu',
     'carousel',
@@ -78,13 +78,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     producerComponents.unshift(allPostsProducerDto)
 
     props.posts = posts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(
-        post.post,
-        post.postReactions,
-        post.postComments,
-        post.postViews,
-        locale
-      )
+      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
     props.postsNumber = posts.postsNumber
     props.producers = producerComponents

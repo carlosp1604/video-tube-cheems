@@ -31,15 +31,23 @@ import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
 
 export interface Props {
   post: PostComponentDto
+  postViewsNumber: number
+  postReactionsNumber: number
+  postCommentsNumber: number
 }
 
-export const Post: FC<Props> = ({ post }) => {
-  const [reactionsNumber, setReactionsNumber] = useState<number>(post.reactions)
-  const [viewsNumber, setViewsNumber] = useState<number>(post.views)
+export const Post: FC<Props> = ({
+  post,
+  postViewsNumber,
+  postReactionsNumber,
+  postCommentsNumber,
+}) => {
+  const [reactionsNumber, setReactionsNumber] = useState<number>(postReactionsNumber)
+  const [viewsNumber, setViewsNumber] = useState<number>(postViewsNumber)
   const [extraDataOpen, setExtraDataOpen] = useState<boolean>(false)
   const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(null)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
-  const [commentsNumber, setCommentsNumber] = useState<number>(post.comments)
+  const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
 
   const { t } = useTranslation('post')
   const { setLoginModalOpen } = useLoginContext()
@@ -364,9 +372,9 @@ export const Post: FC<Props> = ({ post }) => {
             post.description !== ''
               ? <div className={ styles.post__dataItem }>
                   { t('post_extra_data_description_title') }
-                  <span className={ styles.post__postDescription }>
+                  <div className={ styles.post__postDescription }>
                     { post.description }
-                  </span>
+                  </div>
                 </div>
               : null
           }

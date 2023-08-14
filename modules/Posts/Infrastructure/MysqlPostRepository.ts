@@ -636,11 +636,23 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             {
               title: {
                 contains: filter.value,
+                mode: 'insensitive',
               },
             },
             {
               description: {
                 contains: filter.value,
+                mode: 'insensitive',
+              },
+            },
+            {
+              translations: {
+                some: {
+                  value: {
+                    contains: filter.value,
+                    mode: 'insensitive',
+                  },
+                },
               },
             },
           ],

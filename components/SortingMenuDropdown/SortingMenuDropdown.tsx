@@ -16,14 +16,14 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
   const { t } = useTranslation('sorting_menu_dropdown')
 
   return (
-    <div
-      className={ styles.sortingMenuDropdown__container }
-      title={ t('dropdown_button_title') }
-    >
+    <div className={ styles.sortingMenuDropdown__container }>
       <span className={ styles.sortingMenuDropdown__dropdownButton }>
         <IconButton
           onClick={ () => setOpenMenu(!openMenu) }
-          icon={ <BsSortDown /> }
+          icon={
+            <BsSortDown />
+          }
+          title={ t('dropdown_sort_button_title', { criteria: t(activeOption.translationKey) }) }
         />
         { t(activeOption.translationKey) }
       </span>
@@ -46,6 +46,7 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
                 : ''}
             ` }
               onClick={ () => onChangeOption(option) }
+              title={ t('dropdown_sort_option_title', { criteria: t(activeOption.translationKey) }) }
             >
               { t(option.translationKey) }
             </span>

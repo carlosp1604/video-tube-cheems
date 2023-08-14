@@ -62,6 +62,20 @@ describe('~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts.ts', () =>
       publishedAt: nowDate.toISO(),
       title: 'expected-title',
       slug: 'expected-post-slug',
+      translations: [
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'es',
+              value: 'Some expected post title',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'es',
+        },
+      ],
     })
   })
 
@@ -96,6 +110,20 @@ describe('~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts.ts', () =>
             publishedAt: nowDate.toISO(),
             title: 'expected-title',
             slug: 'expected-post-slug',
+            translations: [
+              {
+                translations: [
+                  {
+                    createdAt: nowDate.toISO(),
+                    language: 'es',
+                    value: 'Some expected post title',
+                    translatableId: 'expected-post-id',
+                    field: 'title',
+                  },
+                ],
+                language: 'es',
+              },
+            ],
           },
           postComments: 1,
           postReactions: 1,

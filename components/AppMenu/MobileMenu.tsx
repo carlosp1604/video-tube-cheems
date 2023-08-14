@@ -4,6 +4,7 @@ import styles from './MobileMenu.module.scss'
 import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useRouter } from 'next/router'
 import { getMobileMenuOptions } from '~/components/AppMenu/MobileMenuOptions'
+import { useTranslation } from 'next-i18next'
 
 interface Props {
   openMenu: boolean
@@ -12,6 +13,8 @@ interface Props {
 
 export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
   const { pathname } = useRouter()
+
+  const { t } = useTranslation('menu')
 
   return (
       <CSSTransition
@@ -45,12 +48,11 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                 <img
                   className={ styles.mobileMenu__logo }
                   src='/img/cheems-logo.png'
+                  alt={ t('menu_logo_alt_title') }
                 />
               </div>
 
-              <MenuOptions
-                menuOptions={ getMobileMenuOptions(pathname) }
-              />
+              <MenuOptions menuOptions={ getMobileMenuOptions(pathname) } />
 
               {
                 /**
@@ -86,7 +88,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                  */
               }
               <div className={ styles.mobileMenu__copyrightContainer }>
-                Cheems © 2023. Made with ❤️ by CP.
+                { t('copyright_section_title') }
               </div>
             </div>
           </CSSTransition>

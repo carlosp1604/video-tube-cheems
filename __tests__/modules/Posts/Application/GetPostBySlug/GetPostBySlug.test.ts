@@ -9,10 +9,12 @@ import { TestProducerBuilder } from '~/__tests__/modules/Producers/Domain/TestPr
 import { TestPostMetaBuilder } from '~/__tests__/modules/Posts/Domain/TestPostMetaBuilder'
 import { TestPostBuilder } from '~/__tests__/modules/Posts/Domain/TestPostBuilder'
 import { PostApplicationDtoTranslator } from '~/modules/Posts/Application/Translators/PostApplicationDtoTranslator'
+import { PostWithCountInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
 
 describe('~/modules/Posts/Application/GetPostBySlug/GetPostBySlug.ts', () => {
   const postRepository = mock<PostRepositoryInterface>()
   const nowDate = DateTime.now()
+  let postWithCount: PostWithCountInterface
 
   const buildUseCase = (): GetPostBySlug => {
     return new GetPostBySlug(postRepository)
@@ -26,12 +28,13 @@ describe('~/modules/Posts/Application/GetPostBySlug/GetPostBySlug.ts', () => {
 
     metaCollection.addItem(postMeta, postMeta.type)
 
-    const postWithCount = {
+    postWithCount = {
       post: new TestPostBuilder()
         .withMeta(metaCollection)
         .withProducer(producerRelationship)
         .withActors(Collection.initializeCollection())
         .withTags(Collection.initializeCollection())
+        .withTranslations(Collection.initializeCollection())
         .build(),
       postComments: 1,
       postReactions: 1,
@@ -66,6 +69,7 @@ describe('~/modules/Posts/Application/GetPostBySlug/GetPostBySlug.ts', () => {
       title: 'expected-title',
       actors: [],
       tags: [],
+      translations: [],
       slug: 'expected-post-slug',
     })
   })
@@ -78,6 +82,7 @@ describe('~/modules/Posts/Application/GetPostBySlug/GetPostBySlug.ts', () => {
     })
 
     expect(postRepository.findBySlugWithCount).toBeCalledWith('expected-post-slug')
+    expect(PostApplicationDtoTranslator.fromDomain).toBeCalledWith(postWithCount.post)
   })
 
   it('should return correct data', async () => {
@@ -114,6 +119,7 @@ describe('~/modules/Posts/Application/GetPostBySlug/GetPostBySlug.ts', () => {
         title: 'expected-title',
         actors: [],
         tags: [],
+        translations: [],
         slug: 'expected-post-slug',
       },
       reactions: 1,

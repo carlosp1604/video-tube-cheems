@@ -1,5 +1,8 @@
 {
-  "app_menu_search_menu_placeholder_title": "Buscar vídeos",
+  "app_menu_loading_user_button_title": "Loading",
   "app_menu_logo_url_alt": "Cheems",
-  "empty_search_error_message": "Por favor, introduce un término de búsqueda"
+  "app_menu_search_button_title": "Buscar vídeos",
+  "app_menu_search_menu_placeholder_title": "Buscar vídeos",
+  "app_menu_user_button_title": "Iniciar sesión",
+  "empty_search_error_message": "Por favor, introduce un término de búsqueda",
 }

@@ -8,6 +8,7 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import {
   PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
+import { useTranslation } from 'next-i18next'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -16,7 +17,7 @@ export interface SearchPageProps {
 }
 
 export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumber }) => {
-  const [totalPosts, setTotalPosts] = useState<number>(postsNumber)
+  const { t } = useTranslation('search')
   const [titleFilter, setTitleFilter] = useState<FetchPostsFilter>({
     type: PostFilterOptions.POST_TITLE,
     value: title,
@@ -34,9 +35,9 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
     <div className={ styles.searchPage__container }>
       <PaginatedPostCardGallery
         initialPosts={ posts }
-        initialPostsNumber={ totalPosts }
+        initialPostsNumber={ postsNumber }
         filters={ [titleFilter] }
-        title={ title }
+        title={ t('search_result_title', { searchTerm: title }) }
       />
     </div>
   )

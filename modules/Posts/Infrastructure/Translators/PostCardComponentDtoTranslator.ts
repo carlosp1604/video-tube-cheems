@@ -12,8 +12,6 @@ import { DateService } from '~/helpers/Infrastructure/DateService'
 export class PostCardComponentDtoTranslator {
   public static fromApplication (
     applicationDto: PostWithProducerAndMetaApplicationDto,
-    reactionsNumber: number,
-    commentsNumber: number,
     postViews: number,
     locale: string
   ): PostCardComponentDto {

@@ -14,7 +14,7 @@ interface MenuSideBarOptionProps {
 }
 
 const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen }) => {
-  const { t } = useTranslation('menu_options')
+  const { t } = useTranslation('menu')
 
   return (
     <div className={ `
@@ -48,6 +48,8 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
 export const MenuSideBar: FC = () => {
   const { pathname } = useRouter()
 
+  const { t } = useTranslation('menu')
+
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
   return (
@@ -59,6 +61,7 @@ export const MenuSideBar: FC = () => {
         <IconButton
           onClick={ () => setMenuOpen(!menuOpen) }
           icon={ <BsList /> }
+          title={ t('menu_button_title') }
         />
       </div>
 
@@ -81,7 +84,7 @@ export const MenuSideBar: FC = () => {
         ${styles.menuSideBar__copyrightContainer}
         ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
       ` }>
-        Cheems © 2023.
+        { t('copyright_section_title') }
       </div>
     </aside>
   )

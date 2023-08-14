@@ -1,6 +1,6 @@
 {
-  "dropdown_button_title": "Sort videos",
-  "dropdown_explanation_title": "Sort videos",
+  "dropdown_sort_button_title": "Sorting by {{criteria}}",
+  "dropdown_explanation_title": "Sort by {{criteria}}",
   "latest_entries_option": "Latest",
   "most_viewed_entries_option": "Most viewed",
   "oldest_entries_option": "Oldest"

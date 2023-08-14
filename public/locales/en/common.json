@@ -1,3 +1,4 @@
 {
-  "paginated_gallery_videos_count_title": "{{videosNumber}} videos"
+  "paginated_gallery_videos_count_title": "{{videosNumber}} videos",
+  "floating_menu_button_title": "Menu",
 }

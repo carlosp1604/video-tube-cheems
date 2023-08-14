@@ -29,7 +29,15 @@ export const AppMenu: FC = () => {
 
   if (session.status === 'loading') {
     userAvatar = (
-      <IconButton onClick={ undefined } icon={ <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/> } />
+      <IconButton
+        onClick={ undefined }
+        icon={
+          <AiOutlineLoading
+            className={ styles.appMenu__loadingMenuIcon }
+          />
+        }
+        title={ t('app_menu_loading_user_button_title') }
+      />
     )
   }
 
@@ -38,6 +46,7 @@ export const AppMenu: FC = () => {
       <IconButton
         onClick={ () => setLoginModalOpen(!loginModalOpen) }
         icon={ <CiUser className={ styles.appMenu__menuIcon } /> }
+        title={ t('app_menu_user_button_title') }
       />
     )
   }
@@ -121,7 +130,7 @@ export const AppMenu: FC = () => {
             <img
               className={ styles.appMenu__logoImage }
               src='/img/cheems-logo.png'
-              alt={ t('app_menu_logo_url_alt') ?? '' }
+              alt={ t('app_menu_logo_url_alt') }
             />
           </Link>
 
@@ -131,6 +140,7 @@ export const AppMenu: FC = () => {
               onSearch={ onSearch }
               expandable={ true }
               placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
+              iconTitle={ t('app_menu_search_button_title') }
             />
             { userAvatar }
           </div>

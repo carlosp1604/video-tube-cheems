@@ -69,6 +69,20 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
           value: 'expected-240p-url.mp4',
         },
       ],
+      translations: [
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'en',
+              value: 'Some expected english title',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'en',
+        },
+      ],
     }
 
     jest.spyOn(VideoComponentDtoTranslator, 'fromApplicationDto').mockReturnValueOnce({
@@ -90,13 +104,7 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
   })
 
   it('should translate data correctly', () => {
-    const componentDto = PostComponentDtoTranslator.fromApplicationDto(
-      postApplicationDto,
-      1,
-      1,
-      1,
-      'es'
-    )
+    const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'es')
 
     expect(componentDto).toStrictEqual({
       actors: [
@@ -106,7 +114,6 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
           name: 'expected-actor-name',
         },
       ],
-      comments: 1,
       date: '4 jul 2023',
       description: 'expected-post-description',
       id: 'expected-post-id',
@@ -115,7 +122,6 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
         imageUrl: 'expected-producer-image-url',
         name: 'expected-producer-name',
       },
-      reactions: 1,
       tags: [
         {
           id: 'expected-tag-id',
@@ -137,7 +143,6 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
           },
         ],
       },
-      views: 1,
     })
   })
 
@@ -147,13 +152,7 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
       producer: null,
     }
 
-    const componentDto = PostComponentDtoTranslator.fromApplicationDto(
-      postApplicationDto,
-      1,
-      1,
-      1,
-      'es'
-    )
+    const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'es')
 
     expect(componentDto).toStrictEqual({
       actors: [
@@ -163,12 +162,10 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
           name: 'expected-actor-name',
         },
       ],
-      comments: 1,
       date: '4 jul 2023',
       description: 'expected-post-description',
       id: 'expected-post-id',
       producer: null,
-      reactions: 1,
       tags: [
         {
           id: 'expected-tag-id',
@@ -190,7 +187,55 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
           },
         ],
       },
-      views: 1,
+    })
+  })
+
+  describe('translations', () => {
+    describe('translations for title field', () => {
+      it('should set the correct translation if title translation exists', () => {
+        const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'en')
+
+        expect(componentDto.title).toStrictEqual('Some expected english title')
+      })
+
+      it('should set the default title if translation does not exist', () => {
+        const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'es')
+
+        expect(componentDto.title).toStrictEqual('expected-post-title')
+      })
+    })
+
+    describe('translations for description field', () => {
+      beforeEach(() => {
+        postApplicationDto = {
+          ...postApplicationDto,
+          translations: [
+            {
+              translations: [
+                {
+                  createdAt: nowDate.toISO(),
+                  language: 'en',
+                  value: 'Some expected english description',
+                  translatableId: 'expected-post-id',
+                  field: 'description',
+                },
+              ],
+              language: 'en',
+            },
+          ],
+        }
+      })
+      it('should set the correct translation if description translation exists', () => {
+        const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'en')
+
+        expect(componentDto.description).toStrictEqual('Some expected english description')
+      })
+
+      it('should set the default description if translation does not exist', () => {
+        const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'es')
+
+        expect(componentDto.description).toStrictEqual('expected-post-description')
+      })
     })
   })
 })

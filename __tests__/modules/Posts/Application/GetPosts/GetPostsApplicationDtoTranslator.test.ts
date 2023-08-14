@@ -50,6 +50,20 @@ describe('~/modules/Posts/Application/GetPosts/GetPostsApplicationDtoTranslator.
           },
           parentProducerId: 'expected-parent-producer-id',
         },
+        translations: [
+          {
+            translations: [
+              {
+                createdAt: nowDate.toISO(),
+                language: 'es',
+                value: 'Some expected post title',
+                translatableId: 'expected-post-id',
+                field: 'title',
+              },
+            ],
+            language: 'es',
+          },
+        ],
         publishedAt: nowDate.toISO(),
         title: 'expected-title',
         slug: 'expected-post-slug',
@@ -95,6 +109,20 @@ describe('~/modules/Posts/Application/GetPosts/GetPostsApplicationDtoTranslator.
           },
           publishedAt: nowDate.toISO(),
           title: 'expected-title',
+          translations: [
+            {
+              translations: [
+                {
+                  createdAt: nowDate.toISO(),
+                  language: 'es',
+                  value: 'Some expected post title',
+                  translatableId: 'expected-post-id',
+                  field: 'title',
+                },
+              ],
+              language: 'es',
+            },
+          ],
           slug: 'expected-post-slug',
         },
         postComments: 1,

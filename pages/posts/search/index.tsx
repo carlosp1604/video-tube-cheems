@@ -10,6 +10,7 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -21,6 +22,22 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
   }
 
   const locale = context.locale ?? 'en'
+
+  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
+    'all_producers',
+    'app_menu',
+    'menu',
+    'sorting_menu_dropdown',
+    'user_menu',
+    'carousel',
+    'post_card',
+    'user_signup',
+    'user_login',
+    'user_retrieve_password',
+    'pagination_bar',
+    'search',
+    'common',
+  ])
 
   const getPosts = bindings.get<GetPosts>('GetPosts')
 
@@ -36,11 +53,11 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     return {
       props: {
         posts: posts.posts.map((post) =>
-          // FIXME:
-          PostCardComponentDtoTranslator.fromApplication(post.post, post.postReactions, post.postComments, 0, locale)
+          PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
         ),
         title: search.toLocaleString(),
         postsNumber: posts.postsNumber,
+        ...i18nSSRConfig,
       },
     }
   } catch (exception: unknown) {

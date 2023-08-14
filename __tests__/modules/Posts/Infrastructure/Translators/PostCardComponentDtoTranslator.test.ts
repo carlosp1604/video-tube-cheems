@@ -50,9 +50,23 @@ describe('~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTransla
           value: 'expected-animation-url.mp4',
         },
       ],
+      translations: [
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'es',
+              value: 'Some expected spanish title',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'es',
+        },
+      ],
     }
 
-    jest.spyOn(DateService.prototype, 'formatAgoLike').mockReturnValueOnce('Hace 1 hora')
+    jest.spyOn(DateService.prototype, 'formatAgoLike').mockReturnValueOnce('Hoy')
     jest.spyOn(DateService.prototype, 'formatSecondsToHHMMSSFormat').mockReturnValueOnce('01:00:00')
   })
 
@@ -62,16 +76,14 @@ describe('~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTransla
       value: 'expected-animation-url.mp4',
     })
 
-    const translatedData = PostCardComponentDtoTranslator.fromApplication(
-      postWithProducerAndMetaDto, 1, 1, 1, 'es'
-    )
+    const translatedData = PostCardComponentDtoTranslator.fromApplication(postWithProducerAndMetaDto, 1, 'en')
 
     expect(translatedData).toStrictEqual({
       animation: {
         type: 'mp4',
         value: 'expected-animation-url.mp4',
       },
-      date: 'Hace 1 hora',
+      date: 'Hoy',
       duration: '01:00:00',
       id: 'expected-post-id',
       producer: {
@@ -110,16 +122,14 @@ describe('~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTransla
       ],
     }
 
-    const translatedData = PostCardComponentDtoTranslator.fromApplication(
-      postWithProducerAndMetaDto, 1, 1, 1, 'es'
-    )
+    const translatedData = PostCardComponentDtoTranslator.fromApplication(postWithProducerAndMetaDto, 1, 'en')
 
     expect(translatedData).toStrictEqual({
       animation: {
         type: 'mp4',
         value: 'expected-animation-url.mp4',
       },
-      date: 'Hace 1 hora',
+      date: 'Hoy',
       duration: '01:00:00',
       id: 'expected-post-id',
       producer: {
@@ -158,16 +168,14 @@ describe('~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTransla
       ],
     }
 
-    const translatedData = PostCardComponentDtoTranslator.fromApplication(
-      postWithProducerAndMetaDto, 1, 1, 1, 'es'
-    )
+    const translatedData = PostCardComponentDtoTranslator.fromApplication(postWithProducerAndMetaDto, 1, 'en')
 
     expect(translatedData).toStrictEqual({
       animation: {
         type: 'mp4',
         value: 'expected-animation-url.mp4',
       },
-      date: 'Hace 1 hora',
+      date: 'Hoy',
       duration: '',
       id: 'expected-post-id',
       producer: {
@@ -204,13 +212,11 @@ describe('~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTransla
 
     jest.spyOn(PostAnimationDtoTranslator, 'fromApplication').mockReturnValueOnce(null)
 
-    const translatedData = PostCardComponentDtoTranslator.fromApplication(
-      postWithProducerAndMetaDto, 1, 1, 1, 'es'
-    )
+    const translatedData = PostCardComponentDtoTranslator.fromApplication(postWithProducerAndMetaDto, 1, 'en')
 
     expect(translatedData).toStrictEqual({
       animation: null,
-      date: 'Hace 1 hora',
+      date: 'Hoy',
       duration: '01:00:00',
       id: 'expected-post-id',
       producer: null,
@@ -218,6 +224,20 @@ describe('~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTransla
       thumb: 'expected-thumb-url',
       title: 'expected-post-title',
       views: 1,
+    })
+  })
+
+  describe('title translation', () => {
+    it('should set the correct title if title translation exists', () => {
+      const translatedData = PostCardComponentDtoTranslator.fromApplication(postWithProducerAndMetaDto, 1, 'es')
+
+      expect(translatedData.title).toStrictEqual('Some expected spanish title')
+    })
+
+    it('should set the default title if title translation does not exist', () => {
+      const translatedData = PostCardComponentDtoTranslator.fromApplication(postWithProducerAndMetaDto, 1, 'en')
+
+      expect(translatedData.title).toStrictEqual('expected-post-title')
     })
   })
 })

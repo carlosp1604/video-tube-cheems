@@ -4,9 +4,10 @@ import styles from './IconButton.module.scss'
 interface Props {
   onClick: (() => void) | undefined
   icon: ReactElement
+  title: string
 }
 
-export const IconButton: FC<Props> = ({ onClick, icon }) => {
+export const IconButton: FC<Props> = ({ onClick, icon, title }) => {
   return (
     <button
       className={ styles.iconButton__button }
@@ -15,6 +16,7 @@ export const IconButton: FC<Props> = ({ onClick, icon }) => {
           onClick()
         }
       } }
+      title={ title }
     >
       { icon }
     </button>

@@ -22,9 +22,6 @@ export interface PostComponentDto {
   readonly title: string
   readonly video: VideoComponentDto
   readonly date: string
-  readonly views: number
-  readonly reactions: number
-  readonly comments: number
   readonly description: string
   readonly actors: PostComponentDtoActorDto[]
   readonly tags: PostComponentDtoTagDto[]

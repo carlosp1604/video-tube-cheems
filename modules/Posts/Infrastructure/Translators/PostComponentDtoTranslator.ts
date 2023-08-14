@@ -8,13 +8,7 @@ import {
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostComponentDtoTranslator {
-  public static fromApplicationDto (
-    applicationDto: PostApplicationDto,
-    commentsNumber: number,
-    reactionsNumber: number,
-    postViews: number,
-    locale: string
-  ): PostComponentDto {
+  public static fromApplicationDto (applicationDto: PostApplicationDto, locale: string): PostComponentDto {
     const actors: PostComponentDtoActorDto[] = applicationDto.actors.map((actor) => ({
       name: actor.name,
       id: actor.id,
@@ -46,8 +40,10 @@ export class PostComponentDtoTranslator {
     let descriptionTranslation = applicationDto.description
 
     if (languageHasTranslations) {
-      const titleFieldTranslation = languageHasTranslations.translations.find((translation) => translation.field === 'title')
-      const descriptionFieldTranslation = languageHasTranslations.translations.find((translation) => translation.field === 'description')
+      const titleFieldTranslation =
+        languageHasTranslations.translations.find((translation) => translation.field === 'title')
+      const descriptionFieldTranslation =
+        languageHasTranslations.translations.find((translation) => translation.field === 'description')
 
       if (titleFieldTranslation) {
         titleTranslation = titleFieldTranslation.value
@@ -66,10 +62,7 @@ export class PostComponentDtoTranslator {
       producer,
       description: descriptionTranslation,
       date,
-      reactions: reactionsNumber,
       title: titleTranslation,
-      views: postViews,
-      comments: commentsNumber,
     }
   }
 }

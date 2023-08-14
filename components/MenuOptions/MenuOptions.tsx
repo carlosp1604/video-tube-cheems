@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const MenuOptions: FC<Props> = ({ menuOptions }) => {
-  const { t } = useTranslation('menu_options')
+  const { t } = useTranslation('menu')
 
   return (
     <div className={ styles.menuOptions__menuContainer }>

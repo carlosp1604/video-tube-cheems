@@ -9,6 +9,8 @@ import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import {
   PostWithProducerAndMetaApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'
+import { Translation } from '~/modules/Translations/Domain/Translation'
+import { TestTranslationBuilder } from '~/__tests__/modules/Translations/Domain/TestTranslationBuilder'
 
 describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator.ts', () => {
   let testPostBuilder: TestPostBuilder
@@ -48,6 +50,32 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
 
     metaCollection.addItem(postMeta, postMeta.type)
 
+    const translationsCollection = Collection.initializeCollection<Translation, string>()
+
+    translationsCollection.addItemFromPersistenceLayer(
+      new TestTranslationBuilder()
+        .withTranslatableId('expected-post-id')
+        .withTranslatableType('Post')
+        .withField('title')
+        .withValue('Some expected post title')
+        .withLanguage('es')
+        .withCreatedAt(nowDate)
+        .build(),
+      'expected-translation-key'
+    )
+
+    translationsCollection.addItemFromPersistenceLayer(
+      new TestTranslationBuilder()
+        .withTranslatableId('expected-post-id')
+        .withTranslatableType('Post')
+        .withField('title')
+        .withValue('Some expected post title en')
+        .withLanguage('en')
+        .withCreatedAt(nowDate)
+        .build(),
+      'expected-another-translation-key'
+    )
+
     testPostBuilder = new TestPostBuilder()
       .withId('expected-post-id')
       .withTitle('expected-title')
@@ -56,6 +84,7 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
       .withCreatedAt(nowDate)
       .withMeta(metaCollection)
       .withProducer(producerRelationship)
+      .withTranslations(translationsCollection)
       .withPublishedAt(nowDate)
   })
 
@@ -97,6 +126,32 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
       },
       publishedAt: nowDate.toISO(),
       title: 'expected-title',
+      translations: [
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'es',
+              value: 'Some expected post title',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'es',
+        },
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'en',
+              value: 'Some expected post title en',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'en',
+        },
+      ],
     })
   })
 
@@ -123,6 +178,32 @@ describe('~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplica
       producer: null,
       publishedAt: nowDate.toISO(),
       title: 'expected-title',
+      translations: [
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'es',
+              value: 'Some expected post title',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'es',
+        },
+        {
+          translations: [
+            {
+              createdAt: nowDate.toISO(),
+              language: 'en',
+              value: 'Some expected post title en',
+              translatableId: 'expected-post-id',
+              field: 'title',
+            },
+          ],
+          language: 'en',
+        },
+      ],
     })
   })
 })

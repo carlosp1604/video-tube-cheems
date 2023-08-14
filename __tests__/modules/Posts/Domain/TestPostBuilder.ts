@@ -9,6 +9,7 @@ import { PostReaction } from '~/modules/Posts/Domain/PostReaction'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 import { Post } from '~/modules/Posts/Domain/Post'
+import { Translation } from '~/modules/Translations/Domain/Translation'
 
 /**
  * Post model builder for tests
@@ -30,6 +31,7 @@ export class TestPostBuilder {
   private _reactions: Collection<PostReaction, PostReaction['userId']>
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
+  private _translations: Collection<Translation, string>
 
   constructor () {
     this.id = 'test-post-id'
@@ -48,6 +50,7 @@ export class TestPostBuilder {
     this._reactions = Collection.notLoaded()
     this._views = Collection.notLoaded()
     this._producer = Relationship.notLoaded()
+    this._translations = Collection.notLoaded()
   }
 
   public build (): Post {
@@ -67,7 +70,8 @@ export class TestPostBuilder {
       this._comments,
       this._reactions,
       this._views,
-      this._producer
+      this._producer,
+      this._translations
     )
   }
 
@@ -139,6 +143,12 @@ export class TestPostBuilder {
 
   public withActors (actors: Collection<Actor, Actor['id']>): TestPostBuilder {
     this._actors = actors
+
+    return this
+  }
+
+  public withTranslations (translations: Collection<Translation, string>): TestPostBuilder {
+    this._translations = translations
 
     return this
   }

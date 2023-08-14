@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
-import { VideoPage, VideoPageProps } from '~/components/pages/VideoPage/VideoPage'
+import { PostPage, VideoPageProps } from '~/components/pages/PostPage/PostPage'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
@@ -12,15 +12,15 @@ import {
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
   let slug = context.query.slug
 
-  const locale = context.locale ?? 'en'
-
   if (!slug) {
     return {
       notFound: true,
     }
   }
 
-  slug = slug.toString()
+  slug = String(slug)
+
+  const locale = context.locale ?? 'en'
 
   const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')
   const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPostsUseCase')
@@ -31,30 +31,21 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
 
     return {
       props: {
-        post: PostComponentDtoTranslator.fromApplicationDto(
-          postWithCount.post,
-          postWithCount.comments,
-          postWithCount.reactions,
-          postWithCount.views,
-          locale
-        ),
+        post: PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale),
         relatedPosts: relatedPosts.posts.map((relatedPost) => {
-          return PostCardComponentDtoTranslator.fromApplication(
-            relatedPost.post,
-            relatedPost.postReactions,
-            relatedPost.postComments,
-            relatedPost.postViews,
-            locale
-          )
+          return PostCardComponentDtoTranslator.fromApplication(relatedPost.post, relatedPost.postViews, locale)
         }),
+        postViewsNumber: postWithCount.views,
+        postReactionsNumber: postWithCount.reactions,
+        postCommentsNumber: postWithCount.comments,
         ...await serverSideTranslations(
           locale,
           [
             'user_menu',
             'app_menu',
-            'menu_options',
+            'menu',
             'post_comments',
-            'video_page',
+            'post_page',
             'post',
             'carousel',
             'post_card',
@@ -74,4 +65,4 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
   }
 }
 
-export default VideoPage
+export default PostPage

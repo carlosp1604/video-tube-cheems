@@ -20,6 +20,7 @@ export type RepositoryOptions =
   'translations' |
   'comments.user' |
   'reactions.user' |
+  'tags.translations' |
   'comments.childComments' |
   'producer.parentProducer' |
   'comments.childComments.user'

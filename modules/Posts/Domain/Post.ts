@@ -14,10 +14,11 @@ import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 import { PostCommentDomainException } from '~/modules/Posts/Domain/PostCommentDomainException'
 import { Translation } from '~/modules/Translations/Domain/Translation'
+import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
-export class Post {
+export class Post extends TranslatableModel {
   public readonly id: string
   public readonly title: string
   public readonly description: string
@@ -36,7 +37,6 @@ export class Post {
   private _reactions: Collection<PostReaction, PostReaction['userId']>
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
-  private _translations: Collection<Translation, string>
 
   public constructor (
     id: string,
@@ -57,6 +57,7 @@ export class Post {
     producer: Relationship<Producer | null> = Relationship.notLoaded(),
     translations: Collection<Translation, string> = Collection.notLoaded()
   ) {
+    super(translations)
     this.id = id
     this.title = title
     this.description = description
@@ -73,7 +74,6 @@ export class Post {
     this._reactions = reactions
     this._views = views
     this._producer = producer
-    this._translations = translations
   }
 
   public addMeta (postMeta: PostMeta): void {
@@ -277,19 +277,7 @@ export class Post {
   }
 
   get translations (): Map<Translation['language'], Translation[]> {
-    const translations = new Map<Translation['language'], Translation[]>()
-
-    this._translations.values.forEach((translation) => {
-      const languageTranslations = translations.get(translation.language)
-
-      if (languageTranslations) {
-        languageTranslations.push(translation)
-      } else {
-        translations.set(translation.language, [translation])
-      }
-    })
-
-    return translations
+    return this.modelTranslations
   }
 
   public setProducer (producer: Producer): void {

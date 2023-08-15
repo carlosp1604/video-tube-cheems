@@ -58,7 +58,7 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
             menuOptions={ [
               {
                 // TODO: This should be extracted to an object when grow up
-                translationKey: 'user_menu_profile_button',
+                title: t('user_menu_profile_button'),
                 isActive: false,
                 action: `/users/${user.username}`,
                 icon: <CiUser />,

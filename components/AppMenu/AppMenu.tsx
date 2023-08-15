@@ -140,7 +140,7 @@ export const AppMenu: FC = () => {
               onSearch={ onSearch }
               expandable={ true }
               placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
-              iconTitle={ t('app_menu_search_button_title') }
+              searchIconTitle={ t('app_menu_search_button_title') }
             />
             { userAvatar }
           </div>

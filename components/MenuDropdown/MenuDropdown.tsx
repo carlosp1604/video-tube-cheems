@@ -44,6 +44,5 @@ export const MenuDropdown: FC<Props> = ({ title, buttonIcon, isOpen, setIsOpen, 
         }) }
       </div>
     </div>
-
   )
 }

@@ -1,16 +1,20 @@
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './MenuOptions.module.scss'
 import Link from 'next/link'
-import { MenuOptionInterface } from '~/components/MenuOptions/MenuOptionInterface'
-import { useTranslation } from 'next-i18next'
+
+export interface MenuOptionComponentInterface {
+  isActive: boolean
+  title: string
+  action: string
+  icon: ReactElement
+  onClick: (() => void) | undefined
+}
 
 interface Props {
-  menuOptions: MenuOptionInterface[]
+  menuOptions: MenuOptionComponentInterface[]
 }
 
 export const MenuOptions: FC<Props> = ({ menuOptions }) => {
-  const { t } = useTranslation('menu')
-
   return (
     <div className={ styles.menuOptions__menuContainer }>
       { menuOptions.map((menuOption) => {
@@ -19,7 +23,7 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
             ${styles.menuOptions__menuItem}
             ${menuOption.isActive ? styles.menuOptions__menuItemActive : ''}
           ` }
-            key={ menuOption.translationKey }
+            key={ menuOption.title }
             onClick={ menuOption.onClick }
           >
             <Link
@@ -30,7 +34,7 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
                 { menuOption.icon }
               </span>
 
-              { t(menuOption.translationKey) }
+              { menuOption.title }
             </Link>
           </div>
         )

@@ -1,10 +1,16 @@
 import { BsBookmarks, BsCameraVideo, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
 import { TbClipboardCheck } from 'react-icons/tb'
-import { MenuOptionInterface } from '~/components/MenuOptions/MenuOptionInterface'
+import { ReactElement } from 'react'
 
-export const getMobileMenuOptions = (
-  pathname: string
-): MenuOptionInterface[] => {
+export interface MenuOptionInterface {
+  isActive: boolean
+  translationKey: string
+  action: string
+  icon: ReactElement
+  onClick: (() => void) | undefined
+}
+
+export const getMobileMenuOptions = (pathname: string): MenuOptionInterface[] => {
   return [
     {
       translationKey: 'menu_home_button_title',

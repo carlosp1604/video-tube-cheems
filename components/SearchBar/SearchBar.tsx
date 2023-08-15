@@ -8,10 +8,10 @@ interface Props {
   onSearch: () => void
   expandable: boolean
   placeHolderTitle: string
-  iconTitle: string
+  searchIconTitle: string
 }
 
-export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHolderTitle, iconTitle }) => {
+export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHolderTitle, searchIconTitle }) => {
   const [openSearchBar, setOpenSearchBar] = useState<boolean>(!expandable)
 
   const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
@@ -33,7 +33,7 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
           }
         } }
         icon={ <CiSearch /> }
-        title={ iconTitle }
+        title={ searchIconTitle }
       />
       <input
         className={ ` 

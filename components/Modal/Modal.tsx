@@ -59,7 +59,6 @@ export const Modal: FC<Props> = ({
                     onClick={ onClose }
                 />
             }
-
             { children }
           </section>
         </CSSTransition>

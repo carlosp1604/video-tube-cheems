@@ -3,25 +3,23 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { getMobileMenuOptions } from '~/components/AppMenu/MobileMenuOptions'
-import { MenuOptionInterface } from '~/components/MenuOptions/MenuOptionInterface'
 import { useTranslation } from 'next-i18next'
 import { BsList } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
+import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 
 interface MenuSideBarOptionProps {
-  menuOption: MenuOptionInterface
+  menuOption: MenuOptionComponentInterface
   menuOpen: boolean
 }
 
 const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen }) => {
-  const { t } = useTranslation('menu')
-
   return (
     <div className={ `
       ${styles.menuSideBar__menuItem}
       ${menuOption.isActive ? styles.menuSideBar__menuItem_active : ''}
       ` }
-       key={ menuOption.translationKey }
+       key={ menuOption.title }
        onClick={ menuOption.onClick }
     >
       <Link
@@ -38,7 +36,7 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
           ${styles.menuSideBar__menuItemText}
           ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
         ` }>
-          { t(menuOption.translationKey) }
+          { menuOption.title }
         </span>
       </Link>
     </div>
@@ -49,6 +47,14 @@ export const MenuSideBar: FC = () => {
   const { pathname } = useRouter()
 
   const { t } = useTranslation('menu')
+
+  // We translate the
+  const menuOptions: MenuOptionComponentInterface[] = getMobileMenuOptions(pathname).map((menuOption) => {
+    return {
+      ...menuOption,
+      title: t(menuOption.translationKey),
+    }
+  })
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
@@ -69,12 +75,12 @@ export const MenuSideBar: FC = () => {
         ${styles.menuSideBar__menuContainer}
         ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}
       ` }>
-        { getMobileMenuOptions(pathname).map((menuOption) => {
+        { menuOptions.map((menuOption) => {
           return (
             <MenuSideBarOption
               menuOption={ menuOption }
               menuOpen={ menuOpen }
-              key={ menuOption.translationKey }
+              key={ menuOption.title }
             />
           )
         }) }

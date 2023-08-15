@@ -137,7 +137,11 @@
 
   &__copyright-container {
     @apply border-base-700 border-t text-base-500 font-light text-sm
-      px-8 py-4 whitespace-pre-line;
+      px-8 py-4;
+
+    @screen md {
+      @apply whitespace-pre-line;
+    }
     grid-area: copyright;
   }
 

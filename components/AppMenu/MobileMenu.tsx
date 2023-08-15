@@ -1,10 +1,10 @@
 import { Dispatch, FC, SetStateAction } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
-import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
+import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useRouter } from 'next/router'
-import { getMobileMenuOptions } from '~/components/AppMenu/MobileMenuOptions'
 import { useTranslation } from 'next-i18next'
+import { getMobileMenuOptions } from '~/components/AppMenu/MobileMenuOptions'
 
 interface Props {
   openMenu: boolean
@@ -15,6 +15,14 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
   const { pathname } = useRouter()
 
   const { t } = useTranslation('menu')
+
+  // We translate the
+  const menuOptions: MenuOptionComponentInterface[] = getMobileMenuOptions(pathname).map((menuOption) => {
+    return {
+      ...menuOption,
+      title: t(menuOption.translationKey),
+    }
+  })
 
   return (
       <CSSTransition
@@ -52,7 +60,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                 />
               </div>
 
-              <MenuOptions menuOptions={ getMobileMenuOptions(pathname) } />
+              <MenuOptions menuOptions={ menuOptions } />
 
               {
                 /**

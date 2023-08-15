@@ -144,7 +144,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         translations: true,
         tags: {
           include: {
-            tag: true,
+            tag: {
+              include: {
+                translations: true,
+              },
+            },
           },
         },
       },

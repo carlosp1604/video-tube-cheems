@@ -41,6 +41,20 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
           name: 'expected-tag-name',
           imageUrl: 'expected-tag-image-url',
           description: null,
+          translations: [
+            {
+              translations: [
+                {
+                  translatableId: 'expected-tag-id',
+                  field: 'name',
+                  value: 'Expected tag english name',
+                  language: 'en',
+                  createdAt: nowDate.toISO(),
+                },
+              ],
+              language: 'en',
+            },
+          ],
         },
       ],
       meta: [
@@ -235,6 +249,20 @@ describe('~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator.
         const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'es')
 
         expect(componentDto.description).toStrictEqual('expected-post-description')
+      })
+    })
+
+    describe('translations for tags name', () => {
+      it('should set the correct translation if name translation exists for tag', () => {
+        const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'en')
+
+        expect(componentDto.tags[0].name).toStrictEqual('Expected tag english name')
+      })
+
+      it('should set the default description if translation does not exist', () => {
+        const componentDto = PostComponentDtoTranslator.fromApplicationDto(postApplicationDto, 'es')
+
+        expect(componentDto.tags[0].name).toStrictEqual('expected-tag-name')
       })
     })
   })

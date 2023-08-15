@@ -11,11 +11,11 @@ describe('~/helpers/Infrastructure/DateService.ts', () => {
     const nowDate = DateTime.now()
 
     const testData = [
-      [nowDate.minus({ hour: 1 }).toJSDate(), 'es', 'hoy'],
+      [nowDate.toJSDate(), 'es', 'hoy'],
       [nowDate.minus({ day: 1 }).toJSDate(), 'es', 'ayer'],
       [nowDate.minus({ month: 1 }).toJSDate(), 'es', 'el mes pasado'],
       [nowDate.minus({ year: 1 }).toJSDate(), 'es', 'el año pasado'],
-      [nowDate.minus({ hour: 1 }).toJSDate(), 'en', 'today'],
+      [nowDate.toJSDate(), 'en', 'today'],
       [nowDate.minus({ day: 1 }).toJSDate(), 'en', 'yesterday'],
       [nowDate.minus({ month: 1 }).toJSDate(), 'en', 'last month'],
       [nowDate.minus({ year: 1 }).toJSDate(), 'en', 'last year'],

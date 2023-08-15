@@ -46,7 +46,7 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
                 : ''}
             ` }
               onClick={ () => onChangeOption(option) }
-              title={ t('dropdown_sort_option_title', { criteria: t(activeOption.translationKey) }) }
+              title={ t('dropdown_sort_option_title', { criteria: t(option.translationKey) }) }
             >
               { t(option.translationKey) }
             </span>

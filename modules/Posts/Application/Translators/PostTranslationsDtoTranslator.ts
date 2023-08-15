@@ -4,7 +4,7 @@ import {
   TranslationApplicationDtoTranslator
 } from '~/modules/Translations/Application/TranslationApplicationDtoTranslator'
 
-export class PostTranslationsTranslatorDto {
+export class PostTranslationsDtoTranslator {
   public static fromDomain (post: Post): ModelTranslationsApplicationDto[] {
     const postTranslations: ModelTranslationsApplicationDto[] = []
 

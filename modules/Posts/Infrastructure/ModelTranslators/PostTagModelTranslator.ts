@@ -1,6 +1,10 @@
 import { DateTime } from 'luxon'
 import { PostTag as PrismaPostTagModel } from '@prisma/client'
 import { PostTag } from '~/modules/Posts/Domain/PostTag'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { Translation } from '~/modules/Translations/Domain/Translation'
+import { PostTagWithTranslations } from '~/modules/Posts/Infrastructure/PrismaModels/PostTagModel'
+import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
 
 export class PostTagModelTranslator {
   public static toDomain (
@@ -12,6 +16,18 @@ export class PostTagModelTranslator {
       deletedAt = DateTime.fromJSDate(prismaPostTagModel.deletedAt)
     }
 
+    const translationsCollection: Collection<Translation, string> = Collection.initializeCollection()
+
+    const postTagWithTranslations = prismaPostTagModel as PostTagWithTranslations
+
+    postTagWithTranslations.translations.forEach((translation) => {
+      const domainTranslation = TranslationModelTranslator.toDomain(translation)
+
+      translationsCollection.addItemFromPersistenceLayer(
+        domainTranslation, translation.language + translation.field
+      )
+    })
+
     return new PostTag(
       prismaPostTagModel.id,
       prismaPostTagModel.name,
@@ -19,7 +35,8 @@ export class PostTagModelTranslator {
       prismaPostTagModel.imageUrl,
       DateTime.fromJSDate(prismaPostTagModel.createdAt),
       DateTime.fromJSDate(prismaPostTagModel.updatedAt),
-      deletedAt
+      deletedAt,
+      translationsCollection
     )
   }
 

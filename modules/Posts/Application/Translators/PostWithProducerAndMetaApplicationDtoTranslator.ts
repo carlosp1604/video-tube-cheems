@@ -5,7 +5,7 @@ import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Applicatio
 import {
   PostWithProducerAndMetaApplicationDto
 } from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
-import { PostTranslationsTranslatorDto } from '~/modules/Posts/Application/Translators/PostTranslationsTranslatorDto'
+import { PostTranslationsDtoTranslator } from '~/modules/Posts/Application/Translators/PostTranslationsDtoTranslator'
 
 export class PostWithProducerAndMetaApplicationDtoTranslator {
   public static fromDomain (post: Post): PostWithProducerAndMetaApplicationDto {
@@ -30,7 +30,7 @@ export class PostWithProducerAndMetaApplicationDtoTranslator {
       title: post.title,
       producer,
       slug: post.slug,
-      translations: PostTranslationsTranslatorDto.fromDomain(post),
+      translations: PostTranslationsDtoTranslator.fromDomain(post),
     }
   }
 }

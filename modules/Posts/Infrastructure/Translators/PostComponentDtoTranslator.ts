@@ -15,10 +15,26 @@ export class PostComponentDtoTranslator {
       imageUrl: actor.imageUrl,
     }))
 
-    const tags: PostComponentDtoTagDto[] = applicationDto.tags.map((tag) => ({
-      name: tag.name,
-      id: tag.id,
-    }))
+    const tags: PostComponentDtoTagDto[] = applicationDto.tags.map((tag) => {
+      const languageHasTranslations =
+        tag.translations.find((translation) => translation.language === locale)
+
+      let nameTranslation = tag.name
+
+      if (languageHasTranslations) {
+        const nameFieldTranslation =
+          languageHasTranslations.translations.find((translation) => translation.field === 'name')
+
+        if (nameFieldTranslation) {
+          nameTranslation = nameFieldTranslation.value
+        }
+      }
+
+      return {
+        name: nameTranslation,
+        id: tag.id,
+      }
+    })
 
     let producer: PostComponentDtoProducerDto | null = null
 

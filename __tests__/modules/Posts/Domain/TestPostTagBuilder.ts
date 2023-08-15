@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
 import { PostTag } from '~/modules/Posts/Domain/PostTag'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { Translation } from '~/modules/Translations/Domain/Translation'
 
 /**
  * PostTag model builder for tests
@@ -12,6 +14,7 @@ export class TestPostTagBuilder {
   private createdAt: DateTime
   private updatedAt: DateTime
   private deletedAt: DateTime | null
+  private _translations: Collection<Translation, string>
 
   constructor () {
     this.id = 'test-actor-id'
@@ -21,6 +24,7 @@ export class TestPostTagBuilder {
     this.createdAt = DateTime.now()
     this.updatedAt = DateTime.now()
     this.deletedAt = null
+    this._translations = Collection.notLoaded()
   }
 
   public build (): PostTag {
@@ -31,7 +35,8 @@ export class TestPostTagBuilder {
       this.imageUrl,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt
+      this.deletedAt,
+      this._translations
     )
   }
 
@@ -67,6 +72,12 @@ export class TestPostTagBuilder {
 
   public withDeletedAt (deletedAt: DateTime | null): TestPostTagBuilder {
     this.deletedAt = deletedAt
+
+    return this
+  }
+
+  public withTranslations (translations: Collection<Translation, string>): TestPostTagBuilder {
+    this._translations = translations
 
     return this
   }

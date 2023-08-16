@@ -41,13 +41,13 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
 
   const handleScrollXRightClick = () => {
     if (scrollElement.current) {
-      scrollElement.current.scrollLeft += scrollElement.current.offsetWidth
+      scrollElement.current.scrollLeft += (scrollElement.current.offsetWidth - 170)
     }
   }
 
   const handleScrollXLeftClick = () => {
     if (scrollElement.current) {
-      scrollElement.current.scrollLeft -= scrollElement.current.offsetWidth
+      scrollElement.current.scrollLeft -= (scrollElement.current.offsetWidth - 170)
     }
   }
 

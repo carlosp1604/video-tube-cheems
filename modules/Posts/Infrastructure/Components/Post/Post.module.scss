@@ -90,7 +90,7 @@
   }
 
   &__extra-data-button-container {
-    @apply flex justify-center pb-0.5 mb-2 border-b border-base-900 -mt-4;
+    @apply flex justify-center -mt-4;
 
     &_open {
       @apply border-0 -mt-0;
@@ -102,8 +102,8 @@
   }
 
   &__extra-data-button {
-    @apply text-xs font-semibold transition-colors border-t border-l border-r
-      p-1 px-2 rounded-t-lg border-base-800 bg-base-900 -mb-0.5;
+    @apply text-xs font-semibold transition-colors p-1 px-2
+      rounded-t-lg bg-base-900 -mb-0.5;
 
     @screen md {
       @apply text-sm;
@@ -118,7 +118,7 @@
     }
 
     &_open {
-      @apply border-b rounded-b-lg rounded-t-none border-t-0 -mt-2;
+      @apply rounded-b-lg rounded-t-none -mt-2;
     }
   }
 

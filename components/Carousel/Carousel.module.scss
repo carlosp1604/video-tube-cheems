@@ -17,14 +17,18 @@
   }
 
   &__slider-item {
-    @apply flex-initial flex-shrink-0 basis-1/2;
+    @apply flex-initial flex-shrink-0 basis-60;
 
     @screen md {
       @apply basis-1/3;
     }
 
-    @screen lg {
+    @screen xl {
       @apply basis-1/4;
+    }
+
+    @screen 2xl {
+      @apply basis-1/5;
     }
   }
 

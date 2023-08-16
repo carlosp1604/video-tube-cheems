@@ -48,7 +48,6 @@ export const MenuSideBar: FC = () => {
 
   const { t } = useTranslation('menu')
 
-  // We translate the
   const menuOptions: MenuOptionComponentInterface[] = getMobileMenuOptions(pathname).map((menuOption) => {
     return {
       ...menuOption,
@@ -63,7 +62,10 @@ export const MenuSideBar: FC = () => {
       ${styles.menuSideBar__asideSlideOut}
       ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
     ` }>
-      <div className={ styles.menuSideBar__menuIcon }>
+      <div className={ `
+        ${styles.menuSideBar__menuIcon}
+        ${menuOpen ? styles.menuSideBar__menuIcon_open : ''}
+      ` }>
         <IconButton
           onClick={ () => setMenuOpen(!menuOpen) }
           icon={ <BsList /> }
@@ -90,7 +92,12 @@ export const MenuSideBar: FC = () => {
         ${styles.menuSideBar__copyrightContainer}
         ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
       ` }>
-        { t('copyright_section_title') }
+        <span className={ `
+          ${styles.menuSideBar__copyrightContainerText}
+          ${menuOpen ? styles.menuSideBar__copyrightContainerText_open : ''}
+        ` }>
+          { t('copyright_section_title') }
+        </span>
       </div>
     </aside>
   )

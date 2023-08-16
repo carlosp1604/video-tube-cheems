@@ -45,7 +45,7 @@ export const AppMenu: FC = () => {
     userAvatar = (
       <IconButton
         onClick={ () => setLoginModalOpen(!loginModalOpen) }
-        icon={ <CiUser className={ styles.appMenu__menuIcon } /> }
+        icon={ <CiUser /> }
         title={ t('app_menu_user_button_title') }
       />
     )
@@ -120,11 +120,7 @@ export const AppMenu: FC = () => {
     <>
       { userMenu }
       <LoginModal isOpen={ loginModalOpen } setIsOpen={ setLoginModalOpen }/>
-      <nav className={ styles.appMenu__layer }
-        onScroll={ () => {
-          console.log('scroll')
-        } }
-      >
+      <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
           <Link href='/'>
             <img
@@ -150,12 +146,12 @@ export const AppMenu: FC = () => {
         /**
          <div className={ styles.appMenu__utilLinksContainer }>
          <Link
-         href={ '/' }
-         title={ 'Live cams' }
-         className={ styles.appMenu__utilLink }
+           href={ '/' }
+           title={ 'Live cams' }
+           className={ styles.appMenu__utilLink }
          >
-         <BsCameraVideo />
-         Live cams
+           <BsCameraVideo />
+           Live cams
          </Link>
 
          <Link

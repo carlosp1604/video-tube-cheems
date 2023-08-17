@@ -1,5 +1,6 @@
 import { Knex } from 'knex'
 
+/* eslint max-len: 0 */
 export async function seed (knex: Knex): Promise<void> {
   // Deletes ALL existing entries
   await knex('post_reactions').del()

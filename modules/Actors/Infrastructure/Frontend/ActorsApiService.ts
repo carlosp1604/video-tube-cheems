@@ -1,11 +1,10 @@
-import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
-import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
 import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export class ActorsApiService {
   public async getActors (

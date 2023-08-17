@@ -66,7 +66,7 @@ export const PostCard: FC<Props> = ({
       <Link href={ '/' } title={ post.producer.name }>
         <Image
           className={ styles.postCard__producerLogo }
-          src={ post.producer?.imageUrl ?? '' }
+          src={ post.producer.imageUrl }
           alt={ post.producer?.name }
           width={ 0 }
           height={ 0 }
@@ -85,6 +85,38 @@ export const PostCard: FC<Props> = ({
       >
         <Avatar
           name={ post.producer.name }
+          size={ '40' }
+          round={ true }
+        />
+      </Link>
+    )
+  }
+
+  if (post.producer === null && post.actor !== null && post.actor.imageUrl !== null && showProducerImage) {
+    producerImage = (
+      // TODO: FIX THIS WHEN ACTOR PAGE IS READY
+      <Link href={ '/' } title={ post.actor.name }>
+        <Image
+          className={ styles.postCard__producerLogo }
+          src={ post.actor.imageUrl }
+          alt={ post.actor?.name }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
+        />
+      </Link>
+    )
+  }
+
+  if (post.producer === null && post.actor && post.actor.imageUrl === null && showProducerImage) {
+    producerImage = (
+      <Link
+        className={ styles.postCard__producerAvatarContainer }
+        href={ '/' }
+        title={ post.actor.name }
+      >
+        <Avatar
+          name={ post.actor.name }
           size={ '40' }
           round={ true }
         />
@@ -120,7 +152,10 @@ export const PostCard: FC<Props> = ({
             { post.producer !== null
               ? <span className={ styles.postCard__producerName }>{ post.producer.name }</span>
               : '' }
-            { post.producer !== null ? <BsDot /> : '' }
+            { post.producer === null && post.actor !== null
+              ? <span className={ styles.postCard__producerName }>{ post.actor.name }</span>
+              : '' }
+            { post.producer !== null || post.actor !== null ? <BsDot /> : '' }
             { t('post_card_post_views', { views: post.views }) }
             <BsDot className={ styles.commentCard__separatorIcon }/>
             { post.date }

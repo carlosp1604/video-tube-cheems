@@ -13,6 +13,7 @@ import { User } from '~/modules/Auth/Domain/User'
 export type RepositoryOptions =
   'meta' |
   'tags' |
+  'actor' |
   'actors' |
   'producer' |
   'comments' |

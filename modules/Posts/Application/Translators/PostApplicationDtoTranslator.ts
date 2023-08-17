@@ -29,6 +29,9 @@ export class PostApplicationDtoTranslator {
         : null,
       slug: post.slug,
       translations: PostTranslationsDtoTranslator.fromDomain(post),
+      actor: post.actor !== null
+        ? ActorApplicationDtoTranslator.fromDomain(post.actor)
+        : null,
     }
   }
 }

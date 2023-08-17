@@ -32,6 +32,8 @@ export class PrismaUserModelTranslator {
           PrismaVerificationTokenModelTranslator.toDomain(prismaUserModelWithVerificationToken.verificationToken)
 
         verificationTokenRelationship = Relationship.initializeRelation(domainVerificationToken)
+      } else {
+        verificationTokenRelationship = Relationship.initializeRelation(null)
       }
     }
 

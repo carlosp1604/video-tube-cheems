@@ -140,6 +140,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             actor: true,
           },
         },
+        actor: true,
         meta: true,
         translations: true,
         tags: {
@@ -163,6 +164,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         'meta',
         'producer',
         'actors',
+        'actor',
         'tags',
         'translations',
       ]),
@@ -278,6 +280,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     let includes: Prisma.PostInclude | null | undefined = {
       meta: true,
       producer: true,
+      actor: true,
       translations: true,
     }
 
@@ -331,6 +334,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         post: PostModelTranslator.toDomain(post, [
           'meta',
           'producer',
+          'actor',
           'translations',
         ]),
         postReactions: post._count.reactions,
@@ -521,10 +525,15 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     }
 
     let whereProducerId: string | Prisma.StringNullableFilter | null | undefined
+    let whereActorId: string | Prisma.StringNullableFilter | null | undefined
     let whereActors: Prisma.PostActorListRelationFilter | undefined
 
     if (post.producerId !== null) {
       whereProducerId = post.producerId
+    }
+
+    if (post.actorId !== null) {
+      whereActorId = post.actorId
     }
 
     if (post.actors.length > 0) {
@@ -551,7 +560,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         OR: [
           { producerId: whereProducerId },
           { actors: whereActors },
+          { actorId: whereActorId },
         ],
+        id: {
+          not: post.id,
+        },
       },
       include: {
         _count: {
@@ -563,8 +576,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         },
         meta: true,
         producer: true,
+        actor: true,
         translations: true,
       },
+      // TODO: Fix this hardcoded number
       take: 50,
     })
 
@@ -574,6 +589,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           'meta',
           'producer',
           'translations',
+          'actor',
         ]),
         postReactions: post._count.reactions,
         postComments: post._count.comments,

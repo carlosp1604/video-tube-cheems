@@ -1,7 +1,7 @@
-import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
 import {
   GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export class RepliesApiService {
   public async create (

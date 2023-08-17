@@ -9,6 +9,7 @@ export async function up (knex: Knex): Promise<void> {
       table.string('type', 20).notNullable()
       table.timestamp('expires_at').notNullable()
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
+      table.index(['token', 'user_email'])
     })
 }
 

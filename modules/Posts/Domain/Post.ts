@@ -24,6 +24,7 @@ export class Post extends TranslatableModel {
   public readonly description: string
   public readonly slug: string
   public readonly producerId: string | null
+  public readonly actorId: string | null
   public readonly createdAt: DateTime
   public updatedAt: DateTime
   public deletedAt: DateTime | null
@@ -37,6 +38,7 @@ export class Post extends TranslatableModel {
   private _reactions: Collection<PostReaction, PostReaction['userId']>
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
+  private _actor: Relationship<Actor | null>
 
   public constructor (
     id: string,
@@ -44,6 +46,7 @@ export class Post extends TranslatableModel {
     description: string,
     slug: string,
     producerId: string | null,
+    actorId: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null,
@@ -55,7 +58,8 @@ export class Post extends TranslatableModel {
     reactions: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded(),
     views: Collection<PostView, PostView['id']> = Collection.notLoaded(),
     producer: Relationship<Producer | null> = Relationship.notLoaded(),
-    translations: Collection<Translation, string> = Collection.notLoaded()
+    translations: Collection<Translation, string> = Collection.notLoaded(),
+    actor: Relationship<Actor | null> = Relationship.notLoaded()
   ) {
     super(translations)
     this.id = id
@@ -63,6 +67,7 @@ export class Post extends TranslatableModel {
     this.description = description
     this.slug = slug
     this.producerId = producerId
+    this.actorId = actorId
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
@@ -74,6 +79,7 @@ export class Post extends TranslatableModel {
     this._reactions = reactions
     this._views = views
     this._producer = producer
+    this._actor = actor
   }
 
   public addMeta (postMeta: PostMeta): void {
@@ -274,6 +280,10 @@ export class Post extends TranslatableModel {
 
   get producer (): Producer | null {
     return this._producer.value ?? null
+  }
+
+  get actor (): Actor | null {
+    return this._actor.value ?? null
   }
 
   get translations (): Map<Translation['language'], Translation[]> {

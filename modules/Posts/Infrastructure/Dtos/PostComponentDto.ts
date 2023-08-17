@@ -26,4 +26,5 @@ export interface PostComponentDto {
   readonly actors: PostComponentDtoActorDto[]
   readonly tags: PostComponentDtoTagDto[]
   readonly producer: PostComponentDtoProducerDto | null
+  readonly actor: PostComponentDtoActorDto | null
 }

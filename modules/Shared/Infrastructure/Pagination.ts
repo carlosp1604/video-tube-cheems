@@ -1,6 +1,6 @@
 export const minPerPage = 10
 export const maxPerPage = 256
-export const defaultPerPage = 20
+export const defaultPerPage = 12
 
 export const calculatePagesNumber = (itemsNumber: number, perPage: number): number => {
   if (Number.isInteger(itemsNumber / perPage)) {

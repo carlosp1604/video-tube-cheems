@@ -46,6 +46,16 @@ export class PostComponentDtoTranslator {
       }
     }
 
+    let actor: PostComponentDtoActorDto | null = null
+
+    if (applicationDto.actor !== null) {
+      actor = {
+        name: applicationDto.actor.name,
+        id: applicationDto.actor.id,
+        imageUrl: applicationDto.actor.imageUrl,
+      }
+    }
+
     const video = VideoComponentDtoTranslator.fromApplicationDto(applicationDto)
 
     const date = (new DateService()).formatDateToDateMedFromIso(applicationDto.publishedAt, locale)
@@ -79,6 +89,7 @@ export class PostComponentDtoTranslator {
       description: descriptionTranslation,
       date,
       title: titleTranslation,
+      actor,
     }
   }
 }

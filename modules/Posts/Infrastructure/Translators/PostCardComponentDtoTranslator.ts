@@ -1,5 +1,6 @@
 import { PostAnimationDtoTranslator } from './PostAnimationDtoTranslator'
 import {
+  ActorPostCardComponentDto,
   PostCardComponentDto,
   ProducerPostCardComponentDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
@@ -47,6 +48,16 @@ export class PostCardComponentDtoTranslator {
       }
     }
 
+    let actor: ActorPostCardComponentDto | null = null
+
+    if (applicationDto.actor !== null) {
+      actor = {
+        id: applicationDto.actor.id,
+        imageUrl: applicationDto.actor.imageUrl,
+        name: applicationDto.actor.name,
+      }
+    }
+
     let titleTranslation = applicationDto.title
     const languageHasTranslations = applicationDto.translations.find((translation) => translation.language === locale)
 
@@ -68,6 +79,7 @@ export class PostCardComponentDtoTranslator {
       views: postViews,
       duration: formattedDuration,
       slug: applicationDto.slug,
+      actor,
     }
   }
 }

@@ -1,4 +1,3 @@
-import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
@@ -6,6 +5,7 @@ import {
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
 import { Reaction } from '~/modules/Posts/Domain/PostReaction'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export class PostsApiService {
   public async getPosts (

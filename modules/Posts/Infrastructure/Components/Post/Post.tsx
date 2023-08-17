@@ -5,7 +5,7 @@ import {
   BsChatSquareText, BsChevronDown, BsChevronUp,
   BsDownload,
   BsHeart,
-  BsMegaphone
+  BsMegaphone, BsX
 } from 'react-icons/bs'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
@@ -86,96 +86,6 @@ export const Post: FC<Props> = ({
         })
     }
   }, [status])
-
-  let producerSection: ReactElement | null = null
-  let actorsSection: ReactElement[] | null = null
-
-  if (post.producer !== null) {
-    let producerAvatarSection: ReactElement
-
-    if (post.producer.imageUrl !== null) {
-      producerAvatarSection = (
-        <Image
-          alt={ post.producer.name }
-          className={ styles.post__producerLogo }
-          src={ post.producer.imageUrl }
-          width={ 0 }
-          height={ 0 }
-          sizes={ '100vw' }
-        />
-      )
-    } else {
-      producerAvatarSection = (
-        <Avatar
-          round={ true }
-          size={ '40' }
-          name={ post.producer.name }
-        />
-      )
-    }
-    producerSection = (
-      <Link
-        href={ '/' }
-        className={ styles.post__producerItem }
-        title={ post.producer.name }
-      >
-        { producerAvatarSection }
-        { post.producer.name }
-      </Link>
-    )
-  }
-
-  if (post.actors.length > 0) {
-    actorsSection = post.actors.map((actor) => {
-      let avatarSection: ReactElement
-
-      if (actor.imageUrl !== null) {
-        avatarSection = (
-          <Image
-            className={ styles.post__actorLogo }
-            src={ actor.imageUrl }
-            alt={ actor.name }
-            width={ 0 }
-            height={ 0 }
-            sizes={ '100vw' }
-          />
-        )
-      } else {
-        avatarSection = (
-          <Avatar
-            round={ true }
-            size={ '40' }
-            name={ actor.name }
-          />
-        )
-      }
-
-      return (
-        <Link
-          href={ '/' }
-          className={ styles.post__actorsItemLink }
-          key={ actor.id }
-        >
-          { avatarSection }
-          { actor.name }
-        </Link>
-      )
-    })
-  }
-
-  let commentsComponent: ReactElement | null = null
-
-  if (commentsOpen) {
-    commentsComponent = (
-      <PostComments
-        key={ post.id }
-        postId={ post.id }
-        setIsOpen={ setCommentsOpen }
-        setCommentsNumber={ setCommentsNumber }
-        commentsNumber={ commentsNumber }
-      />
-    )
-  }
 
   const onClickReactButton = async () => {
     if (status !== 'authenticated') {
@@ -268,6 +178,132 @@ export const Post: FC<Props> = ({
     }
   }
 
+  let producerSection: ReactElement | null = null
+  let actorSection: ReactElement | null = null
+  let actorsSection: ReactElement[] | null = null
+
+  if (post.producer !== null) {
+    let producerAvatarSection: ReactElement
+
+    if (post.producer.imageUrl !== null) {
+      producerAvatarSection = (
+        <Image
+          alt={ post.producer.name }
+          className={ styles.post__producerLogo }
+          src={ post.producer.imageUrl }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
+        />
+      )
+    } else {
+      producerAvatarSection = (
+        <Avatar
+          round={ true }
+          size={ '40' }
+          name={ post.producer.name }
+        />
+      )
+    }
+    producerSection = (
+      <Link
+        href={ '/' }
+        className={ styles.post__producerItem }
+        title={ post.producer.name }
+      >
+        { producerAvatarSection }
+        { post.producer.name }
+      </Link>
+    )
+  }
+
+  if (post.actor !== null) {
+    let actorAvatarSection: ReactElement
+
+    if (post.actor.imageUrl !== null) {
+      actorAvatarSection = (
+        <Image
+          alt={ post.actor.name }
+          className={ styles.post__producerLogo }
+          src={ post.actor.imageUrl }
+          width={ 0 }
+          height={ 0 }
+          sizes={ '100vw' }
+        />
+      )
+    } else {
+      actorAvatarSection = (
+        <Avatar
+          round={ true }
+          size={ '40' }
+          name={ post.actor.name }
+        />
+      )
+    }
+    actorSection = (
+      <Link
+        href={ '/' }
+        className={ styles.post__producerItem }
+        title={ post.actor.name }
+      >
+        { actorAvatarSection }
+        { post.actor.name }
+      </Link>
+    )
+  }
+
+  if (post.actors.length > 0) {
+    actorsSection = post.actors.map((actor) => {
+      let avatarSection: ReactElement
+
+      if (actor.imageUrl !== null) {
+        avatarSection = (
+          <Image
+            className={ styles.post__actorLogo }
+            src={ actor.imageUrl }
+            alt={ actor.name }
+            width={ 0 }
+            height={ 0 }
+            sizes={ '100vw' }
+          />
+        )
+      } else {
+        avatarSection = (
+          <Avatar
+            round={ true }
+            size={ '40' }
+            name={ actor.name }
+          />
+        )
+      }
+
+      return (
+        <Link
+          href={ '/' }
+          className={ styles.post__actorsItemLink }
+          key={ actor.id }
+        >
+          { avatarSection }
+          { actor.name }
+        </Link>
+      )
+    })
+  }
+
+  let commentsComponent: ReactElement | null = null
+
+  if (commentsOpen) {
+    commentsComponent = (
+      <PostComments
+        key={ post.id }
+        postId={ post.id }
+        setIsOpen={ setCommentsOpen }
+        setCommentsNumber={ setCommentsNumber }
+        commentsNumber={ commentsNumber }
+      />
+    )
+  }
+
   return (
     <div className={ styles.post__container }>
       <div className={ styles.post__videoContainer } >
@@ -342,7 +378,14 @@ export const Post: FC<Props> = ({
           </span>
         </div>
 
-        { producerSection }
+        <div className={ styles.post__producersContainer }>
+          { producerSection }
+          { producerSection && actorSection
+            ? <BsX className={ styles.post__producersIcon }/>
+            : null
+          }
+          { actorSection }
+        </div>
 
         <div className={ `
           ${styles.post__postExtraData}

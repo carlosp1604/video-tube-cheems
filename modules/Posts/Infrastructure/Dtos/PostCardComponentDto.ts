@@ -6,6 +6,12 @@ export interface ProducerPostCardComponentDto {
   readonly imageUrl: string | null
 }
 
+export interface ActorPostCardComponentDto {
+  readonly id: string
+  readonly name: string
+  readonly imageUrl: string | null
+}
+
 export interface PostCardComponentDto {
   readonly id: string
   readonly slug: string
@@ -15,5 +21,6 @@ export interface PostCardComponentDto {
   readonly views: number
   readonly date: string
   readonly producer: ProducerPostCardComponentDto | null
+  readonly actor: ActorPostCardComponentDto | null
   readonly duration: string
 }

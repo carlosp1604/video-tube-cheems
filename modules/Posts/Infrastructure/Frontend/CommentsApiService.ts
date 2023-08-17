@@ -1,5 +1,5 @@
 import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
-import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export class CommentsApiService {
   public async create (

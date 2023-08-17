@@ -7,8 +7,7 @@ import {
   PostCommentComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCommentComponentDtoTranslator'
 import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
-import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
-import { calculatePagesNumber } from '~/modules/Shared/Infrastructure/Pagination'
+import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'

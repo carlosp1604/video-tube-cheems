@@ -7,6 +7,7 @@ import { PostCommentModelTranslator } from './PostCommentModelTranslator'
 import { PostReactionModelTranslator } from './PostReactionModelTranslator'
 import { Post as PostPrismaModel } from '@prisma/client'
 import {
+  PostWithActor,
   PostWithActors,
   PostWithComments,
   PostWithMeta,
@@ -49,6 +50,7 @@ export class PostModelTranslator {
     let commentsCollection: Collection<PostComment, PostComment['id']> = Collection.notLoaded()
     let reactionsCollection: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded()
     let producerRelationship: Relationship<Producer | null> = Relationship.notLoaded()
+    let actorRelationship: Relationship<Actor | null> = Relationship.notLoaded()
     let translationsCollection: Collection<Translation, string> =
       Collection.notLoaded()
 
@@ -121,6 +123,18 @@ export class PostModelTranslator {
       }
     }
 
+    if (options.includes('actor')) {
+      const postWithActor = prismaPostModel as PostWithActor
+
+      if (postWithActor.actor !== null) {
+        const actorDomain = ActorModelTranslator.toDomain(postWithActor.actor)
+
+        actorRelationship = Relationship.initializeRelation(actorDomain)
+      } else {
+        actorRelationship = Relationship.initializeRelation(null)
+      }
+    }
+
     if (options.includes('translations')) {
       const postWithTranslations = prismaPostModel as PostWithTranslations
 
@@ -141,6 +155,7 @@ export class PostModelTranslator {
       prismaPostModel.description,
       prismaPostModel.slug,
       prismaPostModel.producerId,
+      prismaPostModel.actorId,
       DateTime.fromJSDate(prismaPostModel.createdAt),
       DateTime.fromJSDate(prismaPostModel.updatedAt),
       deletedAt,
@@ -152,7 +167,8 @@ export class PostModelTranslator {
       reactionsCollection,
       Collection.notLoaded(),
       producerRelationship,
-      translationsCollection
+      translationsCollection,
+      actorRelationship
     )
   }
 
@@ -163,6 +179,7 @@ export class PostModelTranslator {
       slug: post.slug,
       title: post.title,
       producerId: post.producerId,
+      actorId: post.actorId,
       publishedAt: post.publishedAt?.toJSDate() ?? null,
       createdAt: post.createdAt.toJSDate(),
       deletedAt: post.deletedAt?.toJSDate() ?? null,

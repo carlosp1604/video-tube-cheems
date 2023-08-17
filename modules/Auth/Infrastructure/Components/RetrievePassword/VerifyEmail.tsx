@@ -5,8 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import {
-  USER_CANNOT_SEND_VERIFICATION_EMAIL,
-  USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
+  USER_CANNOT_SEND_VERIFICATION_EMAIL, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
   USER_TOKEN_ALREADY_ISSUED
 } from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
@@ -46,16 +45,16 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
                 break
               }
 
-              case USER_EMAIL_ALREADY_REGISTERED: {
-                toast.error(t('verify_email_email_not_available_message'))
-                break
-              }
-
               default: {
                 toast.error(t('verify_email_server_error_message'))
                 break
               }
             }
+            break
+          }
+
+          case 404: {
+            toast.error(t('change_password_user_not_found_message', { email }))
             break
           }
 

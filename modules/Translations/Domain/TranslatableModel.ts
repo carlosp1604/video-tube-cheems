@@ -4,7 +4,7 @@ import { Translation } from '~/modules/Translations/Domain/Translation'
 export abstract class TranslatableModel {
   private _translations: Collection<Translation, string>
 
-  public constructor (translations: Collection<Translation, string> = Collection.notLoaded()) {
+  protected constructor (translations: Collection<Translation, string> = Collection.notLoaded()) {
     this._translations = translations
   }
 

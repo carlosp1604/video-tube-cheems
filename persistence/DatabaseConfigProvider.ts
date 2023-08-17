@@ -20,7 +20,7 @@ export class DatabaseConfigProvider {
   }
 
   public getHost (): string {
-    return this.parsetHost()
+    return this.parseHost()
   }
 
   public getDatabase (): string {
@@ -43,7 +43,7 @@ export class DatabaseConfigProvider {
     return this.parseClient()
   }
 
-  private parsetHost (): string {
+  private parseHost (): string {
     const host = env.DATABASE_HOST
 
     if (!host) {

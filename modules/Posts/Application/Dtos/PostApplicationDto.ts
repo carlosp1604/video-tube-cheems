@@ -11,6 +11,7 @@ export interface PostApplicationDto {
   readonly slug: string
   readonly publishedAt: string
   readonly producer: ProducerApplicationDto | null
+  readonly actor: ActorApplicationDto | null
   readonly meta: MetaApplicationDto[]
   readonly actors: ActorApplicationDto[]
   readonly tags: TagApplicationDto[]

@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router'
 import { FC, useEffect, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { calculatePagesNumber } from '~/modules/Shared/Infrastructure/Pagination'
-import { defaultPerPage } from '~/modules/Shared/Domain/Pagination'
+import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
 import {
   PostCardComponentDtoTranslator

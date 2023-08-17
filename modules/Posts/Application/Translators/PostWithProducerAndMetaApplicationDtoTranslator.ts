@@ -6,6 +6,8 @@ import {
   PostWithProducerAndMetaApplicationDto
 } from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
 import { PostTranslationsDtoTranslator } from '~/modules/Posts/Application/Translators/PostTranslationsDtoTranslator'
+import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
+import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
 
 export class PostWithProducerAndMetaApplicationDtoTranslator {
   public static fromDomain (post: Post): PostWithProducerAndMetaApplicationDto {
@@ -13,6 +15,12 @@ export class PostWithProducerAndMetaApplicationDtoTranslator {
 
     if (post.producer !== null) {
       producer = ProducerApplicationDtoTranslator.fromDomain(post.producer)
+    }
+
+    let actor: ActorApplicationDto | null = null
+
+    if (post.actor !== null) {
+      actor = ActorApplicationDtoTranslator.fromDomain(post.actor)
     }
 
     const meta = post.meta.map((meta) => {
@@ -31,6 +39,7 @@ export class PostWithProducerAndMetaApplicationDtoTranslator {
       producer,
       slug: post.slug,
       translations: PostTranslationsDtoTranslator.fromDomain(post),
+      actor,
     }
   }
 }

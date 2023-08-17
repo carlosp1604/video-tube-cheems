@@ -1,7 +1,9 @@
 import { GetPostBySlugApplicationException } from './GetPostBySlugApplicationException'
 import { GetPostBySlugApplicationResponseDto } from './GetPostBySlugApplicationResponseDto'
 import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { GetPostBySlugApplicationRequest } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlugApplicationRequest'
+import {
+  GetPostBySlugApplicationRequest
+} from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlugApplicationRequest'
 import { PostApplicationDtoTranslator } from '~/modules/Posts/Application/Translators/PostApplicationDtoTranslator'
 
 export class GetPostBySlug {

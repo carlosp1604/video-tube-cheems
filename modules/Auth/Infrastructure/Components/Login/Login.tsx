@@ -36,7 +36,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       })
 
     if (result?.error) {
-      toast.error(t('sign_in_error_message'))
+      toast.error(t('login_error_message'))
     } else {
       onSuccessLogin()
     }

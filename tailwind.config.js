@@ -43,8 +43,14 @@ module.exports = {
         'bounce-short': 'bounce 0.3s ease-in-out 2',
       },
       colors: {
+        sidebar: {
+          background: '#28282B',
+          item: '#3b3c3f',
+          copyright: '#434349',
+        },
         body: '#1d1d1d',
         base: {
+          950: '#0c0a09',
           900: '#1C1917',
           800: '#292524',
           700: '#44403C',
@@ -107,10 +113,10 @@ module.exports = {
         'menu-dropdown',
         'video-comments',
         'comment-replies',
-        'modal-backdrop',
         'sidebar-menu',
         'app-menu',
         'mobile-menu',
+        'modal-backdrop',
       ]),
     },
   },

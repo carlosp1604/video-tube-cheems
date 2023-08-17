@@ -3,11 +3,11 @@
   "email_input_label": "Email",
   "email_input_placeholder": "Email",
   "forgot_password_button_title": "Forgot my password",
+  "login_error_message": "Incorrect Email/Password combination",
   "password_input_error_message": "Invalid password",
   "password_input_label": "Password",
   "password_input_placeholder": "Password",
   "sign_in_button_title": "Signup here",
-  "sign_in_error_message": "Incorrect Email/Password combination",
   "submit_button_title": "Sign In",
   "subtitle": "Sign in with your email and password",
   "title": "Login"

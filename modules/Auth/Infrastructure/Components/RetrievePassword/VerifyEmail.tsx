@@ -32,7 +32,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
-      const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
+      const result = await authApiService.verifyEmailForRecoverPassword(email, resendEmail)
 
       if (!result.ok) {
         switch (result.status) {

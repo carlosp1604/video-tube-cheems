@@ -2,50 +2,62 @@
   $parentBlock: &;
 
   &__aside-slide-out {
-    @apply hidden sticky top-0 h-screen bg-body w-[74px]
-      text-base-500;
-
-    &_open {
-      @apply w-auto bg-base-900;
-    }
+    @apply hidden;
 
     @screen lg {
-      @apply flex flex-col border-r-transparent;
-      grid-template-rows: auto 1fr auto;
+      @apply flex flex-col border-r-transparent sticky top-0
+        h-screen bg-body w-[74px] text-brand-200 duration-1000;
+
+      &_open {
+        @apply w-auto bg-sidebar-background;
+      }
+
+      &:hover, &:focus {
+        @apply bg-sidebar-background transition-colors delay-500
+          duration-1000;
+
+        #{$parentBlock}__menu-container {
+          @apply border-r-base-800 transition-all;
+        }
+
+        #{$parentBlock}__menu-icon-container {
+          @apply border-r border-b-transparent transition-all;
+        }
+      }
     }
   }
 
-  &__menu-icon {
-    @apply pl-3 bg-body pb-1 transition-colors border-base-800;
+  &__menu-section-container {
+    @apply flex flex-col flex-grow gap-x-2 overflow-y-scroll
+      scrollbar-hide;
+  }
+
+  &__menu-icon-container {
+    @apply sticky top-0 w-full pl-3 pb-1 transition-colors
+      border-base-800 border-b;
 
     &_open {
-      @apply border-r border-base-800 bg-base-900 transition-colors;
+      @apply border-r border-b-transparent border-base-800
+        transition-colors;
     }
   }
 
   &__menu-container {
-    @apply flex flex-col flex-grow gap-y-0.5 px-0.5 w-full pt-0.5
-      border-t border-base-800 border-r border-r-transparent transition-colors
-      overflow-y-scroll scrollbar-hide;
+    @apply flex flex-grow flex-shrink-0 flex-col gap-y-0.5 px-0.5 w-full pt-0.5
+      border-r border-r-transparent transition-colors;
 
     &_open {
       @apply gap-y-0.5 border-r-base-800 border-t-0 transition-colors;
     }
   }
 
-  &__menu-item {
-    &:hover, &:focus {
-      @apply bg-base-700 transition-colors text-base-400
-      cursor-pointer rounded-md;
-    }
+  &__menu-item-content {
+    @apply flex flex-col py-3 items-center justify-center gap-y-1
+      font-light;
 
     &_active {
-      @apply bg-brand-500 rounded-lg text-base-50 transition-colors;
+      @apply bg-brand-400 rounded-lg text-base-50 transition-colors;
     }
-  }
-
-  &__menu-item-content {
-    @apply flex flex-col py-3 items-center justify-center gap-y-1;
 
     &_open {
       @apply flex flex-row justify-start gap-x-2 px-5 py-3 border-opacity-20
@@ -53,7 +65,12 @@
     }
 
     &:hover, &:focus {
-      @apply text-base-100;
+      @apply bg-sidebar-item transition-colors text-base-400
+      cursor-pointer rounded-md text-base-100;
+
+      #{$parentBlock}__menu-item-icon {
+        @apply scale-105 transition-transform;
+      }
     }
   }
 
@@ -70,32 +87,19 @@
   }
 
   &__copyright-container {
-    @apply hidden font-light border-t text-sm
-      whitespace-pre-line;
+    @apply hidden border-r border-base-800 bg-transparent;
 
     &_open {
-      @apply block border-r border-t-0 border-base-800 transition-all;
+      @apply block;
     }
   }
 
   &__copyright-container-text {
-    @apply hidden text-transparent transition-colors;
+    @apply hidden whitespace-pre-line text-base-100 p-3 m-2
+      rounded-lg bg-sidebar-copyright text-xs text-base-400 font-light;
 
     &_open {
-      @apply block text-base-100 p-3 m-2 rounded-lg bg-base-800
-      transition-colors;
-    }
-  }
-
-  &__menu-item:hover, &__menu-item:focus {
-    #{$parentBlock}__menu-item-icon {
-      @apply scale-110 transition-transform;
-    }
-  }
-
-  &__aside-slide-out:hover, &__aside-slide-out:focus {
-    #{$parentBlock}__menu-container {
-      @apply border-r-base-800 transition-colors;
+      @apply block;
     }
   }
 }

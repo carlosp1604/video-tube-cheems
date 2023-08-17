@@ -15,37 +15,29 @@ interface MenuSideBarOptionProps {
 
 const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen }) => {
   return (
-    <div className={ `
-      ${styles.menuSideBar__menuItem}
-      ${menuOption.isActive ? styles.menuSideBar__menuItem_active : ''}
+    <Link
+      href={ menuOption.action }
+      className={ `
+        ${styles.menuSideBar__menuItemContent}
+        ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
+        ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
       ` }
-       key={ menuOption.title }
-       onClick={ menuOption.onClick }
     >
-      <Link
-        href={ menuOption.action }
-        className={ `
-          ${styles.menuSideBar__menuItemContent}
-          ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
-        ` }
-      >
-        <span className={ styles.menuSideBar__menuItemIcon }>
-          { menuOption.icon }
-        </span>
-        <span className={ `
-          ${styles.menuSideBar__menuItemText}
-          ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
-        ` }>
-          { menuOption.title }
-        </span>
-      </Link>
-    </div>
+      <span className={ styles.menuSideBar__menuItemIcon }>
+        { menuOption.icon }
+      </span>
+      <span className={ `
+        ${styles.menuSideBar__menuItemText}
+        ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
+      ` }>
+        { menuOption.title }
+      </span>
+    </Link>
   )
 }
 
 export const MenuSideBar: FC = () => {
   const { pathname } = useRouter()
-
   const { t } = useTranslation('menu')
 
   const menuOptions: MenuOptionComponentInterface[] = getMobileMenuOptions(pathname).map((menuOption) => {
@@ -63,8 +55,8 @@ export const MenuSideBar: FC = () => {
       ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
     ` }>
       <div className={ `
-        ${styles.menuSideBar__menuIcon}
-        ${menuOpen ? styles.menuSideBar__menuIcon_open : ''}
+        ${styles.menuSideBar__menuIconContainer}
+        ${menuOpen ? styles.menuSideBar__menuIconContainer_open : ''}
       ` }>
         <IconButton
           onClick={ () => setMenuOpen(!menuOpen) }
@@ -73,31 +65,33 @@ export const MenuSideBar: FC = () => {
         />
       </div>
 
-      <div className={ `
-        ${styles.menuSideBar__menuContainer}
-        ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}
-      ` }>
-        { menuOptions.map((menuOption) => {
-          return (
-            <MenuSideBarOption
-              menuOption={ menuOption }
-              menuOpen={ menuOpen }
-              key={ menuOption.title }
-            />
-          )
-        }) }
-      </div>
-
-      <div className={ `
-        ${styles.menuSideBar__copyrightContainer}
-        ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
-      ` }>
-        <span className={ `
-          ${styles.menuSideBar__copyrightContainerText}
-          ${menuOpen ? styles.menuSideBar__copyrightContainerText_open : ''}
+      <div className={ styles.menuSideBar__menuSectionContainer }>
+        <div className={ `
+          ${styles.menuSideBar__menuContainer}
+          ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}
         ` }>
-          { t('copyright_section_title') }
-        </span>
+          { menuOptions.map((menuOption) => {
+            return (
+              <MenuSideBarOption
+                menuOption={ menuOption }
+                menuOpen={ menuOpen }
+                key={ menuOption.title }
+              />
+            )
+          }) }
+        </div>
+
+        <div className={ `
+          ${styles.menuSideBar__copyrightContainer}
+          ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
+        ` }>
+            <div className={ `
+            ${styles.menuSideBar__copyrightContainerText}
+            ${menuOpen ? styles.menuSideBar__copyrightContainerText_open : ''}
+          ` }>
+            { t('copyright_section_title') }
+          </div>
+        </div>
       </div>
     </aside>
   )

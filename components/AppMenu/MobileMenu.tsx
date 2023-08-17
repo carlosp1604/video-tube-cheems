@@ -16,7 +16,6 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
 
   const { t } = useTranslation('menu')
 
-  // We translate the
   const menuOptions: MenuOptionComponentInterface[] = getMobileMenuOptions(pathname).map((menuOption) => {
     return {
       ...menuOption,

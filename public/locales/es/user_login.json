@@ -3,11 +3,11 @@
   "email_input_label": "Email",
   "email_input_placeholder": "Email",
   "forgot_password_button_title": "Olvidé mi contraseña",
+  "login_error_message": "Combinación Email/Contraseña incorrecta",
   "password_input_error_message": "Contraseña inválida",
   "password_input_label": "Contraseña",
   "password_input_placeholder": "Contraseña",
   "sign_in_button_title": "Regístrate aquí",
-  "sign_in_error_message": "Combinación Email/Contraseña incorrecta",
   "submit_button_title": "Iniciar sesión",
   "subtitle": "Inicia sesión con tu email y contraseña",
   "title": "Inicio de sesión"

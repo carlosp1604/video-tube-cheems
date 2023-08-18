@@ -1,5 +1,5 @@
 import styles from './Post.module.scss'
-import { FC, ReactElement, useEffect, useState } from 'react'
+import { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import {
   BsBookmarks,
   BsChatSquareText, BsChevronDown, BsChevronUp,
@@ -52,6 +52,7 @@ export const Post: FC<Props> = ({
   const { t } = useTranslation('post')
   const { setLoginModalOpen } = useLoginContext()
   const postsApiService = new PostsApiService()
+  const commentsRef = useRef<HTMLDivElement>(null)
 
   const { status } = useSession()
 
@@ -351,7 +352,15 @@ export const Post: FC<Props> = ({
           </span>
           <span
             className={ styles.post__optionItem }
-            onClick={ () => setCommentsOpen(!commentsOpen) }
+            onClick={ () => {
+              if (!commentsOpen) {
+                commentsRef.current?.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                })
+              }
+              setCommentsOpen(!commentsOpen)
+            } }
           >
             <BsChatSquareText className={ styles.post__optionItemIcon }/>
             { t('post_comments_button_title') }
@@ -448,7 +457,9 @@ export const Post: FC<Props> = ({
           </button>
         </div>
       </div>
-      { commentsComponent }
+      <div ref={ commentsRef }>
+        { commentsComponent }
+      </div>
     </div>
   )
 }

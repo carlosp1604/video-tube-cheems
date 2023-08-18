@@ -20,6 +20,7 @@ export class TestPostBuilder {
   private description: string
   private slug: string
   private producerId: string | null
+  private actorId: string | null
   private createdAt: DateTime
   private updatedAt: DateTime
   private deletedAt: DateTime | null
@@ -32,6 +33,7 @@ export class TestPostBuilder {
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
   private _translations: Collection<Translation, string>
+  private _actor: Relationship<Actor | null>
 
   constructor () {
     this.id = 'test-post-id'
@@ -39,6 +41,7 @@ export class TestPostBuilder {
     this.description = 'test-post-description'
     this.slug = 'test-post-slug'
     this.producerId = null
+    this.actorId = null
     this.createdAt = DateTime.now()
     this.updatedAt = DateTime.now()
     this.deletedAt = null
@@ -51,6 +54,7 @@ export class TestPostBuilder {
     this._views = Collection.notLoaded()
     this._producer = Relationship.notLoaded()
     this._translations = Collection.notLoaded()
+    this._actor = Relationship.notLoaded()
   }
 
   public build (): Post {
@@ -60,6 +64,7 @@ export class TestPostBuilder {
       this.description,
       this.slug,
       this.producerId,
+      this.actorId,
       this.createdAt,
       this.updatedAt,
       this.deletedAt,
@@ -71,7 +76,8 @@ export class TestPostBuilder {
       this._reactions,
       this._views,
       this._producer,
-      this._translations
+      this._translations,
+      this._actor
     )
   }
 
@@ -149,6 +155,12 @@ export class TestPostBuilder {
 
   public withTranslations (translations: Collection<Translation, string>): TestPostBuilder {
     this._translations = translations
+
+    return this
+  }
+
+  public withActor (actor: Relationship<Actor | null>): TestPostBuilder {
+    this._actor = actor
 
     return this
   }

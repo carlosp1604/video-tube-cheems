@@ -18,6 +18,7 @@ import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPos
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { Translation } from '~/modules/Translations/Domain/Translation'
 import { TestTranslationBuilder } from '~/__tests__/modules/Translations/Domain/TestTranslationBuilder'
+import { TestActorBuilder } from '~/__tests__/modules/Actors/Domain/TestActorBuilder'
 
 describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
   const postRepository = mock<PostRepositoryInterface>()
@@ -66,6 +67,9 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
         new TestProducerBuilder()
           .withParentProducer(Relationship.initializeRelation(null))
           .build()
+      ))
+      .withActor(Relationship.initializeRelation(
+        new TestActorBuilder().build()
       ))
       .withMeta(postMetaCollection)
       .withTranslations(translationsCollection)
@@ -149,6 +153,13 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
               },
               parentProducerId: 'expected-parent-producer-id',
             },
+            actor: {
+              createdAt: nowDate.toISO(),
+              description: 'expected-user-description',
+              name: 'expected-user-name',
+              imageUrl: 'expected-image-url',
+              id: 'expected-user-id',
+            },
             publishedAt: nowDate.toISO(),
             title: 'expected-title',
             translations: [
@@ -210,6 +221,13 @@ describe('~/modules/Posts/Application/GetPosts/GetPosts.ts', () => {
                 parentProducerId: null,
               },
               parentProducerId: 'expected-parent-producer-id',
+            },
+            actor: {
+              createdAt: nowDate.toISO(),
+              description: 'expected-user-description',
+              name: 'expected-user-name',
+              imageUrl: 'expected-image-url',
+              id: 'expected-user-id',
             },
             publishedAt: nowDate.toISO(),
             title: 'expected-title',

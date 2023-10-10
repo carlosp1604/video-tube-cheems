@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostsApiRequestValidator } from '~/modules/Posts/Infrastructure/Validators/GetPostsApiRequestValidator'
-import { GetPostsRequestDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/GetPostsRequestDtoTranslator'
+import { GetPostsApiRequestValidator } from '~/modules/Posts/Infrastructure/Api/Validators/GetPostsApiRequestValidator'
+import {
+  GetPostsRequestDtoTranslator
+} from '~/modules/Posts/Infrastructure/Api/Translators/GetPostsRequestDtoTranslator'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import { NextApiRequestQuery } from 'next/dist/server/api-utils'
@@ -9,13 +11,15 @@ import {
   GetPostsApiRequestDto
 } from '~/modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
-import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import {
+  PostsApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
 import { container } from '~/awilix.container'
 import {
   POST_INVALID_FILTER_TYPE, POST_INVALID_FILTER_VALUE, POST_INVALID_PAGE, POST_INVALID_PER_PAGE,
   POST_INVALID_SORTING_CRITERIA,
   POST_INVALID_SORTING_OPTION, POST_METHOD, POST_SERVER_ERROR, POST_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

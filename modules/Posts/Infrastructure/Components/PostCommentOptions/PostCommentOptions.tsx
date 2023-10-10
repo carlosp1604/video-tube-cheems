@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next'
 import {
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND, POST_COMMENT_COMMENT_NOT_FOUND,
   POST_COMMENT_POST_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   ownerId: string

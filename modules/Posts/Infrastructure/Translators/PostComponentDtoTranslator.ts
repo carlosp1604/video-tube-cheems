@@ -6,6 +6,12 @@ import {
   PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import {
+  VideoDownloadUrlComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/VideoDownloadUrlComponentDtoTranslator'
+import {
+  VideoEmbedUrlComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/VideoEmbedUrlComponentDtoTranslator'
 
 export class PostComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: PostApplicationDto, locale: string): PostComponentDto {
@@ -80,6 +86,18 @@ export class PostComponentDtoTranslator {
       }
     }
 
+    const downloadUrls = applicationDto.videoUrls.filter((videoUrl) => {
+      return videoUrl.type === 'Download'
+    }).map((videoUrl) => {
+      return VideoDownloadUrlComponentDtoTranslator.fromApplicationDto(videoUrl)
+    })
+
+    const embedUrls = applicationDto.videoUrls.filter((videoUrl) => {
+      return videoUrl.type === 'Embed'
+    }).map((videoUrl) => {
+      return VideoEmbedUrlComponentDtoTranslator.fromApplicationDto(videoUrl)
+    })
+
     return {
       id: applicationDto.id,
       actors,
@@ -90,6 +108,8 @@ export class PostComponentDtoTranslator {
       date,
       title: titleTranslation,
       actor,
+      downloadUrls,
+      embedUrls,
     }
   }
 }

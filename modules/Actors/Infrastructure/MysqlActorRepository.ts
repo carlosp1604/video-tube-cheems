@@ -90,7 +90,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
 
   private buildFilters (
     filters: RepositoryFilterOptionInterface[]
-  ): Prisma.PostWhereInput | undefined {
+  ): Prisma.ActorWhereInput | undefined {
     let whereClause: Prisma.ActorWhereInput | undefined = {}
 
     for (const filter of filters) {

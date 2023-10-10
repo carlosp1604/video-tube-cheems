@@ -1,12 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import {
+  PostsApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
 import { container } from '~/awilix.container'
 import {
   CreatePostReactionApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/CreatePostReactionApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/CreatePostReactionApiRequestValidator'
 import {
   CreatePostReactionRequestTranslator
-} from '~/modules/Posts/Infrastructure/Translators/CreatePostReactionRequestTranslator'
+} from '~/modules/Posts/Infrastructure/Api/Translators/CreatePostReactionRequestTranslator'
 import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReaction'
 import {
   CreatePostReactionApplicationException
@@ -18,15 +20,17 @@ import {
   POST_REACTION_AUTH_REQUIRED, POST_REACTION_BAD_REQUEST, POST_REACTION_METHOD,
   POST_REACTION_NOT_FOUND, POST_REACTION_POST_NOT_FOUND, POST_REACTION_SERVER_ERROR,
   POST_REACTION_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
-import { CreatePostReactionApiRequest } from '~/modules/Posts/Infrastructure/Dtos/CreatePostReactionApiRequest'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { CreatePostReactionApiRequest } from '~/modules/Posts/Infrastructure/Api/Requests/CreatePostReactionApiRequest'
 import {
   DeletePostReactionRequestTranslator
-} from '~/modules/Posts/Infrastructure/Translators/DeletePostReactionRequestTranslator'
-import { DeletePostReactionApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/DeletePostReactionApiRequestDto'
+} from '~/modules/Posts/Infrastructure/Api/Translators/DeletePostReactionRequestTranslator'
 import {
-  DeletePosReactionApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/DeletePosReactionApiRequestValidator'
+  DeletePostReactionApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/DeletePostReactionApiRequestDto'
+import {
+  DeletePostReactionApiRequestValidator
+} from '~/modules/Posts/Infrastructure/Api/Validators/DeletePostReactionApiRequestValidator'
 import { DeletePostReaction } from '~/modules/Posts/Application/DeletePostReaction/DeletePostReaction'
 import {
   DeletePostReactionApplicationException
@@ -119,7 +123,7 @@ async function handleDelete (request: NextApiRequest, response: NextApiResponse)
     userId: session.user.id,
   }
 
-  const validationError = DeletePosReactionApiRequestValidator.validate(deletePostReactionApiRequest)
+  const validationError = DeletePostReactionApiRequestValidator.validate(deletePostReactionApiRequest)
 
   if (validationError) {
     return handleValidationError(response, validationError)
@@ -130,9 +134,9 @@ async function handleDelete (request: NextApiRequest, response: NextApiResponse)
   const useCase = container.resolve<DeletePostReaction>('deletePostReactionUseCase')
 
   try {
-    const reaction = await useCase.delete(applicationRequest)
+    await useCase.delete(applicationRequest)
 
-    return response.status(204).json(reaction)
+    return response.status(204).end()
   } catch (exception: unknown) {
     if (!(exception instanceof DeletePostReactionApplicationException)) {
       console.error(exception)

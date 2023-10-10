@@ -30,6 +30,13 @@ import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostCh
 import { MailerSend } from 'mailersend'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
 import { DeletePostReaction } from '~/modules/Posts/Application/DeletePostReaction/DeletePostReaction'
+import { MysqlReactionRepository } from '~/modules/Reactions/Infrastructure/MysqlReactionRepository'
+import {
+  CreatePostCommentReaction
+} from '~/modules/Posts/Application/CreatePostCommentReaction/CreatePostCommentReaction'
+import {
+  DeletePostCommentReaction
+} from '~/modules/Posts/Application/DeletePostCommentReaction/DeletePostCommentReaction'
 
 /**
  * We create a container to register our classes dependencies
@@ -95,6 +102,7 @@ container.register('baseUrl', asFunction(() => {
 
   return baseUrl
 }))
+container.register('reactionRepository', asClass(MysqlReactionRepository))
 
 /**
  * Use-cases
@@ -134,5 +142,7 @@ container.register('createPostCommentUseCase', asClass(CreatePostComment))
 container.register('createPostChildCommentUseCase', asClass(CreatePostChildComment))
 container.register('deletePostCommentUseCase', asClass(DeletePostComment))
 container.register('deletePostReactionUseCase', asClass(DeletePostReaction))
+container.register('createPostCommentReactionUseCase', asClass(CreatePostCommentReaction))
+container.register('deletePostCommentReactionUseCase', asClass(DeletePostCommentReaction))
 
 export { container }

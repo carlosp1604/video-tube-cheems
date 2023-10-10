@@ -4,4 +4,5 @@ export interface GetPostPostCommentsApplicationRequest {
   readonly postId: Post['id']
   readonly page: number
   readonly perPage: number
+  readonly userId: string | null
 }

@@ -2,9 +2,9 @@ import { DeletePostReactionApplicationRequestDto } from './DeletePostReactionApp
 import { DeletePostReactionApplicationException } from './DeletePostReactionApplicationException'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
+import { ReactionableModelDomainException } from '~/modules/Reactions/Domain/ReactionableModelDomainException'
 
 export class DeletePostReaction {
   private options: RepositoryOptions[] = ['reactions']
@@ -48,14 +48,14 @@ export class DeletePostReaction {
 
   private deleteReactionFromPost (post: Post, user: User): void {
     try {
-      post.deleteReaction(user.id)
+      post.deletePostReaction(user.id)
     } catch (exception: unknown) {
-      if (!(exception instanceof PostDomainException)) {
+      if (!(exception instanceof ReactionableModelDomainException)) {
         throw exception
       }
 
       switch (exception.id) {
-        case PostDomainException.userHasNotReactedId:
+        case ReactionableModelDomainException.userHasNotReactedId:
           throw DeletePostReactionApplicationException.userHasNotReacted(user.id, post.id)
 
         default:

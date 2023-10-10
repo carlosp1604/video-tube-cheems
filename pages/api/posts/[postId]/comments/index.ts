@@ -1,27 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostPostCommentsApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/GetPostPostCommentsApiRequestDto'
+import {
+  GetPostPostCommentsApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/GetPostPostCommentsApiRequestDto'
 import {
   GetPostPostCommentsApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/GetPostPostCommentsApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/GetPostPostCommentsApiRequestValidator'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import {
   CreatePostCommentApplicationException
 } from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationException'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/CreatePostCommentApiRequestDto'
+import {
+  CreatePostCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/CreatePostCommentApiRequestDto'
 import {
   CreatePostCommentRequestSanitizer
-} from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostCommentRequestSanitizer'
+} from '~/modules/Posts/Infrastructure/Api/Sanitizers/CreatePostCommentRequestSanitizer'
 import {
   CreatePostCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/CreatePostCommentApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/CreatePostCommentApiRequestValidator'
 import {
   CreatePostCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/CreatePostCommentRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Api/Translators/CreatePostCommentRequestDtoTranslator'
 import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
 import {
   PostCommentApiRequestValidatorError
-} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
 import { getServerSession } from 'next-auth/next'
 import { container } from '~/awilix.container'
 import {
@@ -37,7 +41,10 @@ import {
   POST_COMMENT_POST_NOT_FOUND,
   POST_COMMENT_SERVER_ERROR,
   POST_COMMENT_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import {
+  GetPostPostCommentsRequestDtoTranslator
+} from '~/modules/Posts/Infrastructure/Api/Translators/GetPostPostCommentsRequestDtoTranslator'
 
 export default async function handler (
   request: NextApiRequest,
@@ -74,14 +81,19 @@ async function handleGET (request: NextApiRequest, response: NextApiResponse) {
     return handleValidationError(request, response, validationError)
   }
 
+  const session = await getServerSession(request, response, authOptions)
+  let userId: string | null = null
+
+  if (session !== null) {
+    userId = session.user.id
+  }
+
   const useCase = container.resolve<GetPostPostComments>('getPostPostCommentsUseCase')
 
+  const applicationRequest = GetPostPostCommentsRequestDtoTranslator.fromApiDto(apiRequest, userId)
+
   try {
-    const comments = await useCase.get({
-      postId: apiRequest.postId,
-      page: apiRequest.page,
-      perPage: apiRequest.perPage,
-    })
+    const comments = await useCase.get(applicationRequest)
 
     return response.status(200).json(comments)
   } catch (exception: unknown) {

@@ -1,0 +1,45 @@
+.download-menu {
+  &__container {
+    @apply flex flex-col gap-y-4 p-5 pt-7;
+  }
+
+  &__title-section {
+    @apply flex gap-x-3 items-center justify-center;
+  }
+
+  &__title {
+    @apply flex flex-col text-base font-semibold;
+  }
+
+  &__subtitle {
+    @apply text-xs font-light;
+  }
+
+  &__icon-wrapper {
+    @apply h-8 w-8 rounded-md bg-brand-500;
+
+    @screen md {
+      @apply h-10 w-10;
+    }
+  }
+
+  &__icon {
+    @apply h-full w-full p-2;
+
+    @screen md {
+      @apply p-3;
+    }
+  }
+
+  &__menu-options-container {
+    @apply -mx-5;
+  }
+
+  &__option-image {
+    @apply h-6 w-auto;
+
+    @screen md {
+      @apply h-8;
+    }
+  }
+}

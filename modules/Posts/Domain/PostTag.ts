@@ -22,7 +22,7 @@ export class PostTag extends TranslatableModel {
     deletedAt: DateTime | null,
     translations: Collection<Translation, string> = Collection.notLoaded()
   ) {
-    super(translations)
+    super()
     this.id = id
     this.name = name
     this.description = description
@@ -30,9 +30,6 @@ export class PostTag extends TranslatableModel {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
-  }
-
-  get translations (): Map<Translation['language'], Translation[]> {
-    return this.modelTranslations
+    this.modelTranslations = translations
   }
 }

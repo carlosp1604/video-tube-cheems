@@ -12,6 +12,22 @@ import { Toaster } from 'react-hot-toast'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
+import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
+
+function applyMixins (derivedCtor: any, constructors: any[]) {
+  constructors.forEach((baseCtor) => {
+    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
+      Object.defineProperty(
+        derivedCtor.prototype,
+        name,
+        Object.getOwnPropertyDescriptor(baseCtor.prototype, name) ||
+        Object.create(null)
+      )
+    })
+  })
+}
 
 function App ({
   Component,
@@ -28,6 +44,8 @@ function App ({
 
   // TODO: find the way to get user timezone and set it on Luxon Settings
   Settings.defaultZone = 'Europe/Madrid'
+
+  applyMixins(Post, [ReactionableModel, TranslatableModel])
 
   return (
     <SessionProvider session={ session }>

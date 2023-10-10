@@ -1,6 +1,6 @@
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UpdatePostCommentRequestDto } from './Dtos/UpdatePostCommentRequestDto'
-import { UpdatePostCommentApplicationException } from './UpdatePostCommentApplicationException'
+import { UpdatePostCommentApplicationException } from './UpdatePostReaction/UpdatePostCommentApplicationException'
 import { PostCommentApplicationDtoTranslator } from './Translators/PostCommentApplicationDtoTranslator'
 import { PostCommentApplicationDto } from './Dtos/PostCommentApplicationDto'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'

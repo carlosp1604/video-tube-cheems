@@ -9,7 +9,8 @@ import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
 export interface VideoPageProps {
   post: PostComponentDto
   postViewsNumber: number
-  postReactionsNumber: number
+  postLikes: number
+  postDislikes: number
   postCommentsNumber: number
   relatedPosts: PostCardComponentDto[]
 }
@@ -19,7 +20,8 @@ export const PostPage: NextPage<VideoPageProps> = ({
   relatedPosts,
   postCommentsNumber,
   postViewsNumber,
-  postReactionsNumber,
+  postLikes,
+  postDislikes,
 }) => {
   const { t } = useTranslation('post_page')
 
@@ -29,7 +31,8 @@ export const PostPage: NextPage<VideoPageProps> = ({
         post={ post }
         key={ post.id }
         postCommentsNumber={ postCommentsNumber }
-        postReactionsNumber={ postReactionsNumber }
+        postLikes={ postLikes }
+        postDislikes={ postDislikes }
         postViewsNumber={ postViewsNumber }
       />
 

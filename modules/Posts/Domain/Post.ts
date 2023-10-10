@@ -1,24 +1,26 @@
 import { PostMeta } from './PostMeta'
 import { PostTag } from './PostTag'
 import { DateTime } from 'luxon'
-import { PostComment } from './PostComment'
-import { PostReaction } from './PostReaction'
+import { PostComment } from './PostComments/PostComment'
+import { Reaction, ReactionableType } from '../../Reactions/Domain/Reaction'
 import { PostDomainException } from './PostDomainException'
 import { randomUUID } from 'crypto'
-import { PostChildComment } from './PostChildComment'
+import { PostChildComment } from './PostComments/PostChildComment'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
-import { PostCommentDomainException } from '~/modules/Posts/Domain/PostCommentDomainException'
+import { PostCommentDomainException } from '~/modules/Posts/Domain/PostComments/PostCommentDomainException'
 import { Translation } from '~/modules/Translations/Domain/Translation'
+import { VideoUrl } from '~/modules/Posts/Domain/VideoUrls/VideoUrl'
+import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
+import { applyMixins } from '~/helpers/Domain/Mixins'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
-
-export class Post extends TranslatableModel {
+export class Post {
   public readonly id: string
   public readonly title: string
   public readonly description: string
@@ -35,10 +37,10 @@ export class Post extends TranslatableModel {
   private _tags: Collection<PostTag, PostTag['id']>
   private _actors: Collection<Actor, Actor['id']>
   private _comments: Collection<PostComment, PostComment['id']>
-  private _reactions: Collection<PostReaction, PostReaction['userId']>
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
   private _actor: Relationship<Actor | null>
+  private _videoUrls: Collection<VideoUrl, VideoUrl['providerId'] & VideoUrl['type']>
 
   public constructor (
     id: string,
@@ -55,13 +57,13 @@ export class Post extends TranslatableModel {
     tags: Collection<PostTag, PostTag['id']> = Collection.notLoaded(),
     actors: Collection<Actor, Actor['id']> = Collection.notLoaded(),
     comments: Collection<PostComment, PostComment['id']> = Collection.notLoaded(),
-    reactions: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded(),
+    reactions: Collection<Reaction, Reaction['userId']> = Collection.notLoaded(),
     views: Collection<PostView, PostView['id']> = Collection.notLoaded(),
     producer: Relationship<Producer | null> = Relationship.notLoaded(),
-    translations: Collection<Translation, string> = Collection.notLoaded(),
-    actor: Relationship<Actor | null> = Relationship.notLoaded()
+    translations: Collection<Translation, Translation['language'] & Translation['field']> = Collection.notLoaded(),
+    actor: Relationship<Actor | null> = Relationship.notLoaded(),
+    videoUrls: Collection<VideoUrl, VideoUrl['providerId'] & VideoUrl['type']> = Collection.notLoaded()
   ) {
-    super(translations)
     this.id = id
     this.title = title
     this.description = description
@@ -76,18 +78,16 @@ export class Post extends TranslatableModel {
     this._tags = tags
     this._actors = actors
     this._comments = comments
-    this._reactions = reactions
     this._views = views
     this._producer = producer
     this._actor = actor
+    this._videoUrls = videoUrls
+    this.modelReactions = reactions
+    this.modelTranslations = translations
   }
 
   public addMeta (postMeta: PostMeta): void {
     this._meta.addItem(postMeta, postMeta.type)
-  }
-
-  public addPostReaction (postReaction: PostReaction): void {
-    this._reactions.addItem(postReaction, postReaction.userId)
   }
 
   public addTag (postTag: PostTag): void {
@@ -110,6 +110,18 @@ export class Post extends TranslatableModel {
     }
 
     return parentComment.addChildComment(comment, user)
+  }
+
+  public createPostReaction (userId: User['id'], reactionType: string): Reaction {
+    return this.addReaction(this.id, ReactionableType.POST, userId, reactionType)
+  }
+
+  public updatePostReaction (userId: User['id'], reactionType: string): Reaction {
+    return this.addReaction(this.id, ReactionableType.POST, userId, reactionType)
+  }
+
+  public deletePostReaction (userId: User['id']): void {
+    return this.deleteReaction(this.id, ReactionableType.POST, userId)
   }
 
   public addComment (
@@ -201,67 +213,6 @@ export class Post extends TranslatableModel {
     this._comments.addItem(postComment, postComment.id)
   }
 
-  public createReaction (postReaction: PostReaction): void {
-    this._reactions.addItem(postReaction, postReaction.userId)
-  }
-
-  public addReaction (
-    userId: PostReaction['userId'],
-    reactionType: string
-  ): PostReaction {
-    let postReaction
-
-    try {
-      postReaction = this.buildReaction(userId, reactionType)
-    } catch (exception: unknown) {
-      throw PostDomainException.cannotAddReaction(userId, this.id)
-    }
-
-    const existingReaction = this._reactions.getItem(postReaction.userId)
-
-    if (existingReaction) {
-      throw PostDomainException.userAlreadyReacted(postReaction.userId, this.id)
-    }
-
-    this._reactions.addItem(postReaction, postReaction.userId)
-
-    return postReaction
-  }
-
-  public updateReaction (
-    userId: PostReaction['userId'],
-    reactionType: PostReaction['reactionType']
-  ): PostReaction {
-    const existingReaction = this._reactions.getItem(userId)
-
-    if (!existingReaction) {
-      throw PostDomainException.userHasNotReacted(userId, this.id)
-    }
-
-    if (existingReaction.reactionType === reactionType) {
-      return existingReaction
-    }
-
-    try {
-      existingReaction.setReactionType(reactionType)
-      existingReaction.setUpdatedAt(DateTime.now())
-    } catch (exception: unknown) {
-      throw PostDomainException.cannotUpdateReaction(userId, this.id)
-    }
-
-    this._reactions.addItem(existingReaction, userId)
-
-    return existingReaction
-  }
-
-  public deleteReaction (userId: PostReaction['userId']): void {
-    const reactionRemoved = this._reactions.removeItem(userId)
-
-    if (!reactionRemoved) {
-      throw PostDomainException.userHasNotReacted(userId, this.id)
-    }
-  }
-
   get meta (): PostMeta[] {
     return this._meta.values
   }
@@ -279,15 +230,15 @@ export class Post extends TranslatableModel {
   }
 
   get producer (): Producer | null {
-    return this._producer.value ?? null
+    return this._producer.value
+  }
+
+  get videoUrls (): Array<VideoUrl> {
+    return this._videoUrls.values
   }
 
   get actor (): Actor | null {
-    return this._actor.value ?? null
-  }
-
-  get translations (): Map<Translation['language'], Translation[]> {
-    return this.modelTranslations
+    return this._actor.value
   }
 
   public setProducer (producer: Producer): void {
@@ -296,10 +247,6 @@ export class Post extends TranslatableModel {
     }
 
     this._producer = Relationship.createRelation(producer)
-  }
-
-  get reactions (): PostReaction[] {
-    return this._reactions.values
   }
 
   private buildComment (
@@ -319,20 +266,8 @@ export class Post extends TranslatableModel {
       Relationship.initializeRelation(user)
     )
   }
-
-  private buildReaction (
-    userId: PostReaction['userId'],
-    reactionType: string
-  ): PostReaction {
-    const nowDate = DateTime.now()
-
-    return new PostReaction(
-      this.id,
-      userId,
-      reactionType,
-      nowDate,
-      nowDate,
-      null
-    )
-  }
 }
+
+export interface Post extends ReactionableModel, TranslatableModel {}
+
+applyMixins(Post, [ReactionableModel, TranslatableModel])

@@ -1,21 +1,12 @@
 import styles from './Post.module.scss'
 import { FC, ReactElement, useEffect, useRef, useState } from 'react'
-import {
-  BsBookmarks,
-  BsChatSquareText, BsChevronDown, BsChevronUp,
-  BsDownload,
-  BsHeart,
-  BsMegaphone, BsX
-} from 'react-icons/bs'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
 import { useTranslation } from 'next-i18next'
-import { PostReactionComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostReactionComponentDto'
+import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import {
-  PostReactionComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostReactionComponentDtoTranslator'
+  ReactionComponentDtoTranslator
+} from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { Reaction } from '~/modules/Posts/Domain/PostReaction'
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
@@ -24,28 +15,37 @@ import { useSession } from 'next-auth/react'
 import {
   POST_REACTION_NOT_FOUND,
   POST_REACTION_POST_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import Link from 'next/link'
 import Avatar from 'react-avatar'
 import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
+import { VideoEmbedPlayer } from '~/modules/Posts/Infrastructure/Components/Post/VideoEmbedPlayer/VideoEmbedPlayer'
+import { BsX } from 'react-icons/bs'
+import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
+import { Promise } from 'es6-promise'
+import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
+import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
+import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
 
 export interface Props {
   post: PostComponentDto
   postViewsNumber: number
-  postReactionsNumber: number
+  postLikes: number
+  postDislikes: number
   postCommentsNumber: number
 }
 
 export const Post: FC<Props> = ({
   post,
   postViewsNumber,
-  postReactionsNumber,
+  postLikes,
+  postDislikes,
   postCommentsNumber,
 }) => {
-  const [reactionsNumber, setReactionsNumber] = useState<number>(postReactionsNumber)
+  const [likesNumber, setLikesNumber] = useState<number>(postLikes)
+  const [dislikesNumber, setDislikesNumber] = useState<number>(postDislikes)
   const [viewsNumber, setViewsNumber] = useState<number>(postViewsNumber)
-  const [extraDataOpen, setExtraDataOpen] = useState<boolean>(false)
-  const [userReaction, setUserReaction] = useState<PostReactionComponentDto | null>(null)
+  const [userReaction, setUserReaction] = useState<ReactionComponentDto | null>(null)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
 
@@ -73,7 +73,7 @@ export const Post: FC<Props> = ({
               return
             }
 
-            const userReactionDto = PostReactionComponentDtoTranslator.fromApplicationDto(jsonResponse)
+            const userReactionDto = ReactionComponentDtoTranslator.fromApplicationDto(jsonResponse)
 
             setUserReaction(userReactionDto)
           } else {
@@ -86,16 +86,23 @@ export const Post: FC<Props> = ({
           console.error(exception)
         })
     }
+
+    if (commentsOpen) {
+      setCommentsOpen(false)
+      new Promise(resolve => setTimeout(resolve, 100)).then(() => {
+        setCommentsOpen(true)
+      })
+    }
   }, [status])
 
-  const onClickReactButton = async () => {
+  const onClickReactButton = async (type: ReactionType) => {
     if (status !== 'authenticated') {
       toast.error(t('user_must_be_authenticated_error_message'))
 
       return
     }
 
-    if (userReaction !== null) {
+    if (userReaction !== null && userReaction.reactionType === type) {
       try {
         const response = await postsApiService.deletePostReaction(post.id)
 
@@ -130,7 +137,11 @@ export const Post: FC<Props> = ({
           }
         } else {
           setUserReaction(null)
-          setReactionsNumber(reactionsNumber - 1)
+          if (type === ReactionType.LIKE) {
+            setLikesNumber(likesNumber - 1)
+          } else {
+            setDislikesNumber(dislikesNumber - 1)
+          }
           toast.success(t('post_reaction_deleted_correctly_message'))
         }
       } catch (exception: unknown) {
@@ -139,8 +150,7 @@ export const Post: FC<Props> = ({
       }
     } else {
       try {
-        // FIXME: ReactionType
-        const response = await postsApiService.createPostReaction(post.id, Reaction.LIKE)
+        const response = await postsApiService.createPostReaction(post.id, type)
 
         if (!response.ok) {
           switch (response.status) {
@@ -166,10 +176,22 @@ export const Post: FC<Props> = ({
               break
           }
         } else {
-          const userReaction = await response.json()
+          const reaction = await response.json()
 
-          setUserReaction(PostReactionComponentDtoTranslator.fromApplicationDto(userReaction))
-          setReactionsNumber(reactionsNumber + 1)
+          if (type === ReactionType.LIKE) {
+            if (userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE) {
+              setDislikesNumber(dislikesNumber - 1)
+            }
+            setLikesNumber(likesNumber + 1)
+          } else {
+            if (userReaction !== null && userReaction.reactionType === ReactionType.LIKE) {
+              setLikesNumber(likesNumber - 1)
+            }
+            setDislikesNumber(dislikesNumber + 1)
+          }
+
+          setUserReaction(ReactionComponentDtoTranslator.fromApplicationDto(reaction))
+
           toast.success(t('post_reaction_added_correctly_message'))
         }
       } catch (exception: unknown) {
@@ -181,7 +203,6 @@ export const Post: FC<Props> = ({
 
   let producerSection: ReactElement | null = null
   let actorSection: ReactElement | null = null
-  let actorsSection: ReactElement[] | null = null
 
   if (post.producer !== null) {
     let producerAvatarSection: ReactElement
@@ -253,44 +274,6 @@ export const Post: FC<Props> = ({
     )
   }
 
-  if (post.actors.length > 0) {
-    actorsSection = post.actors.map((actor) => {
-      let avatarSection: ReactElement
-
-      if (actor.imageUrl !== null) {
-        avatarSection = (
-          <Image
-            className={ styles.post__actorLogo }
-            src={ actor.imageUrl }
-            alt={ actor.name }
-            width={ 0 }
-            height={ 0 }
-            sizes={ '100vw' }
-          />
-        )
-      } else {
-        avatarSection = (
-          <Avatar
-            round={ true }
-            size={ '40' }
-            name={ actor.name }
-          />
-        )
-      }
-
-      return (
-        <Link
-          href={ '/' }
-          className={ styles.post__actorsItemLink }
-          key={ actor.id }
-        >
-          { avatarSection }
-          { actor.name }
-        </Link>
-      )
-    })
-  }
-
   let commentsComponent: ReactElement | null = null
 
   if (commentsOpen) {
@@ -305,158 +288,75 @@ export const Post: FC<Props> = ({
     )
   }
 
+  let videoPlayer: ReactElement | null = null
+
+  if (post.video.qualities.length > 0) {
+    videoPlayer = (
+      <VideoPlayer
+        key={ post.id }
+        videoQualities={ post.video.qualities }
+        videoPoster={ post.video.poster }
+        videoId={ post.id }
+        onVideoPlay={ () => {
+          setViewsNumber(viewsNumber + 1)
+        } }
+      />
+    )
+  }
+
+  let embedVideo: ReactElement | null = null
+
+  if (post.embedUrls.length > 0) {
+    embedVideo = (
+      <VideoEmbedPlayer videoEmbedUrls={ post.embedUrls } />
+    )
+  }
+
   return (
     <div className={ styles.post__container }>
       <div className={ styles.post__videoContainer } >
-        <VideoPlayer
-          key={ post.id }
-          videoQualities={ post.video.qualities }
-          videoPoster={ post.video.poster }
-          videoId={ post.id }
-          onVideoPlay={ () => {
-            setViewsNumber(viewsNumber + 1)
-          } }
-        />
-
+        { embedVideo ?? videoPlayer }
       </div>
 
-      <div className={ styles.post__postData } key={ post.id }>
-        <h1 className={ styles.post__postTitle }>
-          { post.title }
-        </h1>
-        <div className={ styles.post__postInfo }>
-          <span className={ styles.post__postInfoItem }>
-            { post.date }
-          </span>
-          <span className={ styles.post__postInfoItem }>
-            { t('post_views_title', { views: viewsNumber }) }
-          </span>
-          <span className={ styles.post__postInfoItem }>
-            { reactionsNumber } <BsHeart />
-          </span>
-          <span className={ styles.post__postInfoItem }>
-            { commentsNumber } <BsChatSquareText />
-          </span>
-        </div>
+      <PostBasicData
+        post={ post }
+        postViewsNumber={ viewsNumber }
+        postLikes={ likesNumber }
+        postDislikes={ dislikesNumber }
+        postCommentsNumber={ commentsNumber }
+      />
 
-        <div className={ styles.post__optionsContainer }>
-          <span
-            className={ `
-              ${styles.post__optionItem}
-              ${userReaction !== null ? styles.post__optionItem_active : ''}
-            ` }
-            onClick={ onClickReactButton }
-          >
-            <BsHeart className={ styles.post__optionItemIcon }/>
-            { t('post_like_button_title') }
-          </span>
-          <span
-            className={ styles.post__optionItem }
-            onClick={ () => {
-              if (!commentsOpen) {
-                commentsRef.current?.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start',
-                })
-              }
-              setCommentsOpen(!commentsOpen)
-            } }
-          >
-            <BsChatSquareText className={ styles.post__optionItemIcon }/>
-            { t('post_comments_button_title') }
-          </span>
-          {
-            /**
-            <span className={ styles.post__optionItem }>
-              <BsCursor className={ styles.post__optionItemIcon }/>
-              Compartir
-            </span>
-            **/
+      <PostOptions
+        userReaction={ userReaction }
+        onClickReactButton={ (type) => onClickReactButton(type) }
+        onClickCommentsButton={ () => {
+          if (!commentsOpen) {
+            commentsRef.current?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            })
           }
-          <span className={ styles.post__optionItem }>
-            <BsBookmarks className={ styles.post__optionItemIcon }/>
-            { t('post_save_button_title') }
-          </span>
-          <span className={ styles.post__optionItem }>
-            <BsDownload className={ styles.post__optionItemIcon }/>
-            { t('post_download_button_title') }
-          </span>
-          <span className={ styles.post__optionItem }>
-            <BsMegaphone className={ styles.post__optionItemIcon }/>
-            { t('post_report_button_title') }
-          </span>
-        </div>
+          setCommentsOpen(!commentsOpen)
+        } }
+        likesNumber={ likesNumber }
+        downloadUrls={ post.downloadUrls }
+      />
 
-        <div className={ styles.post__producersContainer }>
-          { producerSection }
-          { producerSection && actorSection
-            ? <BsX className={ styles.post__producersIcon }/>
-            : null
-          }
-          { actorSection }
-        </div>
-
-        <div className={ `
-          ${styles.post__postExtraData}
-          ${extraDataOpen ? styles.post__postExtraData__open : ''}
-        ` }
-        >
-          {
-            post.actors.length > 0
-              ? <div className={ styles.post__dataItem }>
-                  { t('post_extra_data_actors_title') }
-                  <div className={ styles.post__actorsContainer }>
-                    { actorsSection }
-                  </div>
-                </div>
-              : null
-          }
-
-          { post.tags.length > 0
-            ? <div className={ styles.post__dataItem }>
-                { t('post_extra_data_tags_title') }
-                <TagList tags={ post.tags } />
-              </div>
-            : null
-          }
-
-          {
-            post.description !== ''
-              ? <div className={ styles.post__dataItem }>
-                  { t('post_extra_data_description_title') }
-                  <div className={ styles.post__postDescription }>
-                    { post.description }
-                  </div>
-                </div>
-              : null
-          }
-
-        </div>
-        <div
-          className={ `
-            ${styles.post__extraDataButtonContainer}
-            ${extraDataOpen ? styles.post__extraDataButtonContainer_open : ''}
-            ${post.producer === null ? styles.post__extraDataButtonContainer_noProducer : ''}
-          ` }
-        >
-          <button className={ `
-            ${styles.post__extraDataButton}
-            ${extraDataOpen ? styles.post__extraDataButton_open : ''}
-          ` }
-            onClick={ () => setExtraDataOpen(!extraDataOpen) }
-          >
-            { extraDataOpen
-              ? t('post_extra_data_section_hide')
-              : t('post_extra_data_section_show_more')
-            }
-            {
-              extraDataOpen
-                ? <BsChevronUp className={ styles.post__extraDataIcon }/>
-                : <BsChevronDown className={ styles.post__extraDataIcon }/>
-            }
-          </button>
-        </div>
+      <div className={ styles.post__producersContainer }>
+        { producerSection }
+        { producerSection && actorSection
+          ? <BsX className={ styles.post__producersIcon }/>
+          : null
+        }
+        { actorSection }
       </div>
+
+      <PostExtraData
+        postActors={ post.actors }
+        postTags={ post.tags }
+        postDescription={ post.description }
+      />
+
       <div ref={ commentsRef }>
         { commentsComponent }
       </div>

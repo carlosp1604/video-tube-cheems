@@ -2,11 +2,16 @@ import { FC, ReactElement } from 'react'
 import styles from './MenuOptions.module.scss'
 import Link from 'next/link'
 
+export interface ActionInterface {
+  url: string
+  blank: boolean
+}
+
 export interface MenuOptionComponentInterface {
   isActive: boolean
   title: string
-  action: string
-  icon: ReactElement
+  action: ActionInterface
+  picture: ReactElement
   onClick: (() => void) | undefined
 }
 
@@ -27,13 +32,13 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
             onClick={ menuOption.onClick }
           >
             <Link
-              href={ menuOption.action }
+              href={ menuOption.action.url }
               className={ styles.menuOptions__menuItemContent }
+              target={ menuOption.action.blank ? '_blank' : '_self' }
             >
               <span className={ styles.menuOptions__menuIcon }>
-                { menuOption.icon }
+                { menuOption.picture }
               </span>
-
               { menuOption.title }
             </Link>
           </div>

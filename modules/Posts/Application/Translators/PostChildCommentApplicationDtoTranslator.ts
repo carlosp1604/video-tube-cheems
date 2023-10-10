@@ -1,4 +1,4 @@
-import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
 import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
 import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 

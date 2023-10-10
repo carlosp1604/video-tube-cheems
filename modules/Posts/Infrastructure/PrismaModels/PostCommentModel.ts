@@ -11,3 +11,9 @@ export type PostCommentWithChilds = Prisma.PostCommentGetPayload<{
     childComments: true
   }
 }>
+
+export type PostCommentWithReactions = Prisma.PostCommentGetPayload<{
+  include: {
+    reactions: true
+  }
+}>

@@ -3,6 +3,7 @@ import { TagApplicationDto } from './TagApplicationDto'
 import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
 import { ProducerApplicationDto } from '~/modules/Producers/Application/ProducerApplicationDto'
 import { ModelTranslationsApplicationDto } from '~/modules/Translations/Application/ModelTranslationsApplicationDto'
+import { VideoUrlApplicationDto } from '~/modules/Posts/Application/Dtos/VideoUrlApplicationDto'
 
 export interface PostApplicationDto {
   readonly id: string
@@ -16,5 +17,6 @@ export interface PostApplicationDto {
   readonly actors: ActorApplicationDto[]
   readonly tags: TagApplicationDto[]
   readonly translations: ModelTranslationsApplicationDto[]
+  readonly videoUrls: VideoUrlApplicationDto[]
   readonly createdAt: string
 }

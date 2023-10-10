@@ -1,20 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { DeletePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/DeletePostCommentApiRequestDto'
+import {
+  DeletePostCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/DeletePostCommentApiRequestDto'
 import {
   DeletePostCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/DeletePostCommentApiRequestValidator'
 import {
   DeletePostRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/DeletePostRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Api/Translators/DeletePostRequestDtoTranslator'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
 import {
   DeletePostCommentApplicationException
 } from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationException'
 import {
   PostCommentApiRequestValidatorError
-} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
 import { container } from '~/awilix.container'
 import {
   POST_CHILD_COMMENT_AUTH_REQUIRED,
@@ -23,7 +25,7 @@ import {
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
   POST_CHILD_COMMENT_POST_COMMENT_NOT_FOUND,
   POST_CHILD_COMMENT_POST_NOT_FOUND, POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

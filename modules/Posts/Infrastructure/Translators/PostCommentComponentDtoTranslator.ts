@@ -1,24 +1,33 @@
-import { PostWithChildCommentCountDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import { PostCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostCommentApplicationDto'
+import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
+import {
+  ReactionComponentDtoTranslator
+} from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 
 export class PostCommentComponentDtoTranslator {
   public static fromApplication (
-    applicationDto: PostWithChildCommentCountDto,
+    applicationDto: PostCommentApplicationDto,
+    repliesNumber: number,
+    reactionsNumber: number,
+    userReaction: ModelReactionApplicationDto | null,
     locale: string
   ): PostCommentComponentDto {
     return {
-      id: applicationDto.postComment.id,
-      postId: applicationDto.postComment.postId,
-      comment: applicationDto.postComment.comment,
+      id: applicationDto.id,
+      postId: applicationDto.postId,
+      comment: applicationDto.comment,
       createdAt: new DateService()
-        .formatDateToDateMedFromIso(applicationDto.postComment.createdAt, locale),
+        .formatDateToDateMedFromIso(applicationDto.createdAt, locale),
       user: {
-        id: applicationDto.postComment.user.id,
-        name: applicationDto.postComment.user.name,
-        imageUrl: applicationDto.postComment.user.imageUrl,
+        id: applicationDto.user.id,
+        name: applicationDto.user.name,
+        imageUrl: applicationDto.user.imageUrl,
       },
-      repliesNumber: applicationDto.childrenNumber,
+      repliesNumber,
+      reactionsNumber,
+      userReaction: userReaction !== null ? ReactionComponentDtoTranslator.fromApplicationDto(userReaction) : null,
     }
   }
 }

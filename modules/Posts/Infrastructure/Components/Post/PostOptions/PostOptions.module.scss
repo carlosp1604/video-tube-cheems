@@ -1,0 +1,62 @@
+.post-options {
+  &__container {
+    @apply flex flex-nowrap gap-x-2 overflow-x-scroll scrollbar-hide
+      -mx-5 pl-5;
+  }
+
+  &__option-item {
+    @apply flex flex-row flex-shrink-0 items-center gap-x-2
+    rounded-full bg-base-800 py-2 cursor-pointer text-xs px-3
+    transition-colors;
+
+    @screen lg {
+      @apply text-sm;
+    }
+
+    &:hover, &:focus, &_active {
+      @apply text-brand-400 transition-colors;
+    }
+
+    &_active {
+      @apply text-brand-400 bg-base-900 transition-colors;
+    }
+  }
+
+  &__like-dislike-section {
+    @apply flex flex-row flex-shrink-0 items-center gap-x-2
+    rounded-full bg-base-800 py-2 cursor-pointer text-xs px-3
+    transition-colors;
+  }
+
+  &__like-icon {
+    @apply text-base;
+
+    &_active {
+      @apply text-base text-brand-400 transition-colors;
+
+      &:hover {
+        @apply text-base-100 transition-colors;
+      }
+    }
+
+    &:hover {
+      @apply text-brand-400 transition-colors;
+    }
+  }
+
+  &__dislike-icon {
+    @apply text-base;
+
+    &_active {
+      @apply text-base text-base text-red transition-colors;
+
+      &:hover {
+        @apply text-base-100 transition-colors;
+      }
+    }
+
+    &:hover {
+      @apply text-red transition-colors;
+    }
+  }
+}

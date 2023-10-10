@@ -4,8 +4,8 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
-import { Reaction } from '~/modules/Posts/Domain/PostReaction'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 
 export class PostsApiService {
   public async getPosts (
@@ -42,7 +42,7 @@ export class PostsApiService {
 
   // FIXME: ReactionType
   // TODO: Support more reaction types
-  public async createPostReaction (postId: string, reactionType: Reaction): Promise<Response> {
+  public async createPostReaction (postId: string, reactionType: ReactionType): Promise<Response> {
     return fetch(`/api/posts/${postId}/reactions`, {
       method: 'POST',
       headers: {

@@ -32,6 +32,8 @@ interface Props {
   postsNumber: number
 }
 
+// producer=producer&order=asc/desc&orderBy=date/views&page=1
+
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')

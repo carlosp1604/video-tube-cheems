@@ -1,6 +1,6 @@
 import {
   GetPostPostChildCommentsResponseDto
-} from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
+} from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsResponseDto'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export class RepliesApiService {

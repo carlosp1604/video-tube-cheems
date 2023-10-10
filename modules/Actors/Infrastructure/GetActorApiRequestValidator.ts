@@ -2,7 +2,7 @@ import { z, ZodError } from 'zod'
 import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
 import {
   PostCommentApiRequestValidatorError
-} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
 
 export class GetActorApiRequestValidator {
   private static getActorApiRequestSchema = z.string().uuid()

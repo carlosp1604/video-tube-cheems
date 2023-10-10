@@ -16,4 +16,7 @@ a {
 html {
   @apply overscroll-auto scrollbar-hide;
   -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }

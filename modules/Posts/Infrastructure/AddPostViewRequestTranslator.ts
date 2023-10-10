@@ -1,4 +1,4 @@
-import { AddPostViewApiRequest } from '~/modules/Posts/Infrastructure/Dtos/AddPostViewApiRequest'
+import { AddPostViewApiRequest } from '~/modules/Posts/Infrastructure/Api/Requests/AddPostViewApiRequest'
 import { AddPostViewApplicationRequest } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationRequest'
 
 export class AddPostViewRequestTranslator {

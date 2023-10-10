@@ -1,0 +1,34 @@
+.post-basic-data {
+  &__container {
+    @apply flex flex-col gap-y-2;
+  }
+
+  &__post-title {
+    @apply font-black text-sm;
+
+    @screen md {
+      @apply text-base;
+    }
+
+    @screen lg {
+      @apply text-xl;
+    }
+  }
+
+  &__post-info {
+    @apply flex flex-row gap-x-4;
+  }
+
+  &__post-info-item {
+    @apply flex flex-row items-center font-light text-base-400 gap-x-1 text-xs;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+  }
+
+}

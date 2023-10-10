@@ -4,8 +4,6 @@ import {
 
 export interface GetPostsApplicationDto {
   post: PostWithProducerAndMetaApplicationDto
-  postReactions: number
-  postComments: number
   postViews: number
 }
 

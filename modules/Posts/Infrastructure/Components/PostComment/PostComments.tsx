@@ -49,8 +49,9 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
       if (response.ok) {
         const postComment = await response.json()
 
+        // When a comment is created it does not have replies or reactions
         const componentResponse = PostCommentComponentDtoTranslator
-          .fromApplication({ childrenNumber: 0, postComment }, locale)
+          .fromApplication(postComment, 0, 0, null, locale)
 
         setComments([componentResponse, ...comments])
         setCommentsNumber(commentsNumber + 1)
@@ -104,7 +105,13 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
     }
 
     const componentDtos = newComments.postCommentsWithChildrenCount.map((applicationDto) => {
-      return PostCommentComponentDtoTranslator.fromApplication(applicationDto, locale)
+      return PostCommentComponentDtoTranslator.fromApplication(
+        applicationDto.postComment,
+        applicationDto.childrenNumber,
+        applicationDto.reactionsNumber,
+        applicationDto.userReaction,
+        locale
+      )
     })
 
     setComments([...comments, ...componentDtos])
@@ -128,6 +135,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           setRepliesOpen(false)
           setIsOpen(false)
         } }
+        onLikeReply={ () => {} }
         onClickRetry={ () => setRepliesOpen(false) }
         onAddReply={ () => {
           const commentIndex = comments.indexOf(commentToReply)
@@ -196,6 +204,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
               setCommentToReply(comment)
               setRepliesOpen(true)
             } }
+            onClickLikeComment={ (postComment) => console.log(postComment) }
           />
           <button className={ `
             ${styles.postComments__loadMore}

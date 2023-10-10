@@ -1,5 +1,5 @@
 import { PostCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostCommentApplicationDto'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 
 export class PostCommentApplicationDtoTranslator {

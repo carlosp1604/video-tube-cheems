@@ -1,5 +1,5 @@
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
-import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostCommentRepositoryInterface'
+import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
 import {
   GetPostPostChildCommentsApplicationRequest
 } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsApplicationRequest'
@@ -7,12 +7,12 @@ import {
   GetPostPostChildCommentsApplicationException
 } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsApplicationException'
 import {
-  GetPostPostChildCommentsResponseDto
-} from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
-import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos/PostChildCommentApplicationDto'
+  GetPostPostChildCommentsResponseDto, PostChildCommentWithReactionsApplicationDto
+} from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsResponseDto'
 import {
   PostChildCommentApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostChildCommentApplicationDtoTranslator'
+import { ReactionApplicationDtoTranslator } from '~/modules/Reactions/Application/ReactionApplicationDtoTranslator'
 
 export class GetPostPostChildComments {
   // eslint-disable-next-line no-useless-constructor
@@ -24,20 +24,27 @@ export class GetPostPostChildComments {
     const offset = (request.page - 1) * request.perPage
 
     const [postComments, childCommentsCount] = await Promise.all([
-      await this.postCommentRepository.findChildsWithOffsetAndLimit(
+      await this.postCommentRepository.findChildWithOffsetAndLimit(
         request.parentCommentId,
         offset,
-        request.perPage
+        request.perPage,
+        request.userId
       ),
       await this.postCommentRepository.countPostChildComments(request.parentCommentId),
     ])
 
-    const commentApplicationDtos: PostChildCommentApplicationDto[] = postComments.map((comment) => {
-      return PostChildCommentApplicationDtoTranslator.fromDomain(comment)
+    const childCommentsWithReactions: PostChildCommentWithReactionsApplicationDto[] = postComments.map((comment) => {
+      return {
+        postChildComment: PostChildCommentApplicationDtoTranslator.fromDomain(comment.postChildComment),
+        reactionsNumber: comment.reactions,
+        userReaction: comment.userReaction !== null
+          ? ReactionApplicationDtoTranslator.fromDomain(comment.userReaction)
+          : null,
+      }
     })
 
     return {
-      childComments: commentApplicationDtos,
+      childCommentsWithReactions,
       childCommentsCount,
     }
   }

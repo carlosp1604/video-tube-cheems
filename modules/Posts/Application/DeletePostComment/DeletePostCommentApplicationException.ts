@@ -1,5 +1,5 @@
 import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
 

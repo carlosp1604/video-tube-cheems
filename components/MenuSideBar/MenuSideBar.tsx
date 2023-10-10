@@ -16,7 +16,7 @@ interface MenuSideBarOptionProps {
 const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen }) => {
   return (
     <Link
-      href={ menuOption.action }
+      href={ menuOption.action.url }
       className={ `
         ${styles.menuSideBar__menuItemContent}
         ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
@@ -24,7 +24,7 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
       ` }
     >
       <span className={ styles.menuSideBar__menuItemIcon }>
-        { menuOption.icon }
+        { menuOption.picture }
       </span>
       <span className={ `
         ${styles.menuSideBar__menuItemText}

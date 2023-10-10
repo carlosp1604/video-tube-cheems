@@ -1,0 +1,95 @@
+.video-embed-player {
+  $parentBlock: &;
+
+  &__container {
+    @apply flex aspect-video rounded-lg relative h-full w-full
+      overflow-hidden;
+
+    &:hover {
+      #{$parentBlock}__switcher-button {
+        @apply translate-x-0 transition-transform duration-500 delay-0;
+      }
+    }
+  }
+
+  &__switcher-button {
+    @apply flex absolute top-2 right-2 items-center bg-brand-400 rounded-full
+      p-2 text-base-100 h-9 w-9 delay-1000 duration-1000 transition-all
+      transform;
+
+    @screen md {
+      @apply translate-x-12;
+    }
+
+    &:hover {
+      @apply text-base-100 bg-brand-700 transition-colors;
+    }
+
+    &:active {
+      @apply bg-brand-900 text-brand-200 transition-colors duration-75;
+    }
+
+    &_visible {
+      @apply translate-x-0 transition-all duration-500 delay-0 transform;
+    }
+  }
+
+  &__options-container {
+    @apply translate-x-full absolute w-full h-full bg-transparent
+      transition-colors duration-1000;
+
+    &__open {
+      @apply flex flex-col items-center bg-base-900 bg-opacity-90
+        transition-colors py-5 px-5 overflow-y-scroll scrollbar-hide
+        duration-500 translate-x-0;
+    }
+
+    @screen md {
+      @apply py-10;
+    }
+  }
+
+  &__options-container-title {
+    @apply text-sm font-black uppercase pb-2;
+
+    @screen md {
+      @apply text-xl;
+    }
+  }
+
+  &__option-item {
+    @apply hidden;
+
+    &__open {
+      @apply flex flex-row w-full gap-x-2 py-3 px-4 mx-auto
+        mr-0 ml-0 items-center justify-center transition-colors
+        rounded-lg;
+    }
+
+    &:hover {
+      @apply cursor-pointer bg-base-900 bg-opacity-50 transition-colors;
+    }
+
+    &__selected {
+      @apply bg-brand-900;
+    }
+  }
+
+  &__option-logo {
+    @apply h-6 w-auto;
+  }
+
+  &__option-icon {
+    @apply h-6 w-auto;
+  }
+
+  &__loading-state {
+    @apply flex items-center justify-center w-full h-full aspect-video
+      bg-black;
+  }
+
+  &__loading-icon {
+    @apply h-12 w-12 animate-spin;
+  }
+
+}

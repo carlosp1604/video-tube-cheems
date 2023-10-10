@@ -54,3 +54,12 @@ export type PostWithActor = Prisma.PostGetPayload<{
 export type PostWithTranslations = Prisma.PostGetPayload<{
   include: { translations: true }
 }>
+
+export type PostWithVideoUrlWithProviders = Prisma.PostGetPayload<{
+  include: {
+    videoUrls: {
+      include: {
+        provider: true
+      }
+  } }
+}>

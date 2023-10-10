@@ -1,14 +1,17 @@
 import { Post } from './Post'
-import { PostChildComment } from './PostChildComment'
-import { PostComment } from './PostComment'
-import { PostReaction } from './PostReaction'
-import { PostWithCountInterface } from './PostWithCountInterface'
+import { PostChildComment } from './PostComments/PostChildComment'
+import { PostComment } from './PostComments/PostComment'
+import { Reaction } from '~/modules/Reactions/Domain/Reaction'
 import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
 import {
   RepositoryFilterOptionInterface
 } from '~/modules/Shared/Domain/RepositoryFilterOption'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
+import {
+  PostWithViewsCommentsReactionsInterface,
+  PostWithViewsInterface
+} from '~/modules/Posts/Domain/PostWithCountInterface'
 
 export type RepositoryOptions =
   'meta' |
@@ -17,10 +20,12 @@ export type RepositoryOptions =
   'actors' |
   'producer' |
   'comments' |
+  'videoUrl' |
   'reactions' |
   'translations' |
   'comments.user' |
   'reactions.user' |
+  'comments.reactions' |
   'comments.childComments' |
   'producer.parentProducer' |
   'comments.childComments.user'
@@ -47,26 +52,26 @@ export interface PostRepositoryInterface {
    * @param slug Post Slug
    * @return PostWithCount if found or null
    */
-  findBySlugWithCount(slug: Post['slug']): Promise<PostWithCountInterface | null>
+  findBySlugWithCount(slug: Post['slug']): Promise<PostWithViewsCommentsReactionsInterface | null>
 
   /**
    * Add a new Post Reaction
    * @param reaction Post Reaction
    */
-  createReaction(reaction: PostReaction): Promise<void>
+  createReaction(reaction: Reaction): Promise<void>
 
   /**
    * Update a new Post Reaction
    * @param reaction Post Reaction
    */
-  updateReaction(reaction: PostReaction): Promise<void>
+  updateReaction(reaction: Reaction): Promise<void>
 
   /**
    * Delete a new Post Reaction
    * @param userId User ID
    * @param postId Post ID
    */
-  deleteReaction(userId: PostReaction['userId'], postId: PostReaction['postId']): Promise<void>
+  deleteReaction(userId: Reaction['userId'], postId: Reaction['reactionableId']): Promise<void>
 
   /**
    * Add a new Post Comment
@@ -108,7 +113,7 @@ export interface PostRepositoryInterface {
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
     filters: PostRepositoryFilterOption[],
-  ): Promise<PostWithCountInterface[]>
+  ): Promise<PostWithViewsInterface[]>
 
   /**
    * Count Posts based on filters
@@ -124,7 +129,7 @@ export interface PostRepositoryInterface {
    * @param postId Post ID
    * @return Post array with the related posts
    */
-  getRelatedPosts(postId: Post['id']): Promise<PostWithCountInterface[]>
+  getRelatedPosts(postId: Post['id']): Promise<PostWithViewsInterface[]>
 
   /**
    * Create a new post view for a post given its ID
@@ -139,5 +144,5 @@ export interface PostRepositoryInterface {
    * @param userId User ID
    * @return Post Reaction if found or null
    */
-  findUserReaction (postId: Post['id'], userId: User['id']): Promise<PostReaction | null>
+  findUserReaction (postId: Post['id'], userId: User['id']): Promise<Reaction | null>
 }

@@ -34,7 +34,7 @@
   }
 
   &__post-child-comments {
-    @apply flex flex-col flex-grow;
+    @apply flex flex-col overflow-y-scroll flex-grow scrollbar-hide;
   }
 
   &__load-more {

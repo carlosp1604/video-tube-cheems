@@ -41,6 +41,6 @@ export class Producer {
   }
 
   get parentProducer (): Producer | null {
-    return this._parentProducer.value ?? null
+    return this._parentProducer.value
   }
 }

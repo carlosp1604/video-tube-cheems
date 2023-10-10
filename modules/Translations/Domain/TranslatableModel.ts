@@ -2,13 +2,18 @@ import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Translation } from '~/modules/Translations/Domain/Translation'
 
 export abstract class TranslatableModel {
-  private _translations: Collection<Translation, string>
+  private _translations: Collection<Translation, Translation['language'] & Translation['field']> =
+    Collection.notLoaded()
 
-  protected constructor (translations: Collection<Translation, string> = Collection.notLoaded()) {
+  get modelTranslations (): Collection<Translation, Translation['language'] & Translation['field']> {
+    return this._translations
+  }
+
+  set modelTranslations (translations: Collection<Translation, Translation['language'] & Translation['field']>) {
     this._translations = translations
   }
 
-  get modelTranslations (): Map<Translation['language'], Translation[]> {
+  get translations (): Map<Translation['language'], Translation[]> {
     const translations = new Map<Translation['language'], Translation[]>()
 
     this._translations.values.forEach((translation) => {

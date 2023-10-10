@@ -2,14 +2,15 @@ import { CreatePostReactionApplicationRequest } from './CreatePostReactionApplic
 import { CreatePostReactionApplicationException } from './CreatePostReactionApplicationException'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
 import { User } from '~/modules/Auth/Domain/User'
 import { Post } from '~/modules/Posts/Domain/Post'
-import { PostReactionApplicationDto } from '~/modules/Posts/Application/Dtos/PostReactionApplicationDto'
+import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 import {
   PostReactionApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostReactionApplicationDtoTranslator'
-import { PostReaction } from '~/modules/Posts/Domain/PostReaction'
+import { Reaction } from '~/modules/Reactions/Domain/Reaction'
+import { ReactionableModelDomainException } from '~/modules/Reactions/Domain/ReactionableModelDomainException'
+import { ReactionRepositoryInterface } from '~/modules/Reactions/Domain/ReactionRepositoryInterface'
 
 export class CreatePostReaction {
   private options: RepositoryOptions[] = ['reactions', 'reactions.user']
@@ -17,12 +18,13 @@ export class CreatePostReaction {
   // eslint-disable-next-line no-useless-constructor
   constructor (
     private readonly postRepository: PostRepositoryInterface,
-    private readonly userRepository: UserRepositoryInterface
+    private readonly userRepository: UserRepositoryInterface,
+    private readonly reactionRepository: ReactionRepositoryInterface
   ) {}
 
   public async create (
     request: CreatePostReactionApplicationRequest
-  ): Promise<PostReactionApplicationDto> {
+  ): Promise<ModelReactionApplicationDto> {
     const [post, _user] = await Promise.all([
       this.getPost(request.postId),
       this.getUser(request.userId),
@@ -30,7 +32,7 @@ export class CreatePostReaction {
 
     const reaction = this.addReactionToPost(post, request)
 
-    await this.postRepository.createReaction(reaction)
+    await this.reactionRepository.save(reaction)
 
     return PostReactionApplicationDtoTranslator.fromDomain(reaction)
   }
@@ -55,19 +57,19 @@ export class CreatePostReaction {
     return user
   }
 
-  private addReactionToPost (post: Post, request: CreatePostReactionApplicationRequest): PostReaction {
+  private addReactionToPost (post: Post, request: CreatePostReactionApplicationRequest): Reaction {
     try {
-      return post.addReaction(request.userId, request.reactionType)
+      return post.createPostReaction(request.userId, request.reactionType)
     } catch (exception: unknown) {
-      if (!(exception instanceof PostDomainException)) {
+      if (!(exception instanceof ReactionableModelDomainException)) {
         throw exception
       }
 
       switch (exception.id) {
-        case PostDomainException.userAlreadyReactedId:
+        case ReactionableModelDomainException.userAlreadyReactedId:
           throw CreatePostReactionApplicationException.userAlreadyReacted(request.userId, request.postId)
 
-        case PostDomainException.cannotAddReactionId:
+        case ReactionableModelDomainException.cannotAddReactionId:
           throw CreatePostReactionApplicationException.cannotAddReaction(request.userId, request.postId)
 
         default:

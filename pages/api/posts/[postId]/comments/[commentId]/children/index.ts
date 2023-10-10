@@ -4,14 +4,14 @@ import {
 } from '~/modules/Posts/Application/CreatePostComment/CreatePostCommentApplicationException'
 import {
   GetPostPostChildCommentsApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/GetPostPostChildCommentsApiRequestDto'
+} from '~/modules/Posts/Infrastructure/Api/Requests/GetPostPostChildCommentsApiRequestDto'
 import {
   GetPostPostChildCommentsApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/GetPostPostChildCommentsApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/GetPostPostChildCommentsApiRequestValidator'
 import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildComments'
 import {
   PostCommentApiRequestValidatorError
-} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import {
   GetPostPostChildCommentsApplicationException
@@ -21,16 +21,16 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import {
   CreatePostChildCommentRequestSanitizer
-} from '~/modules/Posts/Infrastructure/Sanitizers/CreatePostChildCommentRequestSanitizer'
+} from '~/modules/Posts/Infrastructure/Api/Sanitizers/CreatePostChildCommentRequestSanitizer'
 import {
   CreatePostChildCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/CreatePostChildCommentApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/CreatePostChildCommentApiRequestValidator'
 import {
   CreatePostChildCommentRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/CreatePostChildCommentRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Api/Translators/CreatePostChildCommentRequestDtoTranslator'
 import {
   CreatePostChildCommentApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/CreatePostChildCommentApiRequestDto'
+} from '~/modules/Posts/Infrastructure/Api/Requests/CreatePostChildCommentApiRequestDto'
 import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
 import {
   CreatePostChildCommentApplicationException
@@ -43,7 +43,10 @@ import {
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
   POST_CHILD_COMMENT_POST_NOT_FOUND,
   POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import {
+  GetPostPostChildCommentsRequestDtoTranslator
+} from '~/modules/Posts/Infrastructure/Api/Translators/GetPostPostChildCommentsRequestDtoTranslator'
 
 export default async function handler (
   request: NextApiRequest,
@@ -80,14 +83,19 @@ async function handleGet (request: NextApiRequest, response: NextApiResponse) {
     return handleValidationError(request, response, validationError)
   }
 
+  const session = await getServerSession(request, response, authOptions)
+  let userId: string | null = null
+
+  if (session !== null) {
+    userId = session.user.id
+  }
+
   const useCase = container.resolve<GetPostPostChildComments>('getPostPostChildCommentsUseCase')
 
+  const applicationRequest = GetPostPostChildCommentsRequestDtoTranslator.fromApiDto(apiRequest, userId)
+
   try {
-    const comments = await useCase.get({
-      parentCommentId: apiRequest.parentCommentId,
-      page: apiRequest.page,
-      perPage: apiRequest.perPage,
-    })
+    const comments = await useCase.get(applicationRequest)
 
     return response.status(200).json(comments)
   } catch (exception: unknown) {

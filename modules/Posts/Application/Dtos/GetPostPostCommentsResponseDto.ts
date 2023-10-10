@@ -1,8 +1,11 @@
 import { PostCommentApplicationDto } from './PostCommentApplicationDto'
+import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 
 export interface PostWithChildCommentCountDto {
-  postComment: PostCommentApplicationDto
-  childrenNumber: number
+  readonly postComment: PostCommentApplicationDto
+  readonly childrenNumber: number
+  readonly reactionsNumber: number
+  readonly userReaction: ModelReactionApplicationDto | null
 }
 
 export interface GetPostPostCommentsResponseDto {

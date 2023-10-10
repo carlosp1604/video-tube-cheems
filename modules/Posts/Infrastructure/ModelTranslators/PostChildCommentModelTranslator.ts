@@ -1,16 +1,22 @@
 import { DateTime } from 'luxon'
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
-import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
-import { PostCommentWithUser } from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
+import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
+import {
+  PostCommentWithReactions,
+  PostCommentWithUser
+} from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
 import { PrismaUserModelTranslator } from '~/modules/Auth/Infrastructure/PrismaUserModelTranslator'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { User } from '~/modules/Auth/Domain/User'
+import { PostCommentRepositoryOption } from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
+import { Reaction } from '~/modules/Reactions/Domain/Reaction'
 
 export class PostChildCommentModelTranslator {
   public static toDomain (
     prismaPostCommentModel: PrismaPostCommentModel,
-    options: RepositoryOptions[]
+    options: PostCommentRepositoryOption[]
   ): PostChildComment {
     let deletedAt: DateTime | null = null
 
@@ -19,12 +25,25 @@ export class PostChildCommentModelTranslator {
     }
 
     let user: Relationship<User> = Relationship.notLoaded()
+    let reactionsCollection: Collection<Reaction, Reaction['userId']> = Collection.notLoaded()
 
     if (options.includes('comments.user')) {
       const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
       const userDomain = PrismaUserModelTranslator.toDomain(postCommentWithUser.user)
 
       user = Relationship.initializeRelation(userDomain)
+    }
+
+    if (options.includes('comments.reactions')) {
+      const postCommentWithReactions = prismaPostCommentModel as PostCommentWithReactions
+
+      reactionsCollection = Collection.initializeCollection()
+
+      for (const reaction of postCommentWithReactions.reactions) {
+        const domainReaction = ReactionModelTranslator.toDomain(reaction)
+
+        reactionsCollection.addItemFromPersistenceLayer(domainReaction, domainReaction.userId)
+      }
     }
 
     return new PostChildComment(
@@ -36,7 +55,8 @@ export class PostChildCommentModelTranslator {
       DateTime.fromJSDate(prismaPostCommentModel.createdAt),
       DateTime.fromJSDate(prismaPostCommentModel.updatedAt),
       deletedAt,
-      user
+      user,
+      reactionsCollection
     )
   }
 

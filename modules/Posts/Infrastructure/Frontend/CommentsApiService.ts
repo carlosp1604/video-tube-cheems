@@ -31,4 +31,34 @@ export class CommentsApiService {
 
     return (await fetch(`/api/posts/${postId}/comments?${params}`)).json()
   }
+
+  public async createPostCommentReaction (postCommentId: string): Promise<Response> {
+    return fetch(`/api/comments/${postCommentId}/reactions`, {
+      method: 'POST',
+    })
+  }
+
+  public async deletePostCommentReaction (postCommentId: string): Promise<Response> {
+    return fetch(`/api/comments/${postCommentId}/reactions`, {
+      method: 'DELETE',
+    })
+  }
+
+  public async createPostChildCommentReaction (
+    postCommentId: string,
+    parentCommentId: string
+  ): Promise<Response> {
+    return fetch(`/api/comments/${parentCommentId}/children/${postCommentId}/reactions`, {
+      method: 'POST',
+    })
+  }
+
+  public async deletePostChildCommentReaction (
+    postCommentId: string,
+    parentCommentId: string
+  ): Promise<Response> {
+    return fetch(`/api/comments/${parentCommentId}/children/${postCommentId}/reactions`, {
+      method: 'DELETE',
+    })
+  }
 }

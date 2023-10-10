@@ -10,7 +10,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostChildCommentComponentTranslator'
 import {
   GetPostPostChildCommentsResponseDto
-} from '~/modules/Posts/Application/Dtos/GetPostPostChildCommentsResponseDto'
+} from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsResponseDto'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
@@ -19,7 +19,7 @@ import { PostChildCommentList } from '~/modules/Posts/Infrastructure/Components/
 import {
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
   POST_CHILD_COMMENT_POST_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   commentToReply: PostCommentComponentDto
@@ -27,6 +27,7 @@ interface Props {
   onClickRetry: () => void
   onAddReply: () => void
   onDeleteReply: () => void
+  onLikeReply: () => void
 }
 
 export const PostChildComments: FC<Props> = ({
@@ -40,6 +41,7 @@ export const PostChildComments: FC<Props> = ({
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const repliesAreaRef = useRef<HTMLDivElement>(null)
+
   const apiService = new RepliesApiService()
 
   const { t } = useTranslation('post_comments')
@@ -61,7 +63,7 @@ export const PostChildComments: FC<Props> = ({
         const postChildComment = await response.json()
 
         const componentResponse = PostChildCommentComponentDtoTranslator
-          .fromApplication(postChildComment, locale)
+          .fromApplication(postChildComment, 0, null, locale)
 
         setReplies([componentResponse, ...replies])
         onAddReply()
@@ -128,13 +130,13 @@ export const PostChildComments: FC<Props> = ({
       return
     }
 
-    const componentDtos = newReplies.childComments.map((applicationDto) => {
+    const childComments = newReplies.childCommentsWithReactions.map((applicationDto) => {
       return PostChildCommentComponentDtoTranslator.fromApplication(
-        applicationDto, locale
+        applicationDto.postChildComment, applicationDto.reactionsNumber, applicationDto.userReaction, locale
       )
     })
 
-    setReplies([...replies, ...componentDtos])
+    setReplies([...replies, ...childComments])
 
     const pagesNumber = calculatePagesNumber(newReplies.childCommentsCount, defaultPerPage)
 
@@ -152,46 +154,47 @@ export const PostChildComments: FC<Props> = ({
       onClick={ onClickClose }
       ref={ repliesAreaRef }
     >
-    <div
-      className={ styles.postChildComments__container }
-      onClick={ (event) => event.stopPropagation() }
-    >
-      <div className={ styles.postChildComments__titleBar }>
-        <div className={ styles.postChildComments__title }>
-          <BsArrowLeftShort
+      <div
+        className={ styles.postChildComments__container }
+        onClick={ (event) => event.stopPropagation() }
+      >
+        <div className={ styles.postChildComments__titleBar }>
+          <div className={ styles.postChildComments__title }>
+            <BsArrowLeftShort
+              className={ styles.postChildComments__titleBarIcon }
+              onClick={ onClickRetry }
+            />
+            { t('replies_section_title') }
+          </div>
+
+          <BsX
             className={ styles.postChildComments__titleBarIcon }
-            onClick={ onClickRetry }
+            onClick={ onClickClose }
           />
-          { t('replies_section_title') }
+        </div>
+        <div className={ styles.postChildComments__postChildComments }>
+          <PostChildCommentList
+            postComment={ commentToReply }
+            postChildComments={ replies }
+            onDeletePostChildComment={ (postCommentId: string) => {
+              setReplies(replies.filter((childComment) => childComment.id !== postCommentId))
+              onDeleteReply()
+              toast.success(t('post_comment_deleted_success_message'))
+            } }
+          />
+
+          <button className={ `
+            ${styles.postChildComments__loadMore}
+            ${canLoadMore ? styles.postChildComments__loadMore__open : ''}
+          ` }>
+            { t('replies_section_load_more') }
+          </button>
         </div>
 
-        <BsX
-          className={ styles.postChildComments__titleBarIcon }
-          onClick={ onClickClose }
-        />
-      </div>
-      <div className={ styles.postChildComments__postChildComments }>
-        <PostChildCommentList
-          postComment={ commentToReply }
-          postChildComments={ replies }
-          onDeletePostChildComment={ (postCommentId: string) => {
-            setReplies(replies.filter((childComment) => childComment.id !== postCommentId))
-            onDeleteReply()
-            toast.success(t('post_comment_deleted_success_message'))
-          } }
-        />
-
-        <button className={ `
-          ${styles.postChildComments__loadMore}
-          ${canLoadMore ? styles.postChildComments__loadMore__open : ''}
-        ` }>
-          { t('replies_section_load_more') }
-        </button>
-      </div>
-
-      <AddCommentInput onAddComment={ async (comment: string) => {
-        await createReply(comment)
-      } } />
+        <AddCommentInput
+          onAddComment={ async (comment: string) => {
+            await createReply(comment)
+          } } />
       </div>
   </div>
   )

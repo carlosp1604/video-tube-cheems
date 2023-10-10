@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
-import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import {
+  PostsApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
 import { container } from '~/awilix.container'
 import { AddPostViewApiRequestValidator }
-  from '~/modules/Posts/Infrastructure/Validators/AddPostViewApiRequestValidator'
+  from '~/modules/Posts/Infrastructure/Api/Validators/AddPostViewApiRequestValidator'
 import { AddPostViewRequestTranslator } from '~/modules/Posts/Infrastructure/AddPostViewRequestTranslator'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
 import {
@@ -11,12 +13,12 @@ import {
 } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { AddPostViewApiRequest } from '~/modules/Posts/Infrastructure/Dtos/AddPostViewApiRequest'
+import { AddPostViewApiRequest } from '~/modules/Posts/Infrastructure/Api/Requests/AddPostViewApiRequest'
 import {
   POST_BAD_REQUEST, POST_METHOD,
   POST_POST_NOT_FOUND,
   POST_SERVER_ERROR, POST_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

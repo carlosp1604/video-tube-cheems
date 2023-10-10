@@ -1,4 +1,4 @@
-import { PostComment } from './PostComment'
+import { PostComment } from './PostComments/PostComment'
 import { Post } from './Post'
 import { DomainException } from '~/modules/Exceptions/Domain/DomainException'
 import { User } from '~/modules/Auth/Domain/User'
@@ -16,6 +16,12 @@ export class PostDomainException extends DomainException {
   public static producerAlreadySetId = 'post_domain_producer_already_set'
   public static postCommentNotFoundId = 'post_domain_post_comment_not_found'
   public static userCannotDeleteCommentId = 'post_domain_user_cannot_delete_comment'
+
+  constructor (message: string, id: string) {
+    super(message, id)
+
+    Object.setPrototypeOf(this, PostDomainException.prototype)
+  }
 
   public static parentCommentNotFound (parentCommentId: PostComment['id']): PostDomainException {
     return new PostDomainException(

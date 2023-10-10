@@ -1,23 +1,25 @@
 import { DateTime } from 'luxon'
 import { PostComment as PrismaPostCommentModel } from '@prisma/client'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
-import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { PrismaUserModelTranslator } from '~/modules/Auth/Infrastructure/PrismaUserModelTranslator'
 import {
-  PostCommentWithChilds, PostCommentWithUser
+  PostCommentWithChilds, PostCommentWithReactions, PostCommentWithUser
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostCommentModel'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { User } from '~/modules/Auth/Domain/User'
-import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import {
   PostChildCommentModelTranslator
 } from '~/modules/Posts/Infrastructure/ModelTranslators/PostChildCommentModelTranslator'
+import { PostCommentRepositoryOption } from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
+import { Reaction } from '~/modules/Reactions/Domain/Reaction'
+import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
 
 export class PostCommentModelTranslator {
   public static toDomain (
     prismaPostCommentModel: PrismaPostCommentModel,
-    options: RepositoryOptions[]
+    options: PostCommentRepositoryOption[]
   ): PostComment {
     let deletedAt: DateTime | null = null
 
@@ -27,6 +29,7 @@ export class PostCommentModelTranslator {
 
     let user: Relationship<User> = Relationship.notLoaded()
     let childrenCollection: Collection<PostChildComment, PostChildComment['id']> = Collection.notLoaded()
+    let reactionsCollection: Collection<Reaction, Reaction['userId']> = Collection.notLoaded()
 
     if (options.includes('comments.user')) {
       const postCommentWithUser = prismaPostCommentModel as PostCommentWithUser
@@ -48,6 +51,18 @@ export class PostCommentModelTranslator {
       })
     }
 
+    if (options.includes('comments.reactions')) {
+      const postCommentWithReactions = prismaPostCommentModel as PostCommentWithReactions
+
+      reactionsCollection = Collection.initializeCollection()
+
+      for (const reaction of postCommentWithReactions.reactions) {
+        const domainReaction = ReactionModelTranslator.toDomain(reaction)
+
+        reactionsCollection.addItemFromPersistenceLayer(domainReaction, domainReaction.userId)
+      }
+    }
+
     return new PostComment(
       prismaPostCommentModel.id,
       prismaPostCommentModel.comment,
@@ -58,7 +73,8 @@ export class PostCommentModelTranslator {
       DateTime.fromJSDate(prismaPostCommentModel.updatedAt),
       deletedAt,
       user,
-      childrenCollection
+      childrenCollection,
+      reactionsCollection
     )
   }
 

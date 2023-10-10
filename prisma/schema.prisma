@@ -45,9 +45,10 @@ model Post {
   tags         PostPostTag[]
   actors       PostActor[]
   comments     PostComment[]
-  reactions    PostReaction[]
+  reactions    Reaction[]      @relation("Reaction")
   views        PostView[]
   translations Translatation[] @relation("PostTranslation")
+  videoUrls    VideoUrl[]
 
   @@map("posts")
 }
@@ -104,7 +105,7 @@ model User {
   updatedAt         DateTime           @map("updated_at")
   deletedAt         DateTime?          @map("deleted_at")
   emailVerified     DateTime?          @map("email_verified")
-  reactions         PostReaction[]
+  reactions         Reaction[]
   comments          PostComment[]
   views             PostView[]
   verificationToken VerificationToken?
@@ -124,18 +125,27 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-model PostReaction {
-  post         Post      @relation(fields: [postId], references: [id])
-  user         User      @relation(fields: [userId], references: [id])
-  postId       String    @map("post_id")
-  userId       String    @map("user_id")
-  reactionType String    @map("reaction_type")
-  createdAt    DateTime  @map("created_at")
-  updatedAt    DateTime  @map("updated_at")
-  deletedAt    DateTime? @map("deleted_at")
+enum ReactionableType {
+  Post
+  PostComment
+}
 
-  @@id([postId, userId])
-  @@map("post_reactions")
+model Reaction {
+  reactionableId   String           @map("reactionable_id")
+  reactionType     String           @map("reaction_type")
+  userId           String           @map("user_id")
+  user             User             @relation(fields: [userId], references: [id])
+  reactionableType ReactionableType @map("reactionable_type")
+
+  post        Post?        @relation("Reaction", fields: [reactionableId], references: [id], map: "post_reaction")
+  postComment PostComment? @relation("PostCommentReaction", fields: [reactionableId], references: [id], map: "post_comment_reaction")
+
+  createdAt DateTime  @map("created_at")
+  updatedAt DateTime  @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@id([reactionableType, reactionableId, userId])
+  @@map("reactions")
 }
 
 model PostComment {
@@ -151,6 +161,7 @@ model PostComment {
   updatedAt       DateTime      @map("updated_at")
   deletedAt       DateTime?     @map("deleted_at")
   childComments   PostComment[] @relation("Replies")
+  reactions       Reaction[]    @relation("PostCommentReaction")
 
   @@map("post_comments")
 }
@@ -215,4 +226,30 @@ model Translatation {
 
   @@id([translatableId, field, translatableType, language])
   @@map("translations")
+}
+
+model VideoProvider {
+  id        String     @id
+  name      String
+  logoUrl   String     @map("logo_url")
+  createdAt DateTime   @map("created_at")
+  updatedAt DateTime   @map("updated_at")
+  videoUrls VideoUrl[]
+
+  @@map("video_providers")
+}
+
+model VideoUrl {
+  type       String
+  providerId String        @map("provider_id")
+  provider   VideoProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  postId     String        @map("post_id")
+  post       Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  url        String
+  createdAt  DateTime      @map("created_at")
+  updatedAt  DateTime      @map("updated_at")
+  deletedAt  DateTime?     @map("deleted_at")
+
+  @@id([providerId, postId, type])
+  @@map("video_urls")
 }

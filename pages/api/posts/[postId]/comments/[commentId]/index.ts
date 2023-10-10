@@ -1,33 +1,37 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
-import { DeletePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/DeletePostCommentApiRequestDto'
+import {
+  DeletePostCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/DeletePostCommentApiRequestDto'
 import {
   DeletePostCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/DeletePostCommentApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/DeletePostCommentApiRequestValidator'
 import {
   DeletePostRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/DeletePostRequestDtoTranslator'
+} from '~/modules/Posts/Infrastructure/Api/Translators/DeletePostRequestDtoTranslator'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
 import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   DeletePostCommentApplicationException
 } from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationException'
-import { UpdatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Dtos/UpdatePostCommentApiRequestDto'
+import {
+  UpdatePostCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/UpdatePostCommentApiRequestDto'
 import {
   UpdatePostCommentRequestSanitizer
-} from '~/modules/Posts/Infrastructure/Sanitizers/UpdatePostCommentRequestSanitizer'
+} from '~/modules/Posts/Infrastructure/Api/Sanitizers/UpdatePostCommentRequestSanitizer'
 import {
   UpdatePostCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/UpdatePostCommentApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/UpdatePostCommentApiRequestValidator'
 import { UpdatePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/UpdatePostRequestDtoTranslator'
 import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
 import {
   UpdatePostCommentApplicationException
-} from '~/modules/Posts/Application/UpdatePostCommentApplicationException'
+} from '~/modules/Posts/Application/UpdatePostReaction/UpdatePostCommentApplicationException'
 import {
   PostCommentApiRequestValidatorError
-} from '~/modules/Posts/Infrastructure/Validators/PostCommentApiRequestValidatorError'
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
 import { container } from '~/awilix.container'
 import {
   POST_COMMENT_AUTH_REQUIRED,
@@ -40,7 +44,7 @@ import {
   POST_COMMENT_POST_NOT_FOUND,
   POST_COMMENT_SERVER_ERROR,
   POST_COMMENT_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

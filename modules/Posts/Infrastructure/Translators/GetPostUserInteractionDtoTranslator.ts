@@ -1,6 +1,6 @@
 import {
   GetPostUserInteractionApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/GetPostUserInteractionApiRequestDto'
+} from '~/modules/Posts/Infrastructure/Api/Requests/GetPostUserInteractionApiRequestDto'
 import {
   GetPostUserReactionApplicationRequest
 } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReactionApplicationRequest'

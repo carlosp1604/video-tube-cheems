@@ -1,19 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { PostsApiRequestValidatorError } from '~/modules/Posts/Infrastructure/Validators/PostsApiRequestValidatorError'
+import {
+  PostsApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
 import {
   POST_USER_INTERACTION_AUTH_REQUIRED,
   POST_USER_INTERACTION_BAD_REQUEST, POST_USER_INTERACTION_METHOD, POST_USER_INTERACTION_SERVER_ERROR,
   POST_USER_INTERACTION_VALIDATION
-} from '~/modules/Posts/Infrastructure/PostApiExceptionCodes'
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '~/pages/api/auth/[...nextauth]'
 import { container } from '~/awilix.container'
 import {
   GetPostUserInteractionApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/GetPostUserInteractionApiRequestDto'
+} from '~/modules/Posts/Infrastructure/Api/Requests/GetPostUserInteractionApiRequestDto'
 import {
   GetPostUserInteractionApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Validators/GetPostUserInteractionApiRequestValidator'
+} from '~/modules/Posts/Infrastructure/Api/Validators/GetPostUserInteractionApiRequestValidator'
 import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
 import {
   GetPostUserInteractionDtoTranslator

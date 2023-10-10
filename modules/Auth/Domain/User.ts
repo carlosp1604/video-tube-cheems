@@ -73,38 +73,34 @@ export class User {
 
     const verificationTokenToAdd = this.buildVerificationToken(type)
 
-    try {
-      const verificationToken = this.verificationToken
+    const verificationToken = this.verificationToken
 
-      if (this.verificationToken !== null) {
-        if (!this.verificationToken.tokenHasExpired() && !renovateToken) {
-          throw UserDomainException.userHasAlreadyAnActiveToken(this.id)
-        }
-
-        const relationshipUpdated = this._verificationToken.updateRelationship(verificationToken)
-
-        if (!relationshipUpdated) {
-          throw UserDomainException.cannotAddVerificationToken(this.id)
-        }
-
-        return verificationTokenToAdd
+    if (this.verificationToken !== null) {
+      if (!this.verificationToken.tokenHasExpired() && !renovateToken) {
+        throw UserDomainException.userHasAlreadyAnActiveToken(this.id)
       }
-    } catch (exception: unknown) {
-      if (!(exception instanceof RelationshipDomainException)) {
-        throw exception
-      }
+
+      return verificationTokenToAdd
     }
 
-    this._verificationToken = Relationship.createRelation(verificationTokenToAdd)
+    this._verificationToken.updateRelationship(verificationToken)
 
     return verificationTokenToAdd
   }
 
   public removeVerificationToken (): void {
-    const removed = this._verificationToken.removeRelationship()
+    try {
+      this._verificationToken.removeRelationship()
+    } catch (exception: unknown) {
+      if (!(exception instanceof RelationshipDomainException)) {
+        throw exception
+      }
 
-    if (!removed) {
-      throw UserDomainException.cannotRemoveVerificationToken(this.id)
+      if (exception.id === RelationshipDomainException.cannotDeleteRelationId) {
+        throw UserDomainException.cannotRemoveVerificationToken(this.id)
+      }
+
+      throw exception
     }
   }
 

@@ -1,4 +1,8 @@
 import { VideoComponentDto } from './VideoComponentDto'
+import {
+  VideoDownloadUrlComponentDto,
+  VideoEmbedUrlComponentDto
+} from '~/modules/Posts/Infrastructure/Dtos/VideoUrlComponentDto'
 
 export interface PostComponentDtoActorDto {
   readonly id: string
@@ -27,4 +31,6 @@ export interface PostComponentDto {
   readonly tags: PostComponentDtoTagDto[]
   readonly producer: PostComponentDtoProducerDto | null
   readonly actor: PostComponentDtoActorDto | null
+  readonly downloadUrls: VideoDownloadUrlComponentDto[]
+  readonly embedUrls: VideoEmbedUrlComponentDto[]
 }

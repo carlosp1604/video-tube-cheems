@@ -1,0 +1,22 @@
+.post-comment-interaction-section {
+  &__container {
+    @apply flex flex-row gap-x-4 items-center ml-8 my-2;
+  }
+
+  &__like-section {
+    @apply flex flex-row items-center gap-x-1 text-brand-400 text-sm
+    transition-all;
+  }
+
+  &__like-icon {
+    @apply text-base-500 text-base;
+
+    &:hover {
+      @apply text-base-100 cursor-pointer scale-110 transition-all;
+    }
+
+    &_active {
+      @apply text-brand-400 transition-colors;
+    }
+  }
+}

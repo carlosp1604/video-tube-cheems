@@ -3,7 +3,7 @@ import { CreatePostCommentApplicationException } from './CreatePostCommentApplic
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { Post } from '~/modules/Posts/Domain/Post'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import {
   PostCommentApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostCommentApplicationDtoTranslator'

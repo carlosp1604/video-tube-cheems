@@ -1,0 +1,100 @@
+.post-extra-data {
+  $parentBlock: &;
+
+  &__container {
+    @apply flex flex-col;
+  }
+
+  &__post-extra-data {
+    @apply hidden flex-col gap-y-6 h-0 p-4 overflow-hidden
+      bg-base-900 rounded-lg transition-all;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+
+    &__open {
+      @apply flex h-fit transition-all duration-500;
+    }
+  }
+
+  &__extra-data-button-container {
+    @apply flex justify-center -mt-5;
+
+    &_open {
+      @apply border-0 -mt-0;
+    }
+  }
+
+  &__extra-data-button {
+    @apply text-xs font-semibold transition-colors p-1 px-2
+      rounded-t-lg bg-base-950 -mb-0.5;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    &:hover, &:focus {
+      @apply cursor-pointer text-base-600 transition-colors;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+
+    &_open {
+      @apply rounded-b-lg rounded-t-none;
+    }
+  }
+
+  &__extra-data-button:hover, &__extra-data-button:focus {
+    #{$parentBlock}__extra-data-icon {
+      @apply animate-bounce;
+    }
+  }
+
+  &__extra-data-icon {
+    @apply inline-block ml-2 text-brand-400 text-lg transition;
+  }
+
+  &__data-item {
+    @apply flex flex-col gap-y-2 font-bold text-xs;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__actors-container {
+    @apply grid gap-2;
+    grid-template-columns: repeat(2, 1fr);
+
+    @screen md {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @screen lg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__actor-logo {
+    @apply rounded-full w-8 h-8 object-cover mr-4;
+  }
+
+  &__actors-item-link {
+    @apply flex items-center rounded-lg p-1 font-normal;
+
+    &:hover, &:focus {
+      @apply bg-base-800;
+    }
+  }
+
+  &__post-description {
+    @apply text-base-500 rounded-lg font-normal whitespace-pre-wrap;
+  }
+}

@@ -5,6 +5,9 @@ import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplica
 import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
 import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Application/ProducerApplicationDtoTranslator'
 import { PostTranslationsDtoTranslator } from '~/modules/Posts/Application/Translators/PostTranslationsDtoTranslator'
+import {
+  VideoUrlApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/VideoUrlApplicationDtoTranslator'
 
 // NOTE: We are not testing this due to this class does not have logic to be tested
 export class PostApplicationDtoTranslator {
@@ -32,6 +35,9 @@ export class PostApplicationDtoTranslator {
       actor: post.actor !== null
         ? ActorApplicationDtoTranslator.fromDomain(post.actor)
         : null,
+      videoUrls: post.videoUrls.map((videoUrl) => {
+        return VideoUrlApplicationDtoTranslator.fromDomain(videoUrl)
+      }),
     }
   }
 }

@@ -1,8 +1,18 @@
 import { Post } from './Post'
 
-export interface PostWithCountInterface {
+export interface PostReactionsInterface {
+  like: number
+  dislike: number
+}
+
+export interface PostWithViewsCommentsReactionsInterface {
   post: Post
-  postReactions: number
   postComments: number
+  postViews: number
+  reactions: PostReactionsInterface
+}
+
+export interface PostWithViewsInterface {
+  post: Post
   postViews: number
 }

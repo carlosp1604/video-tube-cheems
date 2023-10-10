@@ -27,6 +27,7 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
 
   try {
     const postWithCount = await useCase.get({ slug })
+
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
 
     return {
@@ -36,7 +37,8 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
           return PostCardComponentDtoTranslator.fromApplication(relatedPost.post, relatedPost.postViews, locale)
         }),
         postViewsNumber: postWithCount.views,
-        postReactionsNumber: postWithCount.reactions,
+        postLikes: postWithCount.reactions.like,
+        postDislikes: postWithCount.reactions.dislike,
         postCommentsNumber: postWithCount.comments,
         ...await serverSideTranslations(
           locale,

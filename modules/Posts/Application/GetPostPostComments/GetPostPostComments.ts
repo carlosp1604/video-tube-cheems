@@ -1,13 +1,17 @@
-import { GetPostPostCommentsResponseDto, PostWithChildCommentCountDto } from '../Dtos/GetPostPostCommentsResponseDto'
 import { GetPostPostCommentsApplicationException } from './GetPostPostCommentsApplicationException'
-import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostCommentRepositoryInterface'
+import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
-import {
-  PostWithChildCommentCountDtoTranslator
-} from '~/modules/Posts/Application/Translators/PostWithChildCommentCountDtoTranslator'
 import {
   GetPostPostCommentsApplicationRequest
 } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostCommentsApplicationRequest'
+import {
+  GetPostPostCommentsResponseDto,
+  PostWithChildCommentCountDto
+} from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
+import {
+  PostCommentApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/PostCommentApplicationDtoTranslator'
+import { ReactionApplicationDtoTranslator } from '~/modules/Reactions/Application/ReactionApplicationDtoTranslator'
 
 export class GetPostPostComments {
   // eslint-disable-next-line no-useless-constructor
@@ -22,13 +26,21 @@ export class GetPostPostComments {
       await this.postCommentRepository.findWithOffsetAndLimit(
         request.postId,
         offset,
-        request.perPage
+        request.perPage,
+        request.userId
       ),
       await this.postCommentRepository.countPostComments(request.postId),
     ])
 
     const commentsWithChildCount: PostWithChildCommentCountDto[] = postComments.map((comment) => {
-      return PostWithChildCommentCountDtoTranslator.fromDomain(comment.postComment, comment.childComments)
+      return {
+        postComment: PostCommentApplicationDtoTranslator.fromDomain(comment.postComment),
+        childrenNumber: comment.childComments,
+        reactionsNumber: comment.reactions,
+        userReaction: comment.userReaction !== null
+          ? ReactionApplicationDtoTranslator.fromDomain(comment.userReaction)
+          : null,
+      }
     })
 
     return {

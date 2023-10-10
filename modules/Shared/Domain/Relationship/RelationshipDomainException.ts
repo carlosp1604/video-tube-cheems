@@ -2,6 +2,7 @@ import { DomainException } from '~/modules/Exceptions/Domain/DomainException'
 
 export class RelationshipDomainException extends DomainException {
   public static relationNotLoadedId = 'relationship_relation_not_loaded'
+  public static cannotDeleteRelationId = 'relationship_cannot_delete_relation'
   public static collectionNotLoadedId = 'relationship_collection_not_loaded'
 
   constructor (message: string, id: string) {
@@ -14,6 +15,13 @@ export class RelationshipDomainException extends DomainException {
     return new RelationshipDomainException(
       'Relation not loaded',
       this.relationNotLoadedId
+    )
+  }
+
+  public static cannotDeleteRelation (): RelationshipDomainException {
+    return new RelationshipDomainException(
+      'Cannot delete relation',
+      this.cannotDeleteRelationId
     )
   }
 

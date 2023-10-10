@@ -1,8 +1,8 @@
 import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
-import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 
 export class CreatePostChildCommentApplicationException extends ApplicationException {
   public static cannotAddCommentId = 'create_post_child_comment_cannot_add_comment'

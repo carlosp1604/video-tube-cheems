@@ -60,8 +60,11 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
                 // TODO: This should be extracted to an object when grow up
                 title: t('user_menu_profile_button'),
                 isActive: false,
-                action: `/users/${user.username}`,
-                icon: <CiUser />,
+                action: {
+                  url: `/users/${user.username}`,
+                  blank: false,
+                },
+                picture: <CiUser />,
                 onClick: () => setIsOpen(false),
               },
             ] } />

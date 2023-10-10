@@ -4,7 +4,8 @@
   }
 
   &__post-comment-container {
-    @apply bg-base-700 px-5 py-3;
+    @apply sticky top-0 bg-base-700 px-5 py-3 backdrop-filter
+      backdrop-blur-md bg-opacity-50;
   }
 
   &__post-child-comment-container {

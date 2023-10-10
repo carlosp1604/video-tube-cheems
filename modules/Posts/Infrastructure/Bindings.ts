@@ -1,7 +1,7 @@
 import { Provider } from '~/injector/Provider'
 import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { MysqlPostRepository } from '~/modules/Posts/Infrastructure/MysqlPostRepository'
-import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostCommentRepositoryInterface'
+import { PostCommentRepositoryInterface } from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
 import { MysqlPostCommentRepository } from '~/modules/Posts/Infrastructure/MysqlPostCommentRepository'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'

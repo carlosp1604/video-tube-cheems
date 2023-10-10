@@ -4,7 +4,6 @@ import { PostTagModelTranslator } from './PostTagModelTranslator'
 import { ActorModelTranslator } from './ActorModelTranslator'
 import { DateTime } from 'luxon'
 import { PostCommentModelTranslator } from './PostCommentModelTranslator'
-import { PostReactionModelTranslator } from './PostReactionModelTranslator'
 import { Post as PostPrismaModel } from '@prisma/client'
 import {
   PostWithActor,
@@ -13,7 +12,7 @@ import {
   PostWithMeta,
   PostWithProducerWithParent,
   PostWithReactions,
-  PostWithTags, PostWithTranslations
+  PostWithTags, PostWithTranslations, PostWithVideoUrlWithProviders
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostModel'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ProducerModelTranslator } from '~/modules/Producers/Infrastructure/ProducerModelTranslator'
@@ -22,11 +21,17 @@ import { PostMeta } from '~/modules/Posts/Domain/PostMeta'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { PostTag } from '~/modules/Posts/Domain/PostTag'
 import { Actor } from '~/modules/Actors/Domain/Actor'
-import { PostComment } from '~/modules/Posts/Domain/PostComment'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { Producer } from '~/modules/Producers/Domain/Producer'
-import { PostReaction } from '~/modules/Posts/Domain/PostReaction'
+import { Reaction } from '~/modules/Reactions/Domain/Reaction'
 import { Translation } from '~/modules/Translations/Domain/Translation'
 import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
+import { VideoUrl } from '~/modules/Posts/Domain/VideoUrls/VideoUrl'
+import { VideoUrlModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/VideoUrlModelTranslator'
+import {
+  PostCommentRepositoryOptions
+} from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
+import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
 
 export class PostModelTranslator {
   public static toDomain (
@@ -48,11 +53,12 @@ export class PostModelTranslator {
     let tagsCollection: Collection<PostTag, PostTag['id']> = Collection.notLoaded()
     let actorsCollection: Collection<Actor, Actor['id']> = Collection.notLoaded()
     let commentsCollection: Collection<PostComment, PostComment['id']> = Collection.notLoaded()
-    let reactionsCollection: Collection<PostReaction, PostReaction['userId']> = Collection.notLoaded()
+    let reactionsCollection: Collection<Reaction, Reaction['userId']> = Collection.notLoaded()
     let producerRelationship: Relationship<Producer | null> = Relationship.notLoaded()
     let actorRelationship: Relationship<Actor | null> = Relationship.notLoaded()
-    let translationsCollection: Collection<Translation, string> =
+    let translationsCollection: Collection<Translation, Translation['language'] & Translation['field']> =
       Collection.notLoaded()
+    let videoUrlsCollection: Collection<VideoUrl, VideoUrl['providerId'] & VideoUrl['type']> = Collection.notLoaded()
 
     if (options.includes('meta')) {
       metaCollection = Collection.initializeCollection()
@@ -91,9 +97,12 @@ export class PostModelTranslator {
       commentsCollection = Collection.initializeCollection()
       const postWithComments = prismaPostModel as PostWithComments
 
+      const commentsOptions =
+        PostCommentRepositoryOptions.filter((option) => options.includes(option))
+
       for (let i = 0; i < postWithComments.comments.length; i++) {
         const commentDomain = PostCommentModelTranslator.toDomain(
-          postWithComments.comments[i], options
+          postWithComments.comments[i], commentsOptions
         )
 
         commentsCollection.addItemFromPersistenceLayer(commentDomain, commentDomain.id)
@@ -105,7 +114,7 @@ export class PostModelTranslator {
       const postWithReactions = prismaPostModel as PostWithReactions
 
       for (let i = 0; i < postWithReactions.reactions.length; i++) {
-        const reactionDomain = PostReactionModelTranslator.toDomain(postWithReactions.reactions[i])
+        const reactionDomain = ReactionModelTranslator.toDomain(postWithReactions.reactions[i])
 
         reactionsCollection.addItemFromPersistenceLayer(reactionDomain, reactionDomain.userId)
       }
@@ -149,6 +158,18 @@ export class PostModelTranslator {
       })
     }
 
+    if (options.includes('videoUrl')) {
+      const postWithVideoUrlsWithProviders = prismaPostModel as PostWithVideoUrlWithProviders
+
+      videoUrlsCollection = Collection.initializeCollection()
+
+      postWithVideoUrlsWithProviders.videoUrls.forEach((videoUrl) => {
+        const domainVideoUrl = VideoUrlModelTranslator.toDomain(videoUrl)
+
+        videoUrlsCollection.addItemFromPersistenceLayer(domainVideoUrl, domainVideoUrl.providerId + domainVideoUrl.type)
+      })
+    }
+
     return new Post(
       prismaPostModel.id,
       prismaPostModel.title,
@@ -168,7 +189,8 @@ export class PostModelTranslator {
       Collection.notLoaded(),
       producerRelationship,
       translationsCollection,
-      actorRelationship
+      actorRelationship,
+      videoUrlsCollection
     )
   }
 

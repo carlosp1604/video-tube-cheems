@@ -5,7 +5,7 @@ import { User } from '~/modules/Auth/Domain/User'
 import {
   CreatePostChildCommentApplicationRequestDto
 } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationRequestDto'
-import { PostChildComment } from '~/modules/Posts/Domain/PostChildComment'
+import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
 import {
   CreatePostChildCommentApplicationException
 } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildCommentApplicationException'

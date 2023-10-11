@@ -2,8 +2,11 @@ import { createRef, FC, ReactElement, useEffect, useState } from 'react'
 import { VideoEmbedUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/VideoUrlComponentDto'
 import styles from './VideoEmbedPlayer.module.scss'
 import Image from 'next/image'
-import { BsThreeDotsVertical } from 'react-icons/bs'
+import { BsPlay, BsThreeDotsVertical } from 'react-icons/bs'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { useTranslation } from 'next-i18next'
+import * as uuid from 'uuid'
+import { Tooltip } from 'react-tooltip'
 
 export interface Props {
   videoEmbedUrls: VideoEmbedUrlComponentDto[]
@@ -16,11 +19,33 @@ export const VideoEmbedPlayer: FC<Props> = ({ videoEmbedUrls }) => {
   const [showVideoOptions, setShowVideoOptions] = useState<boolean>(false)
   const iframeRef = createRef<HTMLIFrameElement>()
 
+  const { t } = useTranslation('post')
+  const tooltipUuid = uuid.v4()
+
   useEffect(() => {
     if (iframeRef.current) {
       iframeRef.current.src = selectedUrl.url
     }
   }, [])
+
+  let sourceSelectorButton: ReactElement | null = null
+
+  if (videoEmbedUrls.length > 1) {
+    sourceSelectorButton = (
+      <button
+        className={ `
+          ${styles.videoEmbedPlayer__switcherButton}
+          ${showVideoOptions ? styles.videoEmbedPlayer__switcherButton_visible : ''}
+         ` }
+        onClick={ () => setMenuOpen(!menuOpen) }
+        title={ t('post_video_embed_player_selector_button_title') }
+        data-tooltip-id={ tooltipUuid }
+        data-tooltip-content={ t('post_video_embed_player_selector_button_title') }
+      >
+        <BsThreeDotsVertical className={ styles.videoEmbedPlayer__optionIcon }/>
+      </button>
+    )
+  }
 
   const handleIframeEvents = async () => {
     setShowVideoOptions(true)
@@ -46,39 +71,51 @@ export const VideoEmbedPlayer: FC<Props> = ({ videoEmbedUrls }) => {
       ` }
         onClick={ () => setMenuOpen(false) }
       >
-        <span className={ styles.videoEmbedPlayer__optionsContainerTitle }>
-          Selecciona un reproductor
-        </span>
+        <div className={ styles.videoEmbedPlayer__titleSection }>
+          <span className={ styles.videoEmbedPlayer__iconWrapper }>
+            <BsPlay className={ styles.videoEmbedPlayer__icon }/>
+          </span>
+          <span className={ styles.videoEmbedPlayer__title }>
+            { t('post_video_embed_player_sources_menu_title') }
+            <small className={ styles.videoEmbedPlayer__subtitle }>
+              { t('post_video_embed_player_sources_menu_subtitle') }
+            </small>
+          </span>
+        </div>
 
-        { videoEmbedUrls.map((embedUrl) => {
-          return (
-            <button
-              key={ embedUrl.url }
-              className={ `
+        <div className={ styles.videoEmbedPlayer__optionsContainerOptionList }>
+          { videoEmbedUrls.map((embedUrl) => {
+            return (
+              <button
+                key={ embedUrl.url }
+                className={ `
                 ${styles.videoEmbedPlayer__optionItem}
                 ${menuOpen ? styles.videoEmbedPlayer__optionItem__open : ''}
                 ${selectedUrl.url === embedUrl.url ? styles.videoEmbedPlayer__optionItem__selected : ''}
               ` }
-              onClick={ () => {
-                setVideoReady(false)
-                setSelectedUrl(embedUrl)
-                setMenuOpen(!menuOpen)
-              } }
-            >
-              <Image
-                src={ embedUrl.logoUrl }
-                alt={ embedUrl.name }
-                className={ styles.videoEmbedPlayer__optionLogo }
-                width={ 0 }
-                height={ 0 }
-                sizes={ '100vw' }
-              />
-              <span>
+                onClick={ () => {
+                  if (selectedUrl !== embedUrl) {
+                    setVideoReady(false)
+                    setSelectedUrl(embedUrl)
+                  }
+                  setMenuOpen(!menuOpen)
+                } }
+              >
+                <Image
+                  src={ embedUrl.logoUrl }
+                  alt={ embedUrl.name }
+                  className={ styles.videoEmbedPlayer__optionLogo }
+                  width={ 0 }
+                  height={ 0 }
+                  sizes={ '100vw' }
+                />
+                <span>
                 { embedUrl.name }
               </span>
-            </button>
-          )
-        }) }
+              </button>
+            )
+          }) }
+        </div>
 
       </div>
       { !videoReady ? loadingState : '' }
@@ -92,18 +129,15 @@ export const VideoEmbedPlayer: FC<Props> = ({ videoEmbedUrls }) => {
         onTouchMove={ handleIframeEvents }
         allowFullScreen={ true }
       />
-
-      <button
-        className={ `
-          ${styles.videoEmbedPlayer__switcherButton}
-          ${showVideoOptions ? styles.videoEmbedPlayer__switcherButton_visible : ''}
-         ` }
-        onClick={ () => setMenuOpen(!menuOpen) }
-        title={ 'Some title' }
-      >
-        <BsThreeDotsVertical className={ styles.videoEmbedPlayer__optionIcon }
+      { sourceSelectorButton }
+      { sourceSelectorButton !== null
+        ? <Tooltip
+            id={ tooltipUuid }
+            place={ 'top' }
+            positionStrategy={ 'fixed' }
         />
-      </button>
+        : null
+      }
     </div>
 
   )

@@ -4,15 +4,31 @@
   }
 
   &__title-section {
-    @apply flex gap-x-3 items-center justify-center;
+    @apply flex gap-x-2 items-center justify-center;
   }
 
   &__title {
     @apply flex flex-col text-base font-semibold;
+
+    @screen md {
+      @apply text-lg;
+    }
+
+    @screen md {
+      @apply text-xl;
+    }
   }
 
   &__subtitle {
-    @apply text-xs font-light;
+    @apply text-xs font-light whitespace-pre-line -mt-1;
+
+    @screen md {
+      @apply text-sm mt-0;
+    }
+
+    @screen lg {
+      @apply text-base mt-0;
+    }
   }
 
   &__icon-wrapper {
@@ -24,10 +40,10 @@
   }
 
   &__icon {
-    @apply h-full w-full p-2;
+    @apply h-full w-full p-1;
 
     @screen md {
-      @apply p-3;
+      @apply p-2;
     }
   }
 

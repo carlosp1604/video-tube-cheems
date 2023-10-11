@@ -83,7 +83,7 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @param options Options with the User's relationships to load
    * @return User if found or null
    */
-  public async findById (userId: User['id'], options: FindByIdOptions[]): Promise<User | null> {
+  public async findById (userId: User['id'], options: FindByIdOptions[] = []): Promise<User | null> {
     let queryIncludes: UserInclude<DefaultArgs> | undefined
 
     if (options.includes('savedPosts')) {

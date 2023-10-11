@@ -2,9 +2,12 @@ import { PrismaUserModelTranslator } from './PrismaUserModelTranslator'
 import { User } from '~/modules/Auth/Domain/User'
 import { prisma } from '~/persistence/prisma'
 import {
-  FindByEmailOptions,
+  FindByEmailOptions, FindByIdOptions,
   UserRepositoryInterface
 } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { Prisma } from '.prisma/client'
+import UserInclude = Prisma.UserInclude;
+import { DefaultArgs } from '@prisma/client/runtime/library'
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
@@ -77,21 +80,35 @@ export class MysqlUserRepository implements UserRepositoryInterface {
   /**
    * Find a User given its User ID
    * @param userId User's ID
+   * @param options Options with the User's relationships to load
    * @return User if found or null
    */
-  public async findById (userId: User['id']): Promise<User | null> {
+  public async findById (userId: User['id'], options: FindByIdOptions[]): Promise<User | null> {
+    let queryIncludes: UserInclude<DefaultArgs> | undefined
+
+    if (options.includes('savedPosts')) {
+      queryIncludes = {
+        savedPosts: {
+          include: {
+            post: true,
+          },
+        },
+      }
+    }
+
     const user = await prisma.user.findFirst({
       where: {
         deletedAt: null,
         id: userId,
       },
+      include: queryIncludes,
     })
 
     if (user === null) {
       return null
     }
 
-    return PrismaUserModelTranslator.toDomain(user)
+    return PrismaUserModelTranslator.toDomain(user, options)
   }
 
   /**

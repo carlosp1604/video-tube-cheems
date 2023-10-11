@@ -4,10 +4,16 @@ import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { VerificationToken } from '~/modules/Auth/Domain/VerificationToken'
 import { UserRepositoryOptions } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { User as PrismaUserModel } from '@prisma/client'
-import { UserWithVerificationToken } from '~/modules/Auth/Infrastructure/PrismaModels/PrismaUserModels'
+import {
+  UserWithSavedPosts,
+  UserWithVerificationToken
+} from '~/modules/Auth/Infrastructure/PrismaModels/PrismaUserModels'
 import {
   PrismaVerificationTokenModelTranslator
 } from '~/modules/Auth/Infrastructure/PrismaVerificationTokenModelTranslator'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { PostModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostModelTranslator'
 
 export class PrismaUserModelTranslator {
   public static toDomain (prismaUserModel: PrismaUserModel, options: UserRepositoryOptions[] = []) {
@@ -23,6 +29,7 @@ export class PrismaUserModelTranslator {
     }
 
     let verificationTokenRelationship: Relationship<VerificationToken | null> = Relationship.notLoaded()
+    let savedPostsCollection: Collection<Post, Post['id']> = Collection.notLoaded()
 
     if (options.includes('verificationToken')) {
       const prismaUserModelWithVerificationToken = prismaUserModel as UserWithVerificationToken
@@ -37,6 +44,17 @@ export class PrismaUserModelTranslator {
       }
     }
 
+    if (options.includes('savedPosts')) {
+      savedPostsCollection = Collection.initializeCollection()
+      const userWithSavedPosts = prismaUserModel as UserWithSavedPosts
+
+      userWithSavedPosts.savedPosts.forEach((post) => {
+        const domainPost = PostModelTranslator.toDomain(post.post, [])
+
+        savedPostsCollection.addItemFromPersistenceLayer(domainPost, domainPost.id)
+      })
+    }
+
     return new User(
       prismaUserModel.id,
       prismaUserModel.name,
@@ -49,7 +67,8 @@ export class PrismaUserModelTranslator {
       DateTime.fromJSDate(prismaUserModel.updatedAt),
       emailVerifiedAt,
       deletedAt,
-      verificationTokenRelationship
+      verificationTokenRelationship,
+      savedPostsCollection
     )
   }
 

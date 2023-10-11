@@ -1,8 +1,10 @@
 import { User } from './User'
 
-export type UserRepositoryOptions = 'verificationToken'
+export type UserRepositoryOptions = 'verificationToken'| 'savedPosts'
 
 export type FindByEmailOptions = Extract<UserRepositoryOptions, 'verificationToken'>
+
+export type FindByIdOptions = Extract<UserRepositoryOptions, 'savedPosts'>
 
 export interface UserRepositoryInterface {
   /**
@@ -30,9 +32,10 @@ export interface UserRepositoryInterface {
   /**
    * Find a User given its User ID
    * @param userId User's ID
+   * @param options Options with the User's relationships to load
    * @return User if found or null
    */
-  findById(userId: User['id']): Promise<User | null>
+  findById(userId: User['id'], options?:FindByIdOptions[]): Promise<User | null>
 
   /**
    * Update a User in the database

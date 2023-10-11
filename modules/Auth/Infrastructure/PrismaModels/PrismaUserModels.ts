@@ -5,3 +5,13 @@ export type UserWithVerificationToken = Prisma.UserGetPayload<{
     verificationToken: true
   }
 }>
+
+export type UserWithSavedPosts = Prisma.UserGetPayload<{
+  include: {
+    savedPosts: {
+      include: {
+        post: true
+      }
+    }
+  }
+}>

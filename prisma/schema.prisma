@@ -49,6 +49,7 @@ model Post {
   views        PostView[]
   translations Translatation[] @relation("PostTranslation")
   videoUrls    VideoUrl[]
+  savedPosts   SavedPost[]
 
   @@map("posts")
 }
@@ -109,6 +110,7 @@ model User {
   comments          PostComment[]
   views             PostView[]
   verificationToken VerificationToken?
+  savedPosts        SavedPost[]
 
   @@map("users")
 }
@@ -252,4 +254,16 @@ model VideoUrl {
 
   @@id([providerId, postId, type])
   @@map("video_urls")
+}
+
+model SavedPost {
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  postId    String   @map("post_id")
+  userId    String   @map("user_id")
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
+
+  @@id([postId, userId])
+  @@map("saved_posts")
 }

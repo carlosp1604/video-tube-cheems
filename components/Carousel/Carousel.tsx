@@ -37,7 +37,7 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
 
   useEffect(() => {
     checkIfEndIsReached()
-  }, [])
+  }, [children])
 
   const handleScrollXRightClick = () => {
     if (scrollElement.current) {

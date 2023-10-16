@@ -6,8 +6,8 @@ import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/Acto
 import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Application/ProducerApplicationDtoTranslator'
 import { PostTranslationsDtoTranslator } from '~/modules/Posts/Application/Translators/PostTranslationsDtoTranslator'
 import {
-  VideoUrlApplicationDtoTranslator
-} from '~/modules/Posts/Application/Translators/VideoUrlApplicationDtoTranslator'
+  PostMediaApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/PostMedia/PostMediaApplicationDtoTranslator'
 
 // NOTE: We are not testing this due to this class does not have logic to be tested
 export class PostApplicationDtoTranslator {
@@ -27,6 +27,7 @@ export class PostApplicationDtoTranslator {
         return TagApplicationDtoTranslator.fromDomain(tag)
       }),
       title: post.title,
+      type: post.type,
       producer: post.producer !== null
         ? ProducerApplicationDtoTranslator.fromDomain(post.producer)
         : null,
@@ -35,8 +36,8 @@ export class PostApplicationDtoTranslator {
       actor: post.actor !== null
         ? ActorApplicationDtoTranslator.fromDomain(post.actor)
         : null,
-      videoUrls: post.videoUrls.map((videoUrl) => {
-        return VideoUrlApplicationDtoTranslator.fromDomain(videoUrl)
+      postMedia: post.postMedia.map((postMedia) => {
+        return PostMediaApplicationDtoTranslator.fromDomain(postMedia)
       }),
     }
   }

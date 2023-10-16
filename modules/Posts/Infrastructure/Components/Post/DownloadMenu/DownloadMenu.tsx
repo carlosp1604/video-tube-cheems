@@ -3,42 +3,31 @@ import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
-import { VideoDownloadUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/VideoUrlComponentDto'
 import { BsDownload } from 'react-icons/bs'
 import Image from 'next/image'
-import Link from 'next/link'
+import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 
 interface Props {
-  downloadUrls: VideoDownloadUrlComponentDto[]
+  mediaUrls: MediaUrlComponentDto[]
   setIsOpen: (isOpen: boolean) => void
   isOpen: boolean
 }
 
-export const DownloadMenu: FC<Props> = ({ downloadUrls, setIsOpen, isOpen }) => {
+export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen }) => {
   const { t } = useTranslation('post')
 
-  if (downloadUrls.length === 0) {
-    return null
-  }
-
-  if (downloadUrls.length === 1) {
-    return (
-      <Link href={ downloadUrls[0].url } target={ '_blank' }/>
-    )
-  }
-
-  const menuOptions: MenuOptionComponentInterface[] = downloadUrls.map((downloadUrl) => {
+  const menuOptions: MenuOptionComponentInterface[] = mediaUrls.map((mediaUrl) => {
     return {
-      title: downloadUrl.name,
+      title: `${mediaUrl.provider.name}: ${mediaUrl.title}`,
       action: {
-        url: downloadUrl.url,
+        url: mediaUrl.downloadUrl as string,
         blank: true,
       },
       picture: (
         <Image
-          alt={ t('post_download_option_alt_title', { providerName: downloadUrl.name }) }
+          alt={ t('post_download_option_alt_title', { providerName: mediaUrl.provider.name }) }
           className={ styles.downloadMenu__optionImage }
-          src={ downloadUrl.logoUrl }
+          src={ mediaUrl.provider.logoUrl }
           width={ 0 }
           height={ 0 }
           sizes={ '100vw' }

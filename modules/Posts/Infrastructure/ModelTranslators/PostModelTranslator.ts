@@ -12,7 +12,7 @@ import {
   PostWithMeta,
   PostWithProducerWithParent,
   PostWithReactions,
-  PostWithTags, PostWithTranslations, PostWithVideoUrlWithProviders
+  PostWithTags, PostWithTranslations, PostWithPostMediaWithMediaUrlWithProvider
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostModel'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ProducerModelTranslator } from '~/modules/Producers/Infrastructure/ProducerModelTranslator'
@@ -26,12 +26,12 @@ import { Producer } from '~/modules/Producers/Domain/Producer'
 import { Reaction } from '~/modules/Reactions/Domain/Reaction'
 import { Translation } from '~/modules/Translations/Domain/Translation'
 import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
-import { VideoUrl } from '~/modules/Posts/Domain/VideoUrls/VideoUrl'
-import { VideoUrlModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/VideoUrlModelTranslator'
 import {
   PostCommentRepositoryOptions
 } from '~/modules/Posts/Domain/PostComments/PostCommentRepositoryInterface'
 import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
+import { PostMediaModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
+import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 
 export class PostModelTranslator {
   public static toDomain (
@@ -58,7 +58,7 @@ export class PostModelTranslator {
     let actorRelationship: Relationship<Actor | null> = Relationship.notLoaded()
     let translationsCollection: Collection<Translation, Translation['language'] & Translation['field']> =
       Collection.notLoaded()
-    let videoUrlsCollection: Collection<VideoUrl, VideoUrl['providerId'] & VideoUrl['type']> = Collection.notLoaded()
+    let postMediaCollection: Collection<PostMedia, PostMedia['id']> = Collection.notLoaded()
 
     if (options.includes('meta')) {
       metaCollection = Collection.initializeCollection()
@@ -158,21 +158,22 @@ export class PostModelTranslator {
       })
     }
 
-    if (options.includes('videoUrl')) {
-      const postWithVideoUrlsWithProviders = prismaPostModel as PostWithVideoUrlWithProviders
+    if (options.includes('postMedia')) {
+      const postWithPostMediaWithMediaUrlWithProvider = prismaPostModel as PostWithPostMediaWithMediaUrlWithProvider
 
-      videoUrlsCollection = Collection.initializeCollection()
+      postMediaCollection = Collection.initializeCollection()
 
-      postWithVideoUrlsWithProviders.videoUrls.forEach((videoUrl) => {
-        const domainVideoUrl = VideoUrlModelTranslator.toDomain(videoUrl)
+      postWithPostMediaWithMediaUrlWithProvider.postMedia.forEach((postMedia) => {
+        const domainPostMedia = PostMediaModelTranslator.toDomain(postMedia)
 
-        videoUrlsCollection.addItemFromPersistenceLayer(domainVideoUrl, domainVideoUrl.providerId + domainVideoUrl.type)
+        postMediaCollection.addItemFromPersistenceLayer(domainPostMedia, domainPostMedia.id)
       })
     }
 
     return new Post(
       prismaPostModel.id,
       prismaPostModel.title,
+      prismaPostModel.type,
       prismaPostModel.description,
       prismaPostModel.slug,
       prismaPostModel.producerId,
@@ -190,7 +191,7 @@ export class PostModelTranslator {
       producerRelationship,
       translationsCollection,
       actorRelationship,
-      videoUrlsCollection
+      postMediaCollection
     )
   }
 
@@ -200,6 +201,7 @@ export class PostModelTranslator {
       description: post.description,
       slug: post.slug,
       title: post.title,
+      type: post.type,
       producerId: post.producerId,
       actorId: post.actorId,
       publishedAt: post.publishedAt?.toJSDate() ?? null,

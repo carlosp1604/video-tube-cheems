@@ -1,4 +1,8 @@
-import { PostRepositoryFilterOption, PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import {
+  PostRepositoryFilterOption,
+  PostRepositoryInterface,
+  RepositoryOptions
+} from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
 import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
 import { DateTime } from 'luxon'
@@ -154,9 +158,13 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             },
           },
         },
-        videoUrls: {
+        postMedia: {
           include: {
-            provider: true,
+            mediaUrls: {
+              include: {
+                provider: true,
+              },
+            },
           },
         },
       },
@@ -198,7 +206,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         'actor',
         'tags',
         'translations',
-        'videoUrl',
+        'postMedia',
       ]),
       postComments: post._count.comments,
       postViews: post._count.views,

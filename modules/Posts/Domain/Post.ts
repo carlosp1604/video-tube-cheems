@@ -2,7 +2,7 @@ import { PostMeta } from './PostMeta'
 import { PostTag } from './PostTag'
 import { DateTime } from 'luxon'
 import { PostComment } from './PostComments/PostComment'
-import { Reaction, ReactionableType } from '../../Reactions/Domain/Reaction'
+import { Reaction, ReactionableType } from '~/modules/Reactions/Domain/Reaction'
 import { PostDomainException } from './PostDomainException'
 import { randomUUID } from 'crypto'
 import { PostChildComment } from './PostComments/PostChildComment'
@@ -14,15 +14,23 @@ import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 import { PostCommentDomainException } from '~/modules/Posts/Domain/PostComments/PostCommentDomainException'
 import { Translation } from '~/modules/Translations/Domain/Translation'
-import { VideoUrl } from '~/modules/Posts/Domain/VideoUrls/VideoUrl'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
 import { applyMixins } from '~/helpers/Domain/Mixins'
+import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
+
+export enum PostType {
+  VIDEO = 'video',
+  IMAGES = 'images',
+  MIXED = 'mixed'
+}
+
 export class Post {
   public readonly id: string
   public readonly title: string
+  public readonly type: PostType
   public readonly description: string
   public readonly slug: string
   public readonly producerId: string | null
@@ -40,11 +48,12 @@ export class Post {
   private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
   private _actor: Relationship<Actor | null>
-  private _videoUrls: Collection<VideoUrl, VideoUrl['providerId'] & VideoUrl['type']>
+  private _postMedia: Collection<PostMedia, PostMedia['id']>
 
   public constructor (
     id: string,
     title: string,
+    type: string,
     description: string,
     slug: string,
     producerId: string | null,
@@ -62,10 +71,11 @@ export class Post {
     producer: Relationship<Producer | null> = Relationship.notLoaded(),
     translations: Collection<Translation, Translation['language'] & Translation['field']> = Collection.notLoaded(),
     actor: Relationship<Actor | null> = Relationship.notLoaded(),
-    videoUrls: Collection<VideoUrl, VideoUrl['providerId'] & VideoUrl['type']> = Collection.notLoaded()
+    postMedia: Collection<PostMedia, PostMedia['id']> = Collection.notLoaded()
   ) {
     this.id = id
     this.title = title
+    this.type = Post.validatePostType(type)
     this.description = description
     this.slug = slug
     this.producerId = producerId
@@ -81,7 +91,7 @@ export class Post {
     this._views = views
     this._producer = producer
     this._actor = actor
-    this._videoUrls = videoUrls
+    this._postMedia = postMedia
     this.modelReactions = reactions
     this.modelTranslations = translations
   }
@@ -233,8 +243,8 @@ export class Post {
     return this._producer.value
   }
 
-  get videoUrls (): Array<VideoUrl> {
-    return this._videoUrls.values
+  get postMedia (): Array<PostMedia> {
+    return this._postMedia.values
   }
 
   get actor (): Actor | null {
@@ -265,6 +275,16 @@ export class Post {
       null,
       Relationship.initializeRelation(user)
     )
+  }
+
+  private static validatePostType (value: string): PostType {
+    const values: string [] = Object.values(PostType)
+
+    if (!values.includes(value)) {
+      throw PostDomainException.invalidPostType(value)
+    }
+
+    return value as PostType
   }
 }
 

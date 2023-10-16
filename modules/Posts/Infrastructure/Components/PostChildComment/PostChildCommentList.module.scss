@@ -5,19 +5,23 @@
 
   &__post-comment-container {
     @apply sticky top-0 bg-base-700 px-5 py-3 backdrop-filter
-      backdrop-blur-md bg-opacity-50;
+      backdrop-blur-md bg-opacity-50 z-comment-to-reply;
   }
 
   &__post-child-comment-container {
-    @apply border-b border-base-800 pl-8 pb-2 px-5;
+    @apply border-b border-base-800 pl-8 pb-2 px-5 pt-4;
 
     &:last-of-type {
       @apply border-0;
     }
+
+    &:first-of-type {
+      @apply pt-0;
+    }
   }
 
   &__comment-with-options {
-    @apply grid items-start;
+    @apply grid items-start z-comment-options;
     grid-template-columns: 1fr auto;
   }
 }

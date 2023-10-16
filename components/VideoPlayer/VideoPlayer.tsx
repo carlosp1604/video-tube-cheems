@@ -4,18 +4,24 @@ import 'video.js/dist/video-js.css'
 // @ts-ignore
 import ReactJWPlayer from 'react-jw-player'
 import styles from './VideoPlayer.module.scss'
-import { VideoQualityDto } from '~/modules/Posts/Infrastructure/Dtos/VideoComponentDto'
-import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 
 interface VideoPlayerProps {
-  videoQualities: VideoQualityDto[]
+  playerId: string
+  mediaUrls: MediaUrlComponentDto[]
   videoPoster: string
-  videoId: string
-  onVideoPlay: () => void
+  onPlayerReady: () => void
+  selectedMediaUrl: MediaUrlComponentDto
 }
 
-export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster, onVideoPlay, videoId }) => {
+export const VideoPlayer: FC<VideoPlayerProps> = ({
+  playerId,
+  mediaUrls,
+  videoPoster,
+  onPlayerReady,
+  selectedMediaUrl,
+}) => {
   const [videoReady, setVideoReady] = useState<boolean>(false)
 
   const advertising = {
@@ -28,28 +34,17 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster,
     },
   }
 
-  const postsApiService = new PostsApiService()
-
-  const sources = videoQualities.map((quality) => {
+  const sources = mediaUrls.map((mediaUrl) => {
     return {
-      file: quality.value,
+      file: mediaUrl.url,
       type: 'mp4',
-      label: quality.title,
+      label: mediaUrl.title,
     }
   })
 
-  const onPlay = async () => {
-    try {
-      await postsApiService.addPostView(videoId)
-
-      onVideoPlay()
-    } catch (exception: unknown) {
-      console.error(exception)
-    }
-  }
-
   const onReady = () => {
     setVideoReady(true)
+    onPlayerReady()
   }
 
   const loadingState: ReactElement | null = (
@@ -62,13 +57,12 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({ videoQualities, videoPoster,
     <div className={ styles.videoPlayer__container }>
       { videoReady ? '' : loadingState }
       <ReactJWPlayer
-        file={ videoQualities[0].value }
-        playerId={ videoId }
+        file={ selectedMediaUrl }
         playerScript={ 'https://cdn.jwplayer.com/libraries/cDnha7c4.js' }
         customProps={ { sources } }
         image={ videoPoster }
-        onPlay={ onPlay }
         aspectRatio={ '16:9' }
+        playerId={ playerId }
         onReady={ onReady }
       />
     </div>

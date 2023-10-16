@@ -1,0 +1,9 @@
+.post-type {
+  &__video-container {
+    @apply flex flex-row gap-x-4 -mx-5 aspect-video rounded-lg overflow-hidden;
+
+    @screen md {
+      @apply mx-0;
+    }
+  }
+}

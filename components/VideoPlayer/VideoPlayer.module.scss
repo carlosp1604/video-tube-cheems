@@ -1,6 +1,6 @@
 .video-player {
   &__container {
-    @apply rounded-xl overflow-hidden w-full aspect-video;
+    @apply rounded-xl overflow-hidden w-full aspect-video z-video-player;
   }
 
   &__loading-state {

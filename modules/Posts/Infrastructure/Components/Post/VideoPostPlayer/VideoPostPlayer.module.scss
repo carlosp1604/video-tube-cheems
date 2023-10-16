@@ -1,4 +1,4 @@
-.video-embed-player {
+.video-post-player {
   $parentBlock: &;
 
   &__container {
@@ -12,10 +12,35 @@
     }
   }
 
+  &__no-sources-state {
+    @apply flex flex-col justify-center items-center bg-black w-full h-full
+      whitespace-pre-line gap-y-4 text-base-400 p-5 text-xs;
+
+    @screen md {
+      @apply text-base;
+    }
+
+    @screen lg {
+      @apply text-lg;
+    }
+  }
+
+  &__no-sources-state-icon {
+    @apply h-10 w-10 text-brand-400;
+
+    @screen md {
+      @apply h-12 w-12;
+    }
+
+    @screen lg {
+      @apply h-14 w-14;
+    }
+  }
+
   &__switcher-button {
     @apply flex absolute top-2 right-2 items-center bg-brand-400 rounded-full
       p-2 text-base-100 h-9 w-9 delay-1000 duration-1000 transition-all
-      transform;
+      transform z-video-player-options-button;
 
     @screen md {
       @apply translate-x-12;
@@ -36,10 +61,10 @@
 
   &__options-container {
     @apply translate-x-full absolute w-full h-full bg-transparent
-      transition-colors duration-1000;
+      transition-colors duration-1000 z-video-player-options;
 
     &__open {
-      @apply flex flex-col gap-y-3 items-center justify-center bg-black bg-opacity-80
+      @apply flex flex-col gap-y-3 items-center justify-center bg-black bg-opacity-90
         transition-colors py-2 px-5 translate-x-0;
 
       @screen md {
@@ -146,5 +171,9 @@
 
   &__loading-icon {
     @apply h-12 w-12 animate-spin;
+  }
+
+  &__iframe {
+    @apply z-video-player;
   }
 }

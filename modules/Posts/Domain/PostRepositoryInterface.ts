@@ -20,7 +20,7 @@ export type RepositoryOptions =
   'actors' |
   'producer' |
   'comments' |
-  'videoUrl' |
+  'postMedia' |
   'reactions' |
   'translations' |
   'comments.user' |

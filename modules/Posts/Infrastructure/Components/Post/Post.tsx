@@ -18,14 +18,11 @@ import {
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import Link from 'next/link'
 import Avatar from 'react-avatar'
-import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
-import { VideoEmbedPlayer } from '~/modules/Posts/Infrastructure/Components/Post/VideoEmbedPlayer/VideoEmbedPlayer'
 import { BsX } from 'react-icons/bs'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { Promise } from 'es6-promise'
-import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
-import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
 import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
+import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
 
 export interface Props {
   post: PostComponentDto
@@ -94,6 +91,19 @@ export const Post: FC<Props> = ({
       })
     }
   }, [status])
+
+  useEffect(() => {
+    try {
+      postsApiService.addPostView(post.id)
+        .then((response) => {
+          if (response.ok) {
+            setViewsNumber(viewsNumber + 1)
+          }
+        })
+    } catch (exception: unknown) {
+      console.error(exception)
+    }
+  }, [])
 
   const onClickReactButton = async (type: ReactionType) => {
     if (status !== 'authenticated') {
@@ -288,48 +298,17 @@ export const Post: FC<Props> = ({
     )
   }
 
-  let videoPlayer: ReactElement | null = null
-
-  if (post.video.qualities.length > 0) {
-    videoPlayer = (
-      <VideoPlayer
-        key={ post.id }
-        videoQualities={ post.video.qualities }
-        videoPoster={ post.video.poster }
-        videoId={ post.id }
-        onVideoPlay={ () => {
-          setViewsNumber(viewsNumber + 1)
-        } }
-      />
-    )
-  }
-
-  let embedVideo: ReactElement | null = null
-
-  if (post.embedUrls.length > 0) {
-    embedVideo = (
-      <VideoEmbedPlayer videoEmbedUrls={ post.embedUrls } />
-    )
-  }
-
   return (
     <div className={ styles.post__container }>
-      <div className={ styles.post__videoContainer } >
-        { embedVideo ?? videoPlayer }
-      </div>
-
-      <PostBasicData
-        post={ post }
-        postViewsNumber={ viewsNumber }
-        postLikes={ likesNumber }
-        postDislikes={ dislikesNumber }
-        postCommentsNumber={ commentsNumber }
-      />
-
-      <PostOptions
-        userReaction={ userReaction }
-        onClickReactButton={ (type) => onClickReactButton(type) }
-        onClickCommentsButton={ () => {
+      { PostTypeResolver.resolve(
+        post,
+        viewsNumber,
+        likesNumber,
+        dislikesNumber,
+        commentsNumber,
+        userReaction,
+        (reactionType) => onClickReactButton(reactionType),
+        () => {
           if (!commentsOpen) {
             commentsRef.current?.scrollIntoView({
               behavior: 'smooth',
@@ -337,10 +316,8 @@ export const Post: FC<Props> = ({
             })
           }
           setCommentsOpen(!commentsOpen)
-        } }
-        likesNumber={ likesNumber }
-        downloadUrls={ post.downloadUrls }
-      />
+        }
+      ) }
 
       <div className={ styles.post__producersContainer }>
         { producerSection }

@@ -31,6 +31,7 @@ model Producer {
 model Post {
   id           String          @id
   title        String
+  type         String
   description  String
   slug         String          @unique
   createdAt    DateTime        @map("created_at")
@@ -48,8 +49,8 @@ model Post {
   reactions    Reaction[]      @relation("Reaction")
   views        PostView[]
   translations Translatation[] @relation("PostTranslation")
-  videoUrls    VideoUrl[]
   savedPosts   SavedPost[]
+  postMedia    PostMedia[]
 
   @@map("posts")
 }
@@ -230,30 +231,43 @@ model Translatation {
   @@map("translations")
 }
 
-model VideoProvider {
+model PostMedia {
+  id         String        @id
+  postId     String        @map("post_id")
+  post       Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @map("created_at")
+  updatedAt  DateTime      @map("updated_at")
+  mediaUrls  MediaUrl[]
+
+  @@map("post_media")
+}
+
+model MediaProvider {
   id        String     @id
   name      String
   logoUrl   String     @map("logo_url")
   createdAt DateTime   @map("created_at")
   updatedAt DateTime   @map("updated_at")
-  videoUrls VideoUrl[]
+  mediaUrls MediaUrl[]
 
-  @@map("video_providers")
+  @@map("media_providers")
 }
 
-model VideoUrl {
+model MediaUrl {
+  id         String        @id
+  title      String
   type       String
   providerId String        @map("provider_id")
-  provider   VideoProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  postId     String        @map("post_id")
-  post       Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  provider   MediaProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  postMediaId String       @map("post_media_id")
+  postMedia  PostMedia     @relation(fields: [postMediaId], references: [id], onDelete: Cascade)
   url        String
+  downloadUrl String?       @map("download_url")
+  thumbnailUrl String?      @map("thumbnail_url")
   createdAt  DateTime      @map("created_at")
   updatedAt  DateTime      @map("updated_at")
-  deletedAt  DateTime?     @map("deleted_at")
 
-  @@id([providerId, postId, type])
-  @@map("video_urls")
+  @@map("media_urls")
 }
 
 model SavedPost {

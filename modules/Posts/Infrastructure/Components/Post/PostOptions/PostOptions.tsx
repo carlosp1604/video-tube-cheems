@@ -1,5 +1,5 @@
 import styles from './PostOptions.module.scss'
-import { FC, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { BsBookmarks, BsChatSquareText, BsDownload, BsMegaphone } from 'react-icons/bs'
 import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
@@ -11,14 +11,15 @@ import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Compone
 import * as uuid from 'uuid'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { VideoDownloadUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/VideoUrlComponentDto'
+import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
+import toast from 'react-hot-toast'
 
 export interface Props {
   userReaction: ReactionComponentDto | null
   onClickReactButton: (type: ReactionType) => void
   onClickCommentsButton: () => void
   likesNumber: number
-  downloadUrls: VideoDownloadUrlComponentDto[]
+  mediaUrls: MediaUrlComponentDto[]
 }
 
 export const PostOptions: FC<Props> = ({
@@ -26,10 +27,16 @@ export const PostOptions: FC<Props> = ({
   onClickReactButton,
   onClickCommentsButton,
   likesNumber,
-  downloadUrls,
+  mediaUrls,
 }) => {
   const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
   const tooltipUuid = uuid.v4()
+
+  const filterDownloadUrls = (mediaUrls: MediaUrlComponentDto[]) => {
+    return mediaUrls.filter((mediaUrl) => mediaUrl.downloadUrl !== null)
+  }
+
+  const filteredDownloadUrls = useMemo(() => filterDownloadUrls(mediaUrls), [mediaUrls])
 
   let { locale } = useRouter()
   const { t } = useTranslation('post')
@@ -39,7 +46,7 @@ export const PostOptions: FC<Props> = ({
   return (
     <div className={ styles.postOptions__container }>
       <DownloadMenu
-        downloadUrls={ downloadUrls }
+        mediaUrls={ filteredDownloadUrls }
         setIsOpen={ setDownloadMenuOpen }
         isOpen={ downloadMenuOpen }
       />
@@ -92,10 +99,17 @@ export const PostOptions: FC<Props> = ({
       </span>
       <span
         className={ styles.postOptions__optionItem }
-        onClick={ () => setDownloadMenuOpen(!downloadMenuOpen) }
+        onClick={ () => {
+          if (filteredDownloadUrls.length > 0) {
+            setDownloadMenuOpen(!downloadMenuOpen)
+
+            return
+          }
+          toast.error(t('post_download_no_downloads_error_message'))
+        } }
       >
         <BsDownload />
-        { t('post_download_button_title', { sourcesNumber: downloadUrls.length }) }
+        { t('post_download_button_title', { sourcesNumber: filteredDownloadUrls.length }) }
       </span>
       <span className={ styles.postOptions__optionItem }>
         <BsMegaphone />

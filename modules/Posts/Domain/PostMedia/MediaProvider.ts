@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-export class VideoProvider {
+export class MediaProvider {
   public readonly id: string
   public readonly name: string
   public readonly logoUrl: string

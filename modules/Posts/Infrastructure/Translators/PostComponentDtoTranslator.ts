@@ -6,12 +6,10 @@ import {
   PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import {
-  VideoDownloadUrlComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/VideoDownloadUrlComponentDtoTranslator'
-import {
-  VideoEmbedUrlComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/VideoEmbedUrlComponentDtoTranslator'
+  PostMediaComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostMedia/PostMediaComponentDtoTranslator'
 
 export class PostComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: PostApplicationDto, locale: string): PostComponentDto {
@@ -86,16 +84,8 @@ export class PostComponentDtoTranslator {
       }
     }
 
-    const downloadUrls = applicationDto.videoUrls.filter((videoUrl) => {
-      return videoUrl.type === 'Download'
-    }).map((videoUrl) => {
-      return VideoDownloadUrlComponentDtoTranslator.fromApplicationDto(videoUrl)
-    })
-
-    const embedUrls = applicationDto.videoUrls.filter((videoUrl) => {
-      return videoUrl.type === 'Embed'
-    }).map((videoUrl) => {
-      return VideoEmbedUrlComponentDtoTranslator.fromApplicationDto(videoUrl)
+    const postMedia: PostMediaComponentDto[] = applicationDto.postMedia.map((postMedia) => {
+      return PostMediaComponentDtoTranslator.fromApplicationDto(postMedia)
     })
 
     return {
@@ -107,9 +97,9 @@ export class PostComponentDtoTranslator {
       description: descriptionTranslation,
       date,
       title: titleTranslation,
+      type: applicationDto.type,
       actor,
-      downloadUrls,
-      embedUrls,
+      postMedia,
     }
   }
 }

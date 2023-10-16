@@ -16,6 +16,7 @@ export class PostDomainException extends DomainException {
   public static producerAlreadySetId = 'post_domain_producer_already_set'
   public static postCommentNotFoundId = 'post_domain_post_comment_not_found'
   public static userCannotDeleteCommentId = 'post_domain_user_cannot_delete_comment'
+  public static invalidPostTypeId = 'post_domain_invalid_post_type'
 
   constructor (message: string, id: string) {
     super(message, id)
@@ -107,6 +108,13 @@ export class PostDomainException extends DomainException {
     return new PostDomainException(
       `PostComment with ID ${postCommentId} does not belong to user with ID ${userId}`,
       this.userCannotDeleteCommentId
+    )
+  }
+
+  public static invalidPostType (value: string): PostDomainException {
+    return new PostDomainException(
+      `Invalid post type: ${value}`,
+      this.invalidPostTypeId
     )
   }
 }

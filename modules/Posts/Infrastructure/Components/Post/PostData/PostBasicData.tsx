@@ -38,7 +38,7 @@ export const PostBasicData: FC<Props> = ({
           { post.date }
         </span>
         <span className={ styles.postBasicData__postInfoItem }>
-          { t('post_views_title', { views: postViewsNumber }) }
+          { t('post_views_title', { views: NumberFormatter.compatFormat(postViewsNumber, locale) }) }
         </span>
         <span className={ styles.postBasicData__postInfoItem }>
           { NumberFormatter.compatFormat(postLikes, locale) }

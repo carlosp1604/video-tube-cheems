@@ -2,26 +2,27 @@ import { Knex } from 'knex'
 
 export async function up (knex: Knex): Promise<void> {
   return knex.schema
-    .createTable('video_urls', (table) => {
+    .createTable('media_urls', (table) => {
+      table.string('id', 36).primary().notNullable()
       table.string('type', 36).notNullable()
+      table.string('title', 256).notNullable()
       table.string('provider_id', 36)
         .references('id')
-        .inTable('video_providers')
+        .inTable('media_providers')
         .notNullable()
         .onDelete('CASCADE')
-      table.string('post_id', 36)
+      table.string('post_media_id', 36)
         .references('id')
-        .inTable('posts')
+        .inTable('post_media')
         .notNullable()
         .onDelete('CASCADE')
-      table.string('url', 256)
-      table.primary(['type', 'provider_id', 'post_id'])
+      table.string('url', 512).notNullable()
+      table.string('download_url', 512).nullable()
+      table.string('thumbnail_url', 512).nullable()
       table.timestamps(true, true)
-      table.timestamp('deleted_at')
-        .defaultTo(null)
     })
 }
 
 export async function down (knex: Knex): Promise<void> {
-  return knex.schema.dropTable('video_urls')
+  return knex.schema.dropTable('media_urls')
 }

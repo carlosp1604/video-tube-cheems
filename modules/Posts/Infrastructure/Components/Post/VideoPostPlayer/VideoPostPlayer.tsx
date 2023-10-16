@@ -8,25 +8,45 @@ import * as uuid from 'uuid'
 import { Tooltip } from 'react-tooltip'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
+import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 
 export interface Props {
-  playerId: string
-  embedUrls: MediaUrlComponentDto[]
-  videoUrls: MediaUrlComponentDto[]
+  mediaUrls: MediaUrlComponentDto[]
+  embedPostMedia: PostMediaComponentDto | null
+  videoPostMedia: PostMediaComponentDto | null
 }
 
-export const VideoPostPlayer: FC<Props> = ({ playerId, embedUrls, videoUrls }) => {
-  const [selectedUrl, setSelectedUrl] = useState<MediaUrlComponentDto | null>(
-    [...embedUrls, ...videoUrls].length > 0 ? [...embedUrls, ...videoUrls][0] : null
-  )
+export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPostMedia }) => {
+  const getSelectablesUrls = (): MediaUrlComponentDto[] => {
+    let mediaUrls: MediaUrlComponentDto[] = []
+
+    if (embedPostMedia !== null) {
+      mediaUrls = [...mediaUrls, ...embedPostMedia.urls]
+    }
+
+    if (videoPostMedia !== null && videoPostMedia.urls.length > 0) {
+      mediaUrls = [...mediaUrls, videoPostMedia.urls[0]]
+    }
+
+    return mediaUrls
+  }
+
+  const getFirstMediaUrl = (): MediaUrlComponentDto | null => {
+    if (mediaUrls.length === 0) {
+      return null
+    }
+
+    return mediaUrls[0]
+  }
+
+  const selectedMediaUrl = useMemo(() => getFirstMediaUrl(), [embedPostMedia, videoPostMedia])
+  const selectableUrls = useMemo(() => getSelectablesUrls(), [embedPostMedia, videoPostMedia])
+
+  const [selectedUrl, setSelectedUrl] = useState<MediaUrlComponentDto | null>(selectedMediaUrl)
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [videoReady, setVideoReady] = useState<boolean>(false)
   const [showVideoOptions, setShowVideoOptions] = useState<boolean>(false)
   const iframeRef = createRef<HTMLIFrameElement>()
-
-  const videoOptions: MediaUrlComponentDto[] = useMemo(() => {
-    return videoUrls.length > 0 ? [videoUrls[0]] : []
-  }, [videoUrls])
 
   const { t } = useTranslation('post')
   const tooltipUuid = uuid.v4()
@@ -37,7 +57,7 @@ export const VideoPostPlayer: FC<Props> = ({ playerId, embedUrls, videoUrls }) =
     }
   }, [])
 
-  if ([...embedUrls, ...videoOptions].length === 0) {
+  if (embedPostMedia === null && videoPostMedia === null) {
     return (
       <div className={ styles.videoPostPlayer__noSourcesState }>
         <BsFileEarmarkBreak className={ styles.videoPostPlayer__noSourcesStateIcon }/>
@@ -48,7 +68,7 @@ export const VideoPostPlayer: FC<Props> = ({ playerId, embedUrls, videoUrls }) =
 
   let sourceSelectorButton: ReactElement | null = null
 
-  if ([...embedUrls, ...videoOptions].length > 1) {
+  if (mediaUrls.length > 1) {
     sourceSelectorButton = (
       <button
         className={ `
@@ -83,7 +103,11 @@ export const VideoPostPlayer: FC<Props> = ({ playerId, embedUrls, videoUrls }) =
 
   let playerElement: ReactElement | null = null
 
-  if (selectedUrl && selectedUrl.type === 'Embed') {
+  if (
+    selectedUrl &&
+    embedPostMedia &&
+    embedPostMedia.urls.includes(selectedUrl)
+  ) {
     playerElement = (
       <iframe
         className={ styles.videoPostPlayer__iframe }
@@ -98,19 +122,21 @@ export const VideoPostPlayer: FC<Props> = ({ playerId, embedUrls, videoUrls }) =
     )
   }
 
-  if (selectedUrl && selectedUrl.type === 'Video') {
+  if (
+    selectedUrl &&
+    videoPostMedia &&
+    videoPostMedia.urls.includes(selectedUrl)
+  ) {
     playerElement = (
       <VideoPlayer
-        mediaUrls={ videoUrls }
-        videoPoster={ selectedUrl.thumbnailUrl ?? '' }
+        videoPostMedia={ videoPostMedia }
         selectedMediaUrl={ selectedUrl }
         onPlayerReady={ onReady }
-        playerId={ playerId }
       />
     )
   }
 
-  const optionElements: ReactElement[] = [...embedUrls, ...videoOptions].map((mediaUrl) => {
+  const optionElements: ReactElement[] = selectableUrls.map((mediaUrl) => {
     return (
       <button
         key={ mediaUrl.url }

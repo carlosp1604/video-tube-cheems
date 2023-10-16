@@ -6,19 +6,16 @@ import ReactJWPlayer from 'react-jw-player'
 import styles from './VideoPlayer.module.scss'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
+import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 
 interface VideoPlayerProps {
-  playerId: string
-  mediaUrls: MediaUrlComponentDto[]
-  videoPoster: string
+  videoPostMedia: PostMediaComponentDto
   onPlayerReady: () => void
   selectedMediaUrl: MediaUrlComponentDto
 }
 
 export const VideoPlayer: FC<VideoPlayerProps> = ({
-  playerId,
-  mediaUrls,
-  videoPoster,
+  videoPostMedia,
   onPlayerReady,
   selectedMediaUrl,
 }) => {
@@ -34,7 +31,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
     },
   }
 
-  const sources = mediaUrls.map((mediaUrl) => {
+  const sources = videoPostMedia.urls.map((mediaUrl) => {
     return {
       file: mediaUrl.url,
       type: 'mp4',
@@ -57,12 +54,13 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
     <div className={ styles.videoPlayer__container }>
       { videoReady ? '' : loadingState }
       <ReactJWPlayer
-        file={ selectedMediaUrl }
+        file={ selectedMediaUrl.url }
         playerScript={ 'https://cdn.jwplayer.com/libraries/cDnha7c4.js' }
         customProps={ { sources } }
-        image={ videoPoster }
+        // FIXME: Set a default thumbnailUrl if not exists
+        image={ videoPostMedia.thumbnailUrl ?? '' }
         aspectRatio={ '16:9' }
-        playerId={ playerId }
+        playerId={ videoPostMedia.postId }
         onReady={ onReady }
       />
     </div>

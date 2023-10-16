@@ -9,6 +9,9 @@ export class PostMediaApplicationDtoTranslator {
   public static fromDomain (postMedia: PostMedia): PostMediaApplicationDto {
     return {
       id: postMedia.id,
+      type: postMedia.type,
+      title: postMedia.title,
+      thumbnailUrl: postMedia.thumbnailUrl,
       postId: postMedia.postId,
       mediaUrls: postMedia.mediaUrls.map((mediaUrl) => {
         return MediaUrlApplicationDtoTranslator.fromDomain(mediaUrl)

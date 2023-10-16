@@ -232,12 +232,15 @@ model Translatation {
 }
 
 model PostMedia {
-  id         String        @id
-  postId     String        @map("post_id")
-  post       Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
-  createdAt  DateTime      @map("created_at")
-  updatedAt  DateTime      @map("updated_at")
-  mediaUrls  MediaUrl[]
+  id           String     @id
+  postId       String     @map("post_id")
+  post         Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  type         String
+  title        String
+  thumbnailUrl String?    @map("thumbnail_url")
+  createdAt    DateTime   @map("created_at")
+  updatedAt    DateTime   @map("updated_at")
+  mediaUrls    MediaUrl[]
 
   @@map("post_media")
 }
@@ -254,19 +257,17 @@ model MediaProvider {
 }
 
 model MediaUrl {
-  id         String        @id
-  title      String
-  type       String
-  providerId String        @map("provider_id")
-  provider   MediaProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  postMediaId String       @map("post_media_id")
-  postMedia  PostMedia     @relation(fields: [postMediaId], references: [id], onDelete: Cascade)
-  url        String
-  downloadUrl String?       @map("download_url")
-  thumbnailUrl String?      @map("thumbnail_url")
-  createdAt  DateTime      @map("created_at")
-  updatedAt  DateTime      @map("updated_at")
+  mediaProviderId String        @map("media_provider_id")
+  provider        MediaProvider @relation(fields: [mediaProviderId], references: [id], onDelete: Cascade)
+  postMediaId     String        @map("post_media_id")
+  postMedia       PostMedia     @relation(fields: [postMediaId], references: [id], onDelete: Cascade)
+  url             String
+  title           String
+  downloadUrl     String?       @map("download_url")
+  createdAt       DateTime      @map("created_at")
+  updatedAt       DateTime      @map("updated_at")
 
+  @@id([url, postMediaId])
   @@map("media_urls")
 }
 

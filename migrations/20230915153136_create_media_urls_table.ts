@@ -3,10 +3,7 @@ import { Knex } from 'knex'
 export async function up (knex: Knex): Promise<void> {
   return knex.schema
     .createTable('media_urls', (table) => {
-      table.string('id', 36).primary().notNullable()
-      table.string('type', 36).notNullable()
-      table.string('title', 256).notNullable()
-      table.string('provider_id', 36)
+      table.string('media_provider_id', 36)
         .references('id')
         .inTable('media_providers')
         .notNullable()
@@ -17,8 +14,9 @@ export async function up (knex: Knex): Promise<void> {
         .notNullable()
         .onDelete('CASCADE')
       table.string('url', 512).notNullable()
+      table.string('title', 256).notNullable()
       table.string('download_url', 512).nullable()
-      table.string('thumbnail_url', 512).nullable()
+      table.primary(['url', 'post_media_id'])
       table.timestamps(true, true)
     })
 }

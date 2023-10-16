@@ -29,5 +29,7 @@ export interface PostComponentDto {
   readonly tags: PostComponentDtoTagDto[]
   readonly producer: PostComponentDtoProducerDto | null
   readonly actor: PostComponentDtoActorDto | null
-  readonly postMedia: PostMediaComponentDto[]
+  readonly postMediaVideoType: PostMediaComponentDto[]
+  readonly postMediaEmbedType: PostMediaComponentDto[]
+  readonly postMediaImageType: PostMediaComponentDto[]
 }

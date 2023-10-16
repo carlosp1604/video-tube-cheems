@@ -84,9 +84,23 @@ export class PostComponentDtoTranslator {
       }
     }
 
-    const postMedia: PostMediaComponentDto[] = applicationDto.postMedia.map((postMedia) => {
-      return PostMediaComponentDtoTranslator.fromApplicationDto(postMedia)
-    })
+    const postMediaVideoType: PostMediaComponentDto[] = applicationDto.postMedia
+      .filter((postMedia) => postMedia.type === 'Video')
+      .map((postMedia) => {
+        return PostMediaComponentDtoTranslator.fromApplicationDto(postMedia)
+      })
+
+    const postMediaEmbedType: PostMediaComponentDto[] = applicationDto.postMedia
+      .filter((postMedia) => postMedia.type === 'Embed')
+      .map((postMedia) => {
+        return PostMediaComponentDtoTranslator.fromApplicationDto(postMedia)
+      })
+
+    const postMediaImageType: PostMediaComponentDto[] = applicationDto.postMedia
+      .filter((postMedia) => postMedia.type === 'Image')
+      .map((postMedia) => {
+        return PostMediaComponentDtoTranslator.fromApplicationDto(postMedia)
+      })
 
     return {
       id: applicationDto.id,
@@ -99,7 +113,9 @@ export class PostComponentDtoTranslator {
       title: titleTranslation,
       type: applicationDto.type,
       actor,
-      postMedia,
+      postMediaVideoType,
+      postMediaImageType,
+      postMediaEmbedType,
     }
   }
 }

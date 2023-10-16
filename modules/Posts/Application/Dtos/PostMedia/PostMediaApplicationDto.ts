@@ -2,6 +2,9 @@ import { MediaUrlApplicationDto } from '~/modules/Posts/Application/Dtos/PostMed
 
 export interface PostMediaApplicationDto {
   readonly id: string
+  readonly type: string
+  readonly title: string
+  readonly thumbnailUrl: string | null
   readonly postId: string
   readonly mediaUrls: MediaUrlApplicationDto[]
 }

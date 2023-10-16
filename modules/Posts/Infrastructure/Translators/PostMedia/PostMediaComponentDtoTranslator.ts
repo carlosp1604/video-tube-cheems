@@ -9,18 +9,13 @@ export abstract class PostMediaComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: PostMediaApplicationDto): PostMediaComponentDto {
     return {
       id: applicationDto.id,
-      embedUrls: applicationDto.mediaUrls.filter((mediaUrl) => mediaUrl.type === 'Embed')
-        .map((mediaUrl) => {
-          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
-        }),
-      videoUrls: applicationDto.mediaUrls.filter((mediaUrl) => mediaUrl.type === 'Video')
-        .map((mediaUrl) => {
-          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
-        }),
-      imageUrls: applicationDto.mediaUrls.filter((mediaUrl) => mediaUrl.type === 'Image')
-        .map((mediaUrl) => {
-          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
-        }),
+      postId: applicationDto.postId,
+      type: applicationDto.type,
+      title: applicationDto.title,
+      thumbnailUrl: applicationDto.thumbnailUrl,
+      urls: applicationDto.mediaUrls.map((mediaUrl) => {
+        return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
+      }),
     }
   }
 }

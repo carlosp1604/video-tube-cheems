@@ -4,7 +4,9 @@ import {
 
 export interface PostMediaComponentDto {
   readonly id: string
-  readonly videoUrls: MediaUrlComponentDto[]
-  readonly embedUrls: MediaUrlComponentDto[]
-  readonly imageUrls: MediaUrlComponentDto[]
+  readonly type: string
+  readonly title: string
+  readonly postId: string
+  readonly thumbnailUrl: string | null
+  readonly urls: MediaUrlComponentDto[]
 }

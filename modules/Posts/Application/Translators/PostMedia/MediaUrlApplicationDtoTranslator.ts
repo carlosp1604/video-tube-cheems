@@ -8,15 +8,12 @@ import {
 export class MediaUrlApplicationDtoTranslator {
   public static fromDomain (mediaUrl: MediaUrl): MediaUrlApplicationDto {
     return {
-      id: mediaUrl.id,
-      type: mediaUrl.type,
+      title: mediaUrl.title,
       url: mediaUrl.url,
       providerId: mediaUrl.providerId,
       provider: MediaProviderApplicationDtoTranslator.fromDomain(mediaUrl.provider),
       downloadUrl: mediaUrl.downloadUrl,
-      title: mediaUrl.title,
       postMediaId: mediaUrl.postMediaId,
-      thumbnailUrl: mediaUrl.thumbnailUrl,
     }
   }
 }

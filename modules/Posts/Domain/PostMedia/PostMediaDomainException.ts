@@ -2,7 +2,7 @@ import { DomainException } from '~/modules/Exceptions/Domain/DomainException'
 import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 
 export class PostMediaDomainException extends DomainException {
-  public static cannotGetMediaUrlId = 'post_media_domain_cannot_get_media_url'
+  public static invalidPostMediaTypeId = 'post_media_domain_invalid_post_media_type'
 
   constructor (message: string, id: string) {
     super(message, id)
@@ -10,10 +10,10 @@ export class PostMediaDomainException extends DomainException {
     Object.setPrototypeOf(this, PostMediaDomainException.prototype)
   }
 
-  public static cannotGetMediaUrl (mediaUrlId: PostMedia['mediaUrlId']): PostMediaDomainException {
+  public static invalidPostMediaType (postMediaId: PostMedia['id'], value: string): PostMediaDomainException {
     return new PostMediaDomainException(
-      `Cannot get mediaUrl with ID ${mediaUrlId} from postMedia`,
-      this.cannotGetMediaUrlId
+      `Invalid post media type: ${value} for Post Media with ID ${postMediaId}`,
+      this.invalidPostMediaTypeId
     )
   }
 }

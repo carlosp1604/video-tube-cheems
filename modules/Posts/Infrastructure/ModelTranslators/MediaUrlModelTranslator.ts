@@ -16,14 +16,11 @@ export class MediaUrlModelTranslator {
     const domainMediaProviderRelation = Relationship.initializeRelation(domainMediaProvider)
 
     return new MediaUrl(
-      prismaMediaUrlModel.id,
       prismaMediaUrlModel.title,
-      prismaMediaUrlModel.type,
-      prismaMediaUrlModel.providerId,
+      prismaMediaUrlModel.mediaProviderId,
       prismaMediaUrlModel.postMediaId,
       prismaMediaUrlModel.url,
       prismaMediaUrlModel.downloadUrl,
-      prismaMediaUrlModel.thumbnailUrl,
       DateTime.fromJSDate(prismaMediaUrlModel.createdAt),
       DateTime.fromJSDate(prismaMediaUrlModel.updatedAt),
       domainMediaProviderRelation

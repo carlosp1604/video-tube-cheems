@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react'
+import { FC, useMemo } from 'react'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { VideoPostPlayer } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoPostPlayer'
 import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
@@ -29,33 +29,30 @@ export const VideoPostType: FC<Props> = ({
   onClickReactButton,
   onClickCommentsButton,
 }) => {
-  let videoPlayer: ReactElement
-  let mediaUrls: MediaUrlComponentDto[] = []
+  const getMediaUrls = (): MediaUrlComponentDto[] => {
+    let mediaUrls: MediaUrlComponentDto[] = []
 
-  if (post.postMedia.length > 0) {
-    videoPlayer = (
-      <VideoPostPlayer
-        playerId={ post.id }
-        embedUrls={ post.postMedia[0].embedUrls }
-        videoUrls={ post.postMedia[0].videoUrls }
-      />
-    )
+    if (post.postMediaEmbedType.length > 0) {
+      mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].urls]
+    }
 
-    mediaUrls = [...post.postMedia[0].embedUrls, ...post.postMedia[0].videoUrls]
-  } else {
-    videoPlayer = (
-      <VideoPostPlayer
-        playerId={ post.id }
-        embedUrls={ [] }
-        videoUrls={ [] }
-      />
-    )
+    if (post.postMediaVideoType.length > 0) {
+      mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].urls]
+    }
+
+    return mediaUrls
   }
+
+  const mediaUrls = useMemo(() => getMediaUrls(), [post])
 
   return (
     <>
       <div className={ styles.postType__videoContainer } >
-        { videoPlayer }
+        <VideoPostPlayer
+          mediaUrls={ mediaUrls }
+          embedPostMedia={ post.postMediaEmbedType.length > 0 ? post.postMediaEmbedType[0] : null }
+          videoPostMedia={ post.postMediaVideoType.length > 0 ? post.postMediaVideoType[0] : null }
+        />
       </div>
 
       <PostBasicData

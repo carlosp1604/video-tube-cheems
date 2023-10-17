@@ -68,7 +68,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
 
   let sourceSelectorButton: ReactElement | null = null
 
-  if (mediaUrls.length > 1) {
+  if (selectableUrls.length > 1) {
     sourceSelectorButton = (
       <button
         className={ `

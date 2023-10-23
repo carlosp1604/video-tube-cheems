@@ -1,5 +1,5 @@
 import { z, ZodError } from 'zod'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
 import {
   VerifyEmailAddressApiRequestInterface
 } from '~/modules/Auth/Infrastructure/Dtos/VerifyEmailAddressApiRequestInterface'

@@ -1,5 +1,5 @@
 import { z, ZodError } from 'zod'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
 
 export class GetUserByUsernameApiRequestValidator {
   private static usernameValidator = z.string().min(1).regex(/^[a-zA-Z0-9_]+$/)

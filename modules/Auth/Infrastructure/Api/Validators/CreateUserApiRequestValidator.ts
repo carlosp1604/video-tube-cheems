@@ -1,6 +1,6 @@
 import { z, ZodError } from 'zod'
 import { CreateUserApiRequestInterface } from '~/modules/Auth/Infrastructure/Dtos/CreateUserApiRequestInterface'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
 
 export class CreateUserApiRequestValidator {
   private static createUserApiRequestSchema = z.object({

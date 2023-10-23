@@ -109,6 +109,30 @@ export class User {
     }
   }
 
+  public addSavedPost (post: Post): void {
+    const existingSavedPost = this._savedPosts.getItem(post.id)
+
+    if (existingSavedPost !== null) {
+      throw UserDomainException.postAlreadySaved(post.id)
+    }
+
+    this._savedPosts.addItem(post, post.id)
+  }
+
+  public removeSavedPost (postId: Post['id']): void {
+    const existingSavedPost = this._savedPosts.getItem(postId)
+
+    if (existingSavedPost === null) {
+      throw UserDomainException.postDoesNotExistOnSavedPosts(postId)
+    }
+
+    const removedItem = this._savedPosts.removeItem(postId)
+
+    if (!removedItem) {
+      throw UserDomainException.cannotDeletePostFromSavedPosts(postId)
+    }
+  }
+
   get verificationToken (): VerificationToken | null {
     return this._verificationToken.value
   }

@@ -15,4 +15,21 @@
       grid-template-columns: repeat(4, 1fr);
     }
   }
+
+  &__post-card-with-options {
+    @apply relative;
+  }
+
+  &__post-card-options {
+    @apply absolute top-1 left-1;
+  }
+
+  &__post-card-options-icon {
+    @apply h-6 w-6 rounded-full p-1 backdrop-filter
+      backdrop-blur-lg bg-base-400 bg-opacity-50 z-50;
+
+    &:hover {
+      @apply bg-brand-400;
+    }
+  }
 }

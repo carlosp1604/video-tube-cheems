@@ -18,8 +18,9 @@ import toast from 'react-hot-toast'
 import { PostChildCommentList } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentList'
 import {
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
-  POST_CHILD_COMMENT_POST_NOT_FOUND
+  POST_CHILD_COMMENT_POST_NOT_FOUND, POST_CHILD_COMMENT_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { signOut } from 'next-auth/react'
 
 interface Props {
   commentToReply: PostCommentComponentDto
@@ -27,7 +28,6 @@ interface Props {
   onClickRetry: () => void
   onAddReply: () => void
   onDeleteReply: () => void
-  onLikeReply: () => void
 }
 
 export const PostChildComments: FC<Props> = ({
@@ -93,6 +93,14 @@ export const PostChildComments: FC<Props> = ({
             case POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND:
               toast.error(t('create_post_child_comment_parent_comment_not_found_error_message'))
               break
+
+            case POST_CHILD_COMMENT_USER_NOT_FOUND: {
+              toast.error(t('post_user_not_found_error_message'))
+
+              await signOut({ redirect: false })
+
+              break
+            }
 
             default:
               toast.error(t('server_error_error_message'))

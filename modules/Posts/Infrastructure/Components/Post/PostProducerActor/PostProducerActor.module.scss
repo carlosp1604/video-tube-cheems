@@ -1,0 +1,25 @@
+.post-producer-actor {
+  &__container {
+    @apply flex items-center gap-x-2;
+  }
+
+  &__producer-actor-logo {
+    @apply rounded-full w-10 h-10 object-cover;
+  }
+
+  &__producer-actor-icon {
+    @apply h-6 w-6 text-brand-400;
+
+    @screen md {
+      @apply h-8 w-8;
+    }
+  }
+
+  &__producer-actor-item {
+    @apply flex gap-x-2 items-center my-2 text-xs;
+
+    @screen md {
+      @apply flex flex-row gap-x-4 font-normal text-sm;
+    }
+  }
+}

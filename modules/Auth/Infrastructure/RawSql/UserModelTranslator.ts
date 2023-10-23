@@ -1,4 +1,4 @@
-import { UserRawModel } from '~/modules/Auth/Infrastructure/RawModels/UserRawModel'
+import { UserRawModel } from '~/modules/Auth/Infrastructure/RawSql/UserRawModel'
 import { User as PrismaUserModel } from '@prisma/client'
 
 export class UserModelTranslator {

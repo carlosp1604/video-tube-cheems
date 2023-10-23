@@ -39,7 +39,7 @@ import {
   POST_COMMENT_INVALID_PER_PAGE,
   POST_COMMENT_METHOD,
   POST_COMMENT_POST_NOT_FOUND,
-  POST_COMMENT_SERVER_ERROR,
+  POST_COMMENT_SERVER_ERROR, POST_COMMENT_USER_NOT_FOUND,
   POST_COMMENT_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import {
@@ -127,7 +127,7 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
   const { postId } = request.query
   const comment = request.body.comment
 
-  if (!postId || !comment) {
+  if (!postId) {
     return handleBadRequest(response)
   }
 
@@ -135,7 +135,7 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
 
   try {
     apiRequest = CreatePostCommentRequestSanitizer.sanitize({
-      comment,
+      comment: comment ?? '',
       userId: session.user.id,
       postId: String(postId),
     })
@@ -168,9 +168,11 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
     }
 
     switch (exception.id) {
-      // NOTE: If user is not found we assume is a server error
       case CreatePostCommentApplicationException.postNotFoundId:
-        return handleNotFound(response, POST_COMMENT_POST_NOT_FOUND)
+        return handleNotFound(response, exception.message, POST_COMMENT_POST_NOT_FOUND)
+
+      case CreatePostCommentApplicationException.userNotFoundId:
+        return handleNotFound(response, exception.message, POST_COMMENT_USER_NOT_FOUND)
 
       default: {
         console.error(exception)
@@ -186,7 +188,7 @@ function handleBadRequest (response: NextApiResponse) {
     .status(400)
     .json({
       code: POST_COMMENT_BAD_REQUEST,
-      message: 'postId and comment parameters are required',
+      message: 'postId parameter is required',
     })
 }
 
@@ -201,13 +203,6 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = container.resolve<string>('baseUrl')
-
-  response.setHeader(
-    'WWW-Authenticate',
-    `Basic realm="${baseUrl}"`
-  )
-
   return response
     .status(401)
     .json({
@@ -237,11 +232,11 @@ function handleServerError (response: NextApiResponse) {
     })
 }
 
-function handleNotFound (response: NextApiResponse, code: string) {
+function handleNotFound (response: NextApiResponse, message: string, code: string) {
   return response.status(404)
     .json({
       code,
-      message: 'Resource was not found',
+      message,
     })
 }
 

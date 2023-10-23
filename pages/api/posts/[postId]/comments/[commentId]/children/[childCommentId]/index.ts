@@ -20,11 +20,16 @@ import {
 import { container } from '~/awilix.container'
 import {
   POST_CHILD_COMMENT_AUTH_REQUIRED,
-  POST_CHILD_COMMENT_BAD_REQUEST, POST_CHILD_COMMENT_CANNOT_DELETE_CHILD_COMMENT,
-  POST_CHILD_COMMENT_FORBIDDEN, POST_CHILD_COMMENT_METHOD,
+  POST_CHILD_COMMENT_BAD_REQUEST,
+  POST_CHILD_COMMENT_CANNOT_DELETE_CHILD_COMMENT,
+  POST_CHILD_COMMENT_FORBIDDEN,
+  POST_CHILD_COMMENT_METHOD,
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
   POST_CHILD_COMMENT_POST_COMMENT_NOT_FOUND,
-  POST_CHILD_COMMENT_POST_NOT_FOUND, POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_VALIDATION
+  POST_CHILD_COMMENT_POST_NOT_FOUND,
+  POST_CHILD_COMMENT_SERVER_ERROR,
+  POST_CHILD_COMMENT_USER_NOT_FOUND,
+  POST_CHILD_COMMENT_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 export default async function handler (
@@ -63,7 +68,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
       postId: String(postId),
     }
   } catch (exception: unknown) {
-    return handleServerError(response, exception)
+    return handleServerError(response)
   }
 
   const validationError = DeletePostCommentApiRequestValidator.validate(apiRequest)
@@ -82,25 +87,24 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
     if (!(exception instanceof DeletePostCommentApplicationException)) {
       console.error(exception)
 
-      return handleServerError(response, exception)
+      return handleServerError(response)
     }
 
     switch (exception.id) {
-      case DeletePostCommentApplicationException.postNotFoundId: {
+      case DeletePostCommentApplicationException.postNotFoundId:
         return handleNotFound(response, exception.message, POST_CHILD_COMMENT_POST_NOT_FOUND)
-      }
 
-      case DeletePostCommentApplicationException.parentCommentNotFoundId: {
+      case DeletePostCommentApplicationException.userNotFoundId:
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_USER_NOT_FOUND)
+
+      case DeletePostCommentApplicationException.parentCommentNotFoundId:
         return handleNotFound(response, exception.message, POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND)
-      }
 
-      case DeletePostCommentApplicationException.postCommentNotFoundId: {
+      case DeletePostCommentApplicationException.postCommentNotFoundId:
         return handleNotFound(response, exception.message, POST_CHILD_COMMENT_POST_COMMENT_NOT_FOUND)
-      }
 
-      case DeletePostCommentApplicationException.userCannotDeleteCommentId: {
+      case DeletePostCommentApplicationException.userCannotDeleteCommentId:
         return handleForbidden(response)
-      }
 
       case DeletePostCommentApplicationException.cannotDeleteCommentId:
         return handleConflict(response, exception.message, POST_CHILD_COMMENT_CANNOT_DELETE_CHILD_COMMENT)
@@ -108,7 +112,7 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
       default: {
         console.error(exception)
 
-        return handleServerError(response, exception)
+        return handleServerError(response)
       }
     }
   }
@@ -127,13 +131,6 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = container.resolve<string>('baseUrl')
-
-  response.setHeader(
-    'WWW-Authenticate',
-    `Basic realm="${baseUrl}"`
-  )
-
   return response
     .status(401)
     .json({
@@ -155,9 +152,7 @@ function handleValidationError (
     })
 }
 
-function handleServerError (response: NextApiResponse, exception: unknown) {
-  console.log(exception)
-
+function handleServerError (response: NextApiResponse) {
   return response.status(500)
     .json({
       code: POST_CHILD_COMMENT_SERVER_ERROR,

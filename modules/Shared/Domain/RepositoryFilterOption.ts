@@ -1,14 +1,20 @@
-export enum RepositoryFilterStringTypeOption {
-  POST_TITLE = 'postTitle',
-  PRODUCER_ID = 'producerId',
-  ACTOR_ID = 'actorId',
-  TAG_ID = 'tagId',
-  PRODUCER_NAME = 'producerName',
-  ACTOR_NAME = 'actorName',
-  TAG_NAME = 'tagName',
-}
+export type PostFilterStringTypeOption =
+  'postTitle' |
+  'producerId' |
+  'actorId' |
+  'tagId' |
+  'producerName' |
+  'actorName' |
+  'tagName'
+
+export const GetPostsFilterStringTypeOptions:
+  Extract<PostFilterStringTypeOption, 'postTitle' | 'producerId'>[] = [
+    'postTitle', 'producerId',
+  ]
+
+export type GetPostsFilterStringTypeOption = typeof GetPostsFilterStringTypeOptions[number]
 
 export interface RepositoryFilterOptionInterface {
-  type: RepositoryFilterStringTypeOption
+  type: PostFilterStringTypeOption
   value: string
 }

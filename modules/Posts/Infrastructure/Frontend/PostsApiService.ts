@@ -81,4 +81,20 @@ export class PostsApiService {
 
     return fetch(fetchRoute)
   }
+
+  public async savePost (userId: string, postId: string): Promise<Response> {
+    const fetchRoute = `/api/users/${userId}/saved-posts/${postId}`
+
+    return fetch(fetchRoute, {
+      method: 'POST',
+    })
+  }
+
+  public async removeFromSavedPosts (userId: string, postId: string): Promise<Response> {
+    const fetchRoute = `/api/users/${userId}/saved-posts/${postId}`
+
+    return fetch(fetchRoute, {
+      method: 'DELETE',
+    })
+  }
 }

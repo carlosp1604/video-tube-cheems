@@ -85,6 +85,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     )
   }
 
+  // TODO: Fix this on mobile
   const handleIframeEvents = async () => {
     setShowVideoOptions(true)
     await new Promise(resolve => setTimeout(resolve, 1500))
@@ -199,9 +200,9 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
       { sourceSelectorButton }
       { sourceSelectorButton !== null
         ? <Tooltip
-            id={ tooltipUuid }
-            place={ 'top' }
-            positionStrategy={ 'fixed' }
+          id={ tooltipUuid }
+          place={ 'top' }
+          positionStrategy={ 'fixed' }
         />
         : null
       }

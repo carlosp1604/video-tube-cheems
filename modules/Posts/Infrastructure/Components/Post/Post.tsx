@@ -1,5 +1,5 @@
 import styles from './Post.module.scss'
-import { FC, ReactElement, useEffect, useRef, useState } from 'react'
+import { FC, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { useTranslation } from 'next-i18next'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
@@ -8,21 +8,26 @@ import {
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
-import Image from 'next/image'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import {
   POST_REACTION_NOT_FOUND,
-  POST_REACTION_POST_NOT_FOUND
+  POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
-import Link from 'next/link'
-import Avatar from 'react-avatar'
-import { BsX } from 'react-icons/bs'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { Promise } from 'es6-promise'
 import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
+import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
+import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
+import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
+import { PostProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/PostProducerActor/PostProducerActor'
+import {
+  USER_POST_NOT_FOUND,
+  USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS, USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
+  USER_USER_NOT_FOUND
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 export interface Props {
   post: PostComponentDto
@@ -45,13 +50,30 @@ export const Post: FC<Props> = ({
   const [userReaction, setUserReaction] = useState<ReactionComponentDto | null>(null)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
+  const [savedPost, setSavedPost] = useState<boolean>(false)
 
   const { t } = useTranslation('post')
   const { setLoginModalOpen } = useLoginContext()
   const postsApiService = new PostsApiService()
   const commentsRef = useRef<HTMLDivElement>(null)
 
-  const { status } = useSession()
+  const { status, data } = useSession()
+
+  const getMediaUrls = (): MediaUrlComponentDto[] => {
+    let mediaUrls: MediaUrlComponentDto[] = []
+
+    if (post.postMediaEmbedType.length > 0) {
+      mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].urls]
+    }
+
+    if (post.postMediaVideoType.length > 0) {
+      mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].urls]
+    }
+
+    return mediaUrls
+  }
+
+  const mediaUrls = useMemo(() => getMediaUrls(), [post])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -64,13 +86,16 @@ export const Post: FC<Props> = ({
           if (response.ok) {
             const jsonResponse = await response.json()
 
+            setSavedPost(jsonResponse.savedPost)
+
             if (jsonResponse === null) {
               setUserReaction(null)
 
               return
             }
 
-            const userReactionDto = ReactionComponentDtoTranslator.fromApplicationDto(jsonResponse)
+            const userReactionDto =
+              ReactionComponentDtoTranslator.fromApplicationDto(jsonResponse.userReaction)
 
             setUserReaction(userReactionDto)
           } else {
@@ -122,17 +147,30 @@ export const Post: FC<Props> = ({
               toast.error(t('bad_request_error_message'))
               break
 
+            case 401:
+              setLoginModalOpen(true)
+              toast.error(t('user_must_be_authenticated_error_message'))
+              break
+
             case 404: {
               const jsonResponse = await response.json()
 
               switch (jsonResponse.code) {
                 case POST_REACTION_POST_NOT_FOUND:
-                  toast.error(t('post_does_not_exist_error_message'))
+                  toast.error(t('post_not_found_error_message'))
                   break
 
                 case POST_REACTION_NOT_FOUND:
-                  toast.error(t('post_reaction_does_not_exist'))
+                  toast.error(t('post_reaction_does_not_exist_error_message'))
                   break
+
+                case POST_REACTION_USER_NOT_FOUND: {
+                  toast.error(t('post_user_not_found_error_message'))
+
+                  await signOut({ redirect: false })
+
+                  break
+                }
 
                 default:
                   toast.error(t('server_error_error_message'))
@@ -173,9 +211,28 @@ export const Post: FC<Props> = ({
               toast.error(t('user_must_be_authenticated_error_message'))
               break
 
-            case 404:
-              toast.error(t('post_does_not_exist_error_message'))
+            case 404: {
+              const jsonResponse = await response.json()
+
+              switch (jsonResponse.code) {
+                case POST_REACTION_USER_NOT_FOUND: {
+                  toast.error(t('post_user_not_found_error_message'))
+
+                  await signOut({ redirect: false })
+
+                  break
+                }
+
+                case POST_REACTION_POST_NOT_FOUND:
+                  toast.error(t('post_not_found_error_message'))
+                  break
+
+                default:
+                  toast.error(t('server_error_error_message'))
+                  break
+              }
               break
+            }
 
             case 409:
               toast.error(t('user_already_reacted_to_post_error_message'))
@@ -211,77 +268,140 @@ export const Post: FC<Props> = ({
     }
   }
 
-  let producerSection: ReactElement | null = null
-  let actorSection: ReactElement | null = null
+  const onClickSavePostButton = async () => {
+    if (status !== 'authenticated') {
+      toast.error(t('user_must_be_authenticated_error_message'))
 
-  if (post.producer !== null) {
-    let producerAvatarSection: ReactElement
-
-    if (post.producer.imageUrl !== null) {
-      producerAvatarSection = (
-        <Image
-          alt={ post.producer.name }
-          className={ styles.post__producerLogo }
-          src={ post.producer.imageUrl }
-          width={ 0 }
-          height={ 0 }
-          sizes={ '100vw' }
-        />
-      )
-    } else {
-      producerAvatarSection = (
-        <Avatar
-          round={ true }
-          size={ '40' }
-          name={ post.producer.name }
-        />
-      )
+      return
     }
-    producerSection = (
-      <Link
-        href={ '/' }
-        className={ styles.post__producerItem }
-        title={ post.producer.name }
-      >
-        { producerAvatarSection }
-        { post.producer.name }
-      </Link>
-    )
-  }
 
-  if (post.actor !== null) {
-    let actorAvatarSection: ReactElement
+    if (savedPost && data) {
+      try {
+        const response = await postsApiService.removeFromSavedPosts(data.user.id, post.id)
 
-    if (post.actor.imageUrl !== null) {
-      actorAvatarSection = (
-        <Image
-          alt={ post.actor.name }
-          className={ styles.post__producerLogo }
-          src={ post.actor.imageUrl }
-          width={ 0 }
-          height={ 0 }
-          sizes={ '100vw' }
-        />
-      )
-    } else {
-      actorAvatarSection = (
-        <Avatar
-          round={ true }
-          size={ '40' }
-          name={ post.actor.name }
-        />
-      )
+        if (!response.ok) {
+          switch (response.status) {
+            case 400:
+              toast.error(t('bad_request_error_message'))
+              break
+
+            case 403:
+              toast.error(t('post_user_forbidden_resource_error_message'))
+
+              break
+
+            case 404: {
+              const jsonResponse = await response.json()
+
+              switch (jsonResponse.code) {
+                case USER_USER_NOT_FOUND: {
+                  toast.error(t('post_user_not_found_error_message'))
+
+                  await signOut({ redirect: false })
+
+                  break
+                }
+
+                case USER_POST_NOT_FOUND:
+                  toast.error(t('post_not_found_error_message'))
+                  break
+
+                default:
+                  toast.error(t('server_error_error_message'))
+                  break
+              }
+              break
+            }
+
+            case 409: {
+              const jsonResponse = await response.json()
+
+              switch (jsonResponse.code) {
+                case USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS:
+                  toast.error(t('post_save_cannot_remove_saved_post_error_message'))
+                  break
+
+                case USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS:
+                  toast.error(t('post_save_post_does_not_belong_to_user_saved_posts_error_message'))
+                  break
+
+                default:
+                  toast.error(t('server_error_error_message'))
+                  break
+              }
+              break
+            }
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
+        } else {
+          setSavedPost(false)
+
+          toast.success(t('post_save_post_successfully_removed_from_saved_post'))
+        }
+      } catch (exception: unknown) {
+        console.error(exception)
+        toast.error(t('server_error_error_message'))
+      }
     }
-    actorSection = (
-      <Link
-        href={ '/' }
-        className={ styles.post__producerItem }
-        title={ post.actor.name }
-      >
-        { actorAvatarSection }
-        { post.actor.name }
-      </Link>
-    )
+
+    if (!savedPost && data) {
+      try {
+        const response = await postsApiService.savePost(data.user.id, post.id)
+
+        if (!response.ok) {
+          switch (response.status) {
+            case 400:
+              toast.error(t('bad_request_error_message'))
+              break
+
+            case 403:
+              toast.error(t('post_user_forbidden_resource_error_message'))
+              break
+
+            case 404: {
+              const jsonResponse = await response.json()
+
+              switch (jsonResponse.code) {
+                case USER_USER_NOT_FOUND: {
+                  toast.error(t('post_user_not_found_error_message'))
+
+                  await signOut({ redirect: false })
+
+                  break
+                }
+
+                case USER_POST_NOT_FOUND:
+                  toast.error(t('post_not_found_error_message'))
+                  break
+
+                default:
+                  toast.error(t('server_error_error_message'))
+                  break
+              }
+              break
+            }
+
+            case 409:
+              toast.error(t('post_save_post_already_on_saved_post_error_message'))
+              break
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
+        } else {
+          setSavedPost(true)
+
+          toast.success(t('post_save_post_successfully_saved'))
+        }
+      } catch (exception: unknown) {
+        console.error(exception)
+        toast.error(t('server_error_error_message'))
+      }
+    }
   }
 
   let commentsComponent: ReactElement | null = null
@@ -298,35 +418,43 @@ export const Post: FC<Props> = ({
     )
   }
 
+  const onClickCommentsButton = () => {
+    if (!commentsOpen) {
+      commentsRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }
+    setCommentsOpen(!commentsOpen)
+  }
+
   return (
     <div className={ styles.post__container }>
       { PostTypeResolver.resolve(
         post,
-        viewsNumber,
-        likesNumber,
-        dislikesNumber,
-        commentsNumber,
-        userReaction,
-        (reactionType) => onClickReactButton(reactionType),
-        () => {
-          if (!commentsOpen) {
-            commentsRef.current?.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-            })
-          }
-          setCommentsOpen(!commentsOpen)
-        }
+        mediaUrls,
+        <PostBasicData
+          post={ post }
+          postViewsNumber={ viewsNumber }
+          postLikes={ likesNumber }
+          postDislikes={ dislikesNumber }
+          postCommentsNumber={ commentsNumber }
+        />,
+        <PostOptions
+          userReaction={ userReaction }
+          savedPost={ savedPost }
+          onClickReactButton={ (type) => onClickReactButton(type) }
+          onClickCommentsButton={ onClickCommentsButton }
+          onClickSaveButton={ onClickSavePostButton }
+          likesNumber={ likesNumber }
+          mediaUrls={ mediaUrls }
+      />
       ) }
 
-      <div className={ styles.post__producersContainer }>
-        { producerSection }
-        { producerSection && actorSection
-          ? <BsX className={ styles.post__producersIcon }/>
-          : null
-        }
-        { actorSection }
-      </div>
+      <PostProducerActor
+        producer={ post.producer }
+        actor={ post.actor }
+      />
 
       <PostExtraData
         postActors={ post.actors }

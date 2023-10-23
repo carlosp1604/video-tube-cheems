@@ -2,11 +2,11 @@ import {
   GetPostUserInteractionApiRequestDto
 } from '~/modules/Posts/Infrastructure/Api/Requests/GetPostUserInteractionApiRequestDto'
 import {
-  GetPostUserReactionApplicationRequest
-} from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReactionApplicationRequest'
+  GetPostUserInteractionApplicationRequest
+} from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteractionApplicationRequest'
 
 export class GetPostUserInteractionDtoTranslator {
-  public static fromApiDto (request: GetPostUserInteractionApiRequestDto): GetPostUserReactionApplicationRequest {
+  public static fromApiDto (request: GetPostUserInteractionApiRequestDto): GetPostUserInteractionApplicationRequest {
     return {
       postId: request.postId,
       userId: request.userId,

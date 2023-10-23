@@ -42,7 +42,7 @@ import {
   POST_COMMENT_FORBIDDEN,
   POST_COMMENT_METHOD,
   POST_COMMENT_POST_NOT_FOUND,
-  POST_COMMENT_SERVER_ERROR,
+  POST_COMMENT_SERVER_ERROR, POST_COMMENT_USER_NOT_FOUND,
   POST_COMMENT_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
@@ -105,21 +105,20 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
     }
 
     switch (exception.id) {
-      case DeletePostCommentApplicationException.postNotFoundId: {
+      case DeletePostCommentApplicationException.postNotFoundId:
         return handleNotFound(response, exception.message, POST_COMMENT_POST_NOT_FOUND)
-      }
 
-      case DeletePostCommentApplicationException.postCommentNotFoundId: {
+      case DeletePostCommentApplicationException.userNotFoundId:
+        return handleNotFound(response, exception.message, POST_COMMENT_USER_NOT_FOUND)
+
+      case DeletePostCommentApplicationException.postCommentNotFoundId:
         return handleNotFound(response, exception.message, POST_COMMENT_COMMENT_NOT_FOUND)
-      }
 
-      case DeletePostCommentApplicationException.userCannotDeleteCommentId: {
+      case DeletePostCommentApplicationException.userCannotDeleteCommentId:
         return handleForbidden(response)
-      }
 
-      case DeletePostCommentApplicationException.cannotDeleteCommentId: {
+      case DeletePostCommentApplicationException.cannotDeleteCommentId:
         return handleConflict(response, exception.message, POST_COMMENT_CANNOT_DELETE_COMMENT)
-      }
 
       default: {
         console.error(exception)
@@ -200,13 +199,6 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = container.resolve<string>('baseUrl')
-
-  response.setHeader(
-    'WWW-Authenticate',
-    `Basic realm="${baseUrl}"`
-  )
-
   return response
     .status(401)
     .json({

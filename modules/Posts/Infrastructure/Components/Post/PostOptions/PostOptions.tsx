@@ -16,16 +16,20 @@ import toast from 'react-hot-toast'
 
 export interface Props {
   userReaction: ReactionComponentDto | null
+  savedPost: boolean
   onClickReactButton: (type: ReactionType) => void
   onClickCommentsButton: () => void
+  onClickSaveButton: () => void
   likesNumber: number
   mediaUrls: MediaUrlComponentDto[]
 }
 
 export const PostOptions: FC<Props> = ({
   userReaction,
+  savedPost,
   onClickReactButton,
   onClickCommentsButton,
+  onClickSaveButton,
   likesNumber,
   mediaUrls,
 }) => {
@@ -93,9 +97,15 @@ export const PostOptions: FC<Props> = ({
         <BsChatSquareText/>
         { t('post_comments_button_title') }
       </span>
-      <span className={ styles.postOptions__optionItem }>
+      <span
+        className={ `
+          ${styles.postOptions__optionItem}
+          ${savedPost ? styles.postOptions__optionItem_active : ''}
+        ` }
+        onClick={ onClickSaveButton }
+      >
         <BsBookmarks />
-        { t('post_save_button_title') }
+        { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </span>
       <span
         className={ styles.postOptions__optionItem }

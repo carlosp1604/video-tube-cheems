@@ -5,9 +5,10 @@ import {
   FindByEmailOptions, FindByIdOptions,
   UserRepositoryInterface
 } from '~/modules/Auth/Domain/UserRepositoryInterface'
-import { Prisma } from '.prisma/client'
-import UserInclude = Prisma.UserInclude;
-import { DefaultArgs } from '@prisma/client/runtime/library'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { UserWithRelationsRawModel } from '~/modules/Auth/Infrastructure/RawSql/UserRawModel'
+import { SqlUserQueryBuilder } from '~/modules/Auth/Infrastructure/RawSql/SqlUserQueryBuilder'
+import { MysqlUsersTranslatorService } from '~/modules/Auth/Infrastructure/MysqlUsersTranslatorService'
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
@@ -16,20 +17,42 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @param user User to insert
    */
   public async save (user: User): Promise<void> {
-    const prismaUserRow = PrismaUserModelTranslator.toDatabase(user)
+    const prismaModelUser = PrismaUserModelTranslator.toDatabase(user)
 
     await prisma.$transaction([
-      prisma.user.create({
-        data: {
-          ...prismaUserRow,
-        },
-      }),
+      prisma.$queryRaw`
+        INSERT INTO users (
+          id, 
+          name, 
+          username, 
+          email, 
+          image_url, 
+          language, 
+          password, 
+          created_at, 
+          updated_at, 
+          deleted_at, 
+          email_verified
+        ) VALUES (
+          ${prismaModelUser.id},
+          ${prismaModelUser.name},
+          ${prismaModelUser.username},
+          ${prismaModelUser.email},
+          ${prismaModelUser.imageUrl},
+          ${prismaModelUser.language},
+          ${prismaModelUser.password},
+          ${prismaModelUser.createdAt},
+          ${prismaModelUser.updatedAt},
+          ${prismaModelUser.deletedAt},
+          ${prismaModelUser.emailVerified}
+        );
+      `,
 
-      prisma.verificationToken.delete({
-        where: {
-          userEmail: user.email,
-        },
-      }),
+      prisma.$queryRaw`
+        DELETE
+        FROM verification_tokens
+        WHERE user_email = ${prismaModelUser.email};
+      `,
     ])
   }
 
@@ -40,21 +63,15 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return User if found or null
    */
   public async findByEmail (userEmail: User['email'], options: FindByEmailOptions[] = []): Promise<User | null> {
-    const user = await prisma.user.findFirst({
-      where: {
-        deletedAt: null,
-        email: userEmail,
-      },
-      include: {
-        verificationToken: options.includes('verificationToken'),
-      },
-    })
+    const findByIdQuery = SqlUserQueryBuilder.findUserByEmail(userEmail, options)
 
-    if (user === null) {
+    const users: Array<UserWithRelationsRawModel> = await prisma.$queryRaw(findByIdQuery)
+
+    if (users.length === 0) {
       return null
     }
 
-    return PrismaUserModelTranslator.toDomain(user, options)
+    return new MysqlUsersTranslatorService(options).fromRowsToDomain(users)[0]
   }
 
   /**
@@ -63,18 +80,18 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return User if found or null
    */
   public async findByUsername (username: User['username']): Promise<User | null> {
-    const user = await prisma.user.findFirst({
-      where: {
-        deletedAt: null,
-        username,
-      },
-    })
+    const users: [] = await prisma.$queryRaw`
+      SELECT *
+      FROM users
+      WHERE username = ${username}
+        AND deleted_at IS NULL;
+    `
 
-    if (user === null) {
+    if (users.length === 0) {
       return null
     }
 
-    return PrismaUserModelTranslator.toDomain(user)
+    return new MysqlUsersTranslatorService([]).fromRowsToDomain(users)[0]
   }
 
   /**
@@ -84,31 +101,15 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return User if found or null
    */
   public async findById (userId: User['id'], options: FindByIdOptions[] = []): Promise<User | null> {
-    let queryIncludes: UserInclude<DefaultArgs> | undefined
+    const findByIdQuery = SqlUserQueryBuilder.findUserById(userId, options)
 
-    if (options.includes('savedPosts')) {
-      queryIncludes = {
-        savedPosts: {
-          include: {
-            post: true,
-          },
-        },
-      }
-    }
+    const users: Array<UserWithRelationsRawModel> = await prisma.$queryRaw(findByIdQuery)
 
-    const user = await prisma.user.findFirst({
-      where: {
-        deletedAt: null,
-        id: userId,
-      },
-      include: queryIncludes,
-    })
-
-    if (user === null) {
+    if (users.length === 0) {
       return null
     }
 
-    return PrismaUserModelTranslator.toDomain(user, options)
+    return new MysqlUsersTranslatorService(options).fromRowsToDomain(users)[0]
   }
 
   /**
@@ -120,21 +121,25 @@ export class MysqlUserRepository implements UserRepositoryInterface {
     const prismaUserModel = PrismaUserModelTranslator.toDatabase(user)
 
     await prisma.$transaction(async (transaction) => {
-      await transaction.user.update({
-        data: {
-          ...prismaUserModel,
-        },
-        where: {
-          id: user.id,
-        },
-      })
+      await transaction.$queryRaw`
+        UPDATE users
+        SET
+          name = ${prismaUserModel.name},
+          username = ${prismaUserModel.username},
+          password = ${prismaUserModel.password},
+          email = ${prismaUserModel.email},
+          image_url = ${prismaUserModel.imageUrl},
+          language = ${prismaUserModel.language},
+          updated_at = ${prismaUserModel.updatedAt}
+        WHERE id = ${prismaUserModel.id};
+      `
 
       if (deleteVerificationToken) {
-        await transaction.verificationToken.delete({
-          where: {
-            userEmail: user.email,
-          },
-        })
+        await transaction.$queryRaw`
+          DELETE 
+          FROM verification_tokens
+          WHERE user_email = ${prismaUserModel.email};
+        `
       }
     })
   }
@@ -145,13 +150,11 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return true if a user with given email exists or false
    */
   public async existsByEmail (email: User['email']): Promise<boolean> {
-    const userExists = await prisma.user.findFirst({
-      where: {
-        email,
-      },
-    })
+    const usersMatches: [{ exists: boolean }] = await prisma.$queryRaw`
+      SELECT EXISTS(SELECT * FROM users WHERE email = ${email})
+    `
 
-    return userExists !== null
+    return usersMatches[0].exists
   }
 
   /**
@@ -160,12 +163,35 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @return true if a user with given username exists or false
    */
   public async existsByUsername (username: User['username']): Promise<boolean> {
-    const userExists = await prisma.user.findFirst({
-      where: {
-        username,
-      },
-    })
+    const usersMatches: [{ exists: boolean }] = await prisma.$queryRaw`
+      SELECT EXISTS(SELECT * FROM users WHERE username = ${username})
+    `
 
-    return userExists !== null
+    return usersMatches[0].exists
+  }
+
+  /**
+   * Add a post to the User's saved post list
+   * @param userId User ID
+   * @param postId Post ID
+   */
+  public async addPostToSavedPosts (userId: User['id'], postId: Post['id']): Promise<void> {
+    await prisma.$queryRaw`
+      INSERT INTO saved_posts (post_id, user_id)
+      VALUES (${postId}, ${userId});
+    `
+  }
+
+  /**
+   * Delete a post from the User's saved post list
+   * @param userId User ID
+   * @param postId Post ID
+   */
+  public async deletePostFromSavedPosts (userId: User['id'], postId: Post['id']): Promise<void> {
+    await prisma.$queryRaw`
+      DELETE FROM saved_posts
+      WHERE user_id = ${userId} 
+        AND post_id = ${postId};
+    `
   }
 }

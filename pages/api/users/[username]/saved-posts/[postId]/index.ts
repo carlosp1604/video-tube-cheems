@@ -61,7 +61,7 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
     return handleAuthorizationRequired(response)
   }
 
-  const { userEmail: userId, postId } = request.query
+  const { username: userId, postId } = request.query
 
   if (!userId || !postId) {
     return handleBadRequest(response)
@@ -123,7 +123,7 @@ async function handleDelete (request: NextApiRequest, response: NextApiResponse)
     return handleAuthorizationRequired(response)
   }
 
-  const { userEmail: userId, postId } = request.query
+  const { username: userId, postId } = request.query
 
   if (!userId || !postId) {
     return handleBadRequest(response)

@@ -1,4 +1,4 @@
-import { UserVerificationTokenRawModel } from '~/modules/Auth/Infrastructure/RawModels/UserRawModel'
+import { UserVerificationTokenRawModel } from '~/modules/Auth/Infrastructure/RawSql/UserRawModel'
 import { VerificationToken as PrismaVerificationTokenModel } from '@prisma/client'
 
 export class UserVerificationTokenModelTranslator {

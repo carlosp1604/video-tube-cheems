@@ -11,9 +11,15 @@ import {
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import * as uuid from 'uuid'
 import { Tooltip } from 'react-tooltip'
+import {
+  POST_COMMENT_REACTION_NOT_FOUND,
+  POST_COMMENT_REACTION_POST_COMMENT_NOT_FOUND,
+  POST_COMMENT_REACTION_USER_ALREADY_REACTED,
+  POST_COMMENT_REACTION_USER_NOT_FOUND
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   postChildComment: PostChildCommentComponentDto
@@ -67,7 +73,33 @@ export const PostChildCommentInteractionSection: FC<Props> = ({ postChildComment
           toast.error(t('bad_request_error_message'))
           break
 
-        case 404:
+        case 404: {
+          const jsonResponse = await response.json()
+
+          switch (jsonResponse.code) {
+            case POST_COMMENT_REACTION_USER_NOT_FOUND: {
+              toast.error(t('post_user_not_found_error_message'))
+
+              await signOut({ redirect: false })
+
+              break
+            }
+
+            case POST_COMMENT_REACTION_POST_COMMENT_NOT_FOUND:
+              toast.error(t('post_comment_reaction_post_comment_not_found_error_message'))
+              break
+
+            case POST_COMMENT_REACTION_USER_ALREADY_REACTED:
+              toast.error(t('user_already_reacted_to_post_comment_error_message'))
+              break
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
+          break
+        }
+
         case 409:
           toast.error(t('post_comment_reaction_post_comment_not_found_error_message'))
           break
@@ -114,9 +146,32 @@ export const PostChildCommentInteractionSection: FC<Props> = ({ postChildComment
           toast.error(t('bad_request_error_message'))
           break
 
-        case 404:
-          toast.error(t('post_comment_reaction_post_comment_not_found_error_message'))
+        case 404: {
+          const jsonResponse = await response.json()
+
+          switch (jsonResponse.code) {
+            case POST_COMMENT_REACTION_USER_NOT_FOUND: {
+              toast.error(t('post_user_not_found_error_message'))
+
+              await signOut({ redirect: false })
+
+              break
+            }
+
+            case POST_COMMENT_REACTION_POST_COMMENT_NOT_FOUND:
+              toast.error(t('post_comment_reaction_post_comment_not_found_error_message'))
+              break
+
+            case POST_COMMENT_REACTION_NOT_FOUND:
+              toast.error(t('post_comment_reaction_not_found_error_message'))
+              break
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
           break
+        }
 
         case 409:
           toast.error(t('post_comment_reaction_user_already_reacted'))

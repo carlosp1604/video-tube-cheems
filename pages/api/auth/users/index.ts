@@ -1,12 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { container } from '~/awilix.container'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
-import { CreateUserApiRequestValidator } from '~/modules/Auth/Infrastructure/Validators/CreateUserApiRequestValidator'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
+import {
+  CreateUserApiRequestValidator
+} from '~/modules/Auth/Infrastructure/Api/Validators/CreateUserApiRequestValidator'
 import { CreateUserApplicationException } from '~/modules/Auth/Application/CreateUser/CreateUserApplicationException'
 import {
   CreateUserApplicationRequestTranslator
-} from '~/modules/Auth/Infrastructure/Translators/CreateUserApplicationRequestTranslator'
+} from '~/modules/Auth/Infrastructure/Api/Translators/CreateUserApplicationRequestTranslator'
 import {
   USER_INVALID_EMAIL,
   USER_INVALID_NAME,
@@ -15,7 +17,7 @@ import {
   USER_INVALID_VERIFICATION_TOKEN,
   USER_EMAIL_ALREADY_REGISTERED,
   USER_USERNAME_ALREADY_REGISTERED, USER_METHOD, USER_SERVER_ERROR, USER_VALIDATION
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

@@ -8,7 +8,7 @@ import {
   USER_CANNOT_SEND_VERIFICATION_EMAIL,
   USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
   USER_TOKEN_ALREADY_ISSUED
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
 
 export interface Props {

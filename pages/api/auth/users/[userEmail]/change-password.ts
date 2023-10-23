@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
 import {
   ChangeUserPasswordApiRequestValidator
-} from '~/modules/Auth/Infrastructure/Validators/ChangeUserPasswordApiRequestValidator'
+} from '~/modules/Auth/Infrastructure/Api/Validators/ChangeUserPasswordApiRequestValidator'
 import {
   ChangeUserPasswordApplicationRequestTranslator
-} from '~/modules/Auth/Infrastructure/Translators/ChangeUserPasswordApplicationRequestTranslator'
+} from '~/modules/Auth/Infrastructure/Api/Translators/ChangeUserPasswordApplicationRequestTranslator'
 import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
 import {
   ChangeUserPasswordApplicationException
@@ -17,7 +17,7 @@ import {
   USER_INVALID_VERIFICATION_TOKEN,
   USER_METHOD, USER_SERVER_ERROR,
   USER_USER_NOT_FOUND, USER_VALIDATION
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import {
   ChangeUserPasswordApiRequestInterface
 } from '~/modules/Auth/Infrastructure/Dtos/ChangeUserPasswordApiRequestInterface'

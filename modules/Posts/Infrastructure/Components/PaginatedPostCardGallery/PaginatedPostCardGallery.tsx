@@ -136,7 +136,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         />
       </div>
 
-      <PostCardList posts={ currentPosts } />
+      <PostCardList posts={ currentPosts }/>
 
       { paginationBar }
     </div>

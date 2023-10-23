@@ -15,7 +15,7 @@ import {
   USER_INVALID_PASSWORD,
   USER_INVALID_USERNAME,
   USER_USERNAME_ALREADY_REGISTERED
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
 
 export interface Props {

@@ -4,7 +4,7 @@ import { GetActorsApplicationDtoTranslator } from './GetActorsApplicationDtoTran
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
 import { GetPostRequestFilterDto } from '~/modules/Posts/Application/GetPosts/GetPostsRequestDto'
 import { PostRepositoryFilterOption } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { FilterOptionValidator } from '~/modules/Shared/Domain/FilterOptionValidator'
+import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/GetPostsFilterOptionValidator'
 import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
@@ -56,7 +56,7 @@ export class GetActors {
   private static parseFilters (filters: GetPostRequestFilterDto[]): PostRepositoryFilterOption[] {
     return filters.map((filter) => {
       try {
-        const validatedFilter = new FilterOptionValidator().validate(filter.type)
+        const validatedFilter = new GetPostsFilterOptionValidator().validate(filter.type)
         const validFilterValue = new FilterValueValidator().validate(filter.value)
 
         return { type: validatedFilter, value: validFilterValue }

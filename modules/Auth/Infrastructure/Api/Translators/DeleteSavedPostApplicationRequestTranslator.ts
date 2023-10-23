@@ -1,8 +1,10 @@
-import { AddSavedPostApiRequest } from '~/modules/Auth/Infrastructure/Api/Requests/AddSavedPostApiRequest'
-import { AddSavedPostApplicationRequest } from '~/modules/Auth/Application/AddSavedPost/AddSavedPostApplicationRequest'
+import { DeleteSavedPostApiRequest } from '~/modules/Auth/Infrastructure/Api/Requests/DeleteSavedPostApiRequest'
+import {
+  DeleteSavedPostApplicationRequest
+} from '~/modules/Auth/Application/DeleteSavedPost/DeleteSavedPostApplicationRequest'
 
-export class AddSavedPostApplicationRequestTranslator {
-  public static fromApi (apiRequest: AddSavedPostApiRequest): AddSavedPostApplicationRequest {
+export class DeleteSavedPostApplicationRequestTranslator {
+  public static fromApi (apiRequest: DeleteSavedPostApiRequest): DeleteSavedPostApplicationRequest {
     return {
       userId: apiRequest.userId,
       postId: apiRequest.postId,

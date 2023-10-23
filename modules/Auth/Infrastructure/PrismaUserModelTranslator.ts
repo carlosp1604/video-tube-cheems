@@ -51,7 +51,7 @@ export class PrismaUserModelTranslator {
       userWithSavedPosts.savedPosts.forEach((post) => {
         const domainPost = PostModelTranslator.toDomain(post.post, [])
 
-        savedPostsCollection.addItemFromPersistenceLayer(domainPost, domainPost.id)
+        savedPostsCollection.addItem(domainPost, domainPost.id)
       })
     }
 

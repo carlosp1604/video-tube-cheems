@@ -22,6 +22,8 @@ import { PostView } from '~/modules/Posts/Domain/PostView'
 import { PostViewModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostViewModelTranslator'
 import { User } from '~/modules/Auth/Domain/User'
 import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
+import { DefaultArgs } from '@prisma/client/runtime/library'
+import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -224,8 +226,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @return Post if found or null
    */
   public async findById (postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
-    let includeComments: Prisma.Post$commentsArgs | boolean = options.includes('comments')
-    let includeProducer: boolean | Prisma.ProducerArgs | undefined = false
+    let includeComments: boolean | Prisma.Post$commentsArgs<DefaultArgs> | undefined = false
+    let includeProducer: boolean | Prisma.Post$producerArgs<DefaultArgs> | undefined = false
+    let includeActors: boolean | Prisma.Post$actorsArgs<DefaultArgs> | undefined = false
+    let includeTags: boolean | Prisma.Post$tagsArgs<DefaultArgs> | undefined
+
+    if (options.includes('comments')) {
+      includeComments = true
+    }
 
     if (options.includes('comments.user')) {
       includeComments = {
@@ -256,6 +264,22 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
     }
 
+    if (options.includes('actors')) {
+      includeActors = {
+        include: {
+          actor: options.includes('actors'),
+        },
+      }
+    }
+
+    if (options.includes('tags')) {
+      includeTags = {
+        include: {
+          tag: options.includes('tags'),
+        },
+      }
+    }
+
     const post = await prisma.post.findFirst({
       where: {
         id: postId,
@@ -266,26 +290,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         },
       },
       include: {
-        _count: {
-          select: {
-            comments: true,
-            reactions: true,
-          },
-        },
         producer: includeProducer,
-        actors: {
-          include: {
-            actor: options.includes('actors'),
-          },
-        },
+        actors: includeActors,
         comments: includeComments,
         meta: options.includes('meta'),
         reactions: options.includes('reactions'),
-        tags: {
-          include: {
-            tag: options.includes('tags'),
-          },
-        },
+        tags: includeTags,
+        translations: options.includes('translations'),
+        actor: options.includes('actor'),
       },
     })
 
@@ -668,24 +680,39 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
-   * Find a user reaction for a post given its IDs
+   * Find all user interaction with a post given its IDs
    * @param postId Post ID
    * @param userId User ID
-   * @return Post Reaction if found or null
+   * @return PostUserInteraction
    */
-  public async findUserReaction (postId: Post['id'], userId: User['id']): Promise<Reaction | null> {
-    const postReaction = await prisma.reaction.findFirst({
-      where: {
-        reactionableId: postId,
-        userId,
-      },
-    })
+  public async findUserInteraction (postId: Post['id'], userId: User['id']): Promise<PostUserInteraction> {
+    const [reaction, post] = await prisma.$transaction([
+      prisma.reaction.findFirst({
+        where: {
+          reactionableId: postId,
+          userId,
+        },
+      }),
+      prisma.savedPost.findFirst({
+        where: {
+          userId,
+          postId,
+        },
+      }),
+    ])
 
-    if (postReaction === null) {
-      return null
+    let userReaction: Reaction | null = null
+
+    if (reaction !== null) {
+      userReaction = ReactionModelTranslator.toDomain(reaction)
     }
 
-    return ReactionModelTranslator.toDomain(postReaction)
+    const savedPost = post !== null
+
+    return {
+      reaction: userReaction,
+      savedPost,
+    }
   }
 
   private static buildFilters (

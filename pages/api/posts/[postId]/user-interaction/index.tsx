@@ -16,7 +16,7 @@ import {
 import {
   GetPostUserInteractionApiRequestValidator
 } from '~/modules/Posts/Infrastructure/Api/Validators/GetPostUserInteractionApiRequestValidator'
-import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
+import { GetPostUserInteraction } from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteraction'
 import {
   GetPostUserInteractionDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/GetPostUserInteractionDtoTranslator'
@@ -54,7 +54,7 @@ export default async function handler (
 
   const applicationRequest = GetPostUserInteractionDtoTranslator.fromApiDto(apiRequest)
 
-  const useCase = container.resolve<GetPostUserReaction>('getPostUserReactionUseCase')
+  const useCase = container.resolve<GetPostUserInteraction>('getPostUserInteractionUseCase')
 
   try {
     const reaction = await useCase.get(applicationRequest)

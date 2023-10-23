@@ -9,7 +9,7 @@ import {
   USER_METHOD,
   USER_SERVER_ERROR,
   USER_USER_NOT_FOUND
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

@@ -1,16 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { container } from '~/awilix.container'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
 import {
   VerifyEmailAddressApiRequestValidator
-} from '~/modules/Auth/Infrastructure/Validators/VerifyEmailAddressApiRequestValidator'
+} from '~/modules/Auth/Infrastructure/Api/Validators/VerifyEmailAddressApiRequestValidator'
 import {
   VerifyEmailAddressApplicationException
 } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddressApplicationException'
 import {
   VerifyEmailAddressApplicationRequestTranslator
-} from '~/modules/Auth/Infrastructure/Translators/VerifyEmailAddressApplicationRequestTranslator'
+} from '~/modules/Auth/Infrastructure/Api/Translators/VerifyEmailAddressApplicationRequestTranslator'
 import {
   USER_CANNOT_SEND_VERIFICATION_EMAIL,
   USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
@@ -18,7 +18,7 @@ import {
   USER_SERVER_ERROR, USER_TOKEN_ALREADY_ISSUED,
   USER_USER_NOT_FOUND,
   USER_VALIDATION
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

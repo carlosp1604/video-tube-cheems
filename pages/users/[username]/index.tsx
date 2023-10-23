@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { UserProfilePageProps, UserProfilePage } from '~/components/pages/UserProfilePage/UserProfilePage'
 import {
   UserHeaderComponentDtoTranslator
-} from '~/modules/Auth/Infrastructure/Translators/UserHeaderComponentDtoTranslator'
+} from '~/modules/Auth/Infrastructure/Api/Translators/UserHeaderComponentDtoTranslator'
 
 export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale

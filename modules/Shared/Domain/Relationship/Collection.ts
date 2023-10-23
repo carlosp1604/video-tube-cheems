@@ -27,12 +27,11 @@ export class Collection<T extends {}, V extends {}> {
   }
 
   /**
-   * Add a new relationship item to the collection.
-   * Used to add a new relation retrieved from persistence layer.
+   * Add a new item to the collection. If item already exists, is updated.
    * @param relatedObject Object to relate with
    * @param objectIdentifier Object identifier
    */
-  public addItemFromPersistenceLayer (
+  public addItem (
     relatedObject: T,
     objectIdentifier: V
   ): void {
@@ -63,19 +62,6 @@ export class Collection<T extends {}, V extends {}> {
     }
 
     return false
-  }
-
-  /**
-   * Add a new item to the collection. If item already exists, is updated.
-   * @param relatedObject Object to relate with
-   * @param objectIdentifier Object identifier
-   */
-  public addItem (relatedObject: T, objectIdentifier: V): void {
-    if (this.instances === undefined) {
-      throw RelationshipDomainException.collectionNotLoaded()
-    }
-
-    this.instances.set(objectIdentifier, CollectionItem.createRelation(relatedObject))
   }
 
   /**

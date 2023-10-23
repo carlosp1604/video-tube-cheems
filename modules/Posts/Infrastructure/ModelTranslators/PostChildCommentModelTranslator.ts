@@ -42,7 +42,7 @@ export class PostChildCommentModelTranslator {
       for (const reaction of postCommentWithReactions.reactions) {
         const domainReaction = ReactionModelTranslator.toDomain(reaction)
 
-        reactionsCollection.addItemFromPersistenceLayer(domainReaction, domainReaction.userId)
+        reactionsCollection.addItem(domainReaction, domainReaction.userId)
       }
     }
 

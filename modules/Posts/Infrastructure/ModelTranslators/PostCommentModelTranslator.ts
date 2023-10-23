@@ -44,7 +44,7 @@ export class PostCommentModelTranslator {
       childrenCollection = Collection.initializeCollection()
 
       postCommentWithChildren.childComments.forEach((childComment) => {
-        childrenCollection.addItemFromPersistenceLayer(
+        childrenCollection.addItem(
           PostChildCommentModelTranslator.toDomain(childComment, ['comments.user']),
           childComment.id
         )
@@ -59,7 +59,7 @@ export class PostCommentModelTranslator {
       for (const reaction of postCommentWithReactions.reactions) {
         const domainReaction = ReactionModelTranslator.toDomain(reaction)
 
-        reactionsCollection.addItemFromPersistenceLayer(domainReaction, domainReaction.userId)
+        reactionsCollection.addItem(domainReaction, domainReaction.userId)
       }
     }
 

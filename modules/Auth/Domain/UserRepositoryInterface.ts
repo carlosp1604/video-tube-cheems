@@ -1,4 +1,5 @@
 import { User } from './User'
+import { Post } from '~/modules/Posts/Domain/Post'
 
 export type UserRepositoryOptions = 'verificationToken'| 'savedPosts'
 
@@ -57,4 +58,18 @@ export interface UserRepositoryInterface {
    * @return true if a user with given username exists or false
    */
   existsByUsername(username: User['username']): Promise<boolean>
+
+  /**
+   * Add a post to the User's saved post list
+   * @param userId User ID
+   * @param postId Post ID
+   */
+  addPostToSavedPosts(userId: User['id'], postId: Post['id']): Promise<void>
+
+  /**
+   * Delete a post from the User's saved post list
+   * @param userId User ID
+   * @param postId Post ID
+   */
+  deletePostFromSavedPosts(userId: User['id'], postId: Post['id']): Promise<void>
 }

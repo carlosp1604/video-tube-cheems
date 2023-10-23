@@ -17,7 +17,7 @@ export class PostMediaModelTranslator {
     postMediaWithMediaUrlWithProvider.mediaUrls.forEach((mediaUrl) => {
       const domainMediaUrl = MediaUrlModelTranslator.toDomain(mediaUrl)
 
-      mediaUrlsCollection.addItemFromPersistenceLayer(domainMediaUrl, domainMediaUrl.url)
+      mediaUrlsCollection.addItem(domainMediaUrl, domainMediaUrl.url)
     })
 
     return new PostMedia(

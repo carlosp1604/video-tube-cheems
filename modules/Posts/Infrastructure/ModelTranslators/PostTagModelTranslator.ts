@@ -23,7 +23,7 @@ export class PostTagModelTranslator {
     postTagWithTranslations.translations.forEach((translation) => {
       const domainTranslation = TranslationModelTranslator.toDomain(translation)
 
-      translationsCollection.addItemFromPersistenceLayer(
+      translationsCollection.addItem(
         domainTranslation, translation.language + translation.field
       )
     })

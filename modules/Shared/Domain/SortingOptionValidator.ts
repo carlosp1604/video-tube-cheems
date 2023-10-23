@@ -1,4 +1,3 @@
-import { RepositoryFilterStringTypeOption } from '~/modules/Shared/Domain/RepositoryFilterOption'
 import { Validator } from '~/modules/Shared/Domain/Validator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 import { RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'

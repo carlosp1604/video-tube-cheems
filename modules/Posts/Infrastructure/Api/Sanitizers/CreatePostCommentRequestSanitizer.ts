@@ -1,5 +1,7 @@
 import { sanitize } from 'sanitizer'
-import { CreatePostCommentApiRequestDto } from '~/modules/Posts/Infrastructure/Api/Requests/CreatePostCommentApiRequestDto'
+import {
+  CreatePostCommentApiRequestDto
+} from '~/modules/Posts/Infrastructure/Api/Requests/CreatePostCommentApiRequestDto'
 
 export class CreatePostCommentRequestSanitizer {
   public static sanitize (request: CreatePostCommentApiRequestDto): CreatePostCommentApiRequestDto {

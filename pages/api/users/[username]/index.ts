@@ -1,10 +1,10 @@
 import { container } from '~/awilix.container'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
-import { UserApiValidationException } from '~/modules/Auth/Infrastructure/UserApiValidationException'
+import { UserApiValidationException } from '~/modules/Auth/Infrastructure/Api/Validators/UserApiValidationException'
 import { NextApiRequest, NextApiResponse } from 'next'
 import {
   GetUserByUsernameApiRequestValidator
-} from '~/modules/Auth/Infrastructure/Validators/GetUserByUsernameApiRequestValidator'
+} from '~/modules/Auth/Infrastructure/Api/Validators/GetUserByUsernameApiRequestValidator'
 import {
   GetUserByUsernameApplicationException
 } from '~/modules/Auth/Application/GetUser/GetUserByUsernameApplicationException'
@@ -13,7 +13,7 @@ import {
   USER_METHOD,
   USER_SERVER_ERROR,
   USER_USER_NOT_FOUND, USER_VALIDATION
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 export default async function handler (
   request: NextApiRequest,

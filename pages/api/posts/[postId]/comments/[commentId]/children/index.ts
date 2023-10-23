@@ -42,7 +42,7 @@ import {
   POST_CHILD_COMMENT_INVALID_PER_PAGE, POST_CHILD_COMMENT_METHOD,
   POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
   POST_CHILD_COMMENT_POST_NOT_FOUND,
-  POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_VALIDATION
+  POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_USER_NOT_FOUND, POST_CHILD_COMMENT_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import {
   GetPostPostChildCommentsRequestDtoTranslator
@@ -131,7 +131,7 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
 
   const comment = request.body.comment
 
-  if (!commentId || !comment || !postId) {
+  if (!commentId || !postId) {
     return handleBadRequest(response)
   }
 
@@ -140,7 +140,7 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
   try {
     apiRequest = CreatePostChildCommentRequestSanitizer.sanitize({
       parentCommentId: String(commentId),
-      comment,
+      comment: comment ?? '',
       userId: session.user.id,
       postId: String(postId),
     })
@@ -172,11 +172,14 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
     }
 
     switch (exception.id) {
-      // NOTE: If user is not found we assume is a server error
       case CreatePostChildCommentApplicationException.postNotFoundId:
-        return handleNotFound(response, exception, POST_CHILD_COMMENT_POST_NOT_FOUND)
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_POST_NOT_FOUND)
+
       case CreatePostChildCommentApplicationException.parentCommentNotFoundId:
-        return handleNotFound(response, exception, POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND)
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND)
+
+      case CreatePostChildCommentApplicationException.userNotFoundId:
+        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_USER_NOT_FOUND)
 
       default: {
         console.error(exception)
@@ -192,7 +195,7 @@ function handleBadRequest (response: NextApiResponse) {
     .status(400)
     .json({
       code: POST_CHILD_COMMENT_BAD_REQUEST,
-      message: 'commentId, postId and comment parameters are required',
+      message: 'commentId and postId parameters are required',
     })
 }
 
@@ -241,24 +244,17 @@ function handleUnprocessableEntity (
 
 function handleNotFound (
   response: NextApiResponse,
-  exception: CreatePostChildCommentApplicationException,
+  message: string,
   code: string
 ) {
   return response.status(404)
     .json({
       code,
-      message: exception.message,
+      message,
     })
 }
 
 function handleAuthentication (request: NextApiRequest, response: NextApiResponse) {
-  const baseUrl = container.resolve<string>('baseUrl')
-
-  response.setHeader(
-    'WWW-Authenticate',
-    `Basic realm="${baseUrl}"`
-  )
-
   return response
     .status(401)
     .json({

@@ -3,7 +3,7 @@ import { GetPostRequestFilterDto, GetPostsRequestDto } from './GetPostsRequestDt
 import { GetPostsApplicationException } from './GetPostsApplicationException'
 import { GetPostsApplicationResponse } from './GetPostsApplicationDto'
 import { GetPostsApplicationDtoTranslator } from './GetPostsApplicationDtoTranslator'
-import { FilterOptionValidator } from '~/modules/Shared/Domain/FilterOptionValidator'
+import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/GetPostsFilterOptionValidator'
 import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteriaValidator'
 import { SortingOptionValidator } from '~/modules/Shared/Domain/SortingOptionValidator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
@@ -51,7 +51,7 @@ export class GetPosts {
   private static parseFilters (filters: GetPostRequestFilterDto[]): PostRepositoryFilterOption[] {
     return filters.map((filter) => {
       try {
-        const validatedFilter = new FilterOptionValidator().validate(filter.type)
+        const validatedFilter = new GetPostsFilterOptionValidator().validate(filter.type)
         const validFilterValue = new FilterValueValidator().validate(filter.value)
 
         return { type: validatedFilter, value: validFilterValue }

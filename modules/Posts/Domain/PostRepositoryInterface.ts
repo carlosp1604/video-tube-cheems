@@ -12,6 +12,7 @@ import {
   PostWithViewsCommentsReactionsInterface,
   PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
+import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 
 export type RepositoryOptions =
   'meta' |
@@ -139,10 +140,10 @@ export interface PostRepositoryInterface {
   createPostView (postId: Post['id'], postView: PostView): Promise<void>
 
   /**
-   * Find a user reaction for a post given its IDs
+   * Find all user interaction with a post given its IDs
    * @param postId Post ID
    * @param userId User ID
-   * @return Post Reaction if found or null
+   * @return PostUserInteraction
    */
-  findUserReaction (postId: Post['id'], userId: User['id']): Promise<Reaction | null>
+  findUserInteraction (postId: Post['id'], userId: User['id']): Promise<PostUserInteraction>
 }

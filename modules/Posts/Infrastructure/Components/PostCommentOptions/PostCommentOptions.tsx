@@ -8,9 +8,11 @@ import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsAp
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import {
-  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND, POST_COMMENT_COMMENT_NOT_FOUND,
-  POST_COMMENT_POST_NOT_FOUND
+  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
+  POST_COMMENT_COMMENT_NOT_FOUND,
+  POST_COMMENT_POST_NOT_FOUND, POST_COMMENT_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { signOut } from 'next-auth/react'
 
 interface Props {
   ownerId: string
@@ -62,6 +64,14 @@ export const PostCommentOptions: FC<Props> = ({ ownerId, postId, parentCommentId
               case POST_COMMENT_COMMENT_NOT_FOUND:
                 toast.error('post_comment_not_found_error_message')
                 break
+
+              case POST_COMMENT_USER_NOT_FOUND: {
+                toast.error('post_user_not_found_error_message')
+
+                await signOut({ redirect: false })
+
+                break
+              }
 
               default:
                 toast.error('server_error_error_message')

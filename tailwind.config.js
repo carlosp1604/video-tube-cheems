@@ -106,7 +106,7 @@ module.exports = {
       },
       zIndex: classNamesToZIndex([
         'card-link',
-        'post-card-time',
+        'post-card-video',
         'carousel-button',
         'floating-action-app-menu',
         'sort-menu-dropdown',

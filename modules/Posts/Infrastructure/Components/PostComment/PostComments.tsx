@@ -14,6 +14,10 @@ import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCo
 import toast from 'react-hot-toast'
 import { PostCommentList } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentList'
 import { PostChildComments } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildComments'
+import {
+  POST_COMMENT_POST_NOT_FOUND, POST_COMMENT_USER_NOT_FOUND
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { signOut } from 'next-auth/react'
 
 interface Props {
   postId: string
@@ -70,9 +74,28 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           toast.error(t('user_must_be_authenticated_error_message'))
           break
 
-        case 404:
-          toast.error(t('create_post_comment_post_not_found_error_message'))
+        case 404: {
+          const jsonResponse = await response.json()
+
+          switch (jsonResponse.code) {
+            case POST_COMMENT_POST_NOT_FOUND:
+              toast.error(t('post_not_found_error_message'))
+              break
+
+            case POST_COMMENT_USER_NOT_FOUND: {
+              toast.error(t('post_user_not_found_error_message'))
+
+              await signOut({ redirect: false })
+
+              break
+            }
+
+            default:
+              toast.error(t('server_error_error_message'))
+              break
+          }
           break
+        }
 
         default:
           toast.error(t('server_error_error_message'))
@@ -135,7 +158,6 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           setRepliesOpen(false)
           setIsOpen(false)
         } }
-        onLikeReply={ () => {} }
         onClickRetry={ () => setRepliesOpen(false) }
         onAddReply={ () => {
           const commentIndex = comments.indexOf(commentToReply)

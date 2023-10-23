@@ -67,7 +67,7 @@ export class PostModelTranslator {
       for (let i = 0; i < postWithMeta.meta.length; i++) {
         const postMetaDomain = PostMetaModelTranslator.toDomain(postWithMeta.meta[i])
 
-        metaCollection.addItemFromPersistenceLayer(postMetaDomain, postMetaDomain.type)
+        metaCollection.addItem(postMetaDomain, postMetaDomain.type)
       }
     }
 
@@ -78,7 +78,7 @@ export class PostModelTranslator {
       for (let i = 0; i < postWithTags.tags.length; i++) {
         const postTagDomain = PostTagModelTranslator.toDomain(postWithTags.tags[i].tag)
 
-        tagsCollection.addItemFromPersistenceLayer(postTagDomain, postTagDomain.id)
+        tagsCollection.addItem(postTagDomain, postTagDomain.id)
       }
     }
 
@@ -89,7 +89,7 @@ export class PostModelTranslator {
       for (let i = 0; i < postWithActor.actors.length; i++) {
         const actorDomain = ActorModelTranslator.toDomain(postWithActor.actors[i].actor)
 
-        actorsCollection.addItemFromPersistenceLayer(actorDomain, actorDomain.id)
+        actorsCollection.addItem(actorDomain, actorDomain.id)
       }
     }
 
@@ -105,7 +105,7 @@ export class PostModelTranslator {
           postWithComments.comments[i], commentsOptions
         )
 
-        commentsCollection.addItemFromPersistenceLayer(commentDomain, commentDomain.id)
+        commentsCollection.addItem(commentDomain, commentDomain.id)
       }
     }
 
@@ -116,7 +116,7 @@ export class PostModelTranslator {
       for (let i = 0; i < postWithReactions.reactions.length; i++) {
         const reactionDomain = ReactionModelTranslator.toDomain(postWithReactions.reactions[i])
 
-        reactionsCollection.addItemFromPersistenceLayer(reactionDomain, reactionDomain.userId)
+        reactionsCollection.addItem(reactionDomain, reactionDomain.userId)
       }
     }
 
@@ -152,7 +152,7 @@ export class PostModelTranslator {
       postWithTranslations.translations.forEach((translation) => {
         const domainTranslation = TranslationModelTranslator.toDomain(translation)
 
-        translationsCollection.addItemFromPersistenceLayer(
+        translationsCollection.addItem(
           domainTranslation, translation.language + translation.field
         )
       })
@@ -166,7 +166,7 @@ export class PostModelTranslator {
       postWithPostMediaWithMediaUrlWithProvider.postMedia.forEach((postMedia) => {
         const domainPostMedia = PostMediaModelTranslator.toDomain(postMedia)
 
-        postMediaCollection.addItemFromPersistenceLayer(domainPostMedia, domainPostMedia.id)
+        postMediaCollection.addItem(domainPostMedia, domainPostMedia.id)
       })
     }
 

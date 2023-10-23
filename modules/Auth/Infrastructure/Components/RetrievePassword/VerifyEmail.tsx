@@ -7,7 +7,7 @@ import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValid
 import {
   USER_CANNOT_SEND_VERIFICATION_EMAIL, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
   USER_TOKEN_ALREADY_ISSUED
-} from '~/modules/Auth/Infrastructure/AuthApiExceptionCodes'
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
 
 export interface Props {

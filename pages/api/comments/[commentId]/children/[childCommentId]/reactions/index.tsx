@@ -9,7 +9,7 @@ import {
   POST_COMMENT_REACTION_AUTH_REQUIRED,
   POST_COMMENT_REACTION_BAD_REQUEST,
   POST_COMMENT_REACTION_METHOD, POST_COMMENT_REACTION_NOT_FOUND, POST_COMMENT_REACTION_POST_COMMENT_NOT_FOUND,
-  POST_COMMENT_REACTION_SERVER_ERROR, POST_COMMENT_REACTION_USER_ALREADY_REACTED,
+  POST_COMMENT_REACTION_SERVER_ERROR, POST_COMMENT_REACTION_USER_ALREADY_REACTED, POST_COMMENT_REACTION_USER_NOT_FOUND,
   POST_COMMENT_REACTION_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import {
@@ -107,8 +107,14 @@ async function handlePostMethod (request: NextApiRequest, response: NextApiRespo
       case CreatePostCommentReactionApplicationException.userAlreadyReactedId:
         return handleConflict(response, exception.message, POST_COMMENT_REACTION_USER_ALREADY_REACTED)
 
-      default:
+      case CreatePostCommentReactionApplicationException.userNotFoundId:
+        return handleNotFound(response, exception.message, POST_COMMENT_REACTION_USER_NOT_FOUND)
+
+      default: {
+        console.error(exception)
+
         return handleServerError(response)
+      }
     }
   }
 }
@@ -161,8 +167,14 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
       case DeletePostCommentReactionApplicationException.userHasNotReactedId:
         return handleNotFound(response, exception.message, POST_COMMENT_REACTION_NOT_FOUND)
 
-      default:
+      case DeletePostCommentReactionApplicationException.userNotFoundId:
+        return handleNotFound(response, exception.message, POST_COMMENT_REACTION_USER_NOT_FOUND)
+
+      default: {
+        console.error(exception)
+
         return handleServerError(response)
+      }
     }
   }
 }
@@ -178,13 +190,6 @@ function handleMethod (request: NextApiRequest, response: NextApiResponse) {
 }
 
 function handleAuthentication (response: NextApiResponse) {
-  const baseUrl = container.resolve<string>('baseUrl')
-
-  response.setHeader(
-    'WWW-Authenticate',
-    `Basic realm="${baseUrl}"`
-  )
-
   return response
     .status(401)
     .json({

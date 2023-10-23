@@ -1,6 +1,7 @@
 import { DomainException } from '~/modules/Exceptions/Domain/DomainException'
 import { User } from '~/modules/Auth/Domain/User'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
+import { Post } from '~/modules/Posts/Domain/Post'
 
 export class UserDomainException extends DomainException {
   public static userHasAlreadyAnActiveTokenId = 'user_user_has_already_an_active_token'
@@ -11,6 +12,9 @@ export class UserDomainException extends DomainException {
   public static cannotRemoveVerificationTokenId = 'user_cannot_remove_verification_token'
   public static cannotAddVerificationTokenToAccountCreationId = 'user_cannot_verification_token_to_account_creation'
   public static tokenDoesNotMatchId = 'user_token_does_not_match'
+  public static postAlreadySavedId = 'user_post_already_saved'
+  public static postDoesNotExisOnSavedPostsId = 'user_post_does_not_exists_on_saved_posts'
+  public static cannotDeletePostFromSavedPostsId = 'user_cannot_delete_post_from_saved_posts'
 
   constructor (message: string, id: string) {
     super(message, id)
@@ -75,6 +79,27 @@ export class UserDomainException extends DomainException {
     return new UserDomainException(
       `Token value: ${token} does not match with existing token`,
       this.tokenDoesNotMatchId
+    )
+  }
+
+  public static postAlreadySaved (postId: Post['id']): UserDomainException {
+    return new UserDomainException(
+      `Post with ID ${postId} was already saved`,
+      this.postAlreadySavedId
+    )
+  }
+
+  public static postDoesNotExistOnSavedPosts (postId: Post['id']): UserDomainException {
+    return new UserDomainException(
+      `Post with ID ${postId} does not exists on saved posts`,
+      this.postDoesNotExisOnSavedPostsId
+    )
+  }
+
+  public static cannotDeletePostFromSavedPosts (postId: Post['id']): UserDomainException {
+    return new UserDomainException(
+      `Post with ID ${postId} cannot be deleted from saved posts`,
+      this.cannotDeletePostFromSavedPostsId
     )
   }
 }

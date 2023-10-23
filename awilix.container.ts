@@ -20,7 +20,7 @@ import { MysqlProducerRepository } from '~/modules/Producers/Infrastructure/Mysq
 import { MysqlVerificationTokenRepository } from '~/modules/Auth/Infrastructure/MysqlVerificationTokenRepository'
 import { asClass, asFunction, createContainer, InjectionMode } from 'awilix'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
-import { GetPostUserReaction } from '~/modules/Posts/Application/GetPostUserReaction/GetPostUserReaction'
+import { GetPostUserInteraction } from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteraction'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 import { GetPostPostComments } from '~/modules/Posts/Application/GetPostPostComments/GetPostPostComments'
 import { MysqlPostCommentRepository } from '~/modules/Posts/Infrastructure/MysqlPostCommentRepository'
@@ -37,6 +37,8 @@ import {
 import {
   DeletePostCommentReaction
 } from '~/modules/Posts/Application/DeletePostCommentReaction/DeletePostCommentReaction'
+import { AddSavedPost } from '~/modules/Auth/Application/AddSavedPost/AddSavedPost'
+import { DeleteSavedPost } from '~/modules/Auth/Application/DeleteSavedPost/DeleteSavedPost'
 
 /**
  * We create a container to register our classes dependencies
@@ -135,7 +137,7 @@ container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
 container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostViewUseCase', asClass(AddPostView))
 container.register('createPostReactionUseCase', asClass(CreatePostReaction))
-container.register('getPostUserReactionUseCase', asClass(GetPostUserReaction))
+container.register('getPostUserInteractionUseCase', asClass(GetPostUserInteraction))
 container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))
 container.register('getPostPostChildCommentsUseCase', asClass(GetPostPostChildComments))
 container.register('createPostCommentUseCase', asClass(CreatePostComment))
@@ -144,5 +146,7 @@ container.register('deletePostCommentUseCase', asClass(DeletePostComment))
 container.register('deletePostReactionUseCase', asClass(DeletePostReaction))
 container.register('createPostCommentReactionUseCase', asClass(CreatePostCommentReaction))
 container.register('deletePostCommentReactionUseCase', asClass(DeletePostCommentReaction))
+container.register('addSavedPostUseCase', asClass(AddSavedPost))
+container.register('deleteSavedPostUseCase', asClass(DeleteSavedPost))
 
 export { container }

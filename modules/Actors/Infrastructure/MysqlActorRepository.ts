@@ -3,8 +3,8 @@ import { ActorModelTranslator } from './ActorModelTranslator'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import { prisma } from '~/persistence/prisma'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
-import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
   /**
@@ -40,7 +40,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilterOptionInterface[]
+    filters: PostFilterOptionInterface[]
   ): Promise<Actor[]> {
     let whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
@@ -68,7 +68,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @return Number of actors that accomplish with the filters
    */
   public async countPostsWithFilters (
-    filters: RepositoryFilterOptionInterface[]
+    filters: PostFilterOptionInterface[]
   ): Promise<number> {
     let whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
@@ -89,7 +89,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   private buildFilters (
-    filters: RepositoryFilterOptionInterface[]
+    filters: PostFilterOptionInterface[]
   ): Prisma.ActorWhereInput | undefined {
     let whereClause: Prisma.ActorWhereInput | undefined = {}
 

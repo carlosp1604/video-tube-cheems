@@ -1,16 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostsApiRequestValidator } from '~/modules/Posts/Infrastructure/Api/Validators/GetPostsApiRequestValidator'
+import { GetPostsApiRequestValidator } from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestValidator'
 import {
   GetPostsRequestDtoTranslator
-} from '~/modules/Posts/Infrastructure/Api/Translators/GetPostsRequestDtoTranslator'
+} from '~/modules/Shared/Infrastructure/Api/GetPostsRequestDtoTranslator'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
-import { NextApiRequestQuery } from 'next/dist/server/api-utils'
 import {
-  GetPostsApiFilterRequestDto,
   GetPostsApiRequestDto
-} from '~/modules/Posts/Infrastructure/Dtos/GetPostsApiRequestDto'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+} from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestDto'
 import {
   PostsApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
@@ -20,6 +17,7 @@ import {
   POST_INVALID_SORTING_CRITERIA,
   POST_INVALID_SORTING_OPTION, POST_METHOD, POST_SERVER_ERROR, POST_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { GetPostsQueryParser } from '~/modules/Shared/Infrastructure/Api/GetPostsQueryParser'
 
 export default async function handler (
   request: NextApiRequest,
@@ -29,7 +27,7 @@ export default async function handler (
     return handleMethod(request, response)
   }
 
-  const parsedQuery = parseQuery(request.query)
+  const parsedQuery = GetPostsQueryParser.parseQuery(request.query)
 
   const validationError = GetPostsApiRequestValidator.validate(parsedQuery)
 
@@ -79,36 +77,6 @@ export default async function handler (
         return handleServerError(response)
       }
     }
-  }
-}
-
-function parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto> {
-  const {
-    page,
-    perPage,
-    order,
-    orderBy,
-  } = query
-
-  const filters: GetPostsApiFilterRequestDto[] = []
-
-  for (const filter of Object.values(PostFilterOptions)) {
-    const queryFilter = query[`${filter}`]
-
-    if (queryFilter) {
-      filters.push({
-        type: filter,
-        value: String(queryFilter),
-      })
-    }
-  }
-
-  return {
-    ...page ? { page: parseInt(String(page)) } : {},
-    ...perPage ? { perPage: parseInt(String(perPage)) } : {},
-    ...orderBy ? { orderBy: String(orderBy) } : {},
-    ...order ? { order: String(order) } : {},
-    filters,
   }
 }
 

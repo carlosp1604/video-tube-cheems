@@ -13,18 +13,15 @@
     @apply z-card-link;
   }
 
-  &__video-wrapper {
-    @apply aspect-video w-full overflow-hidden rounded-lg;
-  }
-
   &__media {
-    @apply h-full w-full object-cover rounded-lg;
+    @apply aspect-video h-full w-full object-cover rounded-lg;
   }
 
   &__video-data-container {
     @apply grid py-2;
     grid-template-areas:
-      "producer-logo video-data";
+      "producer-logo post-data";
+
     grid-template-columns: auto 1fr;
   }
 
@@ -46,17 +43,18 @@
     }
   }
 
-  &__video-data {
-    @apply flex flex-col truncate;
-    grid-area: video-data;
+  &__post-data {
+    @apply flex flex-col line-clamp-2 text-sm;
+    grid-area: post-data;
   }
 
   &__video-title-link {
-    @apply truncate text-sm;
+    @apply line-clamp-2 text-sm;
   }
 
   &__extra-data {
-    @apply flex items-center font-normal text-gray-400 text-xs gap-x-0.5;
+    @apply flex items-center font-normal text-gray-400 text-xs gap-x-0.5
+      line-clamp-none truncate;
   }
 
   &__producer-name {
@@ -65,16 +63,16 @@
 
   &__video-time {
     @apply z-post-card-video absolute top-1 right-1 text-sm font-normal
-      text-base-400 py-0.5 px-1 rounded-lg bg-body;
+      text-base-400 py-0.5 px-1 rounded-lg bg-body cursor-default;
   }
 
-  &__container:hover, &__container:focus {
+  &__video-container:hover {
     #{$parentBlock}__video-time {
       @apply opacity-0 transition-all duration-500;
-    }
 
-    #{$parentBlock}__video-options {
-      @apply flex translate-x-0 items-center justify-center transition;
+      &:hover, &:focus {
+        @apply opacity-100;
+      }
     }
   }
 }

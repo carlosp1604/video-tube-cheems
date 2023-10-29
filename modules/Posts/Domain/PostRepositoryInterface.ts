@@ -2,17 +2,21 @@ import { Post } from './Post'
 import { PostChildComment } from './PostComments/PostChildComment'
 import { PostComment } from './PostComments/PostComment'
 import { Reaction } from '~/modules/Reactions/Domain/Reaction'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
 import {
-  RepositoryFilterOptionInterface
-} from '~/modules/Shared/Domain/RepositoryFilterOption'
+  PostSortingOption
+} from '~/modules/Shared/Domain/Posts/PostSorting'
+import {
+  PostFilterOptionInterface
+} from '~/modules/Shared/Domain/Posts/PostFilterOption'
 import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 import {
+  PostsWithViewsInterfaceWithTotalCount,
   PostWithViewsCommentsReactionsInterface,
   PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
 import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 
 export type RepositoryOptions =
   'meta' |
@@ -30,8 +34,6 @@ export type RepositoryOptions =
   'comments.childComments' |
   'producer.parentProducer' |
   'comments.childComments.user'
-
-export type PostRepositoryFilterOption = RepositoryFilterOptionInterface
 
 export interface PostRepositoryInterface {
   /**
@@ -106,15 +108,34 @@ export interface PostRepositoryInterface {
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
    * @param filters Post filters
-   * @return PostWithCount if found or null
+   * @return Array of PostWithViewsInterface
    */
   findWithOffsetAndLimit(
     offset: number,
     limit: number,
-    sortingOption: RepositorySortingOptions,
-    sortingCriteria: RepositorySortingCriteria,
-    filters: PostRepositoryFilterOption[],
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[],
   ): Promise<PostWithViewsInterface[]>
+
+  /**
+   * Find SavedPosts based on filter and order criteria
+   * @param userId User ID
+   * @param offset Post offset
+   * @param limit
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
+   * @param filters Post filters
+   * @return PostsWithViewsInterfaceWithTotalCount if found or null
+   */
+  findSavedPostsWithOffsetAndLimit (
+    userId: string,
+    offset: number,
+    limit: number,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
+  ): Promise<PostsWithViewsInterfaceWithTotalCount>
 
   /**
    * Count Posts based on filters
@@ -122,7 +143,7 @@ export interface PostRepositoryInterface {
    * @return Number of posts that accomplish with the filters
    */
   countPostsWithFilters(
-    filters: PostRepositoryFilterOption[],
+    filters: PostFilterOptionInterface[],
   ): Promise<number>
 
   /**

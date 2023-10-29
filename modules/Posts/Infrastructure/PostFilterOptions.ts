@@ -6,4 +6,5 @@ export enum PostFilterOptions {
   PRODUCER_NAME = 'producerName',
   ACTOR_NAME = 'actorName',
   TAG_NAME = 'tagName',
+  SAVED_BY = 'savedBy'
 }

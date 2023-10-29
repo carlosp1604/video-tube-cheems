@@ -1,6 +1,7 @@
 export enum InfrastructureSortingOptions {
   DATE = 'date',
-  VIEWS = 'views'
+  VIEWS = 'views',
+  SAVED_DATE = 'saved-date'
 }
 
 export enum InfrastructureSortingCriteria {

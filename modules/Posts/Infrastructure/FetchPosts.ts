@@ -1,6 +1,6 @@
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
+import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 
 const buildSearchParams = (

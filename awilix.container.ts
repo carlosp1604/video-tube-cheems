@@ -1,5 +1,4 @@
 import { Login } from '~/modules/Auth/Application/Login/Login'
-import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetActors } from '~/modules/Actors/Application/GetActors'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
@@ -39,6 +38,8 @@ import {
 } from '~/modules/Posts/Application/DeletePostCommentReaction/DeletePostCommentReaction'
 import { AddSavedPost } from '~/modules/Auth/Application/AddSavedPost/AddSavedPost'
 import { DeleteSavedPost } from '~/modules/Auth/Application/DeleteSavedPost/DeleteSavedPost'
+import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts/GetUserSavedPosts'
+import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 
 /**
  * We create a container to register our classes dependencies
@@ -131,6 +132,7 @@ container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
 container.register('getUserByUsername', asClass(GetUserByUsername))
 container.register('getUserById', asClass(GetUserById))
 container.register('getPostsUseCase', asClass(GetPosts))
+container.register('getUserSavedPostsUseCase', asClass(GetUserSavedPosts))
 container.register('getActors', asClass(GetActors))
 container.register('getAllProducers', asClass(GetAllProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))

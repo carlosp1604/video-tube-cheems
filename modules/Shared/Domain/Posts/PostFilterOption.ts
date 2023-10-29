@@ -5,7 +5,8 @@ export type PostFilterStringTypeOption =
   'tagId' |
   'producerName' |
   'actorName' |
-  'tagName'
+  'tagName' |
+  'savedBy'
 
 export const GetPostsFilterStringTypeOptions:
   Extract<PostFilterStringTypeOption, 'postTitle' | 'producerId'>[] = [
@@ -14,7 +15,11 @@ export const GetPostsFilterStringTypeOptions:
 
 export type GetPostsFilterStringTypeOption = typeof GetPostsFilterStringTypeOptions[number]
 
-export interface RepositoryFilterOptionInterface {
+export const GetUserSavedPostsFilterStringTypeOptions: Extract<PostFilterStringTypeOption, 'savedBy'>[] = ['savedBy']
+
+export type GetUserSavedPostsFilterStringTypeOption = typeof GetUserSavedPostsFilterStringTypeOptions[number]
+
+export interface PostFilterOptionInterface {
   type: PostFilterStringTypeOption
   value: string
 }

@@ -19,8 +19,8 @@
   }
 
   &__menu-item-content {
-    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6 border-t border-base-700
-    border-opacity-30;
+    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6 border-t
+      border-base-700 border-opacity-30;
 
     &:hover, &:focus {
       @apply text-base-100;

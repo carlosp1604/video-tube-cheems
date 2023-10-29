@@ -9,14 +9,20 @@ export interface SortingOption {
   criteria: InfrastructureSortingCriteria
 }
 
-export const defaultSortingOption: SortingOption = {
+export const HomePostsDefaultSortingOption: SortingOption = {
   translationKey: 'latest_entries_option',
   option: InfrastructureSortingOptions.DATE,
   criteria: InfrastructureSortingCriteria.DESC,
 }
 
-export const sortingOptions: SortingOption[] = [
-  defaultSortingOption,
+export const SavedPostsDefaultSortingOption: SortingOption = {
+  translationKey: 'newest_saved_posts_options',
+  option: InfrastructureSortingOptions.SAVED_DATE,
+  criteria: InfrastructureSortingCriteria.DESC,
+}
+
+export const HomePostsSortingOptions: SortingOption[] = [
+  HomePostsDefaultSortingOption,
   {
     translationKey: 'oldest_entries_option',
     option: InfrastructureSortingOptions.DATE,
@@ -26,5 +32,14 @@ export const sortingOptions: SortingOption[] = [
     translationKey: 'most_viewed_entries_option',
     option: InfrastructureSortingOptions.VIEWS,
     criteria: InfrastructureSortingCriteria.DESC,
+  },
+]
+
+export const SavePostsSortingOptions: SortingOption[] = [
+  SavedPostsDefaultSortingOption,
+  {
+    translationKey: 'oldest_saved_posts_option',
+    option: InfrastructureSortingOptions.SAVED_DATE,
+    criteria: InfrastructureSortingCriteria.ASC,
   },
 ]

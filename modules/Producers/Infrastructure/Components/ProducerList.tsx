@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const ProducerList: FC<Props> = ({ producers, activeProducer, setActiveProducer }) => {
-  const { t } = useTranslation('all_producers')
+  const { t } = useTranslation('home_page')
 
   return (
     <Carousel

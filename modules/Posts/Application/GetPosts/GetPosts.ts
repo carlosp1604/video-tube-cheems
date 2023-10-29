@@ -1,21 +1,29 @@
-import { PostRepositoryFilterOption, PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { GetPostRequestFilterDto, GetPostsRequestDto } from './GetPostsRequestDto'
+import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { GetPostsApplicationDto } from './GetPostsApplicationRequestDto'
 import { GetPostsApplicationException } from './GetPostsApplicationException'
-import { GetPostsApplicationResponse } from './GetPostsApplicationDto'
-import { GetPostsApplicationDtoTranslator } from './GetPostsApplicationDtoTranslator'
-import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/GetPostsFilterOptionValidator'
+import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsFilterOptionValidator'
 import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteriaValidator'
-import { SortingOptionValidator } from '~/modules/Shared/Domain/SortingOptionValidator'
+import { GetPostsSortingOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsSortingOptionValidator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { GetPostsSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
+import {
+  GetPostsApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/GetPostsApplicationDtoTranslator'
+import {
+  GetPostRequestFilterDto,
+  GetPostsApplicationRequestDto
+} from '~/modules/Shared/Application/GetPostsApplicationRequestDto'
+import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 
 export class GetPosts {
   // eslint-disable-next-line no-useless-constructor
   constructor (private readonly postRepository: PostRepositoryInterface) {}
 
-  public async get (request: GetPostsRequestDto): Promise<GetPostsApplicationResponse> {
+  public async get (request: GetPostsApplicationDto): Promise<GetPostsApplicationResponse> {
     GetPosts.validateRequest(request)
     const offset = (request.page - 1) * request.postsPerPage
 
@@ -38,7 +46,7 @@ export class GetPosts {
     return GetPostsApplicationDtoTranslator.fromDomain(posts, postsNumber)
   }
 
-  private static validateRequest (request: GetPostsRequestDto): void {
+  private static validateRequest (request: GetPostsApplicationRequestDto): void {
     if (isNaN(request.page) || request.page <= 0) {
       throw GetPostsApplicationException.invalidPageValue()
     }
@@ -48,7 +56,7 @@ export class GetPosts {
     }
   }
 
-  private static parseFilters (filters: GetPostRequestFilterDto[]): PostRepositoryFilterOption[] {
+  private static parseFilters (filters: GetPostRequestFilterDto[]): PostFilterOptionInterface[] {
     return filters.map((filter) => {
       try {
         const validatedFilter = new GetPostsFilterOptionValidator().validate(filter.type)
@@ -73,9 +81,9 @@ export class GetPosts {
     })
   }
 
-  private static validateSortingOption (sortingOption: string): RepositorySortingOptions {
+  private static validateSortingOption (sortingOption: string): GetPostsSortingOption {
     try {
-      return new SortingOptionValidator().validate(sortingOption)
+      return new GetPostsSortingOptionValidator().validate(sortingOption)
     } catch (exception: unknown) {
       if (!(exception instanceof ValidationException)) {
         throw exception
@@ -89,7 +97,7 @@ export class GetPosts {
     }
   }
 
-  private static validateSortingCriteria (sortingCriteria: string): RepositorySortingCriteria {
+  private static validateSortingCriteria (sortingCriteria: string): SortingCriteria {
     try {
       return new SortingCriteriaValidator().validate(sortingCriteria)
     } catch (exception: unknown) {

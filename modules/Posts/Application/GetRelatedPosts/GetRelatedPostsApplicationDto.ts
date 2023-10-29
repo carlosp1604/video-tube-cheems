@@ -1,4 +1,4 @@
-import { GetPostsApplicationDto } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
+import { GetPostsApplicationDto } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 
 export interface GetRelatedPostsApplicationDto {
   posts: GetPostsApplicationDto[]

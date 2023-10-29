@@ -24,10 +24,11 @@ import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/Post
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/PostProducerActor/PostProducerActor'
 import {
-  USER_POST_NOT_FOUND,
-  USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS, USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
+  USER_SAVED_POSTS_POST_ALREADY_ADDED,
+  USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
   USER_USER_NOT_FOUND
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 
 export interface Props {
   post: PostComponentDto
@@ -277,129 +278,49 @@ export const Post: FC<Props> = ({
 
     if (savedPost && data) {
       try {
-        const response = await postsApiService.removeFromSavedPosts(data.user.id, post.id)
-
-        if (!response.ok) {
-          switch (response.status) {
-            case 400:
-              toast.error(t('bad_request_error_message'))
-              break
-
-            case 403:
-              toast.error(t('post_user_forbidden_resource_error_message'))
-
-              break
-
-            case 404: {
-              const jsonResponse = await response.json()
-
-              switch (jsonResponse.code) {
-                case USER_USER_NOT_FOUND: {
-                  toast.error(t('post_user_not_found_error_message'))
-
-                  await signOut({ redirect: false })
-
-                  break
-                }
-
-                case USER_POST_NOT_FOUND:
-                  toast.error(t('post_not_found_error_message'))
-                  break
-
-                default:
-                  toast.error(t('server_error_error_message'))
-                  break
-              }
-              break
-            }
-
-            case 409: {
-              const jsonResponse = await response.json()
-
-              switch (jsonResponse.code) {
-                case USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS:
-                  toast.error(t('post_save_cannot_remove_saved_post_error_message'))
-                  break
-
-                case USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS:
-                  toast.error(t('post_save_post_does_not_belong_to_user_saved_posts_error_message'))
-                  break
-
-                default:
-                  toast.error(t('server_error_error_message'))
-                  break
-              }
-              break
-            }
-
-            default:
-              toast.error(t('server_error_error_message'))
-              break
-          }
-        } else {
-          setSavedPost(false)
-
-          toast.success(t('post_save_post_successfully_removed_from_saved_post'))
-        }
+        await postsApiService.removeFromSavedPosts(data.user.id, post.id)
+        setSavedPost(false)
+        toast.success(t('post_save_post_successfully_removed_from_saved_post'))
       } catch (exception: unknown) {
-        console.error(exception)
-        toast.error(t('server_error_error_message'))
+        if (!(exception instanceof APIException)) {
+          console.error(exception)
+
+          return
+        }
+
+        if (exception.code === USER_USER_NOT_FOUND) {
+          await signOut({ redirect: false })
+        }
+
+        if (exception.code === USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS) {
+          setSavedPost(false)
+        }
+
+        toast.error(t(exception.translationKey))
       }
     }
 
     if (!savedPost && data) {
       try {
-        const response = await postsApiService.savePost(data.user.id, post.id)
-
-        if (!response.ok) {
-          switch (response.status) {
-            case 400:
-              toast.error(t('bad_request_error_message'))
-              break
-
-            case 403:
-              toast.error(t('post_user_forbidden_resource_error_message'))
-              break
-
-            case 404: {
-              const jsonResponse = await response.json()
-
-              switch (jsonResponse.code) {
-                case USER_USER_NOT_FOUND: {
-                  toast.error(t('post_user_not_found_error_message'))
-
-                  await signOut({ redirect: false })
-
-                  break
-                }
-
-                case USER_POST_NOT_FOUND:
-                  toast.error(t('post_not_found_error_message'))
-                  break
-
-                default:
-                  toast.error(t('server_error_error_message'))
-                  break
-              }
-              break
-            }
-
-            case 409:
-              toast.error(t('post_save_post_already_on_saved_post_error_message'))
-              break
-
-            default:
-              toast.error(t('server_error_error_message'))
-              break
-          }
-        } else {
-          setSavedPost(true)
-
-          toast.success(t('post_save_post_successfully_saved'))
-        }
+        await postsApiService.savePost(data.user.id, post.id)
+        setSavedPost(true)
+        toast.success(t('post_save_post_successfully_saved'))
       } catch (exception: unknown) {
-        console.error(exception)
-        toast.error(t('server_error_error_message'))
+        if (!(exception instanceof APIException)) {
+          console.error(exception)
+
+          return
+        }
+
+        if (exception.code === USER_SAVED_POSTS_POST_ALREADY_ADDED) {
+          setSavedPost(true)
+        }
+
+        if (exception.code === USER_USER_NOT_FOUND) {
+          await signOut({ redirect: false })
+        }
+
+        toast.error(t(exception.translationKey))
       }
     }
   }

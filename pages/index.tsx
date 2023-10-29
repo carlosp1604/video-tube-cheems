@@ -1,6 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next'
 import styles from '~/components/pages/HomePage/HomePage.module.scss'
-import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList'
@@ -12,7 +11,9 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import {
-  PaginatedPostCardGallery
+  PaginatedPostCardGallery,
+  PostCardGalleryAction,
+  PostCardGalleryOption
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -25,6 +26,21 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { container } from '~/awilix.container'
+import {
+  HomePostsDefaultSortingOption,
+  HomePostsSortingOptions,
+  SortingOption
+} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
+import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { signOut, useSession } from 'next-auth/react'
+import { BiLike } from 'react-icons/bi'
+import { BsBookmark } from 'react-icons/bs'
+import toast from 'react-hot-toast'
+import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -41,7 +57,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const locale = context.locale ?? 'en'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'all_producers',
+    'home_page',
     'app_menu',
     'menu',
     'sorting_menu_dropdown',
@@ -53,6 +69,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'user_retrieve_password',
     'pagination_bar',
     'common',
+    'paginated_post_card_gallery',
+    'api_exceptions',
   ])
 
   const props: Props = {
@@ -95,7 +113,87 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
 const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
   const [activeProducer, setActiveProducer] = useState<ProducerComponentDto>(allPostsProducerDto)
-  const { t } = useTranslation('all_producers')
+  const { t } = useTranslation(['home_page', 'api_exceptions'])
+  const { status, data } = useSession()
+
+  let options: PostCardGalleryOption[] = []
+
+  const savePostPostCardAction = async (postId: string) => {
+    if (status !== 'authenticated' || !data) {
+      toast.error(t('user_must_be_authenticated_error_message', { ns: 'home_page' }))
+
+      return
+    }
+
+    try {
+      await new PostsApiService().savePost(data.user.id, postId)
+
+      toast.success(t('post_save_post_successfully_saved', { ns: 'home_page' }))
+    } catch (exception: unknown) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
+
+        return
+      }
+
+      if (exception.code === USER_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
+      }
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+    }
+  }
+
+  const likePostPostCardAction = async (postId: string) => {
+    if (status !== 'authenticated' || !data) {
+      toast.error(t('user_must_be_authenticated_error_message', { ns: 'home_page' }))
+
+      return
+    }
+
+    try {
+      const response = await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
+
+      if (!response.ok) {
+        console.log(response)
+        toast.error('asdasdasdas')
+
+        return
+      }
+
+      toast.success('Gracias por reaccionar')
+    } catch (exception) {
+      toast.error('Server error')
+    }
+  }
+
+  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+    return (new PostsApiService())
+      .getPosts(
+        pageNumber,
+        defaultPerPage,
+        sortingOption.criteria,
+        sortingOption.option,
+        filters
+      )
+  }
+
+  if (status === 'authenticated' && data) {
+    options = [
+      {
+        action: PostCardGalleryAction.NO_MUTATE,
+        icon: <BiLike />,
+        title: t('like_post_post_card_gallery_action_title', { ns: 'home_page' }),
+        onClick: (postId: string) => likePostPostCardAction(postId),
+      },
+      {
+        action: PostCardGalleryAction.NO_MUTATE,
+        icon: <BsBookmark />,
+        title: t('save_post_post_card_gallery_action_title', { ns: 'home_page' }),
+        onClick: (postId: string) => savePostPostCardAction(postId),
+      },
+    ]
+  }
 
   // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
@@ -107,13 +205,17 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
       />
 
       <PaginatedPostCardGallery
-        title={ activeProducer.id === '' ? t('all_producers_title') : activeProducer.name }
+        title={ activeProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : activeProducer.name }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }
         filters={ [{
           type: PostFilterOptions.PRODUCER_ID,
           value: activeProducer.id === '' ? null : activeProducer.id,
         }] }
+        sortingOptions={ HomePostsSortingOptions }
+        defaultSortingOption={ HomePostsDefaultSortingOption }
+        postCardOptions={ options }
+        fetchPosts={ fetchPosts }
       />
     </div>
   )

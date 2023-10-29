@@ -1,8 +1,8 @@
 import { Actor } from './Actor'
-import { RepositoryFilterOptionInterface } from '~/modules/Shared/Domain/RepositoryFilterOption'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
 
-export type ActorRepositoryFilterOption = Extract<RepositoryFilterOptionInterface,
+export type ActorRepositoryFilterOption = Extract<PostFilterOptionInterface,
   'actorName' |
   'actorId'
 >
@@ -28,7 +28,7 @@ export interface ActorRepositoryInterface {
     limit: number,
     sortingOption: RepositorySortingOptions,
     sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilterOptionInterface[],
+    filters: PostFilterOptionInterface[],
   ): Promise<Actor[]>
 
   /**
@@ -37,6 +37,6 @@ export interface ActorRepositoryInterface {
    * @return Number of actors that accomplish with the filters
    */
   countPostsWithFilters(
-    filters: RepositoryFilterOptionInterface[],
+    filters: PostFilterOptionInterface[],
   ): Promise<number>
 }

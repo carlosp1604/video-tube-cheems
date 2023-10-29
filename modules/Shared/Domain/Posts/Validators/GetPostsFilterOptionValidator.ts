@@ -1,6 +1,6 @@
 import {
   GetPostsFilterStringTypeOption, GetPostsFilterStringTypeOptions
-} from '~/modules/Shared/Domain/RepositoryFilterOption'
+} from '~/modules/Shared/Domain/Posts/PostFilterOption'
 import { Validator } from '~/modules/Shared/Domain/Validator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 

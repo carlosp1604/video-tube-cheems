@@ -100,6 +100,10 @@ export class Post {
     this._meta.addItem(postMeta, postMeta.type)
   }
 
+  public addTranslation (translation: Translation): void {
+    this.modelTranslations.addItem(translation, translation.language + translation.field)
+  }
+
   public addTag (postTag: PostTag): void {
     this._tags.addItem(postTag, postTag.id)
   }

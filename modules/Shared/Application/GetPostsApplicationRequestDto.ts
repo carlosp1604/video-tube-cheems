@@ -3,7 +3,7 @@ export interface GetPostRequestFilterDto {
   value: string
 }
 
-export interface GetPostsRequestDto {
+export interface GetPostsApplicationRequestDto {
   filters: GetPostRequestFilterDto[]
   sortOption: string
   sortCriteria: string

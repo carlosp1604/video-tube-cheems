@@ -1,16 +1,16 @@
 import { Validator } from '~/modules/Shared/Domain/Validator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { SortingCriteria, SortingCriteriaOptions } from '~/modules/Shared/Domain/SortingCriteria'
 
-export class SortingCriteriaValidator implements Validator<RepositorySortingCriteria> {
-  public validate (criteria: string): RepositorySortingCriteria {
-    const validSortingCriteria: string[] = Object.values(RepositorySortingCriteria)
+export class SortingCriteriaValidator implements Validator<SortingCriteria> {
+  public validate (value: string): SortingCriteria {
+    const exists = SortingCriteriaOptions.find((criteria) => criteria === value)
 
-    if (!validSortingCriteria.includes(criteria)) {
-      throw ValidationException.invalidSortingCriteria(criteria)
+    if (!exists) {
+      throw ValidationException.invalidSortingCriteria(value)
     }
 
     // NOTE: We are sure filter type accomplish with a valid values
-    return criteria as RepositorySortingCriteria
+    return value as SortingCriteria
   }
 }

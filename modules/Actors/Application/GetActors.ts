@@ -2,13 +2,12 @@ import { GetActorsRequestDto } from './GetActorsRequestDto'
 import { GetActorsApplicationDto } from './GetActorsApplicationDto'
 import { GetActorsApplicationDtoTranslator } from './GetActorsApplicationDtoTranslator'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
-import { GetPostRequestFilterDto } from '~/modules/Posts/Application/GetPosts/GetPostsRequestDto'
-import { PostRepositoryFilterOption } from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/GetPostsFilterOptionValidator'
+import { GetPostRequestFilterDto } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationRequestDto'
+import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsFilterOptionValidator'
 import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
-import { SortingOptionValidator } from '~/modules/Shared/Domain/SortingOptionValidator'
+import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { GetPostsSortingOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsSortingOptionValidator'
 import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteriaValidator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
@@ -53,7 +52,7 @@ export class GetActors {
     }
   }
 
-  private static parseFilters (filters: GetPostRequestFilterDto[]): PostRepositoryFilterOption[] {
+  private static parseFilters (filters: GetPostRequestFilterDto[]): RepositoryFilterOptionInterface[] {
     return filters.map((filter) => {
       try {
         const validatedFilter = new GetPostsFilterOptionValidator().validate(filter.type)
@@ -80,7 +79,7 @@ export class GetActors {
 
   private static validateSortingOption (sortingOption: string): RepositorySortingOptions {
     try {
-      return new SortingOptionValidator().validate(sortingOption)
+      return new GetPostsSortingOptionValidator().validate(sortingOption)
     } catch (exception: unknown) {
       if (!(exception instanceof ValidationException)) {
         throw exception

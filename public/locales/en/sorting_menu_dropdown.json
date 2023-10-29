@@ -3,5 +3,7 @@
   "dropdown_sort_option_title": "Sort by {{criteria}}",
   "latest_entries_option": "Latest",
   "most_viewed_entries_option": "Most viewed",
-  "oldest_entries_option": "Oldest"
+  "newest_saved_posts_options": "Newest saved",
+  "oldest_entries_option": "Oldest",
+  "oldest_saved_posts_option": "Oldest saved"
 }

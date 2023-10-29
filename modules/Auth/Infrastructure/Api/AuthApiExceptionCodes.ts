@@ -26,3 +26,10 @@ export const USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS =
   'user-saved-posts-post-does-not-exist-on-saved-posts-conflict'
 export const USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS =
   'user-saved-posts-cannot-delete-post-from-saved-posts-conflict'
+export const USER_SAVED_POSTS_INVALID_SORTING_CRITERIA = 'user-saved-posts-unprocessable-entity-invalid-sorting-criteria'
+export const USER_SAVED_POSTS_INVALID_SORTING_OPTION = 'user-saved-posts-unprocessable-entity-invalid-sorting-option'
+export const USER_SAVED_POSTS_INVALID_FILTER_TYPE = 'user-saved-posts-unprocessable-entity-invalid-filter-type'
+export const USER_SAVED_POSTS_INVALID_FILTER_VALUE = 'user-saved-posts-unprocessable-entity-invalid-filter-value'
+export const USER_SAVED_POSTS_INVALID_PER_PAGE = 'user-saved-posts-unprocessable-entity-invalid-per-page'
+export const USER_SAVED_POSTS_INVALID_PAGE = 'user-saved-posts-unprocessable-entity-invalid-page'
+export const USER_SAVED_POSTS_MISSING_FILTER = 'user-saved-post-unprocessable-entity-missing-filter'

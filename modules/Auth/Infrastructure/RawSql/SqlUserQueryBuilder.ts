@@ -6,7 +6,7 @@ import { Prisma } from '.prisma/client'
 // eslint-disable-next-line max-len
 const verificationTokenSelects = 'vt.id AS verification_token_id, vt.token AS verification_token_token, vt.user_email AS verification_token_user_email, vt.type AS verification_token_type, vt.expires_at AS verification_token_expires_at, vt.created_at AS verification_token_created_at'
 // eslint-disable-next-line max-len
-const savedPostsSelects = 'p.id AS post_id, p.title AS post_title, p.type AS post_type, p.description AS post_description, p.slug AS post_slug, p.created_at AS post_created_at, p.updated_at AS post_updated_at, p.published_at AS post_published_at, p.producer_id AS post_producer_id, p.actor_id AS post_actor_id'
+const savedPostsSelects = 'p.id AS post_id, p.title AS post_title, p.type AS post_type, p.description AS post_description, p.slug AS post_slug, p.created_at AS post_created_at, p.updated_at AS post_updated_at, p.published_at AS post_published_at, p.deleted_at AS post_deleted_at, p.producer_id AS post_producer_id, p.actor_id AS post_actor_id'
 
 export class SqlUserQueryBuilder {
   public static findUserByEmail (userEmail: User['email'], options: UserRepositoryOptions[]): Sql {

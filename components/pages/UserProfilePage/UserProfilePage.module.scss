@@ -1,0 +1,18 @@
+.user-profile-page {
+  &__container {
+    @apply container px-5;
+  }
+
+  &__user-sections {
+    @apply flex justify-center items-center my-4 gap-x-2;
+  }
+
+  &__user-section-button {
+    @apply flex flex-col items-center justify-center gap-y-2;
+  }
+
+  &__user-posts {
+    @apply flex flex-row gap-x-5 px-5 pt-4 border border-base-800
+      rounded-lg mb-10;
+  }
+}

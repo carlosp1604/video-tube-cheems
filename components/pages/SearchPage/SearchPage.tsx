@@ -6,9 +6,11 @@ import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilte
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
-  PaginatedPostCardGallery
+  PaginatedPostCardGallery,
+  PaginatedPostCardGalleryTypes
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useTranslation } from 'next-i18next'
+import { HomePostsSortingOptions } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -34,6 +36,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
   return (
     <div className={ styles.searchPage__container }>
       <PaginatedPostCardGallery
+        type={ PaginatedPostCardGalleryTypes.HOME }
+        sortingOptions={ HomePostsSortingOptions }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }
         filters={ [titleFilter] }

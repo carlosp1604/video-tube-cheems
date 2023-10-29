@@ -7,6 +7,16 @@ import { UserProfilePageProps, UserProfilePage } from '~/components/pages/UserPr
 import {
   UserHeaderComponentDtoTranslator
 } from '~/modules/Auth/Infrastructure/Api/Translators/UserHeaderComponentDtoTranslator'
+import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts/GetUserSavedPosts'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import {
+  InfrastructureSortingCriteria,
+  InfrastructureSortingOptions
+} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import {
+  PostCardComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 
 export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
@@ -21,9 +31,20 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
   username = username.toString()
 
   const getUser = container.resolve<GetUserByUsername>('getUserByUsername')
+  const getSavedPosts = container.resolve<GetUserSavedPosts>('getUserSavedPostsUseCase')
 
   try {
     const userApplicationDto = await getUser.get(username)
+    const savedPosts = await getSavedPosts.get({
+      page: 1,
+      filters: [{
+        type: PostFilterOptions.SAVED_BY,
+        value: userApplicationDto.id,
+      }],
+      postsPerPage: defaultPerPage,
+      sortCriteria: InfrastructureSortingCriteria.DESC,
+      sortOption: InfrastructureSortingOptions.DATE,
+    })
 
     const userHeaderComponentDto = UserHeaderComponentDtoTranslator.fromApplication(userApplicationDto)
 
@@ -40,7 +61,15 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
           'user_signup',
           'user_login',
           'user_retrieve_password',
+          'post_card',
+          'pagination_bar',
+          'common',
+          'paginated_post_card_gallery',
         ]),
+        posts: savedPosts.posts.map((post) => {
+          return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
+        }),
+        postsNUmber: savedPosts.postsNumber,
       },
     }
   } catch (exception: unknown) {

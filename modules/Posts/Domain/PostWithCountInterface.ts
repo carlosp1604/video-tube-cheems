@@ -16,3 +16,8 @@ export interface PostWithViewsInterface {
   post: Post
   postViews: number
 }
+
+export interface PostsWithViewsInterfaceWithTotalCount {
+  posts: PostWithViewsInterface[]
+  count: number
+}

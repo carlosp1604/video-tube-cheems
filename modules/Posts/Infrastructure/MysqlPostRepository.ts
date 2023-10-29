@@ -1,5 +1,4 @@
 import {
-  PostRepositoryFilterOption,
   PostRepositoryInterface,
   RepositoryOptions
 } from '~/modules/Posts/Domain/PostRepositoryInterface'
@@ -12,9 +11,10 @@ import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCom
 import { Post } from '~/modules/Posts/Domain/Post'
 import { prisma } from '~/persistence/prisma'
 import {
+  PostsWithViewsInterfaceWithTotalCount,
   PostWithViewsCommentsReactionsInterface, PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/RepositorySorting'
+import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { Reaction, ReactionableType, ReactionType } from '~/modules/Reactions/Domain/Reaction'
 import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
@@ -24,6 +24,9 @@ import { User } from '~/modules/Auth/Domain/User'
 import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
 import { DefaultArgs } from '@prisma/client/runtime/library'
 import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
+import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
+import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -315,67 +318,28 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
    * @param filters Post filters
-   * @return PostWithCount if found or null
+   * @return Array of PostWithViewsInterface
    */
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
-    sortingOption: RepositorySortingOptions,
-    sortingCriteria: RepositorySortingCriteria,
-    filters: PostRepositoryFilterOption[]
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
   ): Promise<PostWithViewsInterface[]> {
-    let sortCriteria: Prisma.Enumerable<Prisma.PostOrderByWithRelationInput> | undefined
-    let whereClause: Prisma.PostWhereInput | undefined = {
-      publishedAt: {
-        not: null,
-      },
-      deletedAt: null,
-    }
-
-    let includes: Prisma.PostInclude | null | undefined = {
-      meta: true,
-      producer: true,
-      actor: true,
-      translations: true,
-    }
-
     const includeFilters = MysqlPostRepository.buildIncludes(filters)
-
-    includes = {
-      ...includes,
-      ...includeFilters,
-    }
-
-    if (sortingOption === 'date') {
-      sortCriteria = {
-        publishedAt: sortingCriteria,
-      }
-    }
-
-    if (sortingOption === 'views') {
-      sortCriteria = {
-        views: {
-          _count: sortingCriteria,
-        },
-      }
-    }
-
     const whereFilters = MysqlPostRepository.buildFilters(filters)
-
-    whereClause = {
-      ...whereClause,
-      ...whereFilters,
-    }
+    const sortCriteria = MysqlPostRepository.buildOrder(sortingOption, sortingCriteria)
 
     const posts = await prisma.post.findMany({
-      where: whereClause,
+      where: whereFilters,
       include: {
         _count: {
           select: {
             views: true,
           },
         },
-        ...includes,
+        ...includeFilters,
       },
       take: limit,
       skip: offset,
@@ -384,15 +348,84 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     return posts.map((post) => {
       return {
-        post: PostModelTranslator.toDomain(post, [
-          'meta',
-          'producer',
-          'actor',
-          'translations',
-        ]),
+        post: PostModelTranslator.toDomain(post, ['meta', 'producer', 'actor', 'translations']),
         postViews: post._count.views,
       }
     })
+  }
+
+  /**
+   * Find SavedPosts based on filter and order criteria
+   * @param userId User ID
+   * @param offset Post offset
+   * @param limit
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
+   * @param filters Post filters
+   * @return PostsWithViewsInterfaceWithTotalCount if found or null
+   */
+  public async findSavedPostsWithOffsetAndLimit (
+    userId: string,
+    offset: number,
+    limit: number,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
+  ): Promise<PostsWithViewsInterfaceWithTotalCount> {
+    const postsIncludeFilters = MysqlPostRepository.buildIncludes(filters)
+    const postsWhereFilters = MysqlPostRepository.buildFilters(filters)
+    const postsSortCriteria = MysqlPostRepository.buildOrder(sortingOption, sortingCriteria)
+    let sortCriteria:
+      Prisma.SavedPostOrderByWithRelationInput | Prisma.SavedPostOrderByWithRelationInput[] | undefined = {
+        post: postsSortCriteria,
+      }
+
+    if (sortingOption === 'saved-date') {
+      sortCriteria = {
+        ...sortCriteria,
+        createdAt: sortingCriteria,
+      }
+    }
+
+    const [savedPosts, count] = await prisma.$transaction([
+      prisma.savedPost.findMany({
+        where: {
+          userId,
+          post: postsWhereFilters,
+        },
+        include: {
+          post: {
+            include: {
+              _count: {
+                select: {
+                  views: true,
+                },
+              },
+              ...postsIncludeFilters,
+            },
+          },
+        },
+        take: limit,
+        skip: offset,
+        orderBy: sortCriteria,
+      }),
+      prisma.savedPost.count({
+        where: {
+          userId,
+          post: postsWhereFilters,
+        },
+      }),
+    ])
+
+    return {
+      posts: savedPosts.map((savedPost) => {
+        return {
+          post: PostModelTranslator.toDomain(savedPost.post, ['meta', 'producer', 'actor', 'translations']),
+          postViews: savedPost.post._count.views,
+        }
+      }),
+      count,
+    }
   }
 
   /**
@@ -401,21 +434,9 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @return Number of posts that accomplish the filters
    */
   public async countPostsWithFilters (
-    filters: PostRepositoryFilterOption[]
+    filters: PostFilterOptionInterface[]
   ): Promise<number> {
-    let whereClause: Prisma.PostWhereInput | undefined = {
-      publishedAt: {
-        not: null,
-      },
-      deletedAt: null,
-    }
-
-    const whereFilters = MysqlPostRepository.buildFilters(filters)
-
-    whereClause = {
-      ...whereClause,
-      ...whereFilters,
-    }
+    const whereClause = MysqlPostRepository.buildFilters(filters)
 
     return prisma.post.count({
       where: whereClause,
@@ -716,9 +737,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   private static buildFilters (
-    filters: PostRepositoryFilterOption[]
+    filters: PostFilterOptionInterface[]
   ): Prisma.PostWhereInput | undefined {
-    let whereClause: Prisma.PostWhereInput | undefined = {}
+    let whereClause: Prisma.PostWhereInput | undefined = {
+      publishedAt: {
+        not: null,
+      },
+      deletedAt: null,
+    }
 
     for (const filter of filters) {
       if (filter.type === 'postTitle') {
@@ -804,9 +830,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   private static buildIncludes (
-    filters: PostRepositoryFilterOption[]
+    filters: PostFilterOptionInterface[]
   ): Prisma.PostInclude | null | undefined {
-    let includes: Prisma.PostInclude | null | undefined = {}
+    let includes: Prisma.PostInclude | null | undefined = {
+      meta: true,
+      producer: true,
+      actor: true,
+      translations: true,
+    }
 
     for (const filter of filters) {
       if (filter.type.startsWith('producer')) {
@@ -825,5 +856,28 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     }
 
     return includes
+  }
+
+  private static buildOrder (
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria
+  ): PostOrderByWithRelationInput | undefined {
+    let sortCriteria: PostOrderByWithRelationInput | undefined
+
+    if (sortingOption === 'date') {
+      sortCriteria = {
+        publishedAt: sortingCriteria,
+      }
+    }
+
+    if (sortingOption === 'views') {
+      sortCriteria = {
+        views: {
+          _count: sortingCriteria,
+        },
+      }
+    }
+
+    return sortCriteria
   }
 }

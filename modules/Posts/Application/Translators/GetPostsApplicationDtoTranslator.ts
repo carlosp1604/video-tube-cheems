@@ -1,5 +1,5 @@
 import { PostWithViewsInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
-import { GetPostsApplicationResponse } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationDto'
+import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import {
   PostWithProducerAndMetaApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'

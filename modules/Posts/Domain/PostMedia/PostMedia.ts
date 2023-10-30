@@ -19,7 +19,7 @@ export class PostMedia {
   public updatedAt: DateTime
 
   /** Relationships **/
-  private readonly _mediaUrls: Collection<MediaUrl, MediaUrl['url']>
+  private readonly _mediaUrls: Collection<MediaUrl, MediaUrl['url'] & string>
 
   public constructor (
     id: string,
@@ -29,10 +29,10 @@ export class PostMedia {
     thumbnailUrl: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
-    mediaUrls: Collection<MediaUrl, MediaUrl['url']> = Collection.notLoaded()
+    mediaUrls: Collection<MediaUrl, MediaUrl['url'] & string> = Collection.notLoaded()
   ) {
     this.id = id
-    this.type = PostMedia.validateMediaUrlType(id, type)
+    this.type = PostMedia.validatePostMediaType(id, type)
     this.title = title
     this.postId = postId
     this.thumbnailUrl = thumbnailUrl
@@ -45,7 +45,7 @@ export class PostMedia {
     return this._mediaUrls.values
   }
 
-  private static validateMediaUrlType (id: string, value: string): PostMediaType {
+  private static validatePostMediaType (id: string, value: string): PostMediaType {
     const values: string [] = Object.values(PostMediaType)
 
     if (!values.includes(value)) {

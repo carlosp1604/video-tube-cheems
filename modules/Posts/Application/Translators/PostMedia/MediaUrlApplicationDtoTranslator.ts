@@ -12,7 +12,7 @@ export class MediaUrlApplicationDtoTranslator {
       url: mediaUrl.url,
       providerId: mediaUrl.providerId,
       provider: MediaProviderApplicationDtoTranslator.fromDomain(mediaUrl.provider),
-      downloadUrl: mediaUrl.downloadUrl,
+      type: mediaUrl.type,
       postMediaId: mediaUrl.postMediaId,
     }
   }

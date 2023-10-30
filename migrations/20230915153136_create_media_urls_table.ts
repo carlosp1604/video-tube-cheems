@@ -15,8 +15,8 @@ export async function up (knex: Knex): Promise<void> {
         .onDelete('CASCADE')
       table.string('url', 512).notNullable()
       table.string('title', 256).notNullable()
-      table.string('download_url', 512).nullable()
-      table.primary(['url', 'post_media_id'])
+      table.string('type', 16).notNullable()
+      table.primary(['url', 'post_media_id', 'type'])
       table.timestamps(true, true)
     })
 }

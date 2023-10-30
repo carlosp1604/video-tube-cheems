@@ -12,12 +12,13 @@ export class PostMediaModelTranslator {
   public static toDomain (prismaPostMediaModel: PrismaPostMediaModel): PostMedia {
     const postMediaWithMediaUrlWithProvider = prismaPostMediaModel as PostMediaWithMediaUrlWithMediaProvider
 
-    const mediaUrlsCollection: Collection<MediaUrl, MediaUrl['url']> = Collection.initializeCollection()
+    const mediaUrlsCollection:
+      Collection<MediaUrl, MediaUrl['url'] & string> = Collection.initializeCollection()
 
     postMediaWithMediaUrlWithProvider.mediaUrls.forEach((mediaUrl) => {
       const domainMediaUrl = MediaUrlModelTranslator.toDomain(mediaUrl)
 
-      mediaUrlsCollection.addItem(domainMediaUrl, domainMediaUrl.url)
+      mediaUrlsCollection.addItem(domainMediaUrl, domainMediaUrl.url + domainMediaUrl.type)
     })
 
     return new PostMedia(

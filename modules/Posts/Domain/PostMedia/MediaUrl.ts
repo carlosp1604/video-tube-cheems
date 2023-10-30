@@ -3,12 +3,17 @@ import { MediaProvider } from '~/modules/Posts/Domain/PostMedia/MediaProvider'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { MediaUrlDomainException } from '~/modules/Posts/Domain/PostMedia/MediaUrlDomainException'
 
+export enum MediaUrlType {
+  ACCESS_URL = 'access-url',
+  DOWNLOAD_URL = 'download-url',
+}
+
 export class MediaUrl {
   public readonly providerId: string
   public readonly postMediaId: string
   public readonly title: string
   public readonly url: string
-  public readonly downloadUrl: string | null
+  public readonly type: MediaUrlType
   public readonly createdAt: DateTime
   public readonly updatedAt: DateTime
 
@@ -20,7 +25,7 @@ export class MediaUrl {
     providerId: string,
     postMediaId: string,
     url: string,
-    downloadUrl: string | null,
+    type: string,
     createdAt: DateTime,
     updatedAt: DateTime,
     provider: Relationship<MediaProvider> = Relationship.notLoaded()
@@ -29,7 +34,7 @@ export class MediaUrl {
     this.providerId = providerId
     this.postMediaId = postMediaId
     this.url = url
-    this.downloadUrl = downloadUrl
+    this.type = MediaUrl.validateMediaUrlType(type)
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this._provider = provider
@@ -43,5 +48,15 @@ export class MediaUrl {
     }
 
     return provider
+  }
+
+  private static validateMediaUrlType (value: string): MediaUrlType {
+    const values: string [] = Object.values(MediaUrlType)
+
+    if (!values.includes(value)) {
+      throw MediaUrlDomainException.invalidMediaUrlType(value)
+    }
+
+    return value as MediaUrlType
   }
 }

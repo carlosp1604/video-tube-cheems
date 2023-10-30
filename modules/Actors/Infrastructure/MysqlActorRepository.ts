@@ -3,8 +3,9 @@ import { ActorModelTranslator } from './ActorModelTranslator'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import { prisma } from '~/persistence/prisma'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
   /**
@@ -38,8 +39,8 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
-    sortingOption: RepositorySortingOptions,
-    sortingCriteria: RepositorySortingCriteria,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
     filters: PostFilterOptionInterface[]
   ): Promise<Actor[]> {
     let whereClause: Prisma.ActorWhereInput | undefined = {

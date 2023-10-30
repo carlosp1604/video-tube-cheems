@@ -9,4 +9,5 @@ export interface PostMediaComponentDto {
   readonly postId: string
   readonly thumbnailUrl: string | null
   readonly urls: MediaUrlComponentDto[]
+  readonly downloadUrls: MediaUrlComponentDto[]
 }

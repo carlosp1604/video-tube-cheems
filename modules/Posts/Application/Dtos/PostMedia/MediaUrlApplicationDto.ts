@@ -5,6 +5,6 @@ export interface MediaUrlApplicationDto {
   readonly providerId: string
   readonly postMediaId: string
   readonly url: string
-  readonly downloadUrl: string | null
+  readonly type: string
   readonly provider: MediaProviderApplicationDto
 }

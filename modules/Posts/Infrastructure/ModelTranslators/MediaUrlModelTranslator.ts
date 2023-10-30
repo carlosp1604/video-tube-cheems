@@ -20,7 +20,7 @@ export class MediaUrlModelTranslator {
       prismaMediaUrlModel.mediaProviderId,
       prismaMediaUrlModel.postMediaId,
       prismaMediaUrlModel.url,
-      prismaMediaUrlModel.downloadUrl,
+      prismaMediaUrlModel.type,
       DateTime.fromJSDate(prismaMediaUrlModel.createdAt),
       DateTime.fromJSDate(prismaMediaUrlModel.updatedAt),
       domainMediaProviderRelation

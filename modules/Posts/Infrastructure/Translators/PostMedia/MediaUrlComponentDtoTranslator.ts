@@ -9,7 +9,7 @@ export abstract class MediaUrlComponentDtoTranslator {
     return {
       title: applicationDto.title,
       url: applicationDto.url,
-      downloadUrl: applicationDto.downloadUrl,
+      type: applicationDto.type,
       provider: MediaProviderComponentDtoTranslator.fromApplicationDto(applicationDto.provider),
     }
   }

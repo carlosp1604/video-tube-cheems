@@ -3,6 +3,6 @@ import { MediaProviderComponentDto } from '~/modules/Posts/Infrastructure/Dtos/P
 export interface MediaUrlComponentDto {
   readonly title: string
   readonly url: string
-  readonly downloadUrl: string | null
+  readonly type: string
   readonly provider: MediaProviderComponentDto
 }

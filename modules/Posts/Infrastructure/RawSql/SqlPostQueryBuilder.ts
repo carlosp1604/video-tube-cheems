@@ -1,7 +1,9 @@
 import { Sql } from 'prisma/prisma-client/runtime/library'
 import { Prisma } from '.prisma/client'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 
 // eslint-disable-next-line max-len
 const producerSelects = 'pd.id AS producer_id, pd.name AS producer_name, pd.description AS producer_description, pd.parent_producer_id AS producer_parent_producer_id, pd.image_url AS producer_image_url, pd.brand_hex_color AS producer_brand_hex_color, pd.created_at AS producer_created_at, pd.updated_at AS producer_updated_at, pd.deleted_at AS producer_deleted_at'
@@ -16,9 +18,9 @@ export class SqlPostQueryBuilder {
   public static findWithOffsetAndLimit (
     offset: number,
     limit: number,
-    sortingOption: RepositorySortingOptions,
-    sortingCriteria: RepositorySortingCriteria,
-    filters: RepositoryFilterOptionInterface[]
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
   ): Sql {
     const options: RepositoryOptions[] = ['meta', 'actor', 'producer', 'translations']
     const select = this.buildSelect(options)

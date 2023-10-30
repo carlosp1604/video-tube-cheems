@@ -1,7 +1,6 @@
 {
   "copyright_section_title": "Cheems © 2023.\nHecho con ❤\uFE0F por CP.",
   "menu_button_title": "Menú",
-  "menu_check_later_button_title": "Ver después",
   "menu_following_button_title": "Seguidos",
   "menu_home_button_title": "Inicio",
   "menu_live_cams_button_title": "Cámaras",
@@ -9,5 +8,8 @@
   "menu_reacted_button_title": "Reaccionados",
   "menu_saved_button_title": "Guardados",
   "menu_stars_button_title": "Actrices",
-  "user_menu_profile_button": "Mi Perfil"
+  "menu_user_history_button_title": "Historial",
+  "user_menu_option_not_available_message": "Esta característica estará disponible pronto. ¡Mantente atento!",
+  "user_menu_profile_button": "Mi Perfil",
+  "user_must_be_authenticated_error_message": "Inicia sesión para acceder a esta característica"
 }

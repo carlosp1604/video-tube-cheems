@@ -13,9 +13,17 @@ export abstract class PostMediaComponentDtoTranslator {
       type: applicationDto.type,
       title: applicationDto.title,
       thumbnailUrl: applicationDto.thumbnailUrl,
-      urls: applicationDto.mediaUrls.map((mediaUrl) => {
-        return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
-      }),
+      urls: applicationDto.mediaUrls
+        .filter((mediaUrl) => mediaUrl.type === 'access-url')
+        .map((mediaUrl) => {
+          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
+        }),
+      downloadUrls:
+        applicationDto.mediaUrls
+          .filter((mediaUrl) => mediaUrl.type === 'download-url')
+          .map((mediaUrl) => {
+            return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
+          }),
     }
   }
 }

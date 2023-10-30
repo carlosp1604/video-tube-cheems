@@ -1,7 +1,6 @@
 {
   "copyright_section_title": "Cheems © 2023.\nMade with ❤\uFE0F by CP.",
   "menu_button_title": "Menú",
-  "menu_check_later_button_title": "Check later",
   "menu_following_button_title": "Following",
   "menu_home_button_title": "Home",
   "menu_live_cams_button_title": "Live cams",
@@ -9,5 +8,8 @@
   "menu_reacted_button_title": "Reacted",
   "menu_saved_button_title": "Saved",
   "menu_stars_button_title": "Stars",
-  "user_menu_profile_button": "My Profile"
+  "menu_user_history_button_title": "History",
+  "user_menu_option_not_available_message": "This feature will be available soon. Stay tuned!",
+  "user_menu_profile_button": "My Profile",
+  "user_must_be_authenticated_error_message": "Sign in to access this feature"
 }

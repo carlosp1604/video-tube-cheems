@@ -1,6 +1,7 @@
 import { Actor } from './Actor'
 import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 
 export type ActorRepositoryFilterOption = Extract<PostFilterOptionInterface,
   'actorName' |
@@ -26,8 +27,8 @@ export interface ActorRepositoryInterface {
   findWithOffsetAndLimit(
     offset: number,
     limit: number,
-    sortingOption: RepositorySortingOptions,
-    sortingCriteria: RepositorySortingCriteria,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
     filters: PostFilterOptionInterface[],
   ): Promise<Actor[]>
 

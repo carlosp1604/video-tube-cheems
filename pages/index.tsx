@@ -154,7 +154,7 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
     try {
       await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
 
-      toast.success(t('post_reaction_added_correctly_message'))
+      toast.success(t('post_reaction_added_correctly_message', { ns: 'home_page' }))
     } catch (exception) {
       if (!(exception instanceof APIException)) {
         console.error(exception)

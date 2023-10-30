@@ -262,12 +262,12 @@ model MediaUrl {
   postMediaId     String        @map("post_media_id")
   postMedia       PostMedia     @relation(fields: [postMediaId], references: [id], onDelete: Cascade)
   url             String
+  type            String
   title           String
-  downloadUrl     String?       @map("download_url")
   createdAt       DateTime      @map("created_at")
   updatedAt       DateTime      @map("updated_at")
 
-  @@id([url, postMediaId])
+  @@id([url, postMediaId, type])
   @@map("media_urls")
 }
 

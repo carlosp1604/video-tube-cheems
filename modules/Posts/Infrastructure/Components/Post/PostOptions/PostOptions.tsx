@@ -1,5 +1,5 @@
 import styles from './PostOptions.module.scss'
-import { FC, useMemo, useState } from 'react'
+import { FC, useState } from 'react'
 import { BsBookmarks, BsChatSquareText, BsDownload, BsMegaphone } from 'react-icons/bs'
 import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
@@ -36,12 +36,6 @@ export const PostOptions: FC<Props> = ({
   const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
   const tooltipUuid = uuid.v4()
 
-  const filterDownloadUrls = (mediaUrls: MediaUrlComponentDto[]) => {
-    return mediaUrls.filter((mediaUrl) => mediaUrl.downloadUrl !== null)
-  }
-
-  const filteredDownloadUrls = useMemo(() => filterDownloadUrls(mediaUrls), [mediaUrls])
-
   let { locale } = useRouter()
   const { t } = useTranslation('post')
 
@@ -50,7 +44,7 @@ export const PostOptions: FC<Props> = ({
   return (
     <div className={ styles.postOptions__container }>
       <DownloadMenu
-        mediaUrls={ filteredDownloadUrls }
+        mediaUrls={ mediaUrls }
         setIsOpen={ setDownloadMenuOpen }
         isOpen={ downloadMenuOpen }
       />
@@ -110,7 +104,7 @@ export const PostOptions: FC<Props> = ({
       <span
         className={ styles.postOptions__optionItem }
         onClick={ () => {
-          if (filteredDownloadUrls.length > 0) {
+          if (mediaUrls.length > 0) {
             setDownloadMenuOpen(!downloadMenuOpen)
 
             return
@@ -119,7 +113,7 @@ export const PostOptions: FC<Props> = ({
         } }
       >
         <BsDownload />
-        { t('post_download_button_title', { sourcesNumber: filteredDownloadUrls.length }) }
+        { t('post_download_button_title', { sourcesNumber: mediaUrls.length }) }
       </span>
       <span className={ styles.postOptions__optionItem }>
         <BsMegaphone />

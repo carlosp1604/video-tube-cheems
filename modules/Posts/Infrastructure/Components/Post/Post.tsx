@@ -57,21 +57,30 @@ export const Post: FC<Props> = ({
 
   const { status, data } = useSession()
 
-  const getMediaUrls = (): MediaUrlComponentDto[] => {
+  const getMediaUrls = (type: string): MediaUrlComponentDto[] => {
     let mediaUrls: MediaUrlComponentDto[] = []
 
     if (post.postMediaEmbedType.length > 0) {
-      mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].urls]
+      if (type === 'access') {
+        mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].urls]
+      } else {
+        mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].downloadUrls]
+      }
     }
 
     if (post.postMediaVideoType.length > 0) {
-      mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].urls]
+      if (type === 'access') {
+        mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].urls]
+      } else {
+        mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].downloadUrls]
+      }
     }
 
     return mediaUrls
   }
 
-  const mediaUrls = useMemo(() => getMediaUrls(), [post])
+  const mediaUrls = useMemo(() => getMediaUrls('access'), [post])
+  const downloadUrls = useMemo(() => getMediaUrls('download'), [post])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -303,7 +312,7 @@ export const Post: FC<Props> = ({
           onClickCommentsButton={ onClickCommentsButton }
           onClickSaveButton={ onClickSavePostButton }
           likesNumber={ likesNumber }
-          mediaUrls={ mediaUrls }
+          mediaUrls={ downloadUrls }
       />
       ) }
 

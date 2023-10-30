@@ -59,11 +59,12 @@ export type PostWithPostMediaWithMediaUrlWithProvider = Prisma.PostGetPayload<{
   include: {
     postMedia: {
       include: {
-        mediaUrl: {
+        mediaUrls: {
           include: {
             provider: true
           }
         }
       }
-  } }
+    }
+  }
 }>

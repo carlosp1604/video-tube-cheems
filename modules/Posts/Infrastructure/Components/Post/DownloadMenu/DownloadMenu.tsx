@@ -20,7 +20,7 @@ export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen }) => {
     return {
       title: `${mediaUrl.provider.name}: ${mediaUrl.title}`,
       action: {
-        url: mediaUrl.downloadUrl as string,
+        url: mediaUrl.url,
         blank: true,
       },
       picture: (

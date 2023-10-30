@@ -2,14 +2,14 @@ import { GetActorsRequestDto } from './GetActorsRequestDto'
 import { GetActorsApplicationDto } from './GetActorsApplicationDto'
 import { GetActorsApplicationDtoTranslator } from './GetActorsApplicationDtoTranslator'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
-import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsFilterOptionValidator'
-import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 import { GetPostsSortingOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsSortingOptionValidator'
 import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteriaValidator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
 import { GetPostRequestFilterDto } from '~/modules/Shared/Application/GetPostsApplicationRequestDto'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
+import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
 
 export class GetActors {
   // eslint-disable-next-line no-useless-constructor
@@ -51,32 +51,11 @@ export class GetActors {
     }
   }
 
-  private static parseFilters (filters: GetPostRequestFilterDto[]): RepositoryFilterOptionInterface[] {
-    return filters.map((filter) => {
-      try {
-        const validatedFilter = new GetPostsFilterOptionValidator().validate(filter.type)
-        const validFilterValue = new FilterValueValidator().validate(filter.value)
-
-        return { type: validatedFilter, value: validFilterValue }
-      } catch (exception: unknown) {
-        if (!(exception instanceof ValidationException)) {
-          throw exception
-        }
-
-        if (exception.id === ValidationException.invalidFilterTypeId) {
-          throw GetActorsApplicationException.invalidFilterType(filter.type)
-        }
-
-        if (exception.id === ValidationException.invalidFilterValueId) {
-          throw GetActorsApplicationException.invalidFilterValue()
-        }
-
-        throw exception
-      }
-    })
+  private static parseFilters (filters: GetPostRequestFilterDto[]): [] {
+    return []
   }
 
-  private static validateSortingOption (sortingOption: string): RepositorySortingOptions {
+  private static validateSortingOption (sortingOption: string): PostSortingOption {
     try {
       return new GetPostsSortingOptionValidator().validate(sortingOption)
     } catch (exception: unknown) {
@@ -92,7 +71,7 @@ export class GetActors {
     }
   }
 
-  private static validateSortingCriteria (sortingCriteria: string): RepositorySortingCriteria {
+  private static validateSortingCriteria (sortingCriteria: string): SortingCriteria {
     try {
       return new SortingCriteriaValidator().validate(sortingCriteria)
     } catch (exception: unknown) {

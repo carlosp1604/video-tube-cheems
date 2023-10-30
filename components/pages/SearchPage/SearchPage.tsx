@@ -6,11 +6,15 @@ import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilte
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
-  PaginatedPostCardGallery,
-  PaginatedPostCardGalleryTypes
+  PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useTranslation } from 'next-i18next'
-import { HomePostsSortingOptions } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+import {
+  HomePostsDefaultSortingOption,
+  HomePostsSortingOptions, SortingOption
+} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -24,6 +28,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
     type: PostFilterOptions.POST_TITLE,
     value: title,
   })
+
   const router = useRouter()
 
   if (router.query.search && router.query.search !== titleFilter.value) {
@@ -33,15 +38,28 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
     })
   }
 
+  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+    return (new PostsApiService())
+      .getPosts(
+        pageNumber,
+        defaultPerPage,
+        sortingOption.criteria,
+        sortingOption.option,
+        filters
+      )
+  }
+
   return (
     <div className={ styles.searchPage__container }>
       <PaginatedPostCardGallery
-        type={ PaginatedPostCardGalleryTypes.HOME }
+        defaultSortingOption={ HomePostsDefaultSortingOption }
         sortingOptions={ HomePostsSortingOptions }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }
         filters={ [titleFilter] }
         title={ t('search_result_title', { searchTerm: title }) }
+        fetchPosts={ fetchPosts }
+        postCardOptions={ [] }
       />
     </div>
   )

@@ -6,6 +6,13 @@ import {
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import {
+  HomePostsDefaultSortingOption,
+  HomePostsSortingOptions, SortingOption
+} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto
@@ -15,6 +22,17 @@ export interface ActorPageProps {
 
 export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber }) => {
   const [openDescription, setOpenDescription] = useState<boolean>(false)
+
+  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+    return (new PostsApiService())
+      .getPosts(
+        pageNumber,
+        defaultPerPage,
+        sortingOption.criteria,
+        sortingOption.option,
+        filters
+      )
+  }
 
   return (
     <div className={ styles.actorPage__container }>
@@ -48,10 +66,14 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber 
       </div>
 
       <PaginatedPostCardGallery
+        sortingOptions={ HomePostsSortingOptions }
+        defaultSortingOption={ HomePostsDefaultSortingOption }
         initialPostsNumber={ postsNumber }
         filters={ [] }
         initialPosts={ posts }
         title={ `Videos de ${actor.name}` }
+        fetchPosts={ fetchPosts }
+        postCardOptions={ [] }
       />
     </div>
   )

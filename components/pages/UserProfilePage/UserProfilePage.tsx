@@ -16,12 +16,14 @@ import {
 import { useTranslation } from 'next-i18next'
 import styles from './UserProfilePage.module.scss'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { BsTrash } from 'react-icons/bs'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
 export interface UserProfilePageProps {
   userComponentDto: UserProfileHeaderComponentDto
@@ -33,7 +35,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   posts,
   postsNUmber,
 }) => {
-  const { t } = useTranslation('user_profile')
+  const { t } = useTranslation(['user_profile', 'api_exceptions'])
 
   const { status, data } = useSession()
 
@@ -53,24 +55,27 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 
   const deleteSavedPostCardAction = async (postId: string) => {
     if (status !== 'authenticated' || !data) {
-      toast.error('Necesitas iniciar sesión')
+      toast.error(t('user_must_be_authenticated_error_message', { ns: 'user_profile' }))
 
       return
     }
 
     try {
-      const response = await new PostsApiService().removeFromSavedPosts(data.user.id, postId)
+      await new PostsApiService().removeFromSavedPosts(data.user.id, postId)
 
-      if (!response.ok) {
-        console.log(response)
-        toast.error('asdasdasdas')
+      toast.success(t('post_save_post_successfully_removed_from_saved_post', { ns: 'user_profile' }))
+    } catch (exception) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
 
         return
       }
 
-      toast.success('Borrado correctamente ;)')
-    } catch (exception) {
-      toast.error('Server error')
+      if (exception.code === USER_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
+      }
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 
@@ -78,7 +83,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     options = [{
       action: PostCardGalleryAction.DELETE,
       icon: <BsTrash />,
-      title: 'Eliminar post guardado',
+      title: t('delete_saved_post_option_title', { ns: 'user_profile' }),
       onClick: (postId: string) => deleteSavedPostCardAction(postId),
     }]
   }
@@ -91,7 +96,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 
       <div className={ styles.userProfilePage__userPosts }>
         <PaginatedPostCardGallery
-          title={ t('user_saved_posts_title') }
+          title={ t('user_saved_posts_title', { ns: 'user_profile' }) }
           initialPosts={ posts }
           initialPostsNumber={ postsNUmber }
           filters={ [{

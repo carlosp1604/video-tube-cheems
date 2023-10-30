@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
       }],
       postsPerPage: defaultPerPage,
       sortCriteria: InfrastructureSortingCriteria.DESC,
-      sortOption: InfrastructureSortingOptions.DATE,
+      sortOption: InfrastructureSortingOptions.SAVED_DATE,
     })
 
     const userHeaderComponentDto = UserHeaderComponentDtoTranslator.fromApplication(userApplicationDto)

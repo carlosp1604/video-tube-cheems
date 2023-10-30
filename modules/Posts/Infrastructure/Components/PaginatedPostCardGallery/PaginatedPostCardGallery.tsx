@@ -69,7 +69,6 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostId, setSelectedPostId] = useState<string>('')
 
-  // TODO: If component translation keys grows up then create a specific translations file
   const { t } = useTranslation('paginated_post_card_gallery')
 
   const firstRender = useFirstRender()

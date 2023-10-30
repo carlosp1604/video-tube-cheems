@@ -23,7 +23,7 @@
   "post_comment_reaction_button_title": "Reacciona a este comentario",
   "post_comment_not_found_error_message": "El comentario que intentas eliminar no existe",
   "post_comment_reaction_post_comment_not_found_error_message": "La reacción no existe",
-  "post_comment_reaction_reaction_added_successfully": "Gracias por reaccionar",
+  "post_comment_reaction_reaction_added_successfully": "¡Gracias por reaccionar!",
   "post_comment_reaction_reaction_removed_successfully": "Reacción eliminada correctamente",
   "post_comment_reaction_user_already_reacted": "Ya has reaccionado a este comentario",
   "post_comment_reaction_user_has_not_reacted": "Todavía no has reaccionado a este comentario",

@@ -1,6 +1,9 @@
 {
+  "delete_saved_post_option_title": "Eliminar post guardado",
+  "post_save_post_successfully_removed_from_saved_post": "El post fue eliminado de la lista de videos guardados del usuario",
   "user_my_profile_button": "Editar perfil",
   "user_joined_at_label_title": "Desde",
+  "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
   "user_name_label_title": "Nombre",
   "user_saved_posts_title": "Videos guardados"
 }

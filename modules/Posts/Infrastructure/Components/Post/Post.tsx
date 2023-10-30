@@ -11,10 +11,7 @@ import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComm
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { signOut, useSession } from 'next-auth/react'
-import {
-  POST_REACTION_NOT_FOUND,
-  POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { POST_REACTION_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { Promise } from 'es6-promise'
 import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
@@ -140,131 +137,69 @@ export const Post: FC<Props> = ({
 
     if (userReaction !== null && userReaction.reactionType === type) {
       try {
-        const response = await postsApiService.deletePostReaction(post.id)
+        await postsApiService.deletePostReaction(post.id)
 
-        if (!response.ok) {
-          switch (response.status) {
-            case 400:
-              toast.error(t('bad_request_error_message'))
-              break
-
-            case 401:
-              setLoginModalOpen(true)
-              toast.error(t('user_must_be_authenticated_error_message'))
-              break
-
-            case 404: {
-              const jsonResponse = await response.json()
-
-              switch (jsonResponse.code) {
-                case POST_REACTION_POST_NOT_FOUND:
-                  toast.error(t('post_not_found_error_message'))
-                  break
-
-                case POST_REACTION_NOT_FOUND:
-                  toast.error(t('post_reaction_does_not_exist_error_message'))
-                  break
-
-                case POST_REACTION_USER_NOT_FOUND: {
-                  toast.error(t('post_user_not_found_error_message'))
-
-                  await signOut({ redirect: false })
-
-                  break
-                }
-
-                default:
-                  toast.error(t('server_error_error_message'))
-                  break
-              }
-              break
-            }
-
-            default:
-              toast.error(t('server_error_error_message'))
-              break
-          }
+        setUserReaction(null)
+        if (type === ReactionType.LIKE) {
+          setLikesNumber(likesNumber - 1)
         } else {
-          setUserReaction(null)
-          if (type === ReactionType.LIKE) {
-            setLikesNumber(likesNumber - 1)
-          } else {
-            setDislikesNumber(dislikesNumber - 1)
-          }
-          toast.success(t('post_reaction_deleted_correctly_message'))
+          setDislikesNumber(dislikesNumber - 1)
         }
+
+        toast.success(t('post_reaction_deleted_correctly_message'))
       } catch (exception: unknown) {
-        console.error(exception)
-        toast.error(t('server_error_error_message'))
+        if (!(exception instanceof APIException)) {
+          console.error(exception)
+
+          return
+        }
+
+        if (exception.code === POST_REACTION_USER_NOT_FOUND) {
+          await signOut({ redirect: false })
+        }
+
+        if (exception.apiCode === 401) {
+          setLoginModalOpen(true)
+        }
+
+        toast.error(t(exception.translationKey))
       }
     } else {
       try {
-        const response = await postsApiService.createPostReaction(post.id, type)
+        const reaction = await postsApiService.createPostReaction(post.id, type)
+        const reactionComponentDto = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
 
-        if (!response.ok) {
-          switch (response.status) {
-            case 400:
-              toast.error(t('bad_request_error_message'))
-              break
-
-            case 401:
-              setLoginModalOpen(true)
-              toast.error(t('user_must_be_authenticated_error_message'))
-              break
-
-            case 404: {
-              const jsonResponse = await response.json()
-
-              switch (jsonResponse.code) {
-                case POST_REACTION_USER_NOT_FOUND: {
-                  toast.error(t('post_user_not_found_error_message'))
-
-                  await signOut({ redirect: false })
-
-                  break
-                }
-
-                case POST_REACTION_POST_NOT_FOUND:
-                  toast.error(t('post_not_found_error_message'))
-                  break
-
-                default:
-                  toast.error(t('server_error_error_message'))
-                  break
-              }
-              break
-            }
-
-            case 409:
-              toast.error(t('user_already_reacted_to_post_error_message'))
-              break
-
-            default:
-              toast.error(t('server_error_error_message'))
-              break
+        if (reactionComponentDto.reactionType === ReactionType.LIKE) {
+          if (userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE) {
+            setDislikesNumber(dislikesNumber - 1)
           }
+          setLikesNumber(likesNumber + 1)
         } else {
-          const reaction = await response.json()
-
-          if (type === ReactionType.LIKE) {
-            if (userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE) {
-              setDislikesNumber(dislikesNumber - 1)
-            }
-            setLikesNumber(likesNumber + 1)
-          } else {
-            if (userReaction !== null && userReaction.reactionType === ReactionType.LIKE) {
-              setLikesNumber(likesNumber - 1)
-            }
-            setDislikesNumber(dislikesNumber + 1)
+          if (userReaction !== null && userReaction.reactionType === ReactionType.LIKE) {
+            setLikesNumber(likesNumber - 1)
           }
-
-          setUserReaction(ReactionComponentDtoTranslator.fromApplicationDto(reaction))
-
-          toast.success(t('post_reaction_added_correctly_message'))
+          setDislikesNumber(dislikesNumber + 1)
         }
+
+        setUserReaction(reactionComponentDto)
+
+        toast.success(t('post_reaction_added_correctly_message'))
       } catch (exception: unknown) {
-        console.error(exception)
-        toast.error(t('server_error_error_message'))
+        if (!(exception instanceof APIException)) {
+          console.error(exception)
+
+          return
+        }
+
+        if (exception.code === POST_REACTION_USER_NOT_FOUND) {
+          await signOut({ redirect: false })
+        }
+
+        if (exception.apiCode === 401) {
+          setLoginModalOpen(true)
+        }
+
+        toast.error(t(exception.translationKey))
       }
     }
   }

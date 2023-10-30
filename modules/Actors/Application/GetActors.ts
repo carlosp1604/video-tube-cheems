@@ -2,15 +2,14 @@ import { GetActorsRequestDto } from './GetActorsRequestDto'
 import { GetActorsApplicationDto } from './GetActorsApplicationDto'
 import { GetActorsApplicationDtoTranslator } from './GetActorsApplicationDtoTranslator'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
-import { GetPostRequestFilterDto } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationRequestDto'
 import { GetPostsFilterOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsFilterOptionValidator'
 import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
-import { RepositorySortingCriteria, RepositorySortingOptions } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { GetPostsSortingOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsSortingOptionValidator'
 import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteriaValidator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
+import { GetPostRequestFilterDto } from '~/modules/Shared/Application/GetPostsApplicationRequestDto'
 
 export class GetActors {
   // eslint-disable-next-line no-useless-constructor

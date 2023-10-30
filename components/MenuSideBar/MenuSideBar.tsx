@@ -14,26 +14,55 @@ interface MenuSideBarOptionProps {
 }
 
 const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen }) => {
-  return (
-    <Link
-      href={ menuOption.action.url }
-      className={ `
+  if (menuOption.action) {
+    return (
+      <Link
+        href={ menuOption.action.url }
+        className={ `
         ${styles.menuSideBar__menuItemContent}
         ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
         ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
       ` }
-    >
+      >
       <span className={ styles.menuSideBar__menuItemIcon }>
         { menuOption.picture }
       </span>
-      <span className={ `
+        <span className={ `
         ${styles.menuSideBar__menuItemText}
         ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
       ` }>
         { menuOption.title }
       </span>
-    </Link>
-  )
+      </Link>
+    )
+  }
+
+  if (menuOption.onClick) {
+    return (
+      <div
+        className={ `
+        ${styles.menuSideBar__menuItemContent}
+        ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
+        ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
+      ` }
+        onClick={ () => {
+          menuOption.onClick
+        } }
+      >
+      <span className={ styles.menuSideBar__menuItemIcon }>
+        { menuOption.picture }
+      </span>
+        <span className={ `
+        ${styles.menuSideBar__menuItemText}
+        ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
+      ` }>
+        { menuOption.title }
+      </span>
+      </div>
+    )
+  }
+
+  return null
 }
 
 export const MenuSideBar: FC = () => {

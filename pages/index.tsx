@@ -152,18 +152,21 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
     }
 
     try {
-      const response = await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
+      await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
 
-      if (!response.ok) {
-        console.log(response)
-        toast.error('asdasdasdas')
+      toast.success(t('post_reaction_added_correctly_message'))
+    } catch (exception) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
 
         return
       }
 
-      toast.success('Gracias por reaccionar')
-    } catch (exception) {
-      toast.error('Server error')
+      if (exception.code === USER_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
+      }
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 

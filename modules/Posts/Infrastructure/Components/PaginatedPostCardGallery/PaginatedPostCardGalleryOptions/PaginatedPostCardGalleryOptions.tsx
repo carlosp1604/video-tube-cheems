@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const PaginatedPostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, options }) => {
-  const { t } = useTranslation('user_menu')
+  const { t } = useTranslation('paginated_post_card_gallery')
 
   const buildOptions: MenuOptionComponentInterface[] = options.map((option) => {
     return {
@@ -41,9 +41,9 @@ export const PaginatedPostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, op
             <BsTools className={ styles.paginatedPostCardGalleryOptions__icon }/>
           </span>
           <span className={ styles.paginatedPostCardGalleryOptions__title }>
-            { t('post_download_section_title') }
+            { t('paginated_post_card_gallery_options_title') }
             <small className={ styles.paginatedPostCardGalleryOptions__subtitle }>
-              { t('post_download_section_description') }
+              { t('paginated_post_card_gallery_options_description') }
             </small>
           </span>
         </div>

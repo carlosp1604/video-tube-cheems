@@ -15,6 +15,11 @@ import {
   PostWithProducerAndMetaApplicationDto
 } from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import {
+  POST_REACTION_NOT_FOUND,
+  POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND
+} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 
 export class PostsApiService {
   public async getPosts (
@@ -73,10 +78,8 @@ export class PostsApiService {
     })
   }
 
-  // FIXME: ReactionType
-  // TODO: Support more reaction types
-  public async createPostReaction (postId: string, reactionType: ReactionType): Promise<Response> {
-    return fetch(`/api/posts/${postId}/reactions`, {
+  public async createPostReaction (postId: string, reactionType: ReactionType): Promise<ModelReactionApplicationDto> {
+    const response = await fetch(`/api/posts/${postId}/reactions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,12 +88,133 @@ export class PostsApiService {
         reactionType,
       }),
     })
+
+    const jsonResponse = await response.json()
+
+    if (response.ok) {
+      return jsonResponse as ModelReactionApplicationDto
+    }
+
+    switch (response.status) {
+      case 400:
+        throw new APIException(
+          'bad_request_error_message',
+          response.status,
+          jsonResponse.code
+        )
+        break
+
+      case 401:
+        throw new APIException(
+          'user_must_be_authenticated_error_message',
+          response.status,
+          jsonResponse.code
+        )
+
+      case 404:
+        switch (jsonResponse.code) {
+          case POST_REACTION_USER_NOT_FOUND:
+            throw new APIException(
+              'post_user_not_found_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          case POST_REACTION_POST_NOT_FOUND:
+            throw new APIException(
+              'post_not_found_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          default:
+            throw new APIException(
+              'server_error_error_message',
+              response.status,
+              jsonResponse.code
+            )
+        }
+
+      case 409:
+        throw new APIException(
+          'user_already_reacted_to_post_error_message',
+          response.status,
+          jsonResponse.code
+        )
+
+      default:
+        throw new APIException(
+          'server_error_error_message',
+          response.status,
+          jsonResponse.code
+        )
+    }
   }
 
-  public async deletePostReaction (postId: string): Promise<Response> {
-    return fetch(`/api/posts/${postId}/reactions`, {
+  public async deletePostReaction (postId: string): Promise<void> {
+    const response = await fetch(`/api/posts/${postId}/reactions`, {
       method: 'DELETE',
     })
+
+    if (response.ok) {
+      return
+    }
+
+    const jsonResponse = await response.json()
+
+    switch (response.status) {
+      case 400:
+        throw new APIException(
+          'bad_request_error_message',
+          response.status,
+          jsonResponse.code
+        )
+
+      case 401:
+        throw new APIException(
+          'user_must_be_authenticated_error_message',
+          response.status,
+          jsonResponse.code
+        )
+
+      case 404:
+        switch (jsonResponse.code) {
+          case POST_REACTION_POST_NOT_FOUND:
+            throw new APIException(
+              'post_not_found_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          case POST_REACTION_NOT_FOUND:
+            throw new APIException(
+              'post_reaction_does_not_exist_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          case POST_REACTION_USER_NOT_FOUND:
+            throw new APIException(
+              'post_user_not_found_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          default:
+            throw new APIException(
+              'server_error_error_message',
+              response.status,
+              jsonResponse.code
+            )
+        }
+
+      default:
+        throw new APIException(
+          'server_error_error_message',
+          response.status,
+          jsonResponse.code
+        )
+    }
   }
 
   public async deletePostComment (

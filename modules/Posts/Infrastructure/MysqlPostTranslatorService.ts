@@ -117,6 +117,8 @@ export class MysqlPostsTranslatorService {
         )
 
         relationship = Relationship.initializeRelation(producer)
+      } else {
+        relationship = Relationship.initializeRelation(null)
       }
     }
 
@@ -147,6 +149,8 @@ export class MysqlPostsTranslatorService {
         )
 
         relationship = Relationship.initializeRelation(actor)
+      } else {
+        relationship = Relationship.initializeRelation(null)
       }
     }
 

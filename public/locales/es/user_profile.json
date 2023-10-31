@@ -5,6 +5,7 @@
   "saved_posts_empty_subtitle": "{{name}} todavía no agregó ningún post a su lista de posts guardados",
   "user_my_profile_button": "Editar perfil",
   "user_joined_at_label_title": "Desde",
+  "user_profile_image_alt_title": "Imagen de perfil de {{username}}",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
   "user_name_label_title": "Nombre",
   "user_saved_posts_title": "Videos guardados",

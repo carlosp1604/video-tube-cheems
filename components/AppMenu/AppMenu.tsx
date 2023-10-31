@@ -14,6 +14,7 @@ import { IconButton } from '~/components/IconButton/IconButton'
 import { CiUser } from 'react-icons/ci'
 import toast from 'react-hot-toast'
 import Avatar from 'react-avatar'
+import Image from 'next/image'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
@@ -62,10 +63,13 @@ export const AppMenu: FC = () => {
             setUserMenuOpen(true)
           } }
         >
-          <img
+          <Image
+            alt={ user.name }
             className={ styles.appMenu__userAvatarImage }
             src={ user.image }
-            alt={ user.name }
+            width={ 0 }
+            height={ 0 }
+            sizes={ '100vw' }
           />
         </button>
       )

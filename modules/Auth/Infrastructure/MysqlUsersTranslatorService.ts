@@ -70,13 +70,15 @@ export class MysqlUsersTranslatorService {
         const verificationToken = new VerificationToken(
           row.verification_token_id,
           row.verification_token_token,
-          row.verification_token_type,
           row.verification_token_user_email,
-          DateTime.fromJSDate(row.verification_token_created_at),
-          DateTime.fromJSDate(row.verification_token_expires_at)
+          row.verification_token_type,
+          DateTime.fromJSDate(row.verification_token_expires_at),
+          DateTime.fromJSDate(row.verification_token_created_at)
         )
 
         relationship = Relationship.initializeRelation(verificationToken)
+      } else {
+        relationship = Relationship.initializeRelation(null)
       }
     }
 

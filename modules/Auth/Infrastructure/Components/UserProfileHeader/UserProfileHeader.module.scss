@@ -1,4 +1,4 @@
-.user-profile {
+.user-profile-header {
   &__container {
     @apply flex flex-col items-center justify-center p-5 gap-y-4;
   }
@@ -46,9 +46,6 @@
     @apply font-light text-base-400;
   }
 
-  &__options {
-  }
-
   &__edit-profile-button {
     @apply flex flex-row gap-x-2 items-center p-2.5 border rounded-lg
       text-base-100 border-base-500 transition-colors text-base-300;
@@ -56,5 +53,18 @@
     &:focus, &:hover {
       @apply bg-brand-900 transition-colors;
     }
+  }
+
+  &__user-avatar-container {
+    @apply flex h-6 w-6 items-center justify-center rounded-full overflow-hidden
+    transition-transform;
+
+    @screen md {
+      @apply h-8 w-8;
+    }
+  }
+
+  &__user-avatar-image {
+    @apply h-40 w-40 object-cover self-center rounded-full;
   }
 }

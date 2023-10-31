@@ -6,6 +6,7 @@ import { BiCalendarEvent, BiIdCard } from 'react-icons/bi'
 import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
+import Image from 'next/image'
 
 interface Props {
   componentDto: UserProfileHeaderComponentDto
@@ -16,7 +17,7 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
 
   let avatar = (
     <Avatar
-      className={ styles.userMenu__userAvatar }
+      className={ styles.userProfileHeader__userAvatarContainer }
       round={ true }
       size={ '120' }
       name={ componentDto.name }
@@ -26,17 +27,20 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
 
   if (componentDto.imageUrl !== null) {
     avatar = (
-      <img
-        className={ styles.userMenu__userAvatar }
+      <Image
+        alt={ t('user_profile_image_alt_title', { username: componentDto.username }) }
+        className={ styles.userProfileHeader__userAvatarImage }
         src={ componentDto.imageUrl }
-        alt={ componentDto.name }
+        width={ 0 }
+        height={ 0 }
+        sizes={ '100vw' }
       />
     )
   }
 
   return (
-    <div className={ styles.userProfile__container }>
-      <div className={ styles.userProfile__userData }>
+    <div className={ styles.userProfileHeader__container }>
+      <div className={ styles.userProfileHeader__userData }>
         { avatar }
         { componentDto.username }
       </div>
@@ -66,22 +70,22 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
         </div>
        */ }
 
-      <div className={ styles.userProfile__userInfo }>
-        <div className={ styles.userProfile__userInfoItem }>
-          <BiCalendarEvent className={ styles.userProfile__userInfoItemIcon }/>
-          <span className={ styles.userProfile__userInfoItemTitle }>
+      <div className={ styles.userProfileHeader__userInfo }>
+        <div className={ styles.userProfileHeader__userInfoItem }>
+          <BiCalendarEvent className={ styles.userProfileHeader__userInfoItemIcon }/>
+          <span className={ styles.userProfileHeader__userInfoItemTitle }>
             { t('user_joined_at_label_title') }
           </span>
-          <span className={ styles.userProfile__userInfoItemContent }>
+          <span className={ styles.userProfileHeader__userInfoItemContent }>
             { componentDto.createdAt }
           </span>
         </div>
-        <div className={ styles.userProfile__userInfoItem }>
-          <BiIdCard className={ styles.userProfile__userInfoItemIcon }/>
-          <span className={ styles.userProfile__userInfoItemTitle }>
+        <div className={ styles.userProfileHeader__userInfoItem }>
+          <BiIdCard className={ styles.userProfileHeader__userInfoItemIcon }/>
+          <span className={ styles.userProfileHeader__userInfoItemTitle }>
             { t('user_name_label_title') }
           </span>
-          <span className={ styles.userProfile__userInfoItemContent }>
+          <span className={ styles.userProfileHeader__userInfoItemContent }>
             { componentDto.name }
           </span>
         </div>

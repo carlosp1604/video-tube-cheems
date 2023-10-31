@@ -88,10 +88,14 @@
   }
 
   &__user-avatar-image {
-    @apply h-full w-full object-cover self-center;
+    @apply h-6 w-6 object-cover self-center rounded-full;
 
     &:hover, &:focus {
       @apply scale-110 transition-transform;
+    }
+
+    @screen md {
+      @apply h-8 w-8;
     }
   }
 

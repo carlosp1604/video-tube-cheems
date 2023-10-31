@@ -49,6 +49,7 @@ interface Props {
   postCardOptions: PostCardGalleryOption[]
   fetchPosts: (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) =>
     Promise<GetPostsApplicationResponse>
+  emptyState: ReactElement | null
 }
 
 export const PaginatedPostCardGallery: FC<Props> = ({
@@ -60,6 +61,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   defaultSortingOption,
   postCardOptions,
   fetchPosts,
+  emptyState,
 }) => {
   const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialPostsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
@@ -229,6 +231,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         isOpen={ postCardOptionsMenuOpen }
         onClose={ () => setPostCardOptionsMenuOpen(false) }
       />
+      { postsNumber === 0 ? emptyState : null }
 
       <div className={ styles.paginatedPostCardGallery__postCardListContainer }>
         { currentPosts.map((post) => {

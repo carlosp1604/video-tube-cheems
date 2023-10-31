@@ -74,6 +74,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber 
         title={ `Videos de ${actor.name}` }
         fetchPosts={ fetchPosts }
         postCardOptions={ [] }
+        emptyState={ null }
       />
     </div>
   )

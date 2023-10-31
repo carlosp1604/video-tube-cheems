@@ -1,3 +1,5 @@
 {
+  "result_posts_empty_state_subtitle": "No pudimos encontrar ningún resultado para el término: {{searchTerm}}. Prueba con otros términos de búsqueda",
+  "result_posts_empty_state_title": "Ningún resultado encontrado",
   "search_result_title": "Resultados para {{searchTerm}}"
 }

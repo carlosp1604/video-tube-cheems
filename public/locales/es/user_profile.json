@@ -1,6 +1,8 @@
 {
   "delete_saved_post_option_title": "Eliminar post guardado",
   "post_save_post_successfully_removed_from_saved_post": "El post fue eliminado de la lista de videos guardados del usuario",
+  "saved_posts_empty_title": "¡Qué vacío está!",
+  "saved_posts_empty_subtitle": "{{name}} todavía no agregó ningún post a su lista de posts guardados",
   "user_my_profile_button": "Editar perfil",
   "user_joined_at_label_title": "Desde",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
@@ -13,6 +15,6 @@
   "user_saved_posts_empty_state_post_post_options_save_button_title": "Guardar",
   "user_saved_posts_empty_state_second_option_first_step": "En las opciones del post, tendrás que seleccionar el botón 'Guardar'",
   "user_saved_posts_empty_state_second_option_title": "2. Desde la página del post",
-  "user_saved_posts_empty_state_subtitle": "Aún no tienes ningún post guardado. A continuación te indicamos como guardar un post:",
+  "user_saved_posts_empty_state_subtitle": "Aún no tienes ningún post guardado. A continuación te indicamos como guardar un post",
   "user_saved_posts_empty_state_title": "Aquí encontrarás todos tus posts guardados para que no les pierdas el rastro"
 }

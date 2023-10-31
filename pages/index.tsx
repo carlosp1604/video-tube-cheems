@@ -219,6 +219,7 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
         defaultSortingOption={ HomePostsDefaultSortingOption }
         postCardOptions={ options }
         fetchPosts={ fetchPosts }
+        emptyState={ null }
       />
     </div>
   )

@@ -1,6 +1,8 @@
 {
   "delete_saved_post_option_title": "Delete saved post",
   "post_save_post_successfully_removed_from_saved_post": "Post was removed from the user's saved post list",
+  "saved_posts_empty_title": "How empty it is!",
+  "saved_posts_empty_subtitle": "{{name}} has not yet added any posts to his list of saved posts",
   "user_my_profile_button": "Edit profile",
   "user_joined_at_label_title": "Since",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action",

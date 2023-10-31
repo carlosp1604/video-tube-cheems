@@ -1,3 +1,5 @@
 {
+  "result_posts_empty_state_subtitle": "We couldn't find any results for term: {{searchTerm}}. Try other search terms",
+  "result_posts_empty_state_title": "No results found",
   "search_result_title": "Results for {{searchTerm}}"
 }

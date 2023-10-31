@@ -27,6 +27,7 @@ import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiEx
 import {
   UserSavedPostsEmptyState
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
+import { EmptyState } from '~/components/EmptyState/EmptyState'
 
 export interface UserProfilePageProps {
   userComponentDto: UserProfileHeaderComponentDto
@@ -110,11 +111,14 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
           postCardOptions={ options }
           defaultSortingOption={ SavedPostsDefaultSortingOption }
           fetchPosts={ fetchPosts }
+          emptyState={ data && data.user.id === userComponentDto.id
+            ? <UserSavedPostsEmptyState />
+            : <EmptyState
+              title={ t('saved_posts_empty_title', { ns: 'user_profile' }) }
+              subtitle={ t('saved_posts_empty_subtitle', { name: userComponentDto.name, ns: 'user_profile' }) }
+            />
+          }
         />
-        { postsNumber === 0
-          ? <UserSavedPostsEmptyState />
-          : null
-        }
       </div>
     </div>
   )

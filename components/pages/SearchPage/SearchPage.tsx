@@ -15,6 +15,7 @@ import {
 } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { EmptyState } from '~/components/EmptyState/EmptyState'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -60,6 +61,10 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
         title={ t('search_result_title', { searchTerm: title }) }
         fetchPosts={ fetchPosts }
         postCardOptions={ [] }
+        emptyState={ <EmptyState
+          title={ t('result_posts_empty_state_title') }
+          subtitle={ t('result_posts_empty_state_subtitle', { searchTerm: title }) }
+        /> }
       />
     </div>
   )

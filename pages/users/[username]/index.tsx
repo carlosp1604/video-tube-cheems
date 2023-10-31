@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
         posts: savedPosts.posts.map((post) => {
           return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
         }),
-        postsNUmber: savedPosts.postsNumber,
+        postsNumber: savedPosts.postsNumber,
       },
     }
   } catch (exception: unknown) {

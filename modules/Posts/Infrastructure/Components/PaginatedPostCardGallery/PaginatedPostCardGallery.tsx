@@ -198,6 +198,18 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     }
   }
 
+  let sortingOptionsElement: ReactElement | null = null
+
+  if (postsNumber > defaultPerPage) {
+    sortingOptionsElement = (
+      <SortingMenuDropdown
+        activeOption={ activeSortingOption }
+        onChangeOption={ (option: SortingOption) => setActiveSortingOption(option) }
+        options={ sortingOptions }
+      />
+    )
+  }
+
   return (
     <div className={ styles.paginatedPostCardGallery__container }>
       <div className={ styles.paginatedPostCardGallery__header }>
@@ -209,11 +221,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
           </small>
         </h1>
 
-        <SortingMenuDropdown
-          activeOption={ activeSortingOption }
-          onChangeOption={ (option: SortingOption) => setActiveSortingOption(option) }
-          options={ sortingOptions }
-        />
+        { sortingOptionsElement }
       </div>
 
       <PaginatedPostCardGalleryOptions

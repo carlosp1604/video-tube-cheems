@@ -6,7 +6,6 @@ const knexConfig: Knex.Config = {
   client: process.env.DATABASE_CLIENT ?? 'pg',
   connection: {
     ...getKnexConfig(),
-    ssl: true,
   },
   pool: {
     min: 2,

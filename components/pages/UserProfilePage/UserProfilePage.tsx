@@ -24,16 +24,19 @@ import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilte
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import {
+  UserSavedPostsEmptyState
+} from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
 
 export interface UserProfilePageProps {
   userComponentDto: UserProfileHeaderComponentDto
   posts: PostCardComponentDto[]
-  postsNUmber: number
+  postsNumber: number
 }
 export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   userComponentDto,
   posts,
-  postsNUmber,
+  postsNumber,
 }) => {
   const { t } = useTranslation(['user_profile', 'api_exceptions'])
 
@@ -98,7 +101,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
         <PaginatedPostCardGallery
           title={ t('user_saved_posts_title', { ns: 'user_profile' }) }
           initialPosts={ posts }
-          initialPostsNumber={ postsNUmber }
+          initialPostsNumber={ postsNumber }
           filters={ [{
             type: PostFilterOptions.SAVED_BY,
             value: userComponentDto.id,
@@ -108,6 +111,10 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
           defaultSortingOption={ SavedPostsDefaultSortingOption }
           fetchPosts={ fetchPosts }
         />
+        { postsNumber === 0
+          ? <UserSavedPostsEmptyState />
+          : null
+        }
       </div>
     </div>
   )

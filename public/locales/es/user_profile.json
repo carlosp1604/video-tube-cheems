@@ -5,5 +5,14 @@
   "user_joined_at_label_title": "Desde",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
   "user_name_label_title": "Nombre",
-  "user_saved_posts_title": "Videos guardados"
+  "user_saved_posts_title": "Videos guardados",
+  "user_saved_posts_empty_state_first_option_first_step": "Selecciona el icono que aparece en la parte superior izquierda para abrir las opciones del post",
+  "user_saved_posts_empty_state_first_option_second_step": "Después, selecciona la opcíon 'Guardar Post' en el menú",
+  "user_saved_posts_empty_state_first_option_title": "1. Desde una lista de posts",
+  "user_saved_posts_empty_state_post_options_save_post_button_title": "Guardar Post",
+  "user_saved_posts_empty_state_post_post_options_save_button_title": "Guardar",
+  "user_saved_posts_empty_state_second_option_first_step": "En las opciones del post, tendrás que seleccionar el botón 'Guardar'",
+  "user_saved_posts_empty_state_second_option_title": "2. Desde la página del post",
+  "user_saved_posts_empty_state_subtitle": "Aún no tienes ningún post guardado. A continuación te indicamos como guardar un post:",
+  "user_saved_posts_empty_state_title": "Aquí encontrarás todos tus posts guardados para que no les pierdas el rastro"
 }

@@ -2,7 +2,7 @@
   &__button {
     @apply p-3 rounded-full transition-colors text-base-400 text-2xl;
 
-    &:hover, &:focus {
+    &:hover {
       @apply bg-base-800 transition-colors text-base-100;
     }
 

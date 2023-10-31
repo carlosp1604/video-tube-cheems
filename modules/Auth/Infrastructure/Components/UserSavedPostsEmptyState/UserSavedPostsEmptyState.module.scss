@@ -1,0 +1,66 @@
+.user-saved-posts-empty-state {
+  &__container {
+    @apply flex flex-col gap-y-4 px-5 pb-5;
+  }
+
+  &__header {
+    @apply flex flex-col gap-y-1 font-medium;
+  }
+
+  &__header-subtitle {
+    @apply font-light;
+  }
+
+  &__post-options-example {
+    @apply flex items-center justify-center mt-2 m-auto
+    rounded-full h-7 w-7 bg-base-700 cursor-default;
+
+    @screen md {
+      @apply m-0;
+    }
+  }
+
+  &__menu-item {
+    @apply mt-2 text-base-400;
+
+    @screen md {
+      @apply m-0;
+    }
+  }
+
+  &__menu-item-content {
+    @apply flex flex-row py-3.5 gap-x-6 items-center border-t border-b
+    border-base-700 border-opacity-30 max-w-fit px-5 bg-base-900 m-auto;
+  }
+
+  &__menu-icon {
+    @apply text-xl;
+  }
+
+  &__option-item {
+    @apply flex items-center gap-x-2 m-auto mt-2
+    rounded-full bg-base-800 py-2 text-xs px-3
+    transition-colors justify-center max-w-fit place-self-center;
+
+
+    @screen md {
+      @apply m-0;
+    }
+
+    @screen lg {
+      @apply text-sm;
+    }
+  }
+
+  &__option {
+    @apply flex flex-col gap-y-2 text-base font-bold pb-2;
+  }
+
+  &__explatantion-item {
+    @apply text-sm font-normal;
+
+    @screen md {
+      @apply flex gap-x-4 items-center;
+    }
+  }
+}

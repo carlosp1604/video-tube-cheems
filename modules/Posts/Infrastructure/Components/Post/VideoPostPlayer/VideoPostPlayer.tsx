@@ -57,7 +57,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     }
   }, [])
 
-  if (embedPostMedia === null && videoPostMedia === null) {
+  if (mediaUrls.length === 0) {
     return (
       <div className={ styles.videoPostPlayer__noSourcesState }>
         <BsFileEarmarkBreak className={ styles.videoPostPlayer__noSourcesStateIcon }/>

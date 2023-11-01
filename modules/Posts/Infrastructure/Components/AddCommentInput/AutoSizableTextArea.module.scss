@@ -1,7 +1,7 @@
 .auto-sizable-text-area {
   &__comment-input {
-    @apply h-12 px-4 py-3 bg-base-800 text-base-300 rounded-lg
-    scrollbar-hide text-xs w-full;
+    @apply h-12 px-4 py-2 bg-base-800 text-base-300 rounded-lg
+    scrollbar-hide w-full;
 
     &:active, &:focus, &:hover {
       @apply outline-none border-base-700;

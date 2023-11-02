@@ -18,7 +18,7 @@
 
   &__no-sources-state {
     @apply flex flex-col justify-center items-center bg-black w-full h-full
-      whitespace-pre-line gap-y-4 text-base-400 p-5 text-xs;
+      whitespace-pre-line gap-y-4 text-base-400 p-5 text-xs rounded-lg;
 
     @screen md {
       @apply text-base;
@@ -30,14 +30,14 @@
   }
 
   &__no-sources-state-icon {
-    @apply h-10 w-10 text-brand-400;
+    @apply h-14 w-14 text-brand-400;
 
     @screen md {
-      @apply h-12 w-12;
+      @apply h-20 w-20;
     }
 
     @screen lg {
-      @apply h-14 w-14;
+      @apply h-24 w-24;
     }
   }
 

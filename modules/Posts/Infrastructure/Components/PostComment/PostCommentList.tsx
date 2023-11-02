@@ -6,12 +6,13 @@ import { PostCommentOptions } from '~/modules/Posts/Infrastructure/Components/Po
 import {
   PostCommentInteractionSection
 } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentInteractionSection'
+import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 
 interface Props {
   postComments: PostCommentComponentDto[]
   onDeletePostComment: (postCommentId: string) => void
   onClickReply: (comment: PostCommentComponentDto) => void
-  onClickLikeComment: (comment: PostCommentComponentDto) => void
+  onClickLikeComment: (postId: string, reactionsNumber: number, userReaction: ReactionComponentDto | null) => void
 }
 
 export const PostCommentList: FC<Props> = ({ postComments, onDeletePostComment, onClickReply, onClickLikeComment }) => {
@@ -31,7 +32,11 @@ export const PostCommentList: FC<Props> = ({ postComments, onDeletePostComment, 
             postId={ comment.postId }
           />
         </div>
-        <PostCommentInteractionSection postComment={ comment } onClickReply={ onClickReply }/>
+        <PostCommentInteractionSection
+          postComment={ comment }
+          onClickReply={ onClickReply }
+          onClickLikeComment={ onClickLikeComment }
+        />
       </div>
     )
   })

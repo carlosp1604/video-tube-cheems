@@ -58,7 +58,7 @@
       @apply block opacity-100 transition-all duration-200;
 
       &__hidden {
-        @apply opacity-0 translate-x-full transition-all duration-200;;
+        @apply opacity-0 translate-x-full transition-all duration-200;
       }
 
       &__active {

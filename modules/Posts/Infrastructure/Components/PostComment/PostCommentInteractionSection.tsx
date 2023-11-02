@@ -21,9 +21,10 @@ import {
 interface Props {
   postComment: PostCommentComponentDto
   onClickReply: ((postComment: PostCommentComponentDto) => void) | undefined
+  onClickLikeComment: (postId: string, reactionsNumber: number, userReaction: ReactionComponentDto | null) => void
 }
 
-export const PostCommentInteractionSection: FC<Props> = ({ postComment, onClickReply }) => {
+export const PostCommentInteractionSection: FC<Props> = ({ postComment, onClickReply, onClickLikeComment }) => {
   const { t } = useTranslation('post_comments')
   const [userReaction, setUserReaction] = useState<ReactionComponentDto | null>(postComment.userReaction)
   const [commentReactions, setCommentReactions] = useState<number>(postComment.reactionsNumber)
@@ -57,8 +58,9 @@ export const PostCommentInteractionSection: FC<Props> = ({ postComment, onClickR
         // When a comment is created it does not have replies or reactions
         const reactionComponent = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
 
-        setUserReaction(reactionComponent)
+        onClickLikeComment(postComment.id, commentReactions + 1, reactionComponent)
         setCommentReactions(commentReactions + 1)
+        setUserReaction(reactionComponent)
 
         toast.success(t('post_comment_reaction_reaction_added_successfully'))
 

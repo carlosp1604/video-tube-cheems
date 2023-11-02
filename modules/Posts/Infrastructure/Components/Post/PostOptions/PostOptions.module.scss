@@ -29,11 +29,11 @@
   }
 
   &__like-icon {
-    @apply text-base;
+    @apply text-base outline-none;
 
     &_active {
       @apply text-base text-brand-400 transition-colors
-        outline-none border-0;;
+        outline-none border-0;
 
       &:hover {
         @apply text-base-100 transition-colors;
@@ -41,7 +41,7 @@
     }
 
     &:hover {
-      @apply text-brand-400 transition-colors outline-none border-0;;
+      @apply text-brand-400 transition-colors outline-none border-0;
     }
 
     &:focus {
@@ -50,11 +50,11 @@
   }
 
   &__dislike-icon {
-    @apply text-base;
+    @apply text-base outline-none;
 
     &_active {
       @apply text-base text-base text-red transition-colors
-        outline-none border-0;;
+        outline-none border-0;
 
       &:hover {
         @apply text-base-100 transition-colors;
@@ -62,7 +62,7 @@
     }
 
     &:hover {
-      @apply text-red transition-colors outline-none border-0;;
+      @apply text-red transition-colors outline-none border-0;
     }
 
     &:focus {

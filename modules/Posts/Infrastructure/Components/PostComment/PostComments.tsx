@@ -18,6 +18,7 @@ import {
   POST_COMMENT_POST_NOT_FOUND, POST_COMMENT_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { signOut } from 'next-auth/react'
+import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 
 interface Props {
   postId: string
@@ -226,7 +227,24 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
               setCommentToReply(comment)
               setRepliesOpen(true)
             } }
-            onClickLikeComment={ (postComment) => console.log(postComment) }
+            onClickLikeComment={ (
+              postId: string,
+              reactionsNumber: number,
+              userReaction: ReactionComponentDto | null
+            ) => {
+              const comment = comments.find((currentComment) => currentComment.id === postId)
+
+              if (comment) {
+                const updatedComment = {
+                  ...comment,
+                  reactionsNumber,
+                  userReaction,
+
+                }
+
+                Object.assign(comment)
+              }
+            } }
           />
           <button className={ `
             ${styles.postComments__loadMore}

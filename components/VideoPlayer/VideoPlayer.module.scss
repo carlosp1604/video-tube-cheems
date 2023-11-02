@@ -1,13 +1,10 @@
 .video-player {
   &__container {
-    @apply rounded-xl overflow-hidden w-full aspect-video z-video-player;
-  }
+    @apply rounded-xl overflow-hidden w-full h-full
+      z-video-player;
 
-  &__loading-state {
-    @apply flex items-center justify-center w-full h-auto aspect-video bg-black;
-  }
-
-  &__loading-icon {
-    @apply h-12 w-12 animate-spin;
+    @screen md {
+      @apply w-full h-full;
+    }
   }
 }

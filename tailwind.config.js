@@ -13,6 +13,9 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
   ],
   important: true,
+  corePlugins: {
+    aspectRatio: false,
+  },
   theme: {
     container: {
       // you can configure the container to be centered
@@ -41,6 +44,9 @@ module.exports = {
     extend: {
       animation: {
         'bounce-short': 'bounce 0.3s ease-in-out 2',
+      },
+      aspectRatio: {
+        9.7: '9.7',
       },
       colors: {
         sidebar: {
@@ -107,6 +113,7 @@ module.exports = {
       zIndex: classNamesToZIndex([
         'card-link',
         'post-card-video',
+        'post-card-video-time',
         'carousel-button',
         'floating-action-app-menu',
         'sort-menu-dropdown',
@@ -127,5 +134,6 @@ module.exports = {
   },
   plugins: [
     require('tailwind-scrollbar-hide'),
+    require('@tailwindcss/aspect-ratio'),
   ],
 }

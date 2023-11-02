@@ -2,11 +2,23 @@
   $parentBlock: &;
 
   &__container {
-    @apply overflow-hidden;
+    @apply relative overflow-hidden;
   }
 
   &__video-container {
-    @apply relative z-post-card-video;
+    @apply aspect-w-16 aspect-h-9 rounded-lg
+      overflow-hidden z-post-card-video;
+
+    &:hover {
+      #{$parentBlock}__video-time {
+        @apply opacity-0 transition-all
+          duration-500;
+
+        &:hover, &:focus {
+          @apply opacity-100;
+        }
+      }
+    }
   }
 
   &__video-link {
@@ -14,7 +26,7 @@
   }
 
   &__media {
-    @apply aspect-video h-full w-full object-cover rounded-lg;
+    @apply h-full w-full object-cover object-center;
   }
 
   &__video-data-container {
@@ -62,17 +74,8 @@
   }
 
   &__video-time {
-    @apply z-post-card-video absolute top-1 right-1 text-sm font-normal
-      text-base-400 py-0.5 px-1 rounded-lg bg-body cursor-default;
-  }
-
-  &__video-container:hover {
-    #{$parentBlock}__video-time {
-      @apply opacity-0 transition-all duration-500;
-
-      &:hover, &:focus {
-        @apply opacity-100;
-      }
-    }
+    @apply absolute top-1 right-1 text-sm font-normal
+      text-base-400 py-0.5 px-1 rounded-lg bg-body
+      z-post-card-video-time cursor-default;
   }
 }

@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import Avatar from 'react-avatar'
 import HoverVideoPlayer from 'react-hover-video-player'
+import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 
 interface Props {
   post: PostCardComponentDto
@@ -25,10 +26,8 @@ export const PostCard: FC<Props> = ({
     <Image
       src={ post.thumb }
       alt={ post.title }
-      className={ styles.postCard__media }
-      width={ 0 }
-      height={ 0 }
-      sizes={ '100vw' }
+      width={ 100 }
+      height={ 100 }
     />
   )
 
@@ -49,6 +48,7 @@ export const PostCard: FC<Props> = ({
             sizes={ '100vw' }
           />
         }
+        loadingOverlay={ <VideoLoadingState /> }
         muted={ true }
         disableRemotePlayback={ true }
         disablePictureInPicture={ true }
@@ -110,6 +110,7 @@ export const PostCard: FC<Props> = ({
 
   if (post.producer === null && post.actor && post.actor.imageUrl === null && showProducerImage) {
     producerImage = (
+      // TODO: FIX THIS WHEN ACTOR PAGE IS READY
       <Link
         className={ styles.postCard__producerAvatarContainer }
         href={ '/' }
@@ -127,20 +128,19 @@ export const PostCard: FC<Props> = ({
   return (
     <div className={ styles.postCard__container }>
       <div className={ styles.postCard__videoContainer }>
-        <p className={ styles.postCard__videoTime } >
-          { post.duration }
-        </p>
         <Link
           href={ `/posts/videos/${post.slug}` }
           className={ styles.postCard__videoLink }
         >
           { media }
+          <span className={ styles.postCard__videoTime } >
+            { post.duration }
+          </span>
         </Link>
       </div>
 
       <div className={ styles.postCard__videoDataContainer }>
         { producerImage }
-
         <div className={ styles.postCard__postData }>
           <Link
             href={ `/posts/videos/${post.slug}` }
@@ -162,7 +162,6 @@ export const PostCard: FC<Props> = ({
             { post.date }
           </div>
         </div>
-
       </div>
     </div>
   )

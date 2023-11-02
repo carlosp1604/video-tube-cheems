@@ -3,14 +3,6 @@
     @apply flex flex-col gap-y-4 mx-auto transition pt-10 w-full;
   }
 
-  &__video-container {
-    @apply flex flex-row gap-x-4 -mx-5 aspect-video rounded-lg overflow-hidden;
-
-    @screen md {
-      @apply mx-0;
-    }
-  }
-
   &__right-container {
     @apply flex flex-col gap-y-4 overflow-x-scroll whitespace-nowrap scrollbar-hide;
   }

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { VideoPostType } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/VideoPostType'
+import { VideoPostType } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/VideoPostType/VideoPostType'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 

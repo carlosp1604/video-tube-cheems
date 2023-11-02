@@ -1,7 +1,7 @@
 import { FC, ReactElement } from 'react'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { VideoPostPlayer } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoPostPlayer'
-import styles from './PostType.module.scss'
+import styles from './VideoPostType.module.scss'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 
 export interface Props {
@@ -19,7 +19,7 @@ export const VideoPostType: FC<Props> = ({
 }) => {
   return (
     <>
-      <div className={ styles.postType__videoContainer } >
+      <div className={ styles.videoPostType__videoContainer } >
         <VideoPostPlayer
           mediaUrls={ mediaUrls }
           embedPostMedia={ post.postMediaEmbedType.length > 0 ? post.postMediaEmbedType[0] : null }

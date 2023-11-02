@@ -68,6 +68,7 @@
   "license": "MIT",
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^3.0.3",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/jest": "^29.5.0",
     "@types/node": "^18.13.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",

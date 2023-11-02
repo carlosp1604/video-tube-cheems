@@ -12,7 +12,7 @@
   }
 
   &__image-wrapper {
-    @apply aspect-square overflow-hidden;
+    @apply aspect-h-1 aspect-w-1 overflow-hidden;
     grid-area: actor-image;
   } 
 

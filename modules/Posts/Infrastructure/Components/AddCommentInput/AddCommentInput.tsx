@@ -27,7 +27,7 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
     if (data.user.image) {
       avatar = (
         <Image
-          className={ styles.commentCard__userLogo }
+          className={ styles.addCommentInput__userAvatar }
           src={ data.user.image }
           alt={ data.user.name ?? '' }
           width={ 0 }

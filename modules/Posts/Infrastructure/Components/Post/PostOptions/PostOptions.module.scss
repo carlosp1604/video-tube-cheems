@@ -32,7 +32,8 @@
     @apply text-base;
 
     &_active {
-      @apply text-base text-brand-400 transition-colors;
+      @apply text-base text-brand-400 transition-colors
+        outline-none border-0;;
 
       &:hover {
         @apply text-base-100 transition-colors;
@@ -40,7 +41,7 @@
     }
 
     &:hover {
-      @apply text-brand-400 transition-colors;
+      @apply text-brand-400 transition-colors outline-none border-0;;
     }
 
     &:focus {
@@ -52,7 +53,8 @@
     @apply text-base;
 
     &_active {
-      @apply text-base text-base text-red transition-colors;
+      @apply text-base text-base text-red transition-colors
+        outline-none border-0;;
 
       &:hover {
         @apply text-base-100 transition-colors;
@@ -60,7 +62,11 @@
     }
 
     &:hover {
-      @apply text-red transition-colors;
+      @apply text-red transition-colors outline-none border-0;;
+    }
+
+    &:focus {
+      @apply outline-none border-0;
     }
   }
 }

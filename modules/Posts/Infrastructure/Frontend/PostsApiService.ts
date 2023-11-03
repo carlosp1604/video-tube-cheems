@@ -42,7 +42,7 @@ export class PostsApiService {
       }
     }
 
-    return ((await fetch(`${'/api/posts'}?${params}`)).json())
+    return ((await fetch(`/api/posts?${params}`)).json())
   }
 
   public async getSavedPosts (
@@ -66,7 +66,7 @@ export class PostsApiService {
       }
     }
 
-    return ((await fetch(`${`/api/users/${userId}/saved-posts`}?${params}`)).json())
+    return ((await fetch(`$/api/users/${userId}/saved-posts?${params}`)).json())
   }
 
   public async addPostView (postId: string): Promise<Response> {
@@ -215,22 +215,6 @@ export class PostsApiService {
           jsonResponse.code
         )
     }
-  }
-
-  public async deletePostComment (
-    postId: string,
-    postCommentId: string,
-    parentCommentId: string | null
-  ): Promise<Response> {
-    let fetchRoute = `/api/posts/${postId}/comments/${postCommentId}`
-
-    if (parentCommentId !== null) {
-      fetchRoute = `/api/posts/${postId}/comments/${parentCommentId}/children/${postCommentId}`
-    }
-
-    return fetch(fetchRoute, {
-      method: 'DELETE',
-    })
   }
 
   public async getPostUserInteraction (postId: string): Promise<Response> {

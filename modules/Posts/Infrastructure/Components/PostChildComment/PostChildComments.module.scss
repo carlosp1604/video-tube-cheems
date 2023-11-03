@@ -33,6 +33,10 @@
     }
   }
 
+  &__comments-quantity {
+    @apply text-brand-500 text-xs font-medium;
+  }
+
   &__post-child-comments {
     @apply flex flex-col overflow-y-scroll flex-grow scrollbar-hide;
   }

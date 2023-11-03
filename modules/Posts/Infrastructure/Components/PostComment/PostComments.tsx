@@ -12,13 +12,12 @@ import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/Comm
 import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import toast from 'react-hot-toast'
-import { PostCommentList } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentList'
+import { PostCommentList } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentList/PostCommentList'
 import { PostChildComments } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildComments'
-import {
-  POST_COMMENT_POST_NOT_FOUND, POST_COMMENT_USER_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
-import { signOut } from 'next-auth/react'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { signOut } from 'next-auth/react'
+import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   postId: string
@@ -36,7 +35,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   const commentsAreaRef = useRef<HTMLDivElement>(null)
   const commentApiService = new CommentsApiService()
 
-  const { t } = useTranslation('post_comments')
+  const { t } = useTranslation(['post_comments', 'api_exceptions'])
 
   const router = useRouter()
   const locale = router.locale ?? 'en'
@@ -49,64 +48,30 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
     }
 
     try {
-      const response = await commentApiService.create(postId, comment, null)
+      const postComment = await commentApiService.create(postId, comment, null)
 
-      if (response.ok) {
-        const postComment = await response.json()
+      // When a comment is created it does not have replies or reactions
+      const componentResponse = PostCommentComponentDtoTranslator
+        .fromApplication(postComment, 0, 0, null, locale)
 
-        // When a comment is created it does not have replies or reactions
-        const componentResponse = PostCommentComponentDtoTranslator
-          .fromApplication(postComment, 0, 0, null, locale)
+      setComments([componentResponse, ...comments])
+      setCommentsNumber(commentsNumber + 1)
 
-        setComments([componentResponse, ...comments])
-        setCommentsNumber(commentsNumber + 1)
+      commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
-        commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+      toast.success(t('post_comment_added_success_message'))
+    } catch (exception: unknown) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
 
         return
       }
 
-      switch (response.status) {
-        case 400:
-          toast.error(t('bad_request_error_message'))
-          break
-
-        case 401:
-          toast.error(t('user_must_be_authenticated_error_message'))
-          break
-
-        case 404: {
-          const jsonResponse = await response.json()
-
-          switch (jsonResponse.code) {
-            case POST_COMMENT_POST_NOT_FOUND:
-              toast.error(t('post_not_found_error_message'))
-              break
-
-            case POST_COMMENT_USER_NOT_FOUND: {
-              toast.error(t('post_user_not_found_error_message'))
-
-              await signOut({ redirect: false })
-
-              break
-            }
-
-            default:
-              toast.error(t('server_error_error_message'))
-              break
-          }
-          break
-        }
-
-        default:
-          toast.error(t('server_error_error_message'))
-          break
+      if (exception.code === POST_COMMENT_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
       }
 
-      return
-    } catch (exception: unknown) {
-      console.error(exception)
-      toast.error(t('server_error_error_message'))
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 
@@ -150,23 +115,45 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
     updatePostComments()
   }, [])
 
+  const onClickLikeComment = (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => {
+    const commentIndex = comments.findIndex((currentComment) => currentComment.id === postId)
+
+    if (commentIndex !== -1) {
+      const postComment = comments[commentIndex]
+
+      postComment.reactionsNumber = reactionsNumber
+      postComment.userReaction = userReaction
+
+      comments[commentIndex] = postComment
+      setComments([...comments])
+    }
+  }
+
   let replies = null
 
   if (repliesOpen && commentToReply !== null) {
     replies = (
       <PostChildComments
         onClickClose={ () => {
+          setCommentToReply(null)
           setRepliesOpen(false)
           setIsOpen(false)
         } }
-        onClickRetry={ () => setRepliesOpen(false) }
-        onAddReply={ () => {
+        onClickRetry={ () => {
+          setCommentToReply(null)
+          setRepliesOpen(false)
+        } }
+        onAddReply={ (repliesNumber) => {
           const commentIndex = comments.indexOf(commentToReply)
 
           if (commentIndex !== -1) {
             const commentToUpdate = comments[commentIndex]
 
-            commentToUpdate.repliesNumber = commentToUpdate.repliesNumber + 1
+            if (repliesNumber === null) {
+              commentToUpdate.repliesNumber = commentToUpdate.repliesNumber + 1
+            } else {
+              commentToUpdate.repliesNumber = repliesNumber
+            }
             comments[commentIndex] = commentToUpdate
             setComments(comments)
           }
@@ -183,6 +170,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           }
         } }
         commentToReply={ commentToReply }
+        onClickLikeComment={ onClickLikeComment }
       />
     )
   }
@@ -216,35 +204,16 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           ref={ commentsAreaRef }
         >
           <PostCommentList
-            key={ postId }
             onDeletePostComment={ (postCommentId: string) => {
               setComments(comments.filter((comment) => comment.id !== postCommentId))
               setCommentsNumber(commentsNumber - 1)
-              toast.success(t('post_comment_deleted_success_message'))
             } }
             postComments={ comments }
             onClickReply={ (comment: PostCommentComponentDto) => {
               setCommentToReply(comment)
               setRepliesOpen(true)
             } }
-            onClickLikeComment={ (
-              postId: string,
-              reactionsNumber: number,
-              userReaction: ReactionComponentDto | null
-            ) => {
-              const comment = comments.find((currentComment) => currentComment.id === postId)
-
-              if (comment) {
-                const updatedComment = {
-                  ...comment,
-                  reactionsNumber,
-                  userReaction,
-
-                }
-
-                Object.assign(comment)
-              }
-            } }
+            onClickLikeComment={ onClickLikeComment }
           />
           <button className={ `
             ${styles.postComments__loadMore}

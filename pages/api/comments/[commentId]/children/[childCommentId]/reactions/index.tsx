@@ -73,7 +73,6 @@ async function handlePostMethod (request: NextApiRequest, response: NextApiRespo
   }
 
   const apiRequest: CreatePostCommentReactionApiRequestDto = {
-    // Post comment does not have a parent comment
     parentCommentId: String(commentId),
     userId: session.user.id,
     postCommentId: String(childCommentId),

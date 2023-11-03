@@ -4,15 +4,12 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
 import { useUserContext } from '~/hooks/UserContext'
 import { FiTrash } from 'react-icons/fi'
-import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
-import {
-  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
-  POST_COMMENT_COMMENT_NOT_FOUND,
-  POST_COMMENT_POST_NOT_FOUND, POST_COMMENT_USER_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut } from 'next-auth/react'
+import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   ownerId: string
@@ -25,71 +22,27 @@ interface Props {
 export const PostCommentOptions: FC<Props> = ({ ownerId, postId, parentCommentId, postCommentId, onDeleteComment }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
-  const { t } = useTranslation('post_comments')
-
-  const postsApiService = new PostsApiService()
-
+  const { t } = useTranslation(['post_comments', 'api_exceptions'])
   const { user } = useUserContext()
 
   const onClickDelete = async () => {
     try {
-      const response = await postsApiService.deletePostComment(postId, postCommentId, parentCommentId)
+      await new CommentsApiService().delete(postId, postCommentId, parentCommentId)
+      onDeleteComment(postCommentId)
 
-      if (!response.ok) {
-        switch (response.status) {
-          case 400:
-            toast.error(t('bad_request_error_message'))
-            break
-
-          case 401:
-            toast.error(t('user_must_be_authenticated_error_message'))
-            break
-
-          case 403:
-            toast.error(t('post_comment_does_not_belong_to_user_error_message'))
-            break
-
-          case 404: {
-            const jsonResponse = await response.json()
-
-            switch (jsonResponse.code) {
-              case POST_COMMENT_POST_NOT_FOUND:
-                toast.error('delete_post_comment_post_not_found_error_message')
-                break
-
-              case POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND:
-                toast.error('parent_comment_not_found_error_message')
-                break
-
-              case POST_COMMENT_COMMENT_NOT_FOUND:
-                toast.error('post_comment_not_found_error_message')
-                break
-
-              case POST_COMMENT_USER_NOT_FOUND: {
-                toast.error('post_user_not_found_error_message')
-
-                await signOut({ redirect: false })
-
-                break
-              }
-
-              default:
-                toast.error('server_error_error_message')
-                break
-            }
-            break
-          }
-
-          default:
-            toast.error('server_error_error_message')
-            break
-        }
-      } else {
-        onDeleteComment(postCommentId)
-      }
+      toast.success(t('post_comment_deleted_success_message'))
     } catch (exception: unknown) {
-      console.error(exception)
-      toast.error('server_error_error_message')
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
+
+        return
+      }
+
+      if (exception.code === POST_COMMENT_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
+      }
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 

@@ -2,7 +2,6 @@ import { useRouter } from 'next/router'
 import { FC, useEffect, useRef, useState } from 'react'
 import { BsArrowLeftShort, BsX } from 'react-icons/bs'
 import styles from './PostChildComments.module.scss'
-import { RepliesApiService } from '~/modules/Posts/Infrastructure/Frontend/RepliesApiService'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
 import {
@@ -15,18 +14,21 @@ import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastru
 import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import toast from 'react-hot-toast'
-import { PostChildCommentList } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentList'
 import {
-  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
-  POST_CHILD_COMMENT_POST_NOT_FOUND, POST_CHILD_COMMENT_USER_NOT_FOUND
-} from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+  PostChildCommentList
+} from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentList/PostChildCommentList'
+import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
+import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { signOut } from 'next-auth/react'
 
 interface Props {
   commentToReply: PostCommentComponentDto
   onClickClose: () => void
   onClickRetry: () => void
-  onAddReply: () => void
+  onAddReply: (repliesNumber: number | null) => void
+  onClickLikeComment: (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
   onDeleteReply: () => void
 }
 
@@ -36,15 +38,14 @@ export const PostChildComments: FC<Props> = ({
   onClickRetry,
   onAddReply,
   onDeleteReply,
+  onClickLikeComment,
 }) => {
   const [replies, setReplies] = useState<PostChildCommentComponentDto[]>([])
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const repliesAreaRef = useRef<HTMLDivElement>(null)
 
-  const apiService = new RepliesApiService()
-
-  const { t } = useTranslation('post_comments')
+  const { t } = useTranslation(['post_comments', 'api_exceptions'])
 
   const router = useRouter()
   const locale = router.locale ?? 'en'
@@ -57,72 +58,41 @@ export const PostChildComments: FC<Props> = ({
     }
 
     try {
-      const response = await apiService.create(commentToReply.postId, comment, commentToReply.id)
+      const postChildComment =
+        await new CommentsApiService().createReply(commentToReply.postId, comment, commentToReply.id)
 
-      if (response.ok) {
-        const postChildComment = await response.json()
+      const componentResponse = PostChildCommentComponentDtoTranslator
+        .fromApplication(postChildComment, 0, null, locale)
 
-        const componentResponse = PostChildCommentComponentDtoTranslator
-          .fromApplication(postChildComment, 0, null, locale)
+      setReplies([componentResponse, ...replies])
+      onAddReply(null)
 
-        setReplies([componentResponse, ...replies])
-        onAddReply()
+      repliesAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
-        repliesAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+      toast.success(t('post_child_comment_added_success_message'))
+    } catch (exception: unknown) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
 
         return
       }
 
-      switch (response.status) {
-        case 400:
-          toast.error(t('bad_request_error_message'))
-          break
-
-        case 401:
-          toast.error(t('user_must_be_authenticated_error_message'))
-          break
-
-        case 404: {
-          const jsonResponse = await response.json()
-
-          switch (jsonResponse.code) {
-            case POST_CHILD_COMMENT_POST_NOT_FOUND:
-              toast.error(t('create_post_child_comment_post_not_found_error_message'))
-              break
-
-            case POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND:
-              toast.error(t('create_post_child_comment_parent_comment_not_found_error_message'))
-              break
-
-            case POST_CHILD_COMMENT_USER_NOT_FOUND: {
-              toast.error(t('post_user_not_found_error_message'))
-
-              await signOut({ redirect: false })
-
-              break
-            }
-
-            default:
-              toast.error(t('server_error_error_message'))
-              break
-          }
-
-          break
-        }
-
-        default:
-          toast.error(t('server_error_error_message'))
-          break
+      if (exception.code === POST_COMMENT_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
       }
-    } catch (exception: unknown) {
-      console.error(exception)
-      toast.error(t('server_error_error_message'))
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 
   const fetchReplies = async (): Promise<GetPostPostChildCommentsResponseDto | null> => {
     try {
-      return apiService.getComments(commentToReply.postId, commentToReply.id, pageNumber, defaultPerPage)
+      const response = await new CommentsApiService()
+        .getChildComments(commentToReply.postId, commentToReply.id, pageNumber, defaultPerPage)
+
+      onAddReply(response.childCommentsCount)
+
+      return response
     } catch (exception: unknown) {
       console.error(exception)
       toast.error(t('server_error_error_message'))
@@ -173,6 +143,9 @@ export const PostChildComments: FC<Props> = ({
               onClick={ onClickRetry }
             />
             { t('replies_section_title') }
+            <span className={ styles.postChildComments__commentsQuantity }>
+              { commentToReply.repliesNumber }
+            </span>
           </div>
 
           <BsX
@@ -187,8 +160,8 @@ export const PostChildComments: FC<Props> = ({
             onDeletePostChildComment={ (postCommentId: string) => {
               setReplies(replies.filter((childComment) => childComment.id !== postCommentId))
               onDeleteReply()
-              toast.success(t('post_comment_deleted_success_message'))
             } }
+            onClickLikeComment={ onClickLikeComment }
           />
 
           <button className={ `

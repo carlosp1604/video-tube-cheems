@@ -44,7 +44,7 @@ export const VideoSourcesMenu: FC<Props> = ({ mediaUrls, selectedUrl, onClickOpt
               ${styles.videoSourcesMenu__optionItem}
               ${menuOpen ? styles.videoSourcesMenu__optionItem__open : ''}
               ${selectedUrl && selectedUrl.url === mediaUrl.url
-                ? styles.optionvideoPostPlayer__optionItem__selected
+                ? styles.videoSourcesMenu__optionItem__selected
                 : ''}
             ` }
               onClick={ () => { onClickOption(mediaUrl) } }

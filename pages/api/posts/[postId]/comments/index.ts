@@ -160,7 +160,6 @@ async function handlePOST (request: NextApiRequest, response: NextApiResponse) {
 
     return response.status(201).json(comment)
   } catch (exception: unknown) {
-    console.error(exception)
     if (!(exception instanceof CreatePostCommentApplicationException)) {
       console.error(exception)
 

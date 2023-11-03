@@ -39,10 +39,11 @@ import {
   POST_CHILD_COMMENT_AUTH_REQUIRED,
   POST_CHILD_COMMENT_BAD_REQUEST,
   POST_CHILD_COMMENT_INVALID_PAGE,
-  POST_CHILD_COMMENT_INVALID_PER_PAGE, POST_CHILD_COMMENT_METHOD,
-  POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND,
-  POST_CHILD_COMMENT_POST_NOT_FOUND,
-  POST_CHILD_COMMENT_SERVER_ERROR, POST_CHILD_COMMENT_USER_NOT_FOUND, POST_CHILD_COMMENT_VALIDATION
+  POST_CHILD_COMMENT_INVALID_PER_PAGE,
+  POST_CHILD_COMMENT_METHOD,
+  POST_CHILD_COMMENT_SERVER_ERROR,
+  POST_CHILD_COMMENT_VALIDATION,
+  POST_COMMENT_PARENT_COMMENT_NOT_FOUND, POST_COMMENT_POST_NOT_FOUND, POST_COMMENT_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import {
   GetPostPostChildCommentsRequestDtoTranslator
@@ -173,13 +174,13 @@ async function handlePost (request: NextApiRequest, response: NextApiResponse) {
 
     switch (exception.id) {
       case CreatePostChildCommentApplicationException.postNotFoundId:
-        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_POST_NOT_FOUND)
+        return handleNotFound(response, exception.message, POST_COMMENT_POST_NOT_FOUND)
 
       case CreatePostChildCommentApplicationException.parentCommentNotFoundId:
-        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_PARENT_COMMENT_NOT_FOUND)
+        return handleNotFound(response, exception.message, POST_COMMENT_PARENT_COMMENT_NOT_FOUND)
 
       case CreatePostChildCommentApplicationException.userNotFoundId:
-        return handleNotFound(response, exception.message, POST_CHILD_COMMENT_USER_NOT_FOUND)
+        return handleNotFound(response, exception.message, POST_COMMENT_USER_NOT_FOUND)
 
       default: {
         console.error(exception)

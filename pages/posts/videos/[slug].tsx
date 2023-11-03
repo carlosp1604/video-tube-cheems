@@ -50,10 +50,12 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
             'post_page',
             'post',
             'carousel',
+            'common',
             'post_card',
             'user_signup',
             'user_login',
             'user_retrieve_password',
+            'api_exceptions',
           ]
         ),
       },

@@ -93,7 +93,10 @@ export const PostOptions: FC<Props> = ({
         <BsDownload />
         { t('post_download_button_title', { sourcesNumber: mediaUrls.length }) }
       </span>
-      <span className={ styles.postOptions__optionItem }>
+      <span
+        className={ styles.postOptions__optionItem }
+        onClick={ () => { toast.success(t('post_option_feature_not_available_message')) } }
+      >
         <BsMegaphone />
         { t('post_report_button_title') }
       </span>

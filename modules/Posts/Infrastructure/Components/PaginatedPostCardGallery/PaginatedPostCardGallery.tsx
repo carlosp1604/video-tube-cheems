@@ -18,10 +18,7 @@ import { useTranslation } from 'next-i18next'
 import { BsDot, BsThreeDotsVertical } from 'react-icons/bs'
 import toast from 'react-hot-toast'
 // eslint-disable-next-line max-len
-import {
-  PaginatedPostCardGalleryOption,
-  PaginatedPostCardGalleryOptions
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGalleryOptions/PaginatedPostCardGalleryOptions'
+import { PaginatedPostCardGalleryOption, PaginatedPostCardGalleryOptions } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGalleryOptions/PaginatedPostCardGalleryOptions'
 import { useSession } from 'next-auth/react'
 import { PostCard } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
 import * as uuid from 'uuid'
@@ -215,13 +212,13 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   return (
     <div className={ styles.paginatedPostCardGallery__container }>
       <div className={ styles.paginatedPostCardGallery__header }>
-        <h1 className={ styles.paginatedPostCardGallery__title }>
+        <span className={ styles.paginatedPostCardGallery__title }>
           { title }
           <BsDot className={ styles.paginatedPostCardGallery__separatorIcon }/>
           <small className={ styles.paginatedPostCardGallery__videosQuantity }>
             { t('gallery_posts_count_title', { videosNumber: postsNumber }) }
           </small>
-        </h1>
+        </span>
 
         { sortingOptionsElement }
       </div>

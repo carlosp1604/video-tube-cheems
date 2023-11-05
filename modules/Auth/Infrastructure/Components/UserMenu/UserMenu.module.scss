@@ -5,6 +5,10 @@
 
   &__user-data {
     @apply flex flex-row gap-x-4 justify-center items-center;
+
+    @screen tb {
+      @apply justify-start;
+    }
   }
 
   &__user-data-text {

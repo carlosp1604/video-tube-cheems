@@ -9,8 +9,8 @@
     @apply text-base-400;
 
     &:hover, &:focus {
-      @apply bg-base-900 transition-colors duration-500 text-base-100
-        cursor-pointer;
+      @apply bg-base-900 transition-colors duration-500
+        text-base-50 cursor-pointer;
     }
 
     &-active {
@@ -19,8 +19,11 @@
   }
 
   &__menu-item-content {
-    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6 border-t
-      border-base-700 border-opacity-30;
+    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6;
+
+    @screen md {
+      @apply border-t border-base-700 border-opacity-30;
+    }
 
     &:hover, &:focus {
       @apply text-base-100;
@@ -39,7 +42,9 @@
 
   &__menu-item:last-of-type {
     #{$parentBlock}__menu-item-content {
-      @apply border-b;
+      @screen md {
+        @apply border-b;
+      }
     }
   }
 }

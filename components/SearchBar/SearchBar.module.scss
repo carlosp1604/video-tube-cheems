@@ -4,18 +4,19 @@
   }
 
   &__search-input {
-    @apply w-0 -m-2 transition-all duration-300 text-base-100 bg-body
-      caret-base-100 italic border-transparent outline-0 transition-all;
+    @apply w-0 -m-2 px-0 text-transparent bg-body placeholder-transparent
+      caret-base-400 outline-0 duration-500 transition-all bg-transparent;
 
-    &:focus, &:hover {
-      @apply border-brand-700 transition-colors;
+    &:hover, &:focus {
+      @apply bg-base-950 transition-colors;
     }
 
     &__open {
-      @apply px-2 h-8 rounded-md border-2 w-40 border-base-700 transition-all;
+      @apply px-2 m-0 h-8 rounded-md w-48 bg-base-800 placeholder-base-400
+        text-base-100 duration-500 transition-all;
 
       @screen md {
-        @apply w-64;
+        @apply w-80;
       }
     }
   }

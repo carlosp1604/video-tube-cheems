@@ -1,10 +1,18 @@
 .login {
   &__container {
-    @apply mx-auto p-5 max-w-sm;
+    @apply mx-auto p-5;
+
+    @screen tb {
+      @apply max-w-sm;
+    }
   }
 
   &__title {
-    @apply text-xl font-black;
+    @apply text-xl font-black text-center pb-5;
+
+    @screen tb {
+      @apply text-left;
+    }
 
     @screen md {
       @apply text-2xl;

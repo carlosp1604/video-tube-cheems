@@ -45,18 +45,6 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 
   let options: PostCardGalleryOption[] = []
 
-  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
-    return (new PostsApiService())
-      .getSavedPosts(
-        userComponentDto.id,
-        pageNumber,
-        defaultPerPage,
-        sortingOption.criteria,
-        sortingOption.option,
-        filters
-      )
-  }
-
   const deleteSavedPostCardAction = async (postId: string) => {
     if (status !== 'authenticated' || !data) {
       toast.error(t('user_must_be_authenticated_error_message', { ns: 'user_profile' }))
@@ -92,11 +80,21 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     }]
   }
 
+  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+    return (new PostsApiService())
+      .getSavedPosts(
+        userComponentDto.id,
+        pageNumber,
+        defaultPerPage,
+        sortingOption.criteria,
+        sortingOption.option,
+        filters
+      )
+  }
+
   return (
     <div className={ styles.userProfilePage__container }>
-      <UserProfileHeader
-        componentDto={ userComponentDto }
-      />
+      <UserProfileHeader componentDto={ userComponentDto } />
 
       <div className={ styles.userProfilePage__userPosts }>
         <PaginatedPostCardGallery

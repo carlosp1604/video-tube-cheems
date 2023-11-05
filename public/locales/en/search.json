@@ -1,5 +1,10 @@
 {
+  "like_post_post_card_gallery_action_title": "Like",
+  "post_reaction_added_correctly_message": "Thanks for your reaction!",
+  "post_save_post_successfully_saved": "Post was added to the user's saved post list",
   "result_posts_empty_state_subtitle": "We couldn't find any results for term: {{searchTerm}}. Try other search terms",
   "result_posts_empty_state_title": "No results found",
-  "search_result_title": "Results for {{searchTerm}}"
+  "save_post_post_card_gallery_action_title": "Save",
+  "search_result_title": "Results for {{searchTerm}}",
+  "user_must_be_authenticated_error_message": "You must sign in to perform this action"
 }

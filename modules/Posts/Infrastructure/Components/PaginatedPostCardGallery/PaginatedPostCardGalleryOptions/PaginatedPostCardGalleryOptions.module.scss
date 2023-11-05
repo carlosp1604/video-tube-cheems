@@ -5,6 +5,10 @@
 
   &__title-section {
     @apply flex gap-x-2 items-center justify-center px-5;
+
+    @screen md {
+      @apply justify-start;
+    }
   }
 
   &__title {

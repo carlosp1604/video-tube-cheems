@@ -4,7 +4,7 @@ import styles from './MobileMenu.module.scss'
 import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsCameraVideo, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useUserContext } from '~/hooks/UserContext'
@@ -123,6 +123,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                     toast.success(t('user_menu_option_not_available_message'))
                   },
                 },
+                /**
                 {
                   title: t('menu_live_cams_button_title'),
                   isActive: false,
@@ -130,6 +131,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                   picture: <BsCameraVideo />,
                   onClick: undefined,
                 },
+                 */
               ] } />
 
               {

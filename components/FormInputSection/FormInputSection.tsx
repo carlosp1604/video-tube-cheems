@@ -46,8 +46,8 @@ export const FormInputSection: FC<Props> = ({
       <input
         type={ type }
         className={ `
-          ${styles.formInputSection__input}
-          ${invalidInput ? styles.formInputSection__input_error : ''}
+          ${styles.formInputSection__inputElement}
+          ${invalidInput ? styles.formInputSection__inputElement_error : ''}
         ` }
         placeholder={ placeholder }
         onChange={ handleOnChange }

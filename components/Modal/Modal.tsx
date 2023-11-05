@@ -20,7 +20,6 @@ export const Modal: FC<Props> = ({
 }) => {
   return (
     <CSSTransition
-      data-qa='modal-backdrop'
       classNames={ {
         enter: styles.modal__modalBackdropEnter,
         enterActive: styles.modal__modalBackdropEnterActive,
@@ -55,8 +54,8 @@ export const Modal: FC<Props> = ({
             {
               onClose &&
                 <BsX
-                    className={ styles.modal__closeModalButton }
-                    onClick={ onClose }
+                  className={ styles.modal__closeModalButton }
+                  onClick={ onClose }
                 />
             }
             { children }

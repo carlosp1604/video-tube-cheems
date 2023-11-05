@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
-import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import { POST_COMMENT_REACTION_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   postComment: PostCommentComponentDto
@@ -64,7 +64,7 @@ export const PostCommentInteractionSection: FC<Props> = ({ postComment, onClickR
         return
       }
 
-      if (exception.code === USER_USER_NOT_FOUND) {
+      if (exception.code === POST_COMMENT_REACTION_USER_NOT_FOUND) {
         await signOut({ redirect: false })
       }
 
@@ -100,7 +100,7 @@ export const PostCommentInteractionSection: FC<Props> = ({ postComment, onClickR
         return
       }
 
-      if (exception.code === USER_USER_NOT_FOUND) {
+      if (exception.code === POST_COMMENT_REACTION_USER_NOT_FOUND) {
         await signOut({ redirect: false })
       }
 

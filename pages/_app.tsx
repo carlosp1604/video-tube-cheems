@@ -74,6 +74,13 @@ function App ({
                     secondary: '#FAFAF9',
                     primary: '#b88b5c',
                   },
+                  error: {
+                    className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
+                    iconTheme: {
+                      secondary: '#DC143C',
+                      primary: '#FFA07A',
+                    },
+                  },
                 } }
               />
               <AppMenu />

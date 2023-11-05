@@ -11,7 +11,7 @@ import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dto
 import { signOut, useSession } from 'next-auth/react'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
-import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import { POST_COMMENT_REACTION_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
   postChildComment: PostChildCommentComponentDto
@@ -57,7 +57,7 @@ export const PostChildCommentInteractionSection: FC<Props> = ({ postChildComment
         return
       }
 
-      if (exception.code === USER_USER_NOT_FOUND) {
+      if (exception.code === POST_COMMENT_REACTION_USER_NOT_FOUND) {
         await signOut({ redirect: false })
       }
 
@@ -96,7 +96,7 @@ export const PostChildCommentInteractionSection: FC<Props> = ({ postChildComment
         return
       }
 
-      if (exception.code === USER_USER_NOT_FOUND) {
+      if (exception.code === POST_COMMENT_REACTION_USER_NOT_FOUND) {
         await signOut({ redirect: false })
       }
 

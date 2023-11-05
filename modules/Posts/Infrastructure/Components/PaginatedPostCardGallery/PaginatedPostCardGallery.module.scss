@@ -55,8 +55,8 @@
 
   &__post-options {
     @apply hidden items-center justify-center z-post-card-video absolute
-    top-1 left-1 rounded-full cursor-pointer h-7 w-7 transition-colors
-    backdrop-filter backdrop-blur-2xl bg-transparent;
+    top-1 left-1 rounded-full cursor-pointer h-9 w-9 transition-colors
+    backdrop-filter backdrop-blur-2xl bg-transparent text-lg;
 
     &_visible {
       @apply flex;

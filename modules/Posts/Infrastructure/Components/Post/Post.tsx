@@ -50,7 +50,7 @@ export const Post: FC<Props> = ({
   const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
   const [savedPost, setSavedPost] = useState<boolean>(false)
 
-  const { t } = useTranslation('post')
+  const { t } = useTranslation(['post', 'api_exceptions'])
   const { setLoginModalOpen } = useLoginContext()
   const postsApiService = new PostsApiService()
   const commentsRef = useRef<HTMLDivElement>(null)
@@ -171,7 +171,7 @@ export const Post: FC<Props> = ({
           setLoginModalOpen(true)
         }
 
-        toast.error(t(exception.translationKey))
+        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
       }
     } else {
       try {
@@ -208,7 +208,7 @@ export const Post: FC<Props> = ({
           setLoginModalOpen(true)
         }
 
-        toast.error(t(exception.translationKey))
+        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
       }
     }
   }
@@ -240,7 +240,7 @@ export const Post: FC<Props> = ({
           setSavedPost(false)
         }
 
-        toast.error(t(exception.translationKey))
+        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
       }
     }
 
@@ -264,7 +264,7 @@ export const Post: FC<Props> = ({
           await signOut({ redirect: false })
         }
 
-        toast.error(t(exception.translationKey))
+        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
       }
     }
   }

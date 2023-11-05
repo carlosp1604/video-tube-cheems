@@ -2,6 +2,7 @@ import { ChangeEvent, FC, KeyboardEvent, useState } from 'react'
 import styles from './SearchBar.module.scss'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { CiSearch } from 'react-icons/ci'
+import { BsArrowRight } from 'react-icons/bs'
 
 interface Props {
   onChange: (value: string) => void
@@ -26,13 +27,14 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
 
   return (
     <div className={ styles.searchBar__container }>
+
       <IconButton
         onClick={ () => {
           if (expandable) {
             setOpenSearchBar(!openSearchBar)
           }
         } }
-        icon={ <CiSearch /> }
+        icon={ openSearchBar ? <BsArrowRight /> : <CiSearch /> }
         title={ searchIconTitle }
       />
       <input

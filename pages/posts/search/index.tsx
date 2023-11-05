@@ -38,6 +38,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     'search',
     'common',
     'paginated_post_card_gallery',
+    'api_exceptions',
   ])
 
   const getPosts = bindings.get<GetPosts>('GetPosts')

@@ -3,7 +3,7 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsCameraVideo, BsClock, BsHeart, BsHouse, BsList, BsStar } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
@@ -138,6 +138,7 @@ export const MenuSideBar: FC = () => {
         toast.success(t('user_menu_option_not_available_message'))
       },
     },
+    /**
     {
       title: t('menu_live_cams_button_title'),
       isActive: false,
@@ -145,6 +146,7 @@ export const MenuSideBar: FC = () => {
       picture: <BsCameraVideo />,
       onClick: undefined,
     },
+     */
   ]
 
   const [menuOpen, setMenuOpen] = useState<boolean>(false)

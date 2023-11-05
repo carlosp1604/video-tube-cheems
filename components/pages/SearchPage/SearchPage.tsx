@@ -6,7 +6,7 @@ import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilte
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
-  PaginatedPostCardGallery
+  PaginatedPostCardGallery, PostCardGalleryAction, PostCardGalleryOption
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useTranslation } from 'next-i18next'
 import {
@@ -16,6 +16,13 @@ import {
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import toast from 'react-hot-toast'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import { signOut, useSession } from 'next-auth/react'
+import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
+import { BiLike } from 'react-icons/bi'
+import { BsBookmark } from 'react-icons/bs'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -24,11 +31,13 @@ export interface SearchPageProps {
 }
 
 export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumber }) => {
-  const { t } = useTranslation('search')
   const [titleFilter, setTitleFilter] = useState<FetchPostsFilter>({
     type: PostFilterOptions.POST_TITLE,
     value: title,
   })
+
+  const { t } = useTranslation(['search', 'api_exceptions'])
+  const { status, data } = useSession()
 
   const router = useRouter()
 
@@ -37,6 +46,77 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
       ...titleFilter,
       value: router.query.search.toString(),
     })
+  }
+
+  let options: PostCardGalleryOption[] = []
+
+  const savePostPostCardAction = async (postId: string) => {
+    if (status !== 'authenticated' || !data) {
+      toast.error(t('user_must_be_authenticated_error_message'))
+
+      return
+    }
+
+    try {
+      await new PostsApiService().savePost(data.user.id, postId)
+
+      toast.success(t('post_save_post_successfully_saved'))
+    } catch (exception: unknown) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
+
+        return
+      }
+
+      if (exception.code === USER_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
+      }
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+    }
+  }
+
+  const likePostPostCardAction = async (postId: string) => {
+    if (status !== 'authenticated' || !data) {
+      toast.error(t('user_must_be_authenticated_error_message'))
+
+      return
+    }
+
+    try {
+      await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
+
+      toast.success(t('post_reaction_added_correctly_message'))
+    } catch (exception) {
+      if (!(exception instanceof APIException)) {
+        console.error(exception)
+
+        return
+      }
+
+      if (exception.code === USER_USER_NOT_FOUND) {
+        await signOut({ redirect: false })
+      }
+
+      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+    }
+  }
+
+  if (status === 'authenticated' && data) {
+    options = [
+      {
+        action: PostCardGalleryAction.NO_MUTATE,
+        icon: <BiLike />,
+        title: t('like_post_post_card_gallery_action_title'),
+        onClick: (postId: string) => likePostPostCardAction(postId),
+      },
+      {
+        action: PostCardGalleryAction.NO_MUTATE,
+        icon: <BsBookmark />,
+        title: t('save_post_post_card_gallery_action_title'),
+        onClick: (postId: string) => savePostPostCardAction(postId),
+      },
+    ]
   }
 
   const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
@@ -60,7 +140,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
         filters={ [titleFilter] }
         title={ t('search_result_title', { searchTerm: title }) }
         fetchPosts={ fetchPosts }
-        postCardOptions={ [] }
+        postCardOptions={ options }
         emptyState={ <EmptyState
           title={ t('result_posts_empty_state_title') }
           subtitle={ t('result_posts_empty_state_subtitle', { searchTerm: title }) }

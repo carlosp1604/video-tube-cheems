@@ -28,11 +28,9 @@ import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Componen
 import { container } from '~/awilix.container'
 import {
   HomePostsDefaultSortingOption,
-  HomePostsSortingOptions,
-  SortingOption
+  HomePostsSortingOptions, SortingOption
 } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { signOut, useSession } from 'next-auth/react'
 import { BiLike } from 'react-icons/bi'
@@ -41,6 +39,7 @@ import toast from 'react-hot-toast'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -48,8 +47,8 @@ interface Props {
   postsNumber: number
 }
 
+// TODO:
 // producer=producer&order=asc/desc&orderBy=date/views&page=1
-
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')
@@ -170,17 +169,6 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
     }
   }
 
-  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
-    return (new PostsApiService())
-      .getPosts(
-        pageNumber,
-        defaultPerPage,
-        sortingOption.criteria,
-        sortingOption.option,
-        filters
-      )
-  }
-
   if (status === 'authenticated' && data) {
     options = [
       {
@@ -196,6 +184,17 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
         onClick: (postId: string) => savePostPostCardAction(postId),
       },
     ]
+  }
+
+  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+    return (new PostsApiService())
+      .getPosts(
+        pageNumber,
+        defaultPerPage,
+        sortingOption.criteria,
+        sortingOption.option,
+        filters
+      )
   }
 
   // FIXME: Find the way to pass the default producer's name translated from serverside

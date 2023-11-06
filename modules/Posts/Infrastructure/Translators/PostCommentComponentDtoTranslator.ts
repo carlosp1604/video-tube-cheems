@@ -19,7 +19,7 @@ export class PostCommentComponentDtoTranslator {
       postId: applicationDto.postId,
       comment: applicationDto.comment,
       createdAt: new DateService()
-        .formatDateToDateMedFromIso(applicationDto.createdAt, locale),
+        .formatDateToDatetimeMedFromIso(applicationDto.createdAt, locale),
       user: {
         id: applicationDto.user.id,
         name: applicationDto.user.name,

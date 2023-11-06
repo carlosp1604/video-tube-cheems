@@ -21,7 +21,7 @@ export class PostCardComponentDtoTranslator {
     // FIXME: This should be resolved with the dependencies container
     const dateService = new DateService()
     const date = dateService
-      .formatAgoLike(new Date(applicationDto.publishedAt), locale)
+      .formatAgoLike(applicationDto.publishedAt, locale)
 
     const thumb = applicationDto.meta.find((meta) => {
       return meta.type === 'thumb'

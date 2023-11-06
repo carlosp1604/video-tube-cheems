@@ -15,7 +15,7 @@ export class PostCommentCardComponentDtoTranslator {
       id,
       comment,
       createdAt: new DateService()
-        .formatAgoLike(new Date(createdAt), locale),
+        .formatAgoLike(createdAt, locale),
       user: UserPostCommentComponentDtoTranslator.fromApplication(userApplicationDto),
     }
   }

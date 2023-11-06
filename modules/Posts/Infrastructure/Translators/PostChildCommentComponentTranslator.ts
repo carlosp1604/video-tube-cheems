@@ -18,7 +18,7 @@ export class PostChildCommentComponentDtoTranslator {
       id: applicationDto.id,
       comment: applicationDto.comment,
       createdAt: new DateService()
-        .formatAgoLike(new Date(applicationDto.createdAt), locale),
+        .formatDateToDatetimeMedFromIso(applicationDto.createdAt, locale),
       user: UserPostCommentComponentDtoTranslator.fromApplication(applicationDto.user),
       parentCommentId: applicationDto.parentCommentId,
       reactionsNumber,

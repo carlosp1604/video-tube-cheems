@@ -8,12 +8,16 @@
       caret-base-400 outline-0 duration-500 transition-all bg-transparent;
 
     &:hover, &:focus {
-      @apply bg-base-950 transition-colors;
+      @apply bg-base-950 transition-colors caret-base-400;
     }
 
     &__open {
-      @apply px-2 m-0 h-8 rounded-md w-48 bg-base-800 placeholder-base-400
+      @apply px-2 m-0 h-8 rounded-md w-32 bg-base-800 placeholder-base-400
         text-base-100 duration-500 transition-all;
+
+      @screen tb {
+        @apply w-40;
+      }
 
       @screen md {
         @apply w-80;

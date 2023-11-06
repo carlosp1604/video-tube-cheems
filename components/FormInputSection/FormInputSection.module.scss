@@ -29,7 +29,8 @@
       transition-colors;
 
     &:hover, &:focus {
-      @apply bg-base-950 shadow shadow-2xl shadow-base-950;
+      @apply bg-base-950 shadow shadow-2xl shadow-base-950
+        caret-brand-400;
     }
 
     &_error {

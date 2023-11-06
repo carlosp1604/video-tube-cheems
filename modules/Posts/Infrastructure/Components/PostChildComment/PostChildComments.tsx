@@ -130,7 +130,6 @@ export const PostChildComments: FC<Props> = ({
     <div
       className={ styles.postChildComments__backdrop }
       onClick={ onClickClose }
-      ref={ repliesAreaRef }
     >
       <div
         className={ styles.postChildComments__container }
@@ -153,7 +152,10 @@ export const PostChildComments: FC<Props> = ({
             onClick={ onClickClose }
           />
         </div>
-        <div className={ styles.postChildComments__postChildComments }>
+        <div
+          className={ styles.postChildComments__postChildComments }
+          ref={ repliesAreaRef }
+        >
           <PostChildCommentList
             postComment={ commentToReply }
             postChildComments={ replies }

@@ -1,22 +1,34 @@
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { UserStatus } from '~/types/UserProviderInstance'
 import { UserContext } from '~/hooks/UserContext'
-import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
 import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
 import { UserProviderUserDtoTranslator } from '~/modules/Auth/Infrastructure/Translators/UserProviderUserDtoTranslator'
 import { FC, ReactElement, useCallback, useMemo, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'next-i18next'
 
 const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
+  const { t } = useTranslation('api_exceptions')
   const [status, setStatus] = useState<UserStatus>('SIGNED_OUT')
   const [user, setUser] = useState<UserProviderUserDto | null>(null)
   const session = useSession()
   const fetchUser = async (): Promise<UserProviderUserDto | null> => {
     try {
-      const authUser: UserApplicationDto = await (await fetch('/api/auth')).json()
+      const response = await fetch('/api/auth')
 
-      if (authUser) {
-        return UserProviderUserDtoTranslator.fromApplication(authUser)
+      if (!response.ok) {
+        if (response.status === 404) {
+          await signOut({ redirect: false })
+
+          toast.error('user_not_found_error_message')
+        }
+
+        return null
       }
+
+      const authUser = await response.json()
+
+      return UserProviderUserDtoTranslator.fromApplication(authUser)
 
       return null
     } catch (exception: unknown) {

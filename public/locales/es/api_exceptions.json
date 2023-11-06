@@ -16,10 +16,10 @@
   "post_save_cannot_remove_saved_post_error_message": "No se puede eliminar el post de la lista de posts guardados del usuario",
   "post_save_post_already_on_saved_post_error_message": "El post ya fue guardado por el usuario",
   "post_save_post_does_not_belong_to_user_saved_posts_error_message": "El post no pertenece a la lista de posts guardados del usuario",
-  "post_user_forbidden_resource_error_message": "El usuario no tiene acceso al recurso",
-  "post_user_not_found_error_message": "El usuario que hizo la petición no existe. Cerrando sesión",
   "post_video_no_sources_error_message": "El video no existe o fue eliminado por derechos de autor.\nPuedes reportar el video e intentaremos arreglarlo si es posible",
   "server_error_error_message": "Servicio no disponible. Inténtalo después",
   "user_already_reacted_to_post_error_message": "El usuario ya ha reaccionado a este post",
-  "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión"
+  "user_forbidden_resource_error_message": "El usuario no tiene acceso al recurso",
+  "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
+  "user_not_found_error_message": "El usuario que hizo la petición no existe. Cerrando sesión"
 }

@@ -85,6 +85,7 @@ export const Post: FC<Props> = ({
   useEffect(() => {
     if (status === 'unauthenticated') {
       setUserReaction(null)
+      setSavedPost(false)
     }
 
     if (status === 'authenticated') {
@@ -140,6 +141,7 @@ export const Post: FC<Props> = ({
   const onClickReactButton = async (type: ReactionType) => {
     if (status !== 'authenticated') {
       toast.error(t('user_must_be_authenticated_error_message'))
+      setLoginModalOpen(true)
 
       return
     }
@@ -216,6 +218,7 @@ export const Post: FC<Props> = ({
   const onClickSavePostButton = async () => {
     if (status !== 'authenticated') {
       toast.error(t('user_must_be_authenticated_error_message'))
+      setLoginModalOpen(true)
 
       return
     }
@@ -240,6 +243,10 @@ export const Post: FC<Props> = ({
           setSavedPost(false)
         }
 
+        if (exception.apiCode === 401) {
+          setLoginModalOpen(true)
+        }
+
         toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
       }
     }
@@ -262,6 +269,10 @@ export const Post: FC<Props> = ({
 
         if (exception.code === USER_USER_NOT_FOUND) {
           await signOut({ redirect: false })
+        }
+
+        if (exception.apiCode === 401) {
+          setLoginModalOpen(true)
         }
 
         toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))

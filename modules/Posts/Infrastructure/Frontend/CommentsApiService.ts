@@ -65,7 +65,7 @@ export class CommentsApiService {
 
           case POST_COMMENT_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -139,7 +139,7 @@ export class CommentsApiService {
 
           case POST_COMMENT_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -229,7 +229,7 @@ export class CommentsApiService {
 
           case POST_COMMENT_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -349,7 +349,7 @@ export class CommentsApiService {
         switch (jsonResponse.code) {
           case POST_COMMENT_REACTION_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -422,7 +422,7 @@ export class CommentsApiService {
 
           case POST_COMMENT_REACTION_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -485,7 +485,7 @@ export class CommentsApiService {
         switch (jsonResponse.code) {
           case POST_COMMENT_REACTION_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -554,7 +554,7 @@ export class CommentsApiService {
         switch (jsonResponse.code) {
           case POST_COMMENT_REACTION_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )

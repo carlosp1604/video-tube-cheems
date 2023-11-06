@@ -115,7 +115,7 @@ export class PostsApiService {
         switch (jsonResponse.code) {
           case POST_REACTION_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -195,7 +195,7 @@ export class PostsApiService {
 
           case POST_REACTION_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -253,7 +253,7 @@ export class PostsApiService {
 
       case 403:
         throw new APIException(
-          'post_user_forbidden_resource_error_message',
+          'user_forbidden_resource_error_message',
           response.status,
           jsonResponse.code
         )
@@ -262,7 +262,7 @@ export class PostsApiService {
         switch (jsonResponse.code) {
           case USER_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )
@@ -328,7 +328,7 @@ export class PostsApiService {
 
       case 403:
         throw new APIException(
-          'post_user_forbidden_resource_error_message',
+          'user_forbidden_resource_error_message',
           response.status,
           jsonResponse.code
         )
@@ -337,7 +337,7 @@ export class PostsApiService {
         switch (jsonResponse.code) {
           case USER_USER_NOT_FOUND:
             throw new APIException(
-              'post_user_not_found_error_message',
+              'user_not_found_error_message',
               response.status,
               jsonResponse.code
             )

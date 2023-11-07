@@ -40,6 +40,7 @@ import { AddSavedPost } from '~/modules/Auth/Application/AddSavedPost/AddSavedPo
 import { DeleteSavedPost } from '~/modules/Auth/Application/DeleteSavedPost/DeleteSavedPost'
 import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts/GetUserSavedPosts'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
+import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUserHistory'
 
 /**
  * We create a container to register our classes dependencies
@@ -133,6 +134,7 @@ container.register('getUserByUsername', asClass(GetUserByUsername))
 container.register('getUserById', asClass(GetUserById))
 container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getUserSavedPostsUseCase', asClass(GetUserSavedPosts))
+container.register('getUserHistoryUseCase', asClass(GetUserHistory))
 container.register('getActors', asClass(GetActors))
 container.register('getAllProducers', asClass(GetAllProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))

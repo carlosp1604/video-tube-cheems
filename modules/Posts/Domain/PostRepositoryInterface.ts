@@ -138,6 +138,25 @@ export interface PostRepositoryInterface {
   ): Promise<PostsWithViewsInterfaceWithTotalCount>
 
   /**
+   * Find ViewedPosts based on filter and order criteria
+   * @param userId User ID
+   * @param offset Post offset
+   * @param limit
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
+   * @param filters Post filters
+   * @return PostsWithViewsInterfaceWithTotalCount if found or null
+   */
+  findViewedPostsWithOffsetAndLimit (
+    userId: string,
+    offset: number,
+    limit: number,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
+  ): Promise<PostsWithViewsInterfaceWithTotalCount>
+
+  /**
    * Count Posts based on filters
    * @param filters Post filters
    * @return Number of posts that accomplish with the filters

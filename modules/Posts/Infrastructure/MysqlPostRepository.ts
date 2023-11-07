@@ -429,6 +429,83 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
+   * Find ViewedPosts based on filter and order criteria
+   * @param userId User ID
+   * @param offset Post offset
+   * @param limit
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
+   * @param filters Post filters
+   * @return PostsWithViewsInterfaceWithTotalCount if found or null
+   */
+  public async findViewedPostsWithOffsetAndLimit (
+    userId: string,
+    offset: number,
+    limit: number,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
+  ): Promise<PostsWithViewsInterfaceWithTotalCount> {
+    const postsIncludeFilters = MysqlPostRepository.buildIncludes(filters)
+    const postsWhereFilters = MysqlPostRepository.buildFilters(filters)
+    const postsSortCriteria = MysqlPostRepository.buildOrder(sortingOption, sortingCriteria)
+    let sortCriteria:
+      Prisma.PostViewOrderByWithRelationInput | Prisma.PostViewOrderByWithRelationInput[] | undefined = {
+        post: postsSortCriteria,
+      }
+
+    if (sortingOption === 'view-date') {
+      sortCriteria = {
+        ...sortCriteria,
+        createdAt: sortingCriteria,
+      }
+    }
+
+    const [viewedPosts, posts] = await prisma.$transaction([
+      prisma.postView.findMany({
+        where: {
+          userId,
+          post: postsWhereFilters,
+        },
+        include: {
+          post: {
+            include: {
+              _count: {
+                select: {
+                  views: true,
+                },
+              },
+              ...postsIncludeFilters,
+            },
+          },
+        },
+        distinct: ['postId'],
+        take: limit,
+        skip: offset,
+        orderBy: sortCriteria,
+      }),
+      // Prisma doest not support distinct on count :/. Workaround
+      prisma.postView.findMany({
+        where: {
+          userId,
+          post: postsWhereFilters,
+        },
+        distinct: 'postId',
+      }),
+    ])
+
+    return {
+      posts: viewedPosts.map((viewedPost) => {
+        return {
+          post: PostModelTranslator.toDomain(viewedPost.post, ['meta', 'producer', 'actor', 'translations']),
+          postViews: viewedPost.post._count.views,
+        }
+      }),
+      count: posts.length,
+    }
+  }
+
+  /**
    * Count Posts based on filter
    * @param filters Post filters
    * @return Number of posts that accomplish the filters

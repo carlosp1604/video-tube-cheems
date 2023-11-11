@@ -7,13 +7,9 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import {
   ProducerListComponentDtoTranslator
 } from '~/modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
+import { PostCardComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import {
-  PostCardComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import {
-  PaginatedPostCardGallery,
-  PostCardGalleryAction,
-  PostCardGalleryOption
+  PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -28,18 +24,18 @@ import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Componen
 import { container } from '~/awilix.container'
 import {
   HomePostsDefaultSortingOption,
-  HomePostsSortingOptions, SortingOption
+  HomePostsSortingOptions,
+  SortingOption
 } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { signOut, useSession } from 'next-auth/react'
-import { BiLike } from 'react-icons/bi'
-import { BsBookmark } from 'react-icons/bs'
-import toast from 'react-hot-toast'
-import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
-import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
-import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import {
+  PostCardGalleryOption
+} from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import { useQueryState } from 'next-usequerystate'
+import { parseAsInteger } from 'next-usequerystate/parsers'
+import { GalleryActionType, useGalleryAction } from '~/hooks/GalleryAction'
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -113,78 +109,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
   const [activeProducer, setActiveProducer] = useState<ProducerComponentDto>(allPostsProducerDto)
   const { t } = useTranslation(['home_page', 'api_exceptions'])
-  const { status, data } = useSession()
+  const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
+  const getOptions = useGalleryAction()
 
-  let options: PostCardGalleryOption[] = []
-
-  const savePostPostCardAction = async (postId: string) => {
-    if (status !== 'authenticated' || !data) {
-      toast.error(t('user_must_be_authenticated_error_message', { ns: 'home_page' }))
-
-      return
-    }
-
-    try {
-      await new PostsApiService().savePost(data.user.id, postId)
-
-      toast.success(t('post_save_post_successfully_saved', { ns: 'home_page' }))
-    } catch (exception: unknown) {
-      if (!(exception instanceof APIException)) {
-        console.error(exception)
-
-        return
-      }
-
-      if (exception.code === USER_USER_NOT_FOUND) {
-        await signOut({ redirect: false })
-      }
-
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
-    }
-  }
-
-  const likePostPostCardAction = async (postId: string) => {
-    if (status !== 'authenticated' || !data) {
-      toast.error(t('user_must_be_authenticated_error_message', { ns: 'home_page' }))
-
-      return
-    }
-
-    try {
-      await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
-
-      toast.success(t('post_reaction_added_correctly_message', { ns: 'home_page' }))
-    } catch (exception) {
-      if (!(exception instanceof APIException)) {
-        console.error(exception)
-
-        return
-      }
-
-      if (exception.code === USER_USER_NOT_FOUND) {
-        await signOut({ redirect: false })
-      }
-
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
-    }
-  }
-
-  if (status === 'authenticated' && data) {
-    options = [
-      {
-        action: PostCardGalleryAction.NO_MUTATE,
-        icon: <BiLike />,
-        title: t('like_post_post_card_gallery_action_title', { ns: 'home_page' }),
-        onClick: (postId: string) => likePostPostCardAction(postId),
-      },
-      {
-        action: PostCardGalleryAction.NO_MUTATE,
-        icon: <BsBookmark />,
-        title: t('save_post_post_card_gallery_action_title', { ns: 'home_page' }),
-        onClick: (postId: string) => savePostPostCardAction(postId),
-      },
-    ]
-  }
+  const options: PostCardGalleryOption[] = getOptions(GalleryActionType.HOME_PAGE)
 
   const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
     return (new PostsApiService())
@@ -207,6 +135,8 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
       />
 
       <PaginatedPostCardGallery
+        perPage={ defaultPerPage }
+        initialPage={ pageQueryParam }
         title={ activeProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : activeProducer.name }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }

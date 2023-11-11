@@ -46,29 +46,29 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
       </div>
 
       { /**
-        <div className={ styles.userProfile__userActivities }>
-        <span className={ styles.userProfile__activityItem }>
+      <div className={ styles.userProfileHeader__userActivities }>
+        <span className={ styles.userProfileHeader__activityItem }>
           4
-          <small className={ styles.userProfile__activityItemActivity }>
+          <small className={ styles.userProfileHeader__activityItemActivity }>
             Vistas
           </small>
         </span>
 
-          <span className={ styles.userProfile__activityItem }>
+          <span className={ styles.userProfileHeader__activityItem }>
           40
-          <small className={ styles.userProfile__activityItemActivity }>
+          <small className={ styles.userProfileHeader__activityItemActivity }>
             Guardados
           </small>
         </span>
 
-          <span className={ styles.userProfile__activityItem }>
+          <span className={ styles.userProfileHeader__activityItem }>
           400
-          <small className={ styles.userProfile__activityItemActivity }>
+          <small className={ styles.userProfileHeader__activityItemActivity }>
             Likes
           </small>
         </span>
         </div>
-       */ }
+      */ }
 
       <div className={ styles.userProfileHeader__userInfo }>
         <div className={ styles.userProfileHeader__userInfoItem }>

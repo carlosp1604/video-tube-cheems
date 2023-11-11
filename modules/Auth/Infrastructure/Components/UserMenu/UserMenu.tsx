@@ -61,7 +61,7 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
                 title: t('user_menu_profile_button'),
                 isActive: false,
                 action: {
-                  url: `/users/${user.username}`,
+                  url: `/users/${user.username}?section=savedPosts`,
                   blank: false,
                 },
                 picture: <CiUser />,

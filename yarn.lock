@@ -4426,6 +4426,11 @@ minizlib@^2.1.1:
     minipass "^3.0.0"
     yallist "^4.0.0"
 
+mitt@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.1.tgz#ea36cf0cc30403601ae074c8f77b7092cdab36d1"
+  integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
+
 mkdirp@^1.0.3:
   version "1.0.4"
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
@@ -4541,6 +4546,13 @@ next-i18next@^10.5.0:
     i18next "^21.6.12"
     i18next-fs-backend "^1.0.7"
     react-i18next "^11.15.5"
+
+next-usequerystate@^1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/next-usequerystate/-/next-usequerystate-1.10.2.tgz#a1b4445c64088b6609e4cc29d22028ff292953e1"
+  integrity sha512-K77eilccG1phSeqvCAY4etbyDBYDdCV/QFjPIBp/g9HWoDvk76tpHItnFrDysIf5MvUAN/83zB7gUrZK0WvOZQ==
+  dependencies:
+    mitt "^3.0.1"
 
 next@13.0.6:
   version "13.0.6"

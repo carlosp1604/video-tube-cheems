@@ -1,6 +1,6 @@
 {
   "action_does_not_exist_error_message": "Requested action for post does not exist",
-  "gallery_posts_count_title": "{{videosNumber}} videos",
+  "gallery_posts_count_title": "{{videosNumber}} posts",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action",
   "paginated_post_card_gallery_options_description": "Choose an option for the selected post",
   "paginated_post_card_gallery_options_title": "Post options",

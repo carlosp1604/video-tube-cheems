@@ -1,4 +1,6 @@
 {
+  "error_state_button_title": "Return to first page",
+  "error_state_description": "The page you request does not exist or was deleted\nTo stop seeing this error, return to the first page.",
   "first_page_button_title": "First page",
   "last_page_button_title": "Last page",
   "n_page_button_title": "Page {{pageNumber}}",

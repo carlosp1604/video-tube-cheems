@@ -6,7 +6,7 @@ import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilte
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
-  PaginatedPostCardGallery, PostCardGalleryAction, PostCardGalleryOption
+  PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useTranslation } from 'next-i18next'
 import {
@@ -23,6 +23,10 @@ import { signOut, useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { BiLike } from 'react-icons/bi'
 import { BsBookmark } from 'react-icons/bs'
+import {
+  PostCardGalleryAction,
+  PostCardGalleryOption
+} from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -133,6 +137,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
   return (
     <div className={ styles.searchPage__container }>
       <PaginatedPostCardGallery
+        initialPage={ 1 }
+        perPage={ defaultPerPage }
         defaultSortingOption={ HomePostsDefaultSortingOption }
         sortingOptions={ HomePostsSortingOptions }
         initialPosts={ posts }

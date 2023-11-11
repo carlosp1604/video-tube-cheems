@@ -295,13 +295,16 @@ export const Post: FC<Props> = ({
   }
 
   const onClickCommentsButton = () => {
-    if (!commentsOpen) {
+    const currentValue = commentsOpen
+
+    setCommentsOpen(!commentsOpen)
+
+    if (!currentValue) {
       commentsRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       })
     }
-    setCommentsOpen(!commentsOpen)
   }
 
   return (

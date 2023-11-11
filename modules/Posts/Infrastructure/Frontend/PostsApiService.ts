@@ -66,7 +66,31 @@ export class PostsApiService {
       }
     }
 
-    return ((await fetch(`$/api/users/${userId}/saved-posts?${params}`)).json())
+    return ((await fetch(`/api/users/${userId}/saved-posts?${params}`)).json())
+  }
+
+  public async getUserHistory (
+    userId: string,
+    pageNumber: number,
+    perPage: number = defaultPerPage,
+    order: InfrastructureSortingCriteria,
+    orderBy: InfrastructureSortingOptions,
+    filters: FetchPostsFilter[]
+  ): Promise<GetPostsApplicationResponse> {
+    const params = new URLSearchParams()
+
+    params.append('page', pageNumber.toString())
+    params.append('perPage', perPage.toString())
+    params.append('orderBy', orderBy)
+    params.append('order', order)
+
+    for (const filter of filters) {
+      if (filter.value !== null) {
+        params.append(filter.type, filter.value)
+      }
+    }
+
+    return ((await fetch(`/api/users/${userId}/history?${params}`)).json())
   }
 
   public async addPostView (postId: string): Promise<Response> {

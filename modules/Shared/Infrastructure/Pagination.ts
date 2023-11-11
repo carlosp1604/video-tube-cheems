@@ -3,13 +3,13 @@ export const maxPerPage = 256
 export const defaultPerPage = 12
 
 export const calculatePagesNumber = (itemsNumber: number, perPage: number): number => {
-  if (Number.isInteger(itemsNumber / perPage)) {
-    const pages = itemsNumber / perPage
+  const pageNumber = Math.floor(itemsNumber / perPage)
 
-    if (pages === 0) {
-      return 1
-    }
+  const reminder = itemsNumber % perPage
+
+  if (reminder > 0) {
+    return pageNumber + 1
   }
 
-  return Math.floor(itemsNumber / perPage) + 1
+  return pageNumber
 }

@@ -21,6 +21,12 @@ export const SavedPostsDefaultSortingOption: SortingOption = {
   criteria: InfrastructureSortingCriteria.DESC,
 }
 
+export const HistoryDefaultSortingOption: SortingOption = {
+  translationKey: 'newest_saved_posts_options',
+  option: InfrastructureSortingOptions.VIEW_DATE,
+  criteria: InfrastructureSortingCriteria.DESC,
+}
+
 export const HomePostsSortingOptions: SortingOption[] = [
   HomePostsDefaultSortingOption,
   {
@@ -40,6 +46,15 @@ export const SavePostsSortingOptions: SortingOption[] = [
   {
     translationKey: 'oldest_saved_posts_option',
     option: InfrastructureSortingOptions.SAVED_DATE,
+    criteria: InfrastructureSortingCriteria.ASC,
+  },
+]
+
+export const HistorySortingOptions: SortingOption[] = [
+  HistoryDefaultSortingOption,
+  {
+    translationKey: 'oldest_saved_posts_option',
+    option: InfrastructureSortingOptions.VIEW_DATE,
     criteria: InfrastructureSortingCriteria.ASC,
   },
 ]

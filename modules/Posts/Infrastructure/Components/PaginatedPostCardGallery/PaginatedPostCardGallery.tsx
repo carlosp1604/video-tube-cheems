@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
-import { FC, ReactElement, useEffect, useState } from 'react'
+import { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { calculatePagesNumber } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import {
   PostCardComponentDtoTranslator
@@ -13,31 +13,23 @@ import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMen
 import {
   SortingOption
 } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
-import { useFirstRender } from '~/hooks/FirstRender'
 import { useTranslation } from 'next-i18next'
-import { BsDot, BsThreeDotsVertical } from 'react-icons/bs'
-import toast from 'react-hot-toast'
+import { BsDot } from 'react-icons/bs'
 // eslint-disable-next-line max-len
-import { PaginatedPostCardGalleryOption, PaginatedPostCardGalleryOptions } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGalleryOptions/PaginatedPostCardGalleryOptions'
-import { useSession } from 'next-auth/react'
-import { PostCard } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
-import * as uuid from 'uuid'
-import { Tooltip } from 'react-tooltip'
-
-export enum PostCardGalleryAction {
-  DELETE = 'delete',
-  NO_MUTATE = 'no-mutate'
-}
-
-export interface PostCardGalleryOption {
-  title: string
-  icon: ReactElement
-  action: PostCardGalleryAction
-  onClick: (postId: string) => void
-}
+import {
+  PostCardGallery,
+  PostCardGalleryOption
+} from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { useQueryState } from 'next-usequerystate'
+import { parseAsInteger } from 'next-usequerystate/parsers'
+import { useUpdateQuery } from '~/hooks/QueryState'
+import { useFirstRender } from '~/hooks/FirstRender'
 
 interface Props {
   title: string
+  initialPage: number
+  perPage: number
   initialPosts: PostCardComponentDto[]
   initialPostsNumber: number
   filters: FetchPostsFilter[]
@@ -51,6 +43,8 @@ interface Props {
 
 export const PaginatedPostCardGallery: FC<Props> = ({
   title,
+  initialPage,
+  perPage,
   initialPosts,
   initialPostsNumber,
   filters,
@@ -60,157 +54,93 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   fetchPosts,
   emptyState,
 }) => {
-  const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialPostsNumber, defaultPerPage))
-  const [pageNumber, setPageNumber] = useState(1)
+  const [page, setPage] = useState<number>(initialPage)
+  const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialPostsNumber, perPage))
   const [currentPosts, setCurrentPosts] = useState<PostCardComponentDto[]>(initialPosts)
   const [activeSortingOption, setActiveSortingOption] = useState<SortingOption>(defaultSortingOption)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
-  const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
-  const [selectedPostId, setSelectedPostId] = useState<string>('')
+  const [availablePages, setAvailablePages] =
+    useState<Array<number>>(PaginationHelper.getShowablePages(initialPage, pagesNumber))
+  const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
+  const updateQuery = useUpdateQuery()
+  const firstRender = useFirstRender()
+
+  const postGalleryRef = useRef<HTMLDivElement>(null)
 
   const { t } = useTranslation('paginated_post_card_gallery')
 
-  const firstRender = useFirstRender()
-
   const router = useRouter()
   const locale = router.locale ?? 'en'
-  const { status } = useSession()
-  const tooltipUuid = uuid.v4()
 
-  const updatePosts = async () => {
-    const posts = await fetchPosts(pageNumber, activeSortingOption, filters)
+  useEffect(() => {
+    if (firstRender) {
+      return
+    }
+
+    if (page !== pageQueryParam) {
+      updatePosts(pageQueryParam, activeSortingOption, filters)
+      setPage(pageQueryParam)
+    }
+  }, [pageQueryParam])
+
+  const updatePosts = async (page: number, sortingOption: SortingOption, postsFilters: FetchPostsFilter[]) => {
+    const posts = await fetchPosts(page, sortingOption, postsFilters)
 
     setCurrentPosts(posts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     }))
+
+    const newPagesNumber = calculatePagesNumber(posts.postsNumber, perPage)
+
     setPostsNumber(posts.postsNumber)
-    setPagesNumber(calculatePagesNumber(posts.postsNumber, defaultPerPage))
+    setAvailablePages(PaginationHelper.getShowablePages(page, newPagesNumber))
+    setPagesNumber(newPagesNumber)
   }
-
-  useEffect(() => {
-    if (firstRender) {
-      return
-    }
-
-    if (pageNumber === 1) {
-      updatePosts().then(() => {
-        scrollToTop()
-      })
-
-      return
-    }
-
-    setPageNumber(1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filters), activeSortingOption])
-
-  useEffect(() => {
-    if (firstRender) {
-      return
-    }
-
-    updatePosts().then(() => {
-      scrollToTop()
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageNumber])
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
+    postGalleryRef.current?.scrollIntoView({
       behavior: 'smooth',
+      block: 'start',
     })
   }
 
-  let paginationBar = null
+  const onDeletePost = async (postId: string) => {
+    const newPostsNumber = postsNumber - 1
 
-  if (postsNumber > 0 && postsNumber > defaultPerPage) {
-    paginationBar = (
-      <PaginationBar
-        pageNumber={ pageNumber }
-        setPageNumber={ setPageNumber }
-        pagesNumber={ pagesNumber }
-      />
-    )
-  }
+    setCurrentPosts(currentPosts.filter((post) => post.id !== postId))
+    setPostsNumber(postsNumber - 1)
 
-  let onClickOptions : ((postId: string) => void) | undefined
+    if (initialPage > 1 && newPostsNumber % perPage === 0) {
+      const newPageNumber = initialPage - 1
 
-  if (postCardOptions.length > 0) {
-    onClickOptions = (postId: string) => {
-      if (status !== 'authenticated') {
-        toast.error(t('user_must_be_authenticated_error_message'))
-
-        return
-      }
-
-      setSelectedPostId(postId)
-      setPostCardOptionsMenuOpen(true)
-    }
-  }
-
-  const buildOption = (option: PostCardGalleryOption): PaginatedPostCardGalleryOption => {
-    switch (option.action) {
-      case PostCardGalleryAction.NO_MUTATE: {
-        const action = async () => {
-          try {
-            await option.onClick(selectedPostId)
-            setPostCardOptionsMenuOpen(!postCardOptionsMenuOpen)
-          } catch (exception: unknown) {
-            // Action failed -> NO ACTION TAKEN
-            console.error(exception)
-          }
-        }
-
-        return {
-          title: option.title,
-          onClick: action,
-          icon: option.icon,
-        }
-      }
-
-      case PostCardGalleryAction.DELETE: {
-        const action = async () => {
-          try {
-            await option.onClick(selectedPostId)
-            setCurrentPosts(currentPosts.filter((post) => post.id !== selectedPostId))
-            setPostsNumber(postsNumber - 1)
-            setPostCardOptionsMenuOpen(!postCardOptionsMenuOpen)
-          } catch (exception: unknown) {
-            // Action failed -> NO ACTION TAKEN
-            console.error(exception)
-          }
-        }
-
-        return {
-          title: option.title,
-          onClick: action,
-          icon: option.icon,
-        }
-      }
-
-      default:
-        toast.error(t('action_does_not_exist_error_message'))
-
-        throw Error(t('action_does_not_exist_error_message'))
+      setPage(newPageNumber)
+      await updateQuery([{ key: 'page', value: String(newPageNumber) }])
+      setPagesNumber(pagesNumber - 1)
+      await updatePosts(newPageNumber, activeSortingOption, filters)
     }
   }
 
   let sortingOptionsElement: ReactElement | null = null
 
-  if (postsNumber > defaultPerPage) {
+  if (postsNumber > perPage) {
     sortingOptionsElement = (
       <SortingMenuDropdown
         activeOption={ activeSortingOption }
-        onChangeOption={ (option: SortingOption) => setActiveSortingOption(option) }
+        onChangeOption={ async (option: SortingOption) => {
+          setActiveSortingOption(option)
+          await updatePosts(initialPage, option, filters)
+          scrollToTop()
+        } }
         options={ sortingOptions }
       />
     )
   }
 
   return (
-    <div className={ styles.paginatedPostCardGallery__container }>
+    <div
+      className={ styles.paginatedPostCardGallery__container }
+      ref={ postGalleryRef }
+    >
       <div className={ styles.paginatedPostCardGallery__header }>
         <span className={ styles.paginatedPostCardGallery__title }>
           { title }
@@ -223,41 +153,25 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         { sortingOptionsElement }
       </div>
 
-      <PaginatedPostCardGalleryOptions
-        options={ postCardOptions.map((action) => buildOption(action)) }
-        isOpen={ postCardOptionsMenuOpen }
-        onClose={ () => setPostCardOptionsMenuOpen(false) }
-      />
       { postsNumber === 0 ? emptyState : null }
 
-      <div className={ styles.paginatedPostCardGallery__postCardListContainer }>
-        { currentPosts.map((post) => {
-          return (
-            <div
-              className={ styles.paginatedPostCardGallery__postCardContainer }
-              key={ post.id }
-            >
-              <PostCard
-                showProducerImage={ true }
-                post={ post }
-              />
-              <button className={ `
-                ${styles.paginatedPostCardGallery__postOptions}
-                ${onClickOptions ? styles.paginatedPostCardGallery__postOptions_visible : ''}
-              ` }
-                onClick={ () => { if (onClickOptions) { onClickOptions(post.id) } } }
-                data-tooltip-id={ tooltipUuid }
-                data-tooltip-content={ t('post_card_options_button_title') }
-              >
-                <BsThreeDotsVertical/>
-                <Tooltip id={ tooltipUuid }/>
-              </button>
-            </div>
-          )
-        }) }
-      </div>
+      <PostCardGallery
+        posts={ currentPosts }
+        postCardOptions={ postCardOptions }
+        onClickDeleteOption={ onDeletePost }
+      />
 
-      { paginationBar }
+      <PaginationBar
+        availablePages={ availablePages }
+        pageNumber={ page }
+        onPageNumberChange={ async (newPageNumber) => {
+          await updatePosts(newPageNumber, activeSortingOption, filters)
+          setPage(newPageNumber)
+          await updateQuery([{ key: 'page', value: String(newPageNumber) }])
+          scrollToTop()
+        } }
+        pagesNumber={ pagesNumber }
+      />
     </div>
   )
 }

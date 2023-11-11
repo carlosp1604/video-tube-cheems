@@ -106,7 +106,7 @@ export const MenuSideBar: FC = () => {
 
           setLoginModalOpen(true)
         } else {
-          await push(`/users/${user.username}`)
+          await push(`/users/${user.username}?section=savedPosts`)
         }
       },
     },
@@ -134,8 +134,14 @@ export const MenuSideBar: FC = () => {
       isActive: false,
       action: undefined,
       picture: <BsClock />,
-      onClick: () => {
-        toast.success(t('user_menu_option_not_available_message'))
+      onClick: async () => {
+        if (status !== 'SIGNED_IN' || !user) {
+          toast.error(t('user_must_be_authenticated_error_message'))
+
+          setLoginModalOpen(true)
+        } else {
+          await push(`/users/${user.username}?section=history`)
+        }
       },
     },
     /**

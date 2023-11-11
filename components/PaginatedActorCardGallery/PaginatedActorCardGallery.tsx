@@ -104,8 +104,9 @@ export const PaginatedActorCardGallery: FC<Props> = ({
       />
 
       <PaginationBar
+        availablePages={ [] }
         pageNumber={ pageNumber }
-        setPageNumber={ setPageNumber }
+        onPageNumberChange={ setPageNumber }
         pagesNumber={ pagesNumber }
       />
     </div>

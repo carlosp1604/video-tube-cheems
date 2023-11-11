@@ -66,6 +66,8 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber 
       </div>
 
       <PaginatedPostCardGallery
+        initialPage={ 1 }
+        perPage={ defaultPerPage }
         sortingOptions={ HomePostsSortingOptions }
         defaultSortingOption={ HomePostsDefaultSortingOption }
         initialPostsNumber={ postsNumber }

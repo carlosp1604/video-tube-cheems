@@ -1,0 +1,46 @@
+.post-card-gallery {
+
+  &__container {
+    @apply grid gap-4 mb-2;
+    grid-template-columns: repeat(1, 1fr);
+
+    @screen sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @screen lg {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @screen 2xl {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__post-card-container {
+    @apply relative;
+  }
+
+  &__post-options {
+    @apply hidden items-center justify-center z-post-card-video absolute
+    top-1 left-1 rounded-full cursor-pointer h-9 w-9 transition-colors
+    backdrop-filter backdrop-blur-2xl bg-transparent text-lg;
+
+    &_visible {
+      @apply flex;
+    }
+
+    &:hover {
+      @apply bg-brand-400 transition-colors;
+    }
+
+    &:active {
+      @apply bg-brand-500 transition-colors;
+    }
+  }
+
+  &__post-options-icon {
+    @apply text-sm font-normal text-base-50 place-self-center text-center
+    transition-colors;
+  }
+}

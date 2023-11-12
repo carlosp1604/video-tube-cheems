@@ -3,12 +3,11 @@ import { container } from '~/awilix.container'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { UserProfilePageProps, UserProfilePage } from '~/components/pages/UserProfilePage/UserProfilePage'
+import { UserProfilePage, UserProfilePageProps } from '~/components/pages/UserProfilePage/UserProfilePage'
 import {
   UserHeaderComponentDtoTranslator
 } from '~/modules/Auth/Infrastructure/Api/Translators/UserHeaderComponentDtoTranslator'
 import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts/GetUserSavedPosts'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
@@ -21,25 +20,20 @@ import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUs
 import {
   UserProfilePostsSectionSelectorType
 } from '~/components/pages/UserProfilePage/UserProfilePostsSectionSelector/UserProfilePostsSectionSelector'
+import {
+  PostsPaginationOrderType,
+  PostsPaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { defaultPerPage, maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 
 export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
-  let { username, section, perPage, page, order, orderBy } = context.query
+  let { username, section } = context.query
 
   if (!username) {
     return {
       notFound: true,
     }
-  }
-
-  let paramsError = false
-
-  const parseNumber = (value: string): number | null => {
-    if (isNaN(Number(value))) {
-      return null
-    }
-
-    return parseInt(value)
   }
 
   username = username.toString()
@@ -50,46 +44,49 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
 
   if (section !== 'savedPosts' && section !== 'history') {
     section = 'savedPosts'
-    paramsError = true
   }
 
-  let parsedPerPage = defaultPerPage
-  let parsedPage = 1
-  let parsedOrder = 'desc'
-  const parsedOrderBy = 'sv'
-
-  if (perPage) {
-    const parsedNumber = parseNumber(String(perPage))
-
-    if (parsedNumber !== null && (parsedNumber > 10 && parsedNumber < 256)) {
-      parsedPerPage = parsedNumber
-    } else {
-      paramsError = true
+  const paginationQueryParams = new PostsPaginationQueryParams(
+    context.query,
+    {
+      filters: {
+        // TODO: Decide which filter parse based on section property
+        filtersToParse: [
+          PostFilterOptions.SAVED_BY,
+          PostFilterOptions.VIEWED_BY,
+        ],
+      },
+      sortingOptionType: {
+        defaultValue: PostsPaginationOrderType.NEWEST_SAVED,
+        // TODO: Decide which filter parse based on section property
+        parseableOptionTypes: [
+          PostsPaginationOrderType.NEWEST_SAVED,
+          PostsPaginationOrderType.OLDEST_VIEWED,
+        ],
+      },
+      page: {
+        defaultValue: 1,
+        minValue: 0,
+        maxValue: Infinity,
+      },
+      perPage: {
+        defaultValue: defaultPerPage,
+        maxValue: maxPerPage,
+        minValue: minPerPage,
+      },
     }
-  }
+  )
 
-  if (page) {
-    const parsedNumber = parseNumber(String(page))
+  if (paginationQueryParams.parseFailed) {
+    let stringPaginationParams = paginationQueryParams.getParsedQueryString()
 
-    if (parsedNumber !== null && parsedNumber >= 1) {
-      parsedPage = parsedNumber
-    } else {
-      paramsError = true
+    if (stringPaginationParams !== '') {
+      stringPaginationParams = `&${stringPaginationParams}`
     }
-  }
 
-  if (order) {
-    if (order !== 'asc' && order !== 'desc') {
-      paramsError = true
-    } else {
-      parsedOrder = String(order)
-    }
-  }
-
-  if (paramsError) {
     return {
       redirect: {
-        destination: `/${locale}/users/${username}?section=${section}&page=${parsedPage}&perPage=${parsedPerPage}`,
+        destination: `/${locale}/users/${username}?section=${section}${stringPaginationParams}`,
         permanent: false,
       },
     }
@@ -97,8 +94,8 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
 
   const props: UserProfilePageProps = {
     section: section as UserProfilePostsSectionSelectorType,
-    page: parsedPage,
-    perPage: parsedPerPage,
+    page: paginationQueryParams.page ?? 1,
+    perPage: paginationQueryParams.perPage ?? defaultPerPage,
     posts: [],
     postsNumber: 0,
     userComponentDto: {
@@ -116,9 +113,7 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
   try {
     const userApplicationDto = await getUser.get(username)
 
-    const userHeaderComponentDto = UserHeaderComponentDtoTranslator.fromApplication(userApplicationDto)
-
-    props.userComponentDto = userHeaderComponentDto
+    props.userComponentDto = UserHeaderComponentDtoTranslator.fromApplication(userApplicationDto)
   } catch (exception: unknown) {
     console.error(exception)
 
@@ -132,15 +127,17 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
 
     try {
       const savedPosts = await getSavedPosts.get({
-        page: parsedPage,
+        page: paginationQueryParams.page ?? 1,
         filters: [{
           type: PostFilterOptions.SAVED_BY,
           value: props.userComponentDto.id,
         }],
-        postsPerPage: parsedPerPage,
+        postsPerPage: paginationQueryParams.perPage ?? defaultPerPage,
         sortCriteria: InfrastructureSortingCriteria.DESC,
         sortOption: InfrastructureSortingOptions.SAVED_DATE,
       })
+
+      console.log(savedPosts)
 
       props.posts = savedPosts.posts.map((post) => {
         return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
@@ -154,12 +151,12 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
       const getUserHistory = container.resolve<GetUserHistory>('getUserHistoryUseCase')
 
       const viewedPosts = await getUserHistory.get({
-        page: parsedPage,
+        page: paginationQueryParams.page ?? 1,
         filters: [{
           type: PostFilterOptions.VIEWED_BY,
           value: props.userComponentDto.id,
         }],
-        postsPerPage: parsedPerPage,
+        postsPerPage: paginationQueryParams.page ?? defaultPerPage,
         sortCriteria: InfrastructureSortingCriteria.DESC,
         sortOption: InfrastructureSortingOptions.VIEW_DATE,
       })

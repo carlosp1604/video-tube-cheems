@@ -11,8 +11,8 @@ import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import {
-  SortingOption
-} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+  ComponentSortingOption
+} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { useTranslation } from 'next-i18next'
 import { BsDot } from 'react-icons/bs'
 // eslint-disable-next-line max-len
@@ -22,9 +22,12 @@ import {
 } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { useQueryState } from 'next-usequerystate'
-import { parseAsInteger } from 'next-usequerystate/parsers'
+import { parseAsInteger, parseAsString } from 'next-usequerystate/parsers'
 import { useUpdateQuery } from '~/hooks/QueryState'
 import { useFirstRender } from '~/hooks/FirstRender'
+import {
+  PostsPaginationOrderType, PostsPaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 
 interface Props {
   title: string
@@ -33,10 +36,11 @@ interface Props {
   initialPosts: PostCardComponentDto[]
   initialPostsNumber: number
   filters: FetchPostsFilter[]
-  sortingOptions: SortingOption[]
-  defaultSortingOption: SortingOption
+  sortingOptions: PostsPaginationOrderType[]
+  initialSortingOption: PostsPaginationOrderType
+  defaultSortingOption: PostsPaginationOrderType
   postCardOptions: PostCardGalleryOption[]
-  fetchPosts: (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) =>
+  fetchPosts: (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) =>
     Promise<GetPostsApplicationResponse>
   emptyState: ReactElement | null
 }
@@ -49,6 +53,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   initialPostsNumber,
   filters,
   sortingOptions,
+  initialSortingOption,
   defaultSortingOption,
   postCardOptions,
   fetchPosts,
@@ -57,11 +62,13 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   const [page, setPage] = useState<number>(initialPage)
   const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialPostsNumber, perPage))
   const [currentPosts, setCurrentPosts] = useState<PostCardComponentDto[]>(initialPosts)
-  const [activeSortingOption, setActiveSortingOption] = useState<SortingOption>(defaultSortingOption)
+  const [activeSortingOption, setActiveSortingOption] = useState<PostsPaginationOrderType>(initialSortingOption)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
   const [availablePages, setAvailablePages] =
     useState<Array<number>>(PaginationHelper.getShowablePages(initialPage, pagesNumber))
   const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
+  const [orderQueryParam] = useQueryState('order', parseAsString.withDefault(defaultSortingOption))
+
   const updateQuery = useUpdateQuery()
   const firstRender = useFirstRender()
 
@@ -77,14 +84,18 @@ export const PaginatedPostCardGallery: FC<Props> = ({
       return
     }
 
-    if (page !== pageQueryParam) {
-      updatePosts(pageQueryParam, activeSortingOption, filters)
-      setPage(pageQueryParam)
-    }
-  }, [pageQueryParam])
+    setPage(pageQueryParam)
+    setActiveSortingOption(orderQueryParam as PostsPaginationOrderType)
+    updatePosts(pageQueryParam, orderQueryParam as PostsPaginationOrderType, filters)
+  }, [pageQueryParam, orderQueryParam])
 
-  const updatePosts = async (page: number, sortingOption: SortingOption, postsFilters: FetchPostsFilter[]) => {
-    const posts = await fetchPosts(page, sortingOption, postsFilters)
+  const updatePosts = async (
+    page: number,
+    sortingOption: PostsPaginationOrderType,
+    postsFilters: FetchPostsFilter[]
+  ) => {
+    const componentSortingOption = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(sortingOption)
+    const posts = await fetchPosts(page, componentSortingOption, postsFilters)
 
     setCurrentPosts(posts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
@@ -97,12 +108,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     setPagesNumber(newPagesNumber)
   }
 
-  const scrollToTop = () => {
-    postGalleryRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-  }
+  const scrollToTop = () => { postGalleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
 
   const onDeletePost = async (postId: string) => {
     const newPostsNumber = postsNumber - 1
@@ -116,22 +122,26 @@ export const PaginatedPostCardGallery: FC<Props> = ({
       setPage(newPageNumber)
       await updateQuery([{ key: 'page', value: String(newPageNumber) }])
       setPagesNumber(pagesNumber - 1)
-      await updatePosts(newPageNumber, activeSortingOption, filters)
     }
   }
 
   let sortingOptionsElement: ReactElement | null = null
 
+  /** Show sorting options only if page numbers is greater than 1 */
   if (postsNumber > perPage) {
     sortingOptionsElement = (
       <SortingMenuDropdown
         activeOption={ activeSortingOption }
-        onChangeOption={ async (option: SortingOption) => {
-          setActiveSortingOption(option)
-          await updatePosts(initialPage, option, filters)
-          scrollToTop()
-        } }
         options={ sortingOptions }
+        onChangeOption={ async (option: PostsPaginationOrderType) => {
+          /** Our behavior when the sorting option changes is set page to 1 */
+          setActiveSortingOption(option)
+          setPage(1)
+          await updateQuery([
+            { key: 'order', value: String(option) },
+            { key: 'page', value: '1' },
+          ])
+        } }
       />
     )
   }
@@ -165,7 +175,6 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         availablePages={ availablePages }
         pageNumber={ page }
         onPageNumberChange={ async (newPageNumber) => {
-          await updatePosts(newPageNumber, activeSortingOption, filters)
           setPage(newPageNumber)
           await updateQuery([{ key: 'page', value: String(newPageNumber) }])
           scrollToTop()

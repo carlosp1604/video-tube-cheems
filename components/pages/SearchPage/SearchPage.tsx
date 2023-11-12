@@ -11,8 +11,8 @@ import {
 import { useTranslation } from 'next-i18next'
 import {
   HomePostsDefaultSortingOption,
-  HomePostsSortingOptions, SortingOption
-} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+  HomePostsSortingOptions, ComponentSortingOption
+} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -123,7 +123,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
     ]
   }
 
-  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+  const fetchPosts = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
     return (new PostsApiService())
       .getPosts(
         pageNumber,
@@ -139,7 +139,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
       <PaginatedPostCardGallery
         initialPage={ 1 }
         perPage={ defaultPerPage }
-        defaultSortingOption={ HomePostsDefaultSortingOption }
+        initialSortingOption={ HomePostsDefaultSortingOption }
         sortingOptions={ HomePostsSortingOptions }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }

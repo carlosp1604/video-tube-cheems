@@ -7,7 +7,9 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import {
   ProducerListComponentDtoTranslator
 } from '~/modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
-import { PostCardComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import {
+  PostCardComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import {
   PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
@@ -15,41 +17,41 @@ import { useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { defaultPerPage, maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { container } from '~/awilix.container'
-import {
-  HomePostsDefaultSortingOption,
-  HomePostsSortingOptions,
-  SortingOption
-} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
-import {
-  PostCardGalleryOption
-} from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
-import { useQueryState } from 'next-usequerystate'
-import { parseAsInteger } from 'next-usequerystate/parsers'
+import { PostCardGalleryOption } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { GalleryActionType, useGalleryAction } from '~/hooks/GalleryAction'
+import {
+  HomePagePaginationOrderType,
+  PostsPaginationOrderType,
+  PostsPaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 
 interface Props {
+  page: number
+  perPage: number
+  order: PostsPaginationOrderType
   posts: PostCardComponentDto[]
   producers: ProducerComponentDto[]
   postsNumber: number
 }
 
-// TODO:
-// producer=producer&order=asc/desc&orderBy=date/views&page=1
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')
 
   const locale = context.locale ?? 'en'
+
+  console.log('me ejecuto xd')
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'home_page',
@@ -68,7 +70,50 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'api_exceptions',
   ])
 
+  const paginationQueryParams = new PostsPaginationQueryParams(
+    context.query,
+    {
+      filters: {
+        filtersToParse: [
+          PostFilterOptions.PRODUCER_ID,
+        ],
+      },
+      sortingOptionType: {
+        defaultValue: PostsPaginationOrderType.NEWEST,
+        parseableOptionTypes: [
+          PostsPaginationOrderType.NEWEST,
+          PostsPaginationOrderType.OLDEST,
+          PostsPaginationOrderType.MORE_VIEWS,
+        ],
+      },
+      page: {
+        defaultValue: 1,
+        minValue: 1,
+        maxValue: Infinity,
+      },
+      perPage: {
+        defaultValue: defaultPerPage,
+        maxValue: maxPerPage,
+        minValue: minPerPage,
+      },
+    }
+  )
+
+  if (paginationQueryParams.parseFailed) {
+    const stringPaginationParams = paginationQueryParams.getParsedQueryString()
+
+    return {
+      redirect: {
+        destination: `/${locale}?${stringPaginationParams}`,
+        permanent: false,
+      },
+    }
+  }
+
   const props: Props = {
+    order: paginationQueryParams.sortingOptionType ?? PostsPaginationOrderType.NEWEST,
+    page: paginationQueryParams.page ?? 1,
+    perPage: paginationQueryParams.perPage ?? defaultPerPage,
     posts: [],
     producers: [],
     postsNumber: 0,
@@ -76,12 +121,30 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 
   try {
+    let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC
+    let sortOption: InfrastructureSortingOptions = InfrastructureSortingOptions.DATE
+    let page = 1
+    let perPage = defaultPerPage
+
+    if (paginationQueryParams.componentSortingOption) {
+      sortOption = paginationQueryParams.componentSortingOption.option
+      sortCriteria = paginationQueryParams.componentSortingOption.criteria
+    }
+
+    if (paginationQueryParams.page) {
+      page = paginationQueryParams.page
+    }
+
+    if (paginationQueryParams.perPage) {
+      perPage = paginationQueryParams.perPage
+    }
+
     const posts = await getPosts.get({
-      page: 1,
+      page,
       filters: [],
-      sortCriteria: InfrastructureSortingCriteria.DESC,
-      sortOption: InfrastructureSortingOptions.DATE,
-      postsPerPage: defaultPerPage,
+      sortCriteria,
+      sortOption,
+      postsPerPage: perPage,
     })
 
     const producers = await getProducers.get()
@@ -106,15 +169,22 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 }
 
-const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
+const HomePage: NextPage<Props> = ({
+  postsNumber,
+  posts,
+  producers,
+  perPage,
+  page,
+  order,
+}) => {
   const [activeProducer, setActiveProducer] = useState<ProducerComponentDto>(allPostsProducerDto)
   const { t } = useTranslation(['home_page', 'api_exceptions'])
-  const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
+
   const getOptions = useGalleryAction()
 
   const options: PostCardGalleryOption[] = getOptions(GalleryActionType.HOME_PAGE)
 
-  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+  const fetchPosts = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
     return (new PostsApiService())
       .getPosts(
         pageNumber,
@@ -135,8 +205,8 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
       />
 
       <PaginatedPostCardGallery
-        perPage={ defaultPerPage }
-        initialPage={ pageQueryParam }
+        perPage={ perPage }
+        initialPage={ page }
         title={ activeProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : activeProducer.name }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }
@@ -144,8 +214,9 @@ const HomePage: NextPage<Props> = ({ postsNumber, posts, producers }) => {
           type: PostFilterOptions.PRODUCER_ID,
           value: activeProducer.id === '' ? null : activeProducer.id,
         }] }
-        sortingOptions={ HomePostsSortingOptions }
-        defaultSortingOption={ HomePostsDefaultSortingOption }
+        sortingOptions={ HomePagePaginationOrderType }
+        defaultSortingOption={ PostsPaginationOrderType.NEWEST }
+        initialSortingOption={ order }
         postCardOptions={ options }
         fetchPosts={ fetchPosts }
         emptyState={ null }

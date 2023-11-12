@@ -9,8 +9,8 @@ import {
   HistorySortingOptions,
   SavedPostsDefaultSortingOption,
   SavePostsSortingOptions,
-  SortingOption
-} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+  ComponentSortingOption
+} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { useTranslation } from 'next-i18next'
 import styles from './UserProfilePage.module.scss'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
@@ -105,7 +105,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 
   const options: PostCardGalleryOption[] = getOptions(GalleryActionType.SAVED_POSTS, userComponentDto.id)
 
-  const fetchSavedPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+  const fetchSavedPosts = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
     return (new PostsApiService())
       .getSavedPosts(
         userComponentDto.id,
@@ -117,7 +117,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       )
   }
 
-  const fetchUserHistory = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+  const fetchUserHistory = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
     return (new PostsApiService())
       .getUserHistory(
         userComponentDto.id,
@@ -159,7 +159,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
             }] }
             sortingOptions={ SavePostsSortingOptions }
             postCardOptions={ options }
-            defaultSortingOption={ SavedPostsDefaultSortingOption }
+            initialSortingOption={ SavedPostsDefaultSortingOption }
             fetchPosts={ fetchSavedPosts }
             emptyState={ data && data.user.id === userComponentDto.id
               ? <UserSavedPostsEmptyState/>
@@ -181,7 +181,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
             filters={ [] }
             sortingOptions={ HistorySortingOptions }
             postCardOptions={ [] }
-            defaultSortingOption={ HistoryDefaultSortingOption }
+            initialSortingOption={ HistoryDefaultSortingOption }
             fetchPosts={ fetchUserHistory }
             emptyState={ data && data.user.id === userComponentDto.id
               ? <EmptyState

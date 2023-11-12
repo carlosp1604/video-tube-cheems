@@ -3,9 +3,9 @@ import styles from './PaginatedActorCardGallery.module.scss'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 import {
   HomePostsDefaultSortingOption,
-  SortingOption,
+  ComponentSortingOption,
   HomePostsSortingOptions
-} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
@@ -41,7 +41,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
   const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialActorsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
   const [currentActors, setCurrentActors] = useState<ActorComponentDto[]>(initialActors)
-  const [activeSortingOption, setActiveSortingOption] = useState<SortingOption>(HomePostsDefaultSortingOption)
+  const [activeSortingOption, setActiveSortingOption] = useState<ComponentSortingOption>(HomePostsDefaultSortingOption)
   const [actorsNumber, setActorsNumber] = useState<number>(initialActorsNumber)
   const firstRender = useFirstRender()
 
@@ -94,7 +94,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
 
         <SortingMenuDropdown
           activeOption={ activeSortingOption }
-          onChangeOption={ (option: SortingOption) => setActiveSortingOption(option) }
+          onChangeOption={ (option: ComponentSortingOption) => setActiveSortingOption(option) }
           options={ HomePostsSortingOptions }
         />
       </div>

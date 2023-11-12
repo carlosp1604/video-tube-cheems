@@ -7,9 +7,9 @@ export interface QueryItem {
 }
 
 export function useUpdateQuery () {
-  const { push, query } = useRouter()
+  const { push, query, pathname } = useRouter()
 
-  const setQuery = useCallback(
+  return useCallback(
     async (items: QueryItem[]): Promise<void> => {
       const newQuery = { ...query }
 
@@ -24,11 +24,10 @@ export function useUpdateQuery () {
       })
 
       await push({
+        pathname,
         query: newQuery,
       }, undefined, { shallow: true, scroll: false })
     },
-    [query, push]
+    [query, pathname]
   )
-
-  return setQuery
 }

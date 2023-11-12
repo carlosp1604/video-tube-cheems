@@ -126,7 +126,7 @@ export const AppMenu: FC = () => {
       <LoginModal isOpen={ loginModalOpen } setIsOpen={ setLoginModalOpen }/>
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
-          <Link href='/' scroll={ false }>
+          <Link href='/' scroll={ false } shallow={ true }>
             <img
               className={ styles.appMenu__logoImage }
               src='/img/cheems-logo.png'

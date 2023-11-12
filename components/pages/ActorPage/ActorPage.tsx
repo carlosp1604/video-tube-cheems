@@ -8,8 +8,8 @@ import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPage
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
   HomePostsDefaultSortingOption,
-  HomePostsSortingOptions, SortingOption
-} from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
+  HomePostsSortingOptions, ComponentSortingOption
+} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
@@ -23,7 +23,7 @@ export interface ActorPageProps {
 export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber }) => {
   const [openDescription, setOpenDescription] = useState<boolean>(false)
 
-  const fetchPosts = async (pageNumber: number, sortingOption: SortingOption, filters: FetchPostsFilter[]) => {
+  const fetchPosts = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
     return (new PostsApiService())
       .getPosts(
         pageNumber,
@@ -69,7 +69,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber 
         initialPage={ 1 }
         perPage={ defaultPerPage }
         sortingOptions={ HomePostsSortingOptions }
-        defaultSortingOption={ HomePostsDefaultSortingOption }
+        initialSortingOption={ HomePostsDefaultSortingOption }
         initialPostsNumber={ postsNumber }
         filters={ [] }
         initialPosts={ posts }

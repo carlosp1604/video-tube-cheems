@@ -5,10 +5,6 @@ import {
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
-  HistoryDefaultSortingOption,
-  HistorySortingOptions,
-  SavedPostsDefaultSortingOption,
-  SavePostsSortingOptions,
   ComponentSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { useTranslation } from 'next-i18next'
@@ -21,28 +17,29 @@ import {
   UserSavedPostsEmptyState
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   UserProfilePostsSectionSelector,
   UserProfilePostsSectionSelectorType
 } from '~/components/pages/UserProfilePage/UserProfilePostsSectionSelector/UserProfilePostsSectionSelector'
-import {
-  PostCardComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { useRouter } from 'next/router'
 import { PostCardGalleryOption } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import {
   PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
-import { useQueryState } from 'next-usequerystate'
-import { parseAsInteger, parseAsString } from 'next-usequerystate/parsers'
 import { useUpdateQuery } from '~/hooks/QueryState'
 import { GalleryActionType, useGalleryAction } from '~/hooks/GalleryAction'
+import {
+  HistoryPaginationOrderType,
+  PostsPaginationOrderType,
+  SavedPostsPaginationOrderType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 
 export interface UserProfilePageProps {
-  page:number
-  section: UserProfilePostsSectionSelectorType
+  page: number
   perPage: number
+  order: PostsPaginationOrderType
+  section: UserProfilePostsSectionSelectorType
   userComponentDto: UserProfileHeaderComponentDto
   posts: PostCardComponentDto[]
   postsNumber: number
@@ -50,30 +47,26 @@ export interface UserProfilePageProps {
 
 export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   page,
-  section,
   perPage,
+  order,
+  section,
   userComponentDto,
   posts,
   postsNumber,
 }) => {
-  const [sectionQueryParam] = useQueryState('section', parseAsString.withDefault('savedPosts'))
-  const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
+  // const [sectionQueryParam] = useQueryState('section', parseAsString.withDefault('savedPosts'))
+  // const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
   const updateQuery = useUpdateQuery()
   const [currentSection, setCurrentSection] = useState<UserProfilePostsSectionSelectorType>(section)
-  const [currentUserPosts, setCurrentUserPosts] = useState<PostCardComponentDto[]>(posts)
-  const [currentUserPostsNumber, setCurrentUserPostsNumber] = useState<number>(postsNumber)
+  // const [currentUserPosts, setCurrentUserPosts] = useState<PostCardComponentDto[]>(posts)
+  // const [currentUserPostsNumber, setCurrentUserPostsNumber] = useState<number>(postsNumber)
   const { t } = useTranslation(['user_profile', 'api_exceptions'])
   const getOptions = useGalleryAction()
 
   const { data } = useSession()
-  const { locale } = useRouter()
+  const { locale, asPath } = useRouter()
 
-  useEffect(() => {
-    if (sectionQueryParam !== currentSection) {
-      onPostSectionChange(sectionQueryParam as UserProfilePostsSectionSelectorType, pageQueryParam)
-    }
-  }, [sectionQueryParam])
-
+  /**
   const onPostSectionChange = async (section: UserProfilePostsSectionSelectorType, page: number) => {
     switch (section) {
       case 'savedPosts': {
@@ -99,9 +92,8 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       }
         break
     }
-
-    setCurrentSection(section)
   }
+   **/
 
   const options: PostCardGalleryOption[] = getOptions(GalleryActionType.SAVED_POSTS, userComponentDto.id)
 
@@ -134,32 +126,36 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       <UserProfileHeader componentDto={ userComponentDto } />
 
       <UserProfilePostsSectionSelector
-        selectedSection={ currentSection }
+        selectedSection={ section }
         onClickOption={ async (option) => {
-          await onPostSectionChange(option, 1)
+          // await onPostSectionChange(option, 1)
 
           await updateQuery([
             { key: 'section', value: option },
             { key: 'page', value: '1' },
           ])
+
+          setCurrentSection(option)
         } }
       />
 
       <div className={ styles.userProfilePage__userPosts }>
         { currentSection === 'savedPosts'
           ? <PaginatedPostCardGallery
+            key={ asPath }
+            defaultSortingOption={ PostsPaginationOrderType.NEWEST_SAVED }
             perPage={ perPage }
-            initialPage={ pageQueryParam }
+            initialPage={ page }
             title={ t('user_saved_posts_title', { ns: 'user_profile' }) }
-            initialPosts={ currentUserPosts }
-            initialPostsNumber={ currentUserPostsNumber }
+            initialPosts={ posts }
+            initialPostsNumber={ postsNumber }
             filters={ [{
               type: PostFilterOptions.SAVED_BY,
               value: userComponentDto.id,
             }] }
-            sortingOptions={ SavePostsSortingOptions }
+            sortingOptions={ SavedPostsPaginationOrderType }
             postCardOptions={ options }
-            initialSortingOption={ SavedPostsDefaultSortingOption }
+            initialSortingOption={ order }
             fetchPosts={ fetchSavedPosts }
             emptyState={ data && data.user.id === userComponentDto.id
               ? <UserSavedPostsEmptyState/>
@@ -173,15 +169,17 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
         }
         { currentSection === 'history'
           ? <PaginatedPostCardGallery
-            initialPage={ pageQueryParam }
+            key={ asPath }
+            defaultSortingOption={ PostsPaginationOrderType.NEWEST_VIEWED }
+            initialPage={ page }
             perPage={ perPage }
             title={ t('user_history_title', { ns: 'user_profile' }) }
-            initialPosts={ currentUserPosts }
-            initialPostsNumber={ currentUserPostsNumber }
+            initialPosts={ posts }
+            initialPostsNumber={ postsNumber }
             filters={ [] }
-            sortingOptions={ HistorySortingOptions }
+            sortingOptions={ HistoryPaginationOrderType }
             postCardOptions={ [] }
-            initialSortingOption={ HistoryDefaultSortingOption }
+            initialSortingOption={ order }
             fetchPosts={ fetchUserHistory }
             emptyState={ data && data.user.id === userComponentDto.id
               ? <EmptyState

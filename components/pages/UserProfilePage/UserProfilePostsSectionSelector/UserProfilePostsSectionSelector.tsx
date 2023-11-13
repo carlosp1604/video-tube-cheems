@@ -22,7 +22,7 @@ export const UserProfilePostsSectionSelector: FC<Props> = ({ selectedSection, on
         ${selectedSection === 'savedPosts' ? styles.userProfilePostsSectionSelector__option_active : ''}
       ` }
         onClick={ () => {
-          onClickOption('savedPosts')
+          if (selectedSection !== 'savedPosts') { onClickOption('savedPosts') }
         } }
         title={ t('user_saved_posts_selector_button_title') }
       >
@@ -37,7 +37,7 @@ export const UserProfilePostsSectionSelector: FC<Props> = ({ selectedSection, on
         ${selectedSection === 'history' ? styles.userProfilePostsSectionSelector__option_active : ''}
       ` }
         onClick={ () => {
-          onClickOption('history')
+          if (selectedSection !== 'history') { onClickOption('history') }
         } }
         title={ t('user_history_selector_button_title') }
       >

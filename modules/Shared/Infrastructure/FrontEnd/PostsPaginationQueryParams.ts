@@ -17,7 +17,7 @@ export enum PostsPaginationOrderType {
   OLDEST = 'o',
   NEWEST_SAVED = 'rs',
   OLDEST_SAVED = 'os',
-  NEWEST_VIEWED = 'rc',
+  NEWEST_VIEWED = 'nv',
   OLDEST_VIEWED = 'ov'
 }
 
@@ -25,6 +25,16 @@ export const HomePagePaginationOrderType: PostsPaginationOrderType[] = [
   PostsPaginationOrderType.NEWEST,
   PostsPaginationOrderType.OLDEST,
   PostsPaginationOrderType.MORE_VIEWS,
+]
+
+export const SavedPostsPaginationOrderType: PostsPaginationOrderType[] = [
+  PostsPaginationOrderType.OLDEST_SAVED,
+  PostsPaginationOrderType.NEWEST_SAVED,
+]
+
+export const HistoryPaginationOrderType: PostsPaginationOrderType[] = [
+  PostsPaginationOrderType.NEWEST_VIEWED,
+  PostsPaginationOrderType.OLDEST_VIEWED,
 ]
 
 export interface PostsPaginationNumericParameterConfiguration {

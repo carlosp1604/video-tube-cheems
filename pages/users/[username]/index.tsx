@@ -96,6 +96,7 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
     section: section as UserProfilePostsSectionSelectorType,
     page: paginationQueryParams.page ?? 1,
     perPage: paginationQueryParams.perPage ?? defaultPerPage,
+    order: paginationQueryParams.sortingOptionType ?? PostsPaginationOrderType.NEWEST_SAVED,
     posts: [],
     postsNumber: 0,
     userComponentDto: {
@@ -137,8 +138,6 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
         sortOption: InfrastructureSortingOptions.SAVED_DATE,
       })
 
-      console.log(savedPosts)
-
       props.posts = savedPosts.posts.map((post) => {
         return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
       })
@@ -156,7 +155,7 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
           type: PostFilterOptions.VIEWED_BY,
           value: props.userComponentDto.id,
         }],
-        postsPerPage: paginationQueryParams.page ?? defaultPerPage,
+        postsPerPage: paginationQueryParams.perPage ?? defaultPerPage,
         sortCriteria: InfrastructureSortingCriteria.DESC,
         sortOption: InfrastructureSortingOptions.VIEW_DATE,
       })

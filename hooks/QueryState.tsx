@@ -26,7 +26,7 @@ export function useUpdateQuery () {
       await push({
         pathname,
         query: newQuery,
-      }, undefined, { shallow: true, scroll: false })
+      }, undefined, { shallow: false, scroll: false })
     },
     [query, pathname]
   )

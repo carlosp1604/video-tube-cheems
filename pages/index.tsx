@@ -35,6 +35,9 @@ import {
   PostsPaginationOrderType,
   PostsPaginationQueryParams
 } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { useQueryState } from 'next-usequerystate'
+import { parseAsInteger, parseAsString } from 'next-usequerystate/parsers'
+import { useRouter } from 'next/router'
 
 interface Props {
   page: number
@@ -50,8 +53,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')
 
   const locale = context.locale ?? 'en'
-
-  console.log('me ejecuto xd')
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'home_page',
@@ -179,6 +180,10 @@ const HomePage: NextPage<Props> = ({
 }) => {
   const [activeProducer, setActiveProducer] = useState<ProducerComponentDto>(allPostsProducerDto)
   const { t } = useTranslation(['home_page', 'api_exceptions'])
+  const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
+  const [orderQueryParam] = useQueryState('order', parseAsString.withDefault(PostsPaginationOrderType.NEWEST))
+
+  const { asPath } = useRouter()
 
   const getOptions = useGalleryAction()
 
@@ -205,8 +210,9 @@ const HomePage: NextPage<Props> = ({
       />
 
       <PaginatedPostCardGallery
+        key={ asPath }
         perPage={ perPage }
-        initialPage={ page }
+        initialPage={ pageQueryParam }
         title={ activeProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : activeProducer.name }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }

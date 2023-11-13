@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { FC, ReactElement, useEffect, useRef, useState } from 'react'
+import { FC, ReactElement, useRef, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { calculatePagesNumber } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
@@ -65,7 +65,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   const [activeSortingOption, setActiveSortingOption] = useState<PostsPaginationOrderType>(initialSortingOption)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
   const [availablePages, setAvailablePages] =
-    useState<Array<number>>(PaginationHelper.getShowablePages(initialPage, pagesNumber))
+    useState<Array<number>>(PaginationHelper.getShowablePages(page, pagesNumber))
   const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
   const [orderQueryParam] = useQueryState('order', parseAsString.withDefault(defaultSortingOption))
 
@@ -79,20 +79,11 @@ export const PaginatedPostCardGallery: FC<Props> = ({
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
-  useEffect(() => {
-    if (firstRender) {
-      return
-    }
-
-    setPage(pageQueryParam)
-    setActiveSortingOption(orderQueryParam as PostsPaginationOrderType)
-    updatePosts(pageQueryParam, orderQueryParam as PostsPaginationOrderType, filters)
-  }, [pageQueryParam, orderQueryParam])
-
   const updatePosts = async (
     page: number,
     sortingOption: PostsPaginationOrderType,
-    postsFilters: FetchPostsFilter[]
+    postsFilters: FetchPostsFilter[],
+    scroll: boolean
   ) => {
     const componentSortingOption = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(sortingOption)
     const posts = await fetchPosts(page, componentSortingOption, postsFilters)
@@ -103,9 +94,14 @@ export const PaginatedPostCardGallery: FC<Props> = ({
 
     const newPagesNumber = calculatePagesNumber(posts.postsNumber, perPage)
 
+    setPage(page)
+    setActiveSortingOption(sortingOption)
     setPostsNumber(posts.postsNumber)
     setAvailablePages(PaginationHelper.getShowablePages(page, newPagesNumber))
     setPagesNumber(newPagesNumber)
+    if (scroll) {
+      scrollToTop()
+    }
   }
 
   const scrollToTop = () => { postGalleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
@@ -116,10 +112,11 @@ export const PaginatedPostCardGallery: FC<Props> = ({
     setCurrentPosts(currentPosts.filter((post) => post.id !== postId))
     setPostsNumber(postsNumber - 1)
 
-    if (initialPage > 1 && newPostsNumber % perPage === 0) {
-      const newPageNumber = initialPage - 1
+    if (page > 1 && newPostsNumber % perPage === 0) {
+      const newPageNumber = -1
 
       setPage(newPageNumber)
+      // await updatePosts(newPageNumber, activeSortingOption, filters, false)
       await updateQuery([{ key: 'page', value: String(newPageNumber) }])
       setPagesNumber(pagesNumber - 1)
     }
@@ -141,6 +138,7 @@ export const PaginatedPostCardGallery: FC<Props> = ({
             { key: 'order', value: String(option) },
             { key: 'page', value: '1' },
           ])
+          // await updatePosts(1, option, filters, true)
         } }
       />
     )
@@ -176,8 +174,8 @@ export const PaginatedPostCardGallery: FC<Props> = ({
         pageNumber={ page }
         onPageNumberChange={ async (newPageNumber) => {
           setPage(newPageNumber)
+          // await updatePosts(newPageNumber, activeSortingOption, filters, true)
           await updateQuery([{ key: 'page', value: String(newPageNumber) }])
-          scrollToTop()
         } }
         pagesNumber={ pagesNumber }
       />

@@ -3,10 +3,8 @@ import styles from './PaginatedActorCardGallery.module.scss'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 import {
   HomePostsDefaultSortingOption,
-  ComponentSortingOption,
-  HomePostsSortingOptions
+  ComponentSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
@@ -92,11 +90,6 @@ export const PaginatedActorCardGallery: FC<Props> = ({
           </small>
         </h1>
 
-        <SortingMenuDropdown
-          activeOption={ activeSortingOption }
-          onChangeOption={ (option: ComponentSortingOption) => setActiveSortingOption(option) }
-          options={ HomePostsSortingOptions }
-        />
       </div>
 
       <ActorCardList

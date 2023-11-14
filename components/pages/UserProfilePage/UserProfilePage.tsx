@@ -27,7 +27,7 @@ import { PostCardGalleryOption } from '~/modules/Posts/Infrastructure/Components
 import {
   PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
-import { useUpdateQuery } from '~/hooks/QueryState'
+import { useUpdateQuery } from '~/hooks/UpdateQuery'
 import { GalleryActionType, useGalleryAction } from '~/hooks/GalleryAction'
 import {
   HistoryPaginationOrderType,
@@ -97,7 +97,11 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 
   const options: PostCardGalleryOption[] = getOptions(GalleryActionType.SAVED_POSTS, userComponentDto.id)
 
-  const fetchSavedPosts = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
+  const fetchSavedPosts = async (
+    pageNumber: number,
+    sortingOption: ComponentSortingOption,
+    filters: FetchPostsFilter[]
+  ) => {
     return (new PostsApiService())
       .getSavedPosts(
         userComponentDto.id,
@@ -109,7 +113,11 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       )
   }
 
-  const fetchUserHistory = async (pageNumber: number, sortingOption: ComponentSortingOption, filters: FetchPostsFilter[]) => {
+  const fetchUserHistory = async (
+    pageNumber: number,
+    sortingOption: ComponentSortingOption,
+    filters: FetchPostsFilter[]
+  ) => {
     return (new PostsApiService())
       .getUserHistory(
         userComponentDto.id,

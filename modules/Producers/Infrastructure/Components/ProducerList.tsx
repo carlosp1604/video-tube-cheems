@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, FC, SetStateAction } from 'react'
+import { CSSProperties, FC } from 'react'
 import styles from './ProducerList.module.scss'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import { useTranslation } from 'next-i18next'
@@ -6,11 +6,11 @@ import { Carousel } from '~/components/Carousel/Carousel'
 
 interface Props {
   producers: ProducerComponentDto[]
-  setActiveProducer: Dispatch<SetStateAction<ProducerComponentDto>>
+  onChangeProducer: (producer: ProducerComponentDto) => void
   activeProducer: ProducerComponentDto
 }
 
-export const ProducerList: FC<Props> = ({ producers, activeProducer, setActiveProducer }) => {
+export const ProducerList: FC<Props> = ({ producers, activeProducer, onChangeProducer }) => {
   const { t } = useTranslation('home_page')
 
   return (
@@ -28,7 +28,7 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer, setActivePr
                 ${activeProducer.id === producer.id ? styles.producerList__categoryActive : ''}
               ` }
               key={ producer.id }
-              onClick={ () => setActiveProducer(producer) }
+              onClick={ () => onChangeProducer(producer) }
               style={ {
                 '--category-color': producer.brandHexColor,
               } as CSSProperties }

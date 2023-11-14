@@ -9,10 +9,7 @@ import {
   PaginatedPostCardGallery
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { useTranslation } from 'next-i18next'
-import {
-  HomePostsDefaultSortingOption,
-  HomePostsSortingOptions, ComponentSortingOption
-} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
+import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -27,6 +24,9 @@ import {
   PostCardGalleryAction,
   PostCardGalleryOption
 } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import {
+  PostsPaginationOrderType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 
 export interface SearchPageProps {
   posts: PostCardComponentDto[]
@@ -137,10 +137,11 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
   return (
     <div className={ styles.searchPage__container }>
       <PaginatedPostCardGallery
+        defaultSortingOption={ PostsPaginationOrderType.NEWEST }
         initialPage={ 1 }
         perPage={ defaultPerPage }
-        initialSortingOption={ HomePostsDefaultSortingOption }
-        sortingOptions={ HomePostsSortingOptions }
+        initialSortingOption={ PostsPaginationOrderType.NEWEST }
+        sortingOptions={ [] }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }
         filters={ [titleFilter] }

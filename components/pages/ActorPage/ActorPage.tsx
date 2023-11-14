@@ -1,15 +1,9 @@
 import { NextPage } from 'next'
 import { useState } from 'react'
 import styles from './ActorPage.module.scss'
-import {
-  PaginatedPostCardGallery
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import {
-  HomePostsDefaultSortingOption,
-  HomePostsSortingOptions, ComponentSortingOption
-} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
+import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
@@ -64,20 +58,6 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, posts, postsNumber 
           </div>
         </div>
       </div>
-
-      <PaginatedPostCardGallery
-        initialPage={ 1 }
-        perPage={ defaultPerPage }
-        sortingOptions={ HomePostsSortingOptions }
-        initialSortingOption={ HomePostsDefaultSortingOption }
-        initialPostsNumber={ postsNumber }
-        filters={ [] }
-        initialPosts={ posts }
-        title={ `Videos de ${actor.name}` }
-        fetchPosts={ fetchPosts }
-        postCardOptions={ [] }
-        emptyState={ null }
-      />
     </div>
   )
 }

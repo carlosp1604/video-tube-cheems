@@ -8,7 +8,7 @@ import * as uuid from 'uuid'
 import { useTranslation } from 'next-i18next'
 import toast from 'react-hot-toast'
 // eslint-disable-next-line max-len
-import { PaginatedPostCardGalleryOption, PaginatedPostCardGalleryOptions } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGalleryOptions/PaginatedPostCardGalleryOptions'
+import { PaginatedPostCardGalleryOption, PaginatedPostCardGalleryOptions } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PaginatedPostCardGalleryOptions'
 import { useSession } from 'next-auth/react'
 
 export enum PostCardGalleryAction {

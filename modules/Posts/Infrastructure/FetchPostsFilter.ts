@@ -2,5 +2,5 @@ import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOpti
 
 export interface FetchPostsFilter {
   type: PostFilterOptions
-  value: string | null
+  value: string
 }

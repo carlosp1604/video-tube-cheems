@@ -7,7 +7,7 @@ import { Carousel } from '~/components/Carousel/Carousel'
 interface Props {
   producers: ProducerComponentDto[]
   onChangeProducer: (producer: ProducerComponentDto) => void
-  activeProducer: ProducerComponentDto
+  activeProducer: ProducerComponentDto | null
 }
 
 export const ProducerList: FC<Props> = ({ producers, activeProducer, onChangeProducer }) => {
@@ -25,10 +25,14 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer, onChangePro
             <button
               className={ `
                 ${styles.producerList__category}
-                ${activeProducer.id === producer.id ? styles.producerList__categoryActive : ''}
+                ${activeProducer?.id === producer.id ? styles.producerList__categoryActive : ''}
               ` }
               key={ producer.id }
-              onClick={ () => onChangeProducer(producer) }
+              onClick={ () => {
+                if (activeProducer?.id !== producer.id) {
+                  onChangeProducer(producer)
+                }
+              } }
               style={ {
                 '--category-color': producer.brandHexColor,
               } as CSSProperties }

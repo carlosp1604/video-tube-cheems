@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
+import { ParsedUrlQuery } from 'querystring'
 
 export interface QueryItem {
   key: string
@@ -11,7 +12,7 @@ export function useUpdateQuery () {
 
   return useCallback(
     async (items: QueryItem[]): Promise<void> => {
-      const newQuery = { ...query }
+      const newQuery: ParsedUrlQuery = {}
 
       items.forEach((item) => {
         const param = query[item.key]

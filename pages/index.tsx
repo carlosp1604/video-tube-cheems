@@ -149,8 +149,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     console.error(exception)
   }
 
-  console.log(props.activeProducer)
-
   return {
     props,
   }

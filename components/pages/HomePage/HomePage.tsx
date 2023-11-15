@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
@@ -59,6 +59,7 @@ export const HomePage: NextPage<Props> = ({
   const [currentProducer, setCurrentProducer] = useState<ProducerComponentDto | null>(activeProducer)
   const [queryParams, setQueryParams] = useState<QueryItem[]>([])
 
+  /** Pagination and sorting query params **/
   const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
   const [orderQueryParam] = useQueryState('order', parseAsString.withDefault(PostsPaginationOrderType.NEWEST))
   const [filterQueryParam] = useQueryState('producerId', parseAsString.withDefault(''))
@@ -66,7 +67,7 @@ export const HomePage: NextPage<Props> = ({
   const postGalleryRef = useRef<HTMLDivElement>(null)
 
   const { t } = useTranslation(['home_page', 'api_exceptions'])
-  const { query, locale } = useRouter()
+  const { query, locale, asPath } = useRouter()
 
   const firstRender = useFirstRender()
   const updateQuery = useUpdateQuery()
@@ -121,6 +122,26 @@ export const HomePage: NextPage<Props> = ({
     ])
   }
 
+  const sortProducers = (activeProducer: ProducerComponentDto | null, producers: ProducerComponentDto[]) => {
+    if (!activeProducer) {
+      return producers
+    }
+
+    const producerIndex = producers.indexOf(activeProducer)
+
+    if (producerIndex !== -1) {
+      const updatedProducers = [...producers]
+
+      updatedProducers.unshift(...updatedProducers.splice(producerIndex, 1))
+
+      return updatedProducers
+    }
+
+    return producers
+  }
+
+  const sortedProducers = useMemo(() => sortProducers(currentProducer, producers), [currentProducer])
+
   const updatePosts = async (
     page: number,
     order: PostsPaginationOrderType,
@@ -144,12 +165,14 @@ export const HomePage: NextPage<Props> = ({
     setPagesNumber(calculatePagesNumber(newPosts.postsNumber, defaultPerPage))
   }
 
+  /** Make sure query params are updated when component has the correct state **/
   useEffect(() => {
     if (firstRender) { return }
 
     updateQuery(queryParams)
   }, [queryParams])
 
+  /** If queryParams are change externally, then we update state **/
   useEffect(() => {
     if (firstRender) { return }
 
@@ -168,7 +191,6 @@ export const HomePage: NextPage<Props> = ({
         }
       }
 
-      // TODO: Add filters
       updatePosts(pageQueryParam, orderQueryParam as PostsPaginationOrderType, newProducer)
         .then(() => {
           setCurrentPage(pageQueryParam)
@@ -190,7 +212,8 @@ export const HomePage: NextPage<Props> = ({
   return (
     <div className={ styles.home__container }>
       <ProducerList
-        producers={ producers }
+        key={ asPath }
+        producers={ sortedProducers }
         onChangeProducer={ onChangeProducer }
         activeProducer={ currentProducer }
       />

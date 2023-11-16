@@ -855,11 +855,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
 
       if (filter.type.startsWith('producer')) {
-        if (filter.type === 'producerId') {
+        if (filter.type === 'producerSlug') {
           whereClause = {
             ...whereClause,
             producer: {
-              id: filter.value,
+              slug: filter.value,
             },
           }
         }

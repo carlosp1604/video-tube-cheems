@@ -24,6 +24,7 @@ export class ProducerModelTranslator {
 
     return new Producer(
       prismaProducerModel.id,
+      prismaProducerModel.slug,
       prismaProducerModel.name,
       prismaProducerModel.description,
       prismaProducerModel.imageUrl,
@@ -39,6 +40,7 @@ export class ProducerModelTranslator {
   public static toDatabase (producer: Producer): PrismaProducerModel {
     return {
       id: producer.id,
+      slug: producer.slug,
       brandHexColor: producer.brandHexColor,
       imageUrl: producer.imageUrl,
       name: producer.name,

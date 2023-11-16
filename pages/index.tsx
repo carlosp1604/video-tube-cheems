@@ -8,8 +8,8 @@ import { GetServerSideProps } from 'next'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import {
-  ProducerListComponentDtoTranslator
-} from '~/modules/Producers/Infrastructure/Translators/ProducerListComponentDtoTranslator'
+  ProducerComponentDtoTranslator
+} from '~/modules/Producers/Infrastructure/Translators/ProducerComponentDtoTranslator'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
@@ -48,7 +48,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     {
       filters: {
         filtersToParse: [
-          PostFilterOptions.PRODUCER_ID,
+          PostFilterOptions.PRODUCER_SLUG,
         ],
       },
       sortingOptionType: {
@@ -117,7 +117,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     ])
 
     const producerComponents = producers.map((producer) => {
-      return ProducerListComponentDtoTranslator.fromApplication(producer)
+      return ProducerComponentDtoTranslator.fromApplication(producer)
     })
 
     // Add default producer
@@ -127,7 +127,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     // Set active producer
     const producerIdFilter =
-      paginationQueryParams.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_ID)
+      paginationQueryParams.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_SLUG)
 
     if (producerIdFilter) {
       const selectedProducer = producers.find((producer) => producer.id === producerIdFilter.value)

@@ -164,7 +164,7 @@ export const HomePage: NextPage<Props> = ({
       defaultPerPage,
       componentSortingOption.criteria,
       componentSortingOption.option,
-      producer.id !== '' ? [{ value: producer.id, type: PostFilterOptions.PRODUCER_ID }] : []
+      producer.id !== '' ? [{ value: producer.slug, type: PostFilterOptions.PRODUCER_SLUG }] : []
     )
 
     setCurrentPosts(newPosts.posts.map((post) => {

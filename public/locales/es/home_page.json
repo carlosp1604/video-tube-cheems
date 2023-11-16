@@ -1,8 +1,8 @@
 {
-  "all_producers_title": "Todos los vídeos",
-  "like_post_post_card_gallery_action_title": "Me gusta",
-  "post_reaction_added_correctly_message": "¡Gracias por reaccionar!",
-  "post_save_post_successfully_saved": "El post fue agregado a la lista de videos guardados del usuario",
-  "save_post_post_card_gallery_action_title": "Guardar",
+  "all_producers_title": "Todos los posts",
+  "post_gallery_empty_state_subtitle": "Parece que no hay ningún post que coincida con los criterios que has indicado\nPrueba a cambiar los parámetros de búsqueda e inténtalo nuevamente",
+  "post_gallery_empty_state_title": "No hemos encontrado nada",
+  "post_gallery_no_producer_title": "Productora no encontrada",
+  "post_gallery_subtitle": "{{postsNumber}} posts",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión"
 }

@@ -1,12 +1,11 @@
 {
-  "delete_saved_post_option_title": "Delete saved post",
   "history_empty_subtitle": "{{name}} hasn't visited any posts yet, come back another time",
   "history_empty_title": "There's nothing to see around here",
   "own_history_empty_subtitle": "This is your post history, all the posts you visit will appear here\nIt looks like you haven't visited any posts yet\nTry clicking on a post for your first visit!",
   "own_history_empty_title": "You have not visited any post yet",
-  "post_save_post_successfully_removed_from_saved_post": "Post was removed from the user's saved post list",
   "saved_posts_empty_subtitle": "{{name}} has not yet added any posts to his list of saved posts",
   "saved_posts_empty_title": "How empty it is!",
+  "see_all_button_title": "See all",
   "user_history_selector_button_title": "History",
   "user_history_title": "Posts History",
   "user_joined_at_label_title": "Since",

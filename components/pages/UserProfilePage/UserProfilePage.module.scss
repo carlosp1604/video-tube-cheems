@@ -12,7 +12,17 @@
   }
 
   &__user-posts {
-    @apply flex flex-col gap-x-5 px-5 pt-4 border border-base-800
-      rounded-lg mb-10;
+    @apply flex flex-col gap-x-5 pt-4
+      rounded-lg mb-2;
+  }
+
+  &__user-posts-header {
+    @apply flex flex-row justify-between mb-4 font-black text-lg
+      items-center;
+  }
+
+  &__user-posts-see-all-button {
+    @apply p-2 px-3 rounded-full border border-base-700
+      text-xs font-medium;
   }
 }

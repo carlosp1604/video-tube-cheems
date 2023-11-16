@@ -1,12 +1,11 @@
 {
-  "delete_saved_post_option_title": "Eliminar post guardado",
   "history_empty_subtitle": "{{name}} todavía no visitó ningún post, regresa en otro momento",
   "history_empty_title": "No hay nada que ver por aquí",
   "own_history_empty_subtitle": "Este es tu historial de posts, todos los posts que visites aparecerán aquí\nParece que aún no has visitado ningún post\n¡Prueba a hacer click sobre un post para tu primera visita!",
   "own_history_empty_title": "Aún no has visitado ningún post",
-  "post_save_post_successfully_removed_from_saved_post": "El post fue eliminado de la lista de videos guardados del usuario",
   "saved_posts_empty_subtitle": "{{name}} todavía no agregó ningún post a su lista de posts guardados",
   "saved_posts_empty_title": "¡Qué vacío está!",
+  "see_all_button_title": "Ver todo",
   "user_history_selector_button_title": "Historial",
   "user_history_title": "Historial",
   "user_joined_at_label_title": "Desde",

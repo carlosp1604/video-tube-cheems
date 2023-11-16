@@ -38,8 +38,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'user_retrieve_password',
     'pagination_bar',
     'common',
-    'paginated_post_card_gallery',
     'api_exceptions',
+    'post_card_options',
+    'post_card_gallery',
   ])
 
   const paginationQueryParams = new PostsPaginationQueryParams(

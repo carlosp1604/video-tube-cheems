@@ -1,6 +1,6 @@
-.paginated-post-card-gallery-options {
+.post-card-gallery-options {
   &__container {
-    @apply flex flex-col gap-y-4 py-5 pt-7;
+    @apply flex flex-col gap-y-4 py-5;
   }
 
   &__title-section {

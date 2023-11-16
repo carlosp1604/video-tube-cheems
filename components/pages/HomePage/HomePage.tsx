@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
@@ -15,11 +15,8 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { QueryItem, useUpdateQuery } from '~/hooks/UpdateQuery'
-import { GalleryActionType, useGalleryAction } from '~/hooks/GalleryAction'
-import {
-  PostCardGallery,
-  PostCardGalleryOption
-} from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import { usePostCardOptions } from '~/hooks/PostCardOptions'
+import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import {
   PostCardComponentDtoTranslator
@@ -33,6 +30,7 @@ import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 
 export interface Props {
   page: number
@@ -64,17 +62,19 @@ export const HomePage: NextPage<Props> = ({
   const [orderQueryParam] = useQueryState('order', parseAsString.withDefault(PostsPaginationOrderType.NEWEST))
   const [filterQueryParam] = useQueryState('producerId', parseAsString.withDefault(''))
 
-  const postGalleryRef = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation(['home_page'])
 
-  const { t } = useTranslation(['home_page', 'api_exceptions'])
-  const { query, locale, asPath } = useRouter()
+  const router = useRouter()
+  const { query, asPath } = router
+  const locale = router.locale ?? 'en'
 
   const firstRender = useFirstRender()
   const updateQuery = useUpdateQuery()
-  const getOptions = useGalleryAction()
+  const buildOptions = usePostCardOptions()
 
-  const postCardOptions: PostCardGalleryOption[] = getOptions(GalleryActionType.HOME_PAGE)
-  const scrollToTop = () => { postGalleryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+  const postCardOptions = buildOptions([{ type: 'savePost' }, { type: 'react' }])
+
+  const scrollToTop = () => { window.scrollTo({ behavior: 'smooth', top: 0 }) }
 
   const onDeletePost = async (postId: string) => {
     const newPostsNumber = postsNumber - 1
@@ -102,7 +102,7 @@ export const HomePage: NextPage<Props> = ({
     setCurrentProducer(producer)
     setCurrentPage(1)
 
-    await updatePosts(1, activeSortingOption, producer.id === '' ? null : producer)
+    await updatePosts(1, activeSortingOption, producer)
 
     setQueryParams([
       { key: 'producerId', value: String(producer.id) },
@@ -150,12 +150,21 @@ export const HomePage: NextPage<Props> = ({
     const componentSortingOption =
       PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order as PostsPaginationOrderType)
 
+    /** Handle when producer does not exist in the producers list **/
+    if (!producer) {
+      setCurrentPosts([])
+      setCurrentPostsNumber(0)
+      setPagesNumber(calculatePagesNumber(0, defaultPerPage))
+
+      return
+    }
+
     const newPosts = await (new PostsApiService()).getPosts(
       page,
       defaultPerPage,
       componentSortingOption.criteria,
       componentSortingOption.option,
-      producer ? [{ value: producer.id, type: PostFilterOptions.PRODUCER_ID }] : []
+      producer.id !== '' ? [{ value: producer.id, type: PostFilterOptions.PRODUCER_ID }] : []
     )
 
     setCurrentPosts(newPosts.posts.map((post) => {
@@ -179,15 +188,17 @@ export const HomePage: NextPage<Props> = ({
     if (
       pageQueryParam !== currentPage ||
       orderQueryParam !== activeSortingOption ||
-      (currentProducer && filterQueryParam !== currentProducer.id)
+      filterQueryParam !== currentProducer?.id
     ) {
-      let newProducer: ProducerComponentDto = allPostsProducerDto
+      let newProducer: ProducerComponentDto | null = allPostsProducerDto
 
       if (filterQueryParam !== '') {
         const selectedProducer = producers.find((producer) => producer.id === filterQueryParam)
 
         if (selectedProducer) {
           newProducer = selectedProducer
+        } else {
+          newProducer = null
         }
       }
 
@@ -203,7 +214,7 @@ export const HomePage: NextPage<Props> = ({
   let galleryTitle: string
 
   if (!currentProducer) {
-    galleryTitle = 'NO HAY NADA QUE VER AAAAAAA'
+    galleryTitle = t('post_gallery_no_producer_title')
   } else {
     galleryTitle = currentProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : currentProducer.name
   }
@@ -219,10 +230,12 @@ export const HomePage: NextPage<Props> = ({
       />
 
       { currentPostsNumber > 0
-        ? <div ref={ postGalleryRef }>
+        ? <>
           <PostCardGalleryHeader
             title={ galleryTitle }
-            postsNumber={ currentPostsNumber }
+            subtitle={ t('post_gallery_subtitle',
+              { postsNumber: NumberFormatter.compatFormat(currentPostsNumber, locale) })
+            }
             showSortingOptions={ postsNumber > defaultPerPage }
             activeOption={ activeSortingOption }
             sortingOptions={ HomePagePaginationOrderType }
@@ -232,7 +245,6 @@ export const HomePage: NextPage<Props> = ({
           <PostCardGallery
             posts={ currentPosts }
             postCardOptions={ postCardOptions }
-            onClickDeleteOption={ onDeletePost }
           />
 
           <PaginationBar
@@ -251,10 +263,10 @@ export const HomePage: NextPage<Props> = ({
             } }
             pagesNumber={ pagesNumber }
           />
-        </div>
+        </>
         : <EmptyState
-            title={ 'Mi loco, aqui ni hay nada que ver' }
-            subtitle={ 'Esto te pasa por meco' }
+            title={ t('post_gallery_empty_state_title') }
+            subtitle={ t('post_gallery_empty_state_subtitle') }
           />
       }
 

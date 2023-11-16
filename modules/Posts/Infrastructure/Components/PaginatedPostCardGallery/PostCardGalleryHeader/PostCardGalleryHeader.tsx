@@ -3,11 +3,10 @@ import styles from './PostCardGalleryHeader.module.scss'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { BsDot } from 'react-icons/bs'
 import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { useTranslation } from 'next-i18next'
 
 interface Props {
   title: string
-  postsNumber: number
+  subtitle: string
   showSortingOptions: boolean
   activeOption: PostsPaginationOrderType
   sortingOptions: PostsPaginationOrderType[]
@@ -16,21 +15,19 @@ interface Props {
 
 export const PostCardGalleryHeader: FC<Props> = ({
   title,
-  postsNumber,
+  subtitle,
   showSortingOptions,
   activeOption,
   sortingOptions,
   onChangeOption,
 }) => {
-  const { t } = useTranslation('home_page')
-
   return (
     <div className={ styles.postCardGalleryHeader__container }>
       <span className={ styles.postCardGalleryHeader__title }>
         { title }
         <BsDot className={ styles.postCardGalleryHeader__separatorIcon }/>
         <small className={ styles.postCardGalleryHeader__videosQuantity }>
-          { t('gallery_posts_count_title', { videosNumber: postsNumber }) }
+          { subtitle }
         </small>
       </span>
 

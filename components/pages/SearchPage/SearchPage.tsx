@@ -137,10 +137,10 @@ export const SearchPage: NextPage<SearchPageProps> = ({ posts, title, postsNumbe
   return (
     <div className={ styles.searchPage__container }>
       <PaginatedPostCardGallery
-        defaultSortingOption={ PostsPaginationOrderType.NEWEST }
+        defaultSortingOption={ PostsPaginationOrderType.LATEST }
         initialPage={ 1 }
         perPage={ defaultPerPage }
-        initialSortingOption={ PostsPaginationOrderType.NEWEST }
+        initialSortingOption={ PostsPaginationOrderType.LATEST }
         sortingOptions={ [] }
         initialPosts={ posts }
         initialPostsNumber={ postsNumber }

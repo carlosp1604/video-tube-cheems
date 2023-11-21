@@ -15,6 +15,7 @@ import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
+import { useRouter } from 'next/router'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {
@@ -39,6 +40,7 @@ function App ({
   const [openMenu, setOpenMenu] = useState<boolean>(false)
 
   const { i18n } = useTranslation()
+  const { asPath } = useRouter()
 
   Settings.defaultLocale = i18n.language || 'en'
 
@@ -85,7 +87,7 @@ function App ({
               />
               <AppMenu />
 
-              <Component { ...pageProps } />
+              <Component { ...pageProps }/>
             </main>
           </div>
         </LoginProvider>

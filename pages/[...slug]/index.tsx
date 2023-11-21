@@ -3,7 +3,6 @@ import { container } from '~/awilix.container'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
 import { HomePage, Props } from '~/components/pages/HomePage/HomePage'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { GetServerSideProps } from 'next'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -17,10 +16,19 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import {
-  PostsPaginationOrderType,
-  PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationParams'
+import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationOrderType'
+
+/**
+ * Allowed routes:
+ * - /latest (default)
+ * - /latest/{page}
+ * - /latest/{producer}
+ * - /latest/{producer}/{page}
+ *
+ * For the rest routes, we will redirect to root /latest
+ *
+ */
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -43,75 +51,51 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'post_card_gallery',
   ])
 
-  const paginationQueryParams = new PostsPaginationQueryParams(
-    context.query,
-    {
-      filters: {
-        filtersToParse: [
-          PostFilterOptions.PRODUCER_SLUG,
-        ],
-      },
-      sortingOptionType: {
-        defaultValue: PostsPaginationOrderType.LATEST,
-        parseableOptionTypes: [
-          PostsPaginationOrderType.LATEST,
-          PostsPaginationOrderType.OLDEST,
-          PostsPaginationOrderType.MOST_VIEWED,
-        ],
-      },
-      page: {
-        defaultValue: 1,
-        minValue: 1,
-        maxValue: Infinity,
-      },
-    }
-  )
+  const params = new PostsPaginationParams(context.query, {
+    filterParamType: {
+      optional: true,
+      defaultValue: '',
+    },
+    sortingOptionType: {
+      parseableOptionTypes: [
+        PostsPaginationOrderType.LATEST,
+        PostsPaginationOrderType.OLDEST,
+        PostsPaginationOrderType.MOST_VIEWED,
+      ],
+      defaultValue: PostsPaginationOrderType.LATEST,
+    },
+  })
 
-  if (paginationQueryParams.parseFailed) {
-    const stringPaginationParams = paginationQueryParams.getParsedQueryString()
-
+  if (params.parseFailed) {
     return {
       redirect: {
-        destination: `/${locale}?${stringPaginationParams}`,
+        destination: params.getParsedQuery(locale),
         permanent: false,
       },
     }
   }
 
   const props: Props = {
-    order: paginationQueryParams.sortingOptionType ?? PostsPaginationOrderType.LATEST,
-    page: paginationQueryParams.page ?? 1,
+    order: PostsPaginationOrderType.LATEST,
+    page: 1,
     initialPosts: [],
     producers: [],
     activeProducer: allPostsProducerDto,
     initialPostsNumber: 0,
-    ...i18nSSRConfig,
     initialFilter: null,
+    ...i18nSSRConfig,
   }
 
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getProducers = container.resolve<GetAllProducers>('getAllProducers')
 
   try {
-    let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC
-    let sortOption: InfrastructureSortingOptions = InfrastructureSortingOptions.DATE
-    let page = 1
-
-    if (paginationQueryParams.componentSortingOption) {
-      sortOption = paginationQueryParams.componentSortingOption.option
-      sortCriteria = paginationQueryParams.componentSortingOption.criteria
-    }
-
-    if (paginationQueryParams.page) {
-      page = paginationQueryParams.page
-    }
-
     const [posts, producers] = await Promise.all([
       getPosts.get({
-        page,
-        filters: paginationQueryParams.filters,
-        sortCriteria,
-        sortOption,
+        page: 1,
+        filters: [],
+        sortCriteria: InfrastructureSortingCriteria.DESC,
+        sortOption: InfrastructureSortingOptions.DATE,
         postsPerPage: defaultPerPage,
       }),
       await getProducers.get(),
@@ -123,25 +107,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     // Add default producer
     producerComponents.unshift(allPostsProducerDto)
-
-    let activeProducer
-
-    // Set active producer
-    const producerIdFilter =
-      paginationQueryParams.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_SLUG)
-
-    if (producerIdFilter) {
-      const selectedProducer = producers.find((producer) => producer.slug === producerIdFilter.value)
-
-      if (selectedProducer) {
-        activeProducer = selectedProducer
-
-        props.activeProducer = activeProducer
-        props.initialFilter = { value: activeProducer.slug, type: PostFilterOptions.PRODUCER_SLUG }
-      } else {
-        props.activeProducer = null
-      }
-    }
 
     props.initialPosts = posts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)

@@ -1,20 +1,17 @@
 import { NextPage } from 'next'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
   HomePagePaginationOrderType,
-  PostsPaginationOrderType,
   PostsPaginationQueryParams
 } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { useQueryState } from 'next-usequerystate'
-import { parseAsInteger, parseAsString } from 'next-usequerystate/parsers'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
-import { QueryItem, useUpdateQuery } from '~/hooks/UpdateQuery'
+import { useUpdateQuery } from '~/hooks/UpdateQuery'
 import { usePostCardOptions } from '~/hooks/PostCardOptions'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
@@ -31,36 +28,39 @@ import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/Pagin
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
+import { PaginationStateInterface } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationStateInterface'
+import { FetchPostsFilter, getFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { PostsPaginationParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationParams'
+import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationOrderType'
 
 export interface Props {
   page: number
   order: PostsPaginationOrderType
-  posts: PostCardComponentDto[]
+  initialPosts: PostCardComponentDto[]
+  initialPostsNumber: number
   producers: ProducerComponentDto[]
   activeProducer: ProducerComponentDto | null
-  postsNumber: number
+  initialFilter: FetchPostsFilter | null
 }
 
 export const HomePage: NextPage<Props> = ({
-  postsNumber,
-  posts,
+  initialPostsNumber,
+  initialPosts,
   producers,
   activeProducer,
   page,
   order,
+  initialFilter,
 }) => {
-  const [currentPage, setCurrentPage] = useState<number>(page)
-  const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(postsNumber, defaultPerPage))
-  const [currentPosts, setCurrentPosts] = useState<PostCardComponentDto[]>(posts)
-  const [currentPostsNumber, setCurrentPostsNumber] = useState<number>(postsNumber)
-  const [activeSortingOption, setActiveSortingOption] = useState<PostsPaginationOrderType>(order)
-  const [currentProducer, setCurrentProducer] = useState<ProducerComponentDto | null>(activeProducer)
-  const [queryParams, setQueryParams] = useState<QueryItem[]>([])
+  const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
+  const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
+  const [producer, setProducer] = useState<ProducerComponentDto | null>(activeProducer)
 
-  /** Pagination and sorting query params **/
-  const [pageQueryParam] = useQueryState('page', parseAsInteger.withDefault(1))
-  const [orderQueryParam] = useQueryState('order', parseAsString.withDefault(PostsPaginationOrderType.NEWEST))
-  const [filterQueryParam] = useQueryState('producerId', parseAsString.withDefault(''))
+  const [pagination, setPagination] = useState<PaginationStateInterface>({
+    page,
+    order,
+    filters: initialFilter ? [initialFilter] : [],
+  })
 
   const { t } = useTranslation(['home_page'])
 
@@ -72,128 +72,122 @@ export const HomePage: NextPage<Props> = ({
   const updateQuery = useUpdateQuery()
   const buildOptions = usePostCardOptions()
 
+  // TODO: Move into the postGallery component
   const postCardOptions = buildOptions([{ type: 'savePost' }, { type: 'react' }])
 
   const scrollToTop = () => { window.scrollTo({ behavior: 'smooth', top: 0 }) }
 
+  // TODO: This makes no sense here
   const onDeletePost = async (postId: string) => {
-    const newPostsNumber = postsNumber - 1
+    const newPostsNumber = initialPostsNumber - 1
 
-    setCurrentPosts(currentPosts.filter((post) => post.id !== postId))
-    setCurrentPostsNumber(currentPostsNumber - 1)
+    setPosts(posts.filter((post) => post.id !== postId))
+    setPostsNumber(postsNumber - 1)
 
-    if (currentPage > 1 && newPostsNumber % defaultPerPage === 0) {
+    if (pagination.page > 1 && newPostsNumber % defaultPerPage === 0) {
       const newPageNumber = -1
 
-      setCurrentPage(newPageNumber)
-      setPagesNumber(pagesNumber - 1)
-
-      await updatePosts(newPageNumber, activeSortingOption, currentProducer)
-
-      setQueryParams([
-        { key: 'page', value: String(newPageNumber) },
-        { key: 'producerId', value: String(currentProducer?.id) },
-        { key: 'order', value: String(activeSortingOption) },
-      ])
+      setPagination({
+        ...pagination,
+        page: newPageNumber,
+      })
     }
   }
 
-  const onChangeProducer = async (producer: ProducerComponentDto) => {
-    setCurrentProducer(producer)
-    setCurrentPage(1)
+  const onChangeProducer = async (newProducer: ProducerComponentDto) => {
+    const newPaginationState = {
+      order: PostsPaginationOrderType.LATEST,
+      page: 1,
+      filters: newProducer.slug === allPostsProducerDto.slug
+        ? []
+        : [{ type: PostFilterOptions.PRODUCER_SLUG, value: newProducer.slug }],
+    }
 
-    await updatePosts(1, activeSortingOption, producer)
+    setProducer(newProducer)
+    setPagination(newPaginationState)
 
-    setQueryParams([
-      { key: 'producerId', value: String(producer.id) },
-      { key: 'order', value: String(activeSortingOption) },
-    ])
+    await updatePosts(newPaginationState)
   }
 
   const onChangeSortingOption = async (option: PostsPaginationOrderType) => {
-    setActiveSortingOption(option)
-    setCurrentPage(1)
+    const newPaginationState = { ...pagination, page: 1, order: option }
 
-    await updatePosts(1, option, currentProducer)
+    setPagination(newPaginationState)
 
-    setQueryParams([
-      { key: 'producerId', value: String(activeProducer?.id) },
-      { key: 'order', value: String(option) },
-    ])
+    await updatePosts(newPaginationState)
   }
 
-  const sortProducers = (activeProducer: ProducerComponentDto | null, producers: ProducerComponentDto[]) => {
-    if (!activeProducer) {
-      return producers
-    }
-
-    const producerIndex = producers.indexOf(activeProducer)
-
-    if (producerIndex !== -1) {
-      const updatedProducers = [...producers]
-
-      updatedProducers.unshift(...updatedProducers.splice(producerIndex, 1))
-
-      return updatedProducers
-    }
-
-    return producers
-  }
-
-  const sortedProducers = useMemo(() => sortProducers(currentProducer, producers), [currentProducer])
-
-  const updatePosts = async (
-    page: number,
-    order: PostsPaginationOrderType,
-    producer: ProducerComponentDto | null
-  ) => {
+  const updatePosts = async (pagination: PaginationStateInterface) => {
     const componentSortingOption =
-      PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order as PostsPaginationOrderType)
-
-    /** Handle when producer does not exist in the producers list **/
-    if (!producer) {
-      setCurrentPosts([])
-      setCurrentPostsNumber(0)
-      setPagesNumber(calculatePagesNumber(0, defaultPerPage))
-
-      return
-    }
+      PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(pagination.order)
 
     const newPosts = await (new PostsApiService()).getPosts(
-      page,
+      pagination.page,
       defaultPerPage,
       componentSortingOption.criteria,
       componentSortingOption.option,
-      producer.id !== '' ? [{ value: producer.slug, type: PostFilterOptions.PRODUCER_SLUG }] : []
+      pagination.filters
     )
 
-    setCurrentPosts(newPosts.posts.map((post) => {
+    setPosts(newPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
     }))
-    setCurrentPostsNumber(newPosts.postsNumber)
-    setPagesNumber(calculatePagesNumber(newPosts.postsNumber, defaultPerPage))
+    setPostsNumber(newPosts.postsNumber)
   }
 
-  /** Make sure query params are updated when component has the correct state **/
   useEffect(() => {
     if (firstRender) { return }
 
-    updateQuery(queryParams)
-  }, [queryParams])
+    const producerFilter = getFilter(PostFilterOptions.PRODUCER_SLUG, pagination.filters)
+
+    const newPathname = PostsPaginationParams.buildPathname(
+      pagination.page,
+      1,
+      pagination.order,
+      PostsPaginationOrderType.LATEST,
+      producerFilter ? producerFilter.value : null
+    )
+
+    if (newPathname !== asPath) {
+      updateQuery(`/${locale}${newPathname}`)
+    }
+  }, [pagination])
 
   /** If queryParams are change externally, then we update state **/
   useEffect(() => {
     if (firstRender) { return }
 
+    const params = new PostsPaginationParams(query, {
+      filterParamType: {
+        optional: true,
+        defaultValue: allPostsProducerDto.slug,
+      },
+      sortingOptionType: {
+        parseableOptionTypes: [
+          PostsPaginationOrderType.LATEST,
+          PostsPaginationOrderType.OLDEST,
+          PostsPaginationOrderType.MOST_VIEWED,
+        ],
+        defaultValue: PostsPaginationOrderType.LATEST,
+      },
+    })
+
+    const producerFilter = pagination.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_SLUG)
+    let producerSlug = allPostsProducerDto.slug
+
+    if (producerFilter) {
+      producerSlug = producerFilter.value
+    }
+
     if (
-      pageQueryParam !== currentPage ||
-      orderQueryParam !== activeSortingOption ||
-      filterQueryParam !== currentProducer?.id
+      params.page !== pagination.page ||
+      params.sortingOptionType !== pagination.order ||
+      params.filterParamType !== producerSlug
     ) {
       let newProducer: ProducerComponentDto | null = allPostsProducerDto
 
-      if (filterQueryParam !== '') {
-        const selectedProducer = producers.find((producer) => producer.id === filterQueryParam)
+      if (params.filterParamType !== allPostsProducerDto.slug) {
+        const selectedProducer = producers.find((producer) => producer.slug === params.filterParamType)
 
         if (selectedProducer) {
           newProducer = selectedProducer
@@ -202,66 +196,70 @@ export const HomePage: NextPage<Props> = ({
         }
       }
 
-      updatePosts(pageQueryParam, orderQueryParam as PostsPaginationOrderType, newProducer)
-        .then(() => {
-          setCurrentPage(pageQueryParam)
-          setActiveSortingOption(orderQueryParam as PostsPaginationOrderType)
-          setCurrentProducer(newProducer)
-        })
+      const newPaginationState = {
+        page: params.page as number,
+        order: params.sortingOptionType as PostsPaginationOrderType,
+        filters: newProducer
+          ? newProducer.slug === allPostsProducerDto.slug
+            ? []
+            : [{ type: PostFilterOptions.PRODUCER_SLUG, value: newProducer.slug }]
+          : [],
+      }
+
+      setPagination(newPaginationState)
+      setProducer(newProducer)
+
+      updatePosts(newPaginationState)
     }
   }, [query])
 
   let galleryTitle: string
 
-  if (!currentProducer) {
+  if (!producer) {
     galleryTitle = t('post_gallery_no_producer_title')
   } else {
-    galleryTitle = currentProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : currentProducer.name
+    galleryTitle = producer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : producer.name
   }
 
   // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
     <div className={ styles.home__container }>
       <ProducerList
-        key={ asPath }
-        producers={ sortedProducers }
+        producers={ producers }
         onChangeProducer={ onChangeProducer }
-        activeProducer={ currentProducer }
+        activeProducer={ producer }
       />
 
-      { currentPostsNumber > 0
+      { postsNumber > 0
         ? <>
           <PostCardGalleryHeader
             title={ galleryTitle }
-            subtitle={ t('post_gallery_subtitle',
-              { postsNumber: NumberFormatter.compatFormat(currentPostsNumber, locale) })
-            }
+            subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
             showSortingOptions={ postsNumber > defaultPerPage }
-            activeOption={ activeSortingOption }
+            activeOption={ pagination.order }
             sortingOptions={ HomePagePaginationOrderType }
             onChangeOption={ onChangeSortingOption }
           />
 
           <PostCardGallery
-            posts={ currentPosts }
+            posts={ posts }
             postCardOptions={ postCardOptions }
           />
 
           <PaginationBar
-            availablePages={ PaginationHelper.getShowablePages(currentPage, pagesNumber) }
-            pageNumber={ currentPage }
+            availablePages={ PaginationHelper.getShowablePages(
+              pagination.page,
+              calculatePagesNumber(postsNumber, defaultPerPage)
+            ) }
+            pageNumber={ pagination.page }
             onPageNumberChange={ async (newPageNumber) => {
-              setCurrentPage(newPageNumber)
-              await updatePosts(newPageNumber, activeSortingOption, currentProducer)
-              scrollToTop()
+              const newPaginationState = { ...pagination, page: newPageNumber }
 
-              setQueryParams([
-                { key: 'page', value: String(newPageNumber) },
-                { key: 'producerId', value: String(activeProducer?.id) },
-                { key: 'order', value: String(activeSortingOption) },
-              ])
+              setPagination(newPaginationState)
+
+              await updatePosts(newPaginationState)
             } }
-            pagesNumber={ pagesNumber }
+            pagesNumber={ calculatePagesNumber(postsNumber, defaultPerPage) }
           />
         </>
         : <EmptyState

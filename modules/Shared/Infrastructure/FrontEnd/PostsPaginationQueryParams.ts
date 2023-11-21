@@ -12,9 +12,9 @@ import {
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 
 export enum PostsPaginationOrderType {
-  MORE_VIEWS = 'mv',
-  NEWEST = 'n',
-  OLDEST = 'o',
+  MOST_VIEWED = 'most-viewed',
+  LATEST = 'latest',
+  OLDEST = 'oldest',
   NEWEST_SAVED = 'rs',
   OLDEST_SAVED = 'os',
   NEWEST_VIEWED = 'nv',
@@ -22,9 +22,9 @@ export enum PostsPaginationOrderType {
 }
 
 export const HomePagePaginationOrderType: PostsPaginationOrderType[] = [
-  PostsPaginationOrderType.NEWEST,
+  PostsPaginationOrderType.LATEST,
   PostsPaginationOrderType.OLDEST,
-  PostsPaginationOrderType.MORE_VIEWS,
+  PostsPaginationOrderType.MOST_VIEWED,
 ]
 
 export const SavedPostsPaginationOrderType: PostsPaginationOrderType[] = [
@@ -60,7 +60,7 @@ export interface PostsPaginationConfiguration {
 }
 
 export class PostsPaginationQueryParams {
-  private configuration: Partial<PostsPaginationConfiguration> & Pick<PostsPaginationConfiguration, 'filters'>
+  private configuration: Partial<PostsPaginationConfiguration>
   public readonly page: number | null
   public readonly perPage: number | null
   public readonly filters: FetchPostsFilter[]
@@ -69,7 +69,7 @@ export class PostsPaginationQueryParams {
 
   constructor (
     query: ParsedUrlQuery,
-    configuration: Partial<PostsPaginationConfiguration> & Pick<PostsPaginationConfiguration, 'filters'>
+    configuration: Partial<PostsPaginationConfiguration>
   ) {
     this.configuration = configuration
     this.page = this.parsePage(query)
@@ -158,6 +158,10 @@ export class PostsPaginationQueryParams {
   private parseFilters (query: ParsedUrlQuery): FetchPostsFilter[] {
     const filters: FetchPostsFilter [] = []
 
+    if (!this.configuration.filters) {
+      return filters
+    }
+
     for (const parseableFilter of this.configuration.filters.filtersToParse) {
       const filter = query[parseableFilter]
 
@@ -217,9 +221,9 @@ export class PostsPaginationQueryParams {
 
   public static fromOrderTypeToComponentSortingOption (type: PostsPaginationOrderType): ComponentSortingOption {
     switch (type) {
-      case PostsPaginationOrderType.NEWEST:
+      case PostsPaginationOrderType.LATEST:
         return HomePostsDefaultSortingOption
-      case PostsPaginationOrderType.MORE_VIEWS:
+      case PostsPaginationOrderType.MOST_VIEWED:
         return HomeMoreViewsEntriesSortingOption
       case PostsPaginationOrderType.OLDEST:
         return HomeOldestEntriesSortingOption

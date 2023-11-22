@@ -241,6 +241,16 @@ export class PostsPaginationQueryParams {
     }
   }
 
+  public getFilter (filterType: PostFilterOptions): FetchPostsFilter | null {
+    const foundFilter = this.filters.find((filter) => filter.type === filterType)
+
+    if (!foundFilter) {
+      return null
+    }
+
+    return foundFilter
+  }
+
   get parseFailed (): boolean {
     return this._parseFailed
   }
@@ -281,6 +291,30 @@ export class PostsPaginationQueryParams {
     }
 
     return queries.join('&')
+  }
+
+  public static buildQuery (
+    page: string,
+    defaultPage: string,
+    sortingOption: PostsPaginationOrderType,
+    defaultSortingOption: PostsPaginationOrderType,
+    filters: FetchPostsFilter[]
+  ): ParsedUrlQuery {
+    const query: ParsedUrlQuery = {}
+
+    if (page !== defaultPage) {
+      query.page = page
+    }
+
+    if (sortingOption !== defaultSortingOption) {
+      query.order = sortingOption
+    }
+
+    for (const filter of filters) {
+      query[filter.type] = filter.value
+    }
+
+    return query
   }
 
   private parseNumber (value: string): number | null {

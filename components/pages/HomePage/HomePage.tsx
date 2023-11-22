@@ -29,8 +29,7 @@ import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Componen
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { PaginationStateInterface } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationStateInterface'
-import { FetchPostsFilter, getFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
-import { PostsPaginationParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationParams'
+import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
 import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationOrderType'
 
 export interface Props {
@@ -39,33 +38,44 @@ export interface Props {
   initialPosts: PostCardComponentDto[]
   initialPostsNumber: number
   producers: ProducerComponentDto[]
-  activeProducer: ProducerComponentDto | null
-  initialFilter: FetchPostsFilter | null
+  initialProducerFilter: FetchPostsFilter
 }
 
 export const HomePage: NextPage<Props> = ({
   initialPostsNumber,
   initialPosts,
   producers,
-  activeProducer,
   page,
   order,
-  initialFilter,
+  initialProducerFilter,
 }) => {
+  const getProducer = (producerSlug: string): ProducerComponentDto | null => {
+    let newProducer: ProducerComponentDto | null = allPostsProducerDto
+
+    if (producerSlug !== allPostsProducerDto.slug) {
+      const selectedProducer = producers.find((producer) => producer.slug === producerSlug)
+
+      if (selectedProducer) {
+        newProducer = selectedProducer
+      } else {
+        newProducer = null
+      }
+
+      return newProducer
+    }
+
+    return newProducer
+  }
   const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
-  const [producer, setProducer] = useState<ProducerComponentDto | null>(activeProducer)
+  const [producer, setProducer] = useState<ProducerComponentDto | null>(getProducer(initialProducerFilter.value))
 
-  const [pagination, setPagination] = useState<PaginationStateInterface>({
-    page,
-    order,
-    filters: initialFilter ? [initialFilter] : [],
-  })
+  const [pagination, setPagination] =
+    useState<PaginationStateInterface>({ page, order, filters: [initialProducerFilter] })
 
   const { t } = useTranslation(['home_page'])
-
   const router = useRouter()
-  const { query, asPath } = router
+  const { query } = router
   const locale = router.locale ?? 'en'
 
   const firstRender = useFirstRender()
@@ -121,6 +131,15 @@ export const HomePage: NextPage<Props> = ({
     const componentSortingOption =
       PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(pagination.order)
 
+    const activeProducer = pagination.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_SLUG)
+
+    if (activeProducer && !getProducer(activeProducer.value)) {
+      setPosts([])
+      setPostsNumber(0)
+
+      return
+    }
+
     const newPosts = await (new PostsApiService()).getPosts(
       pagination.page,
       defaultPerPage,
@@ -138,40 +157,37 @@ export const HomePage: NextPage<Props> = ({
   useEffect(() => {
     if (firstRender) { return }
 
-    const producerFilter = getFilter(PostFilterOptions.PRODUCER_SLUG, pagination.filters)
-
-    const newPathname = PostsPaginationParams.buildPathname(
-      pagination.page,
-      1,
+    const newQuery = PostsPaginationQueryParams.buildQuery(
+      String(pagination.page),
+      '1',
       pagination.order,
       PostsPaginationOrderType.LATEST,
-      producerFilter ? producerFilter.value : null
+      pagination.filters
     )
 
-    if (newPathname !== asPath) {
-      updateQuery(`/${locale}${newPathname}`)
-    }
+    updateQuery(newQuery)
   }, [pagination])
 
-  /** If queryParams are change externally, then we update state **/
   useEffect(() => {
     if (firstRender) { return }
 
-    const params = new PostsPaginationParams(query, {
-      filterParamType: {
-        optional: true,
-        defaultValue: allPostsProducerDto.slug,
-      },
-      sortingOptionType: {
-        parseableOptionTypes: [
-          PostsPaginationOrderType.LATEST,
-          PostsPaginationOrderType.OLDEST,
-          PostsPaginationOrderType.MOST_VIEWED,
-        ],
-        defaultValue: PostsPaginationOrderType.LATEST,
-      },
-    })
+    const queryParams = new PostsPaginationQueryParams(
+      query,
+      {
+        filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
+        sortingOptionType: {
+          defaultValue: PostsPaginationOrderType.LATEST,
+          parseableOptionTypes: [
+            PostsPaginationOrderType.LATEST,
+            PostsPaginationOrderType.OLDEST,
+            PostsPaginationOrderType.MOST_VIEWED,
+          ],
+        },
+        page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
+      }
+    )
 
+    // Get producer value from current state
     const producerFilter = pagination.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_SLUG)
     let producerSlug = allPostsProducerDto.slug
 
@@ -179,15 +195,24 @@ export const HomePage: NextPage<Props> = ({
       producerSlug = producerFilter.value
     }
 
+    // Get producer value from query
+    const queryProducerFilter = queryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
+    let queryProducer = allPostsProducerDto.slug
+
+    if (queryProducerFilter) {
+      queryProducer = queryProducerFilter.value
+    }
+
+    // Update posts if queryState is not equal to current component state
     if (
-      params.page !== pagination.page ||
-      params.sortingOptionType !== pagination.order ||
-      params.filterParamType !== producerSlug
+      queryParams.page !== pagination.page ||
+      queryParams.sortingOptionType !== pagination.order ||
+      queryProducer !== producerSlug
     ) {
       let newProducer: ProducerComponentDto | null = allPostsProducerDto
 
-      if (params.filterParamType !== allPostsProducerDto.slug) {
-        const selectedProducer = producers.find((producer) => producer.slug === params.filterParamType)
+      if (queryProducer !== allPostsProducerDto.slug) {
+        const selectedProducer = producers.find((producer) => producer.slug === queryProducer)
 
         if (selectedProducer) {
           newProducer = selectedProducer
@@ -197,13 +222,11 @@ export const HomePage: NextPage<Props> = ({
       }
 
       const newPaginationState = {
-        page: params.page as number,
-        order: params.sortingOptionType as PostsPaginationOrderType,
-        filters: newProducer
-          ? newProducer.slug === allPostsProducerDto.slug
-            ? []
-            : [{ type: PostFilterOptions.PRODUCER_SLUG, value: newProducer.slug }]
-          : [],
+        page: queryParams.page as number,
+        order: queryParams.sortingOptionType as PostsPaginationOrderType,
+        filters: newProducer && newProducer.slug === allPostsProducerDto.slug
+          ? []
+          : [{ type: PostFilterOptions.PRODUCER_SLUG, value: queryProducer }],
       }
 
       setPagination(newPaginationState)
@@ -258,6 +281,7 @@ export const HomePage: NextPage<Props> = ({
               setPagination(newPaginationState)
 
               await updatePosts(newPaginationState)
+              scrollToTop()
             } }
             pagesNumber={ calculatePagesNumber(postsNumber, defaultPerPage) }
           />

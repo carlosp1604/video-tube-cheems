@@ -46,11 +46,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const paginationQueryParams = new PostsPaginationQueryParams(
     context.query,
     {
-      filters: {
-        filtersToParse: [
-          PostFilterOptions.PRODUCER_SLUG,
-        ],
-      },
+      filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
         defaultValue: PostsPaginationOrderType.LATEST,
         parseableOptionTypes: [
@@ -59,11 +55,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
           PostsPaginationOrderType.MOST_VIEWED,
         ],
       },
-      page: {
-        defaultValue: 1,
-        minValue: 1,
-        maxValue: Infinity,
-      },
+      page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
     }
   )
 
@@ -83,10 +75,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     page: paginationQueryParams.page ?? 1,
     initialPosts: [],
     producers: [],
-    activeProducer: allPostsProducerDto,
     initialPostsNumber: 0,
     ...i18nSSRConfig,
-    initialFilter: null,
+    initialProducerFilter: {
+      type: PostFilterOptions.PRODUCER_SLUG,
+      value: allPostsProducerDto.slug,
+    },
   }
 
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
@@ -124,23 +118,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     // Add default producer
     producerComponents.unshift(allPostsProducerDto)
 
-    let activeProducer
-
-    // Set active producer
-    const producerIdFilter =
-      paginationQueryParams.filters.find((filter) => filter.type === PostFilterOptions.PRODUCER_SLUG)
+    const producerIdFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
 
     if (producerIdFilter) {
-      const selectedProducer = producers.find((producer) => producer.slug === producerIdFilter.value)
-
-      if (selectedProducer) {
-        activeProducer = selectedProducer
-
-        props.activeProducer = activeProducer
-        props.initialFilter = { value: activeProducer.slug, type: PostFilterOptions.PRODUCER_SLUG }
-      } else {
-        props.activeProducer = null
-      }
+      props.initialProducerFilter.value = producerIdFilter.value
     }
 
     props.initialPosts = posts.posts.map((post) => {

@@ -106,6 +106,7 @@ export class MysqlPostsTranslatorService {
 
         const producer = new Producer(
           row.producer_id,
+          row.producer_slug,
           row.producer_name,
           row.producer_description,
           row.producer_image_url,

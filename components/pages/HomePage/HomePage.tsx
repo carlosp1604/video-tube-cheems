@@ -12,7 +12,6 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { useUpdateQuery } from '~/hooks/UpdateQuery'
-import { usePostCardOptions } from '~/hooks/PostCardOptions'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import {
@@ -80,10 +79,6 @@ export const HomePage: NextPage<Props> = ({
 
   const firstRender = useFirstRender()
   const updateQuery = useUpdateQuery()
-  const buildOptions = usePostCardOptions()
-
-  // TODO: Move into the postGallery component
-  const postCardOptions = buildOptions([{ type: 'savePost' }, { type: 'react' }])
 
   const scrollToTop = () => { window.scrollTo({ behavior: 'smooth', top: 0 }) }
 
@@ -266,7 +261,7 @@ export const HomePage: NextPage<Props> = ({
 
           <PostCardGallery
             posts={ posts }
-            postCardOptions={ postCardOptions }
+            postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
           />
 
           <PaginationBar
@@ -287,9 +282,9 @@ export const HomePage: NextPage<Props> = ({
           />
         </>
         : <EmptyState
-            title={ t('post_gallery_empty_state_title') }
-            subtitle={ t('post_gallery_empty_state_subtitle') }
-          />
+          title={ t('post_gallery_empty_state_title') }
+          subtitle={ t('post_gallery_empty_state_subtitle') }
+        />
       }
 
     </div>

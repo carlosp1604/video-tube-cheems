@@ -8,24 +8,23 @@ import { BsTools } from 'react-icons/bs'
 export interface PostCardGalleryOption {
   title: string
   icon: ReactElement
-  onClick: (postId: string) => void
+  onClick: () => void
 }
 
 interface Props {
   isOpen: boolean
   onClose: () => void
   options: PostCardGalleryOption[]
-  selectedPostId: string
 }
 
-export const PostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, options, selectedPostId }) => {
+export const PostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, options }) => {
   const { t } = useTranslation('post_card_gallery')
 
   const buildOptions: MenuOptionComponentInterface[] = options.map((option) => {
     return {
       title: option.title,
       isActive: false,
-      onClick: () => option.onClick(selectedPostId),
+      onClick: () => option.onClick(),
       action: undefined,
       picture: option.icon,
     }

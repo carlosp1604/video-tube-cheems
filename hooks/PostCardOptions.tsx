@@ -1,4 +1,3 @@
-
 import toast from 'react-hot-toast'
 import { BiLike } from 'react-icons/bi'
 import { useCallback } from 'react'
@@ -33,7 +32,7 @@ export function usePostCardOptions () {
 
   const { status, data } = useSession()
 
-  const savePostPostCardAction = async (postId: string) => {
+  const savePostPostCardAction = async (postId: string, onSuccess: (() => void) | undefined) => {
     if (status !== 'authenticated' || !data) {
       toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
 
@@ -42,6 +41,10 @@ export function usePostCardOptions () {
 
     try {
       await new PostsApiService().savePost(data.user.id, postId)
+
+      if (onSuccess) {
+        onSuccess()
+      }
 
       toast.success(t('post_save_post_successfully_saved', { ns: 'post_card_options' }))
     } catch (exception: unknown) {
@@ -59,7 +62,7 @@ export function usePostCardOptions () {
     }
   }
 
-  const likePostPostCardAction = async (postId: string) => {
+  const likePostPostCardAction = async (postId: string, onSuccess: (() => void) | undefined) => {
     if (status !== 'authenticated' || !data) {
       toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
 
@@ -68,6 +71,10 @@ export function usePostCardOptions () {
 
     try {
       await new PostsApiService().createPostReaction(postId, ReactionType.LIKE)
+
+      if (onSuccess) {
+        onSuccess()
+      }
 
       toast.success(t('post_reaction_added_correctly_message', { ns: 'post_card_options' }))
     } catch (exception) {
@@ -85,7 +92,7 @@ export function usePostCardOptions () {
     }
   }
 
-  const deleteSavedPostCardAction = async (postId: string) => {
+  const deleteSavedPostCardAction = async (postId: string, onSuccess: (() => void) | undefined) => {
     if (status !== 'authenticated' || !data) {
       toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
 
@@ -94,6 +101,10 @@ export function usePostCardOptions () {
 
     try {
       await new PostsApiService().removeFromSavedPosts(data.user.id, postId)
+
+      if (onSuccess) {
+        onSuccess()
+      }
 
       toast.success(t('post_save_post_successfully_removed_from_saved_post', { ns: 'post_card_options' }))
     } catch (exception) {
@@ -111,60 +122,60 @@ export function usePostCardOptions () {
     }
   }
 
-  const buildPostCardOptions = useCallback(
-    (optionsConfiguration: PostCardOptionConfiguration[], ownerId?: string): PostCardGalleryOption[] => {
-      const options: PostCardGalleryOption[] = []
+  return useCallback((
+    optionsConfiguration: PostCardOptionConfiguration[],
+    postId: string,
+    onSuccess: (() => void) | undefined,
+    ownerId?: string
+  ): PostCardGalleryOption[] => {
+    const options: PostCardGalleryOption[] = []
 
-      for (const optionConfiguration of optionsConfiguration) {
-        switch (optionConfiguration.type) {
-          case 'savePost': {
-            if (status === 'authenticated' && data) {
-              options.push({
-                icon: <BsBookmark />,
-                title: t('save_post_post_card_gallery_action_title', { ns: 'post_card_options' }),
-                onClick: (postId: string) => savePostPostCardAction(postId),
-              })
-            }
-
-            break
+    for (const optionConfiguration of optionsConfiguration) {
+      switch (optionConfiguration.type) {
+        case 'savePost': {
+          if (status === 'authenticated' && data) {
+            options.push({
+              icon: <BsBookmark />,
+              title: t('save_post_post_card_gallery_action_title', { ns: 'post_card_options' }),
+              onClick: () => savePostPostCardAction(postId, onSuccess),
+            })
           }
 
-          case 'react': {
-            if (status === 'authenticated' && data) {
-              options.push({
-                icon: <BiLike />,
-                title: t('like_post_post_card_gallery_action_title', { ns: 'post_card_options' }),
-                onClick: async (postId: string) => {
-                  await likePostPostCardAction(postId)
-                },
-              })
-            }
-
-            break
-          }
-
-          case 'deleteSavedPost': {
-            if (status === 'authenticated' && data && ownerId === data.user.id) {
-              options.push({
-                icon: <BsTrash />,
-                title: t('delete_saved_post_option_title', { ns: 'user_profile' }),
-                onClick: async (postId: string) => {
-                  await deleteSavedPostCardAction(postId)
-                  optionConfiguration.onDelete(postId)
-                },
-              })
-            }
-
-            break
-          }
-
-          default:
-            throw Error('Post card option is not implemented')
+          break
         }
+
+        case 'react': {
+          if (status === 'authenticated' && data) {
+            options.push({
+              icon: <BiLike />,
+              title: t('like_post_post_card_gallery_action_title', { ns: 'post_card_options' }),
+              onClick: async () => { await likePostPostCardAction(postId, onSuccess) },
+            })
+          }
+
+          break
+        }
+
+        case 'deleteSavedPost': {
+          if (status === 'authenticated' && data && ownerId === data.user.id) {
+            options.push({
+              icon: <BsTrash />,
+              title: t('delete_saved_post_option_title', { ns: 'user_profile' }),
+              onClick: async () => {
+                await deleteSavedPostCardAction(postId, onSuccess)
+                optionConfiguration.onDelete(postId)
+              },
+            })
+          }
+
+          break
+        }
+
+        default:
+          throw Error('Post card option is not implemented')
       }
+    }
 
-      return options
-    }, [status])
-
-  return buildPostCardOptions
+    return options
+  }, [status])
 }

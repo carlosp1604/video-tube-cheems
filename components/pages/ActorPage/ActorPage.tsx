@@ -4,7 +4,7 @@ import styles from './ActorPage.module.scss'
 import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 

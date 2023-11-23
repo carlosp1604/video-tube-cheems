@@ -1,4 +1,4 @@
-export enum PostsPaginationOrderType {
+export enum PostsPaginationSortingType {
   MOST_VIEWED = 'most-viewed',
   LATEST = 'latest',
   OLDEST = 'oldest',

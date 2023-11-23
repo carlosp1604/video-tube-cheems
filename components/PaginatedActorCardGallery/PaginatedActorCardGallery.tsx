@@ -6,7 +6,7 @@ import {
   ComponentSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
 import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'

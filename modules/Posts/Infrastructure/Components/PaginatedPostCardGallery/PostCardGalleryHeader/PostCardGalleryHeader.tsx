@@ -2,15 +2,15 @@ import { FC } from 'react'
 import styles from './PostCardGalleryHeader.module.scss'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { BsDot } from 'react-icons/bs'
-import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 
 interface Props {
   title: string
   subtitle: string
   showSortingOptions: boolean
-  activeOption: PostsPaginationOrderType
-  sortingOptions: PostsPaginationOrderType[]
-  onChangeOption: (option: PostsPaginationOrderType) => void
+  activeOption: PostsPaginationSortingType
+  sortingOptions: PostsPaginationSortingType[]
+  onChangeOption: (option: PostsPaginationSortingType) => void
 }
 
 export const PostCardGalleryHeader: FC<Props> = ({

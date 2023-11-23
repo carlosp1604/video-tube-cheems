@@ -6,7 +6,7 @@ import { GetActors } from '~/modules/Actors/Application/GetActors'
 import { GetActorsRequestDtoTranslator } from '~/modules/Actors/Infrastructure/GetActorsRequestDtoTranslator'
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
 import { GetPostsApiFilterRequestDto } from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestDto'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { ActorApiRequestValidatorError } from '~/modules/Actors/Infrastructure/ActorApiRequestValidatorError'
 import { GetActorsApiRequestDto } from '~/modules/Actors/Infrastructure/GetActorsApiRequestDto'
 import {

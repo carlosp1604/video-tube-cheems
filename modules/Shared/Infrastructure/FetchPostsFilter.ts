@@ -1,4 +1,4 @@
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 
 export interface FetchPostsFilter {
   type: PostFilterOptions

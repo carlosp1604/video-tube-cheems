@@ -12,7 +12,7 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'

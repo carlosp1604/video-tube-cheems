@@ -2,9 +2,8 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import {
   USER_POST_NOT_FOUND,
@@ -20,6 +19,7 @@ import {
   POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export class PostsApiService {
   public async getPosts (

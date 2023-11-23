@@ -1,9 +1,8 @@
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { container } from '~/awilix.container'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
 import { HomePage, Props } from '~/components/pages/HomePage/HomePage'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { GetServerSideProps } from 'next'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -17,10 +16,9 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import {
-  PostsPaginationOrderType,
-  PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -48,11 +46,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     {
       filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
-        defaultValue: PostsPaginationOrderType.LATEST,
+        defaultValue: PostsPaginationSortingType.LATEST,
         parseableOptionTypes: [
-          PostsPaginationOrderType.LATEST,
-          PostsPaginationOrderType.OLDEST,
-          PostsPaginationOrderType.MOST_VIEWED,
+          PostsPaginationSortingType.LATEST,
+          PostsPaginationSortingType.OLDEST,
+          PostsPaginationSortingType.MOST_VIEWED,
         ],
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
@@ -71,7 +69,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 
   const props: Props = {
-    order: paginationQueryParams.sortingOptionType ?? PostsPaginationOrderType.LATEST,
+    order: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,
     posts: [],
     producers: [],

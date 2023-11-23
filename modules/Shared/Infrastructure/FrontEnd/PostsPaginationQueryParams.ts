@@ -1,6 +1,6 @@
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { ParsedUrlQuery } from 'querystring'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   ComponentSortingOption,
   HistoryDefaultSortingOption, HistoryOldestViewedSortingOption,
@@ -10,32 +10,7 @@ import {
   SavedPostsDefaultSortingOption,
   SavedPostsOldestSavedSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-
-export enum PostsPaginationOrderType {
-  MOST_VIEWED = 'most-viewed',
-  LATEST = 'latest',
-  OLDEST = 'oldest',
-  NEWEST_SAVED = 'rs',
-  OLDEST_SAVED = 'os',
-  NEWEST_VIEWED = 'nv',
-  OLDEST_VIEWED = 'ov'
-}
-
-export const HomePagePaginationOrderType: PostsPaginationOrderType[] = [
-  PostsPaginationOrderType.LATEST,
-  PostsPaginationOrderType.OLDEST,
-  PostsPaginationOrderType.MOST_VIEWED,
-]
-
-export const SavedPostsPaginationOrderType: PostsPaginationOrderType[] = [
-  PostsPaginationOrderType.OLDEST_SAVED,
-  PostsPaginationOrderType.NEWEST_SAVED,
-]
-
-export const HistoryPaginationOrderType: PostsPaginationOrderType[] = [
-  PostsPaginationOrderType.NEWEST_VIEWED,
-  PostsPaginationOrderType.OLDEST_VIEWED,
-]
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
 export interface PostsPaginationNumericParameterConfiguration {
   defaultValue: number
@@ -48,8 +23,8 @@ export interface PostsPaginationFiltersParameterConfiguration {
 }
 
 export interface PostsPaginationSortingOptionParameterConfiguration {
-  defaultValue: PostsPaginationOrderType
-  parseableOptionTypes: PostsPaginationOrderType[]
+  defaultValue: PostsPaginationSortingType
+  parseableOptionTypes: PostsPaginationSortingType[]
 }
 
 export interface PostsPaginationConfiguration {
@@ -64,7 +39,7 @@ export class PostsPaginationQueryParams {
   public readonly page: number | null
   public readonly perPage: number | null
   public readonly filters: FetchPostsFilter[]
-  public readonly sortingOptionType: PostsPaginationOrderType | null
+  public readonly sortingOptionType: PostsPaginationSortingType | null
   private _parseFailed = false
 
   constructor (
@@ -178,7 +153,7 @@ export class PostsPaginationQueryParams {
     return filters
   }
 
-  private parseSortingOption (query: ParsedUrlQuery): PostsPaginationOrderType | null {
+  private parseSortingOption (query: ParsedUrlQuery): PostsPaginationSortingType | null {
     const { order } = query
 
     if (!order) {
@@ -198,8 +173,8 @@ export class PostsPaginationQueryParams {
     const parseOrderBy = String(order)
 
     if (!this.configuration.sortingOptionType) {
-      if (Object.values(PostsPaginationOrderType).includes(parseOrderBy as PostsPaginationOrderType)) {
-        return parseOrderBy as PostsPaginationOrderType
+      if (Object.values(PostsPaginationSortingType).includes(parseOrderBy as PostsPaginationSortingType)) {
+        return parseOrderBy as PostsPaginationSortingType
       } else {
         this._parseFailed = true
 
@@ -211,7 +186,7 @@ export class PostsPaginationQueryParams {
       (optionToParse) => optionToParse === parseOrderBy)
 
     if (validOptionMatch) {
-      return parseOrderBy as PostsPaginationOrderType
+      return parseOrderBy as PostsPaginationSortingType
     }
 
     this._parseFailed = true
@@ -219,21 +194,21 @@ export class PostsPaginationQueryParams {
     return this.configuration.sortingOptionType.defaultValue
   }
 
-  public static fromOrderTypeToComponentSortingOption (type: PostsPaginationOrderType): ComponentSortingOption {
+  public static fromOrderTypeToComponentSortingOption (type: PostsPaginationSortingType): ComponentSortingOption {
     switch (type) {
-      case PostsPaginationOrderType.LATEST:
+      case PostsPaginationSortingType.LATEST:
         return HomePostsDefaultSortingOption
-      case PostsPaginationOrderType.MOST_VIEWED:
+      case PostsPaginationSortingType.MOST_VIEWED:
         return HomeMoreViewsEntriesSortingOption
-      case PostsPaginationOrderType.OLDEST:
+      case PostsPaginationSortingType.OLDEST:
         return HomeOldestEntriesSortingOption
-      case PostsPaginationOrderType.NEWEST_SAVED:
+      case PostsPaginationSortingType.NEWEST_SAVED:
         return SavedPostsDefaultSortingOption
-      case PostsPaginationOrderType.NEWEST_VIEWED:
+      case PostsPaginationSortingType.NEWEST_VIEWED:
         return HistoryDefaultSortingOption
-      case PostsPaginationOrderType.OLDEST_SAVED:
+      case PostsPaginationSortingType.OLDEST_SAVED:
         return SavedPostsOldestSavedSortingOption
-      case PostsPaginationOrderType.OLDEST_VIEWED:
+      case PostsPaginationSortingType.OLDEST_VIEWED:
         return HistoryOldestViewedSortingOption
 
       default:
@@ -296,8 +271,8 @@ export class PostsPaginationQueryParams {
   public static buildQuery (
     page: string,
     defaultPage: string,
-    sortingOption: PostsPaginationOrderType,
-    defaultSortingOption: PostsPaginationOrderType,
+    sortingOption: PostsPaginationSortingType,
+    defaultSortingOption: PostsPaginationSortingType,
     filters: FetchPostsFilter[]
   ): ParsedUrlQuery {
     const query: ParsedUrlQuery = {}

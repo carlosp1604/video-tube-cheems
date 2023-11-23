@@ -4,14 +4,14 @@ import { BsSortDown } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import { IconButton } from '~/components/IconButton/IconButton'
 import {
-  PostsPaginationOrderType,
+  PostsPaginationSortingType,
   PostsPaginationQueryParams
 } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 
 interface Props {
-  activeOption: PostsPaginationOrderType
-  onChangeOption: (option: PostsPaginationOrderType) => void
-  options: PostsPaginationOrderType[]
+  activeOption: PostsPaginationSortingType
+  onChangeOption: (option: PostsPaginationSortingType) => void
+  options: PostsPaginationSortingType[]
 }
 
 export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, options }) => {

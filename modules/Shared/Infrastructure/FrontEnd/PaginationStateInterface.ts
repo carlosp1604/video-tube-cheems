@@ -1,8 +1,8 @@
-import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationOrderType'
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 
 export interface PaginationStateInterface {
   page: number
-  order: PostsPaginationOrderType
+  order: PostsPaginationSortingType
   filters: FetchPostsFilter[]
 }

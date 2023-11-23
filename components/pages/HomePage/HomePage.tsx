@@ -1,7 +1,5 @@
 import { NextPage } from 'next'
-import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { HomePagePaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -12,16 +10,16 @@ import {
   PostCardGalleryHeader
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
-import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
-import { PostsPaginationOrderType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationOrderType'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { ParsedUrlQuery } from 'querystring'
 
 export interface Props {
   page: number
-  order: PostsPaginationOrderType
+  order: PostsPaginationSortingType
   posts: PostCardComponentDto[]
   postsNumber: number
   producers: ProducerComponentDto[]
@@ -41,7 +39,43 @@ export const HomePage: NextPage<Props> = ({
   const { asPath, pathname } = router
   const locale = router.locale ?? 'en'
 
-  const scrollToTop = () => { window.scrollTo({ behavior: 'smooth', top: 0 }) }
+  const updateQuery = async (
+    page: number,
+    sortingOption: PostsPaginationSortingType,
+    producer: ProducerComponentDto | null
+  ) => {
+    const newQuery: ParsedUrlQuery = {}
+
+    if (producer && producer.slug !== allPostsProducerDto.slug) {
+      newQuery.producerSlug = producer.slug
+    }
+
+    if (sortingOption !== PostsPaginationSortingType.LATEST) {
+      newQuery.order = sortingOption
+    }
+
+    if (page !== 1) {
+      newQuery.page = String(page)
+    }
+
+    await router.push({
+      pathname,
+      query: { ...newQuery },
+    }, undefined, { shallow: false, scroll: true })
+  }
+
+  /** Component functions **/
+  const onChangeOption = async (newOption: PostsPaginationSortingType) => {
+    await updateQuery(1, newOption, activeProducer)
+  }
+
+  const onChangeProducer = async (producer: ProducerComponentDto) => {
+    await updateQuery(1, order, producer)
+  }
+
+  const onChangePageNumber = async (pageNumber: number) => {
+    await updateQuery(pageNumber, order, activeProducer)
+  }
 
   let galleryTitle: string
 
@@ -56,18 +90,7 @@ export const HomePage: NextPage<Props> = ({
     <div className={ styles.home__container } key={ asPath }>
       <ProducerList
         producers={ producers }
-        onChangeProducer={ async (producer) => {
-          const newQuery: ParsedUrlQuery = {}
-
-          if (producer.slug !== allPostsProducerDto.slug) {
-            newQuery.producerSlug = producer.slug
-          }
-
-          await router.push({
-            pathname,
-            query: { ...newQuery },
-          }, undefined, { shallow: false, scroll: false })
-        } }
+        onChangeProducer={ onChangeProducer }
         activeProducer={ activeProducer }
       />
 
@@ -79,23 +102,12 @@ export const HomePage: NextPage<Props> = ({
             subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
             showSortingOptions={ postsNumber > defaultPerPage }
             activeOption={ order }
-            sortingOptions={ HomePagePaginationOrderType }
-            onChangeOption={ async (newOption) => {
-              const newQuery: ParsedUrlQuery = {}
-
-              if (activeProducer && activeProducer.slug !== allPostsProducerDto.slug) {
-                newQuery.producerSlug = activeProducer.slug
-              }
-
-              if (newOption !== PostsPaginationOrderType.LATEST) {
-                newQuery.order = newOption
-              }
-
-              await router.push({
-                pathname,
-                query: { ...newQuery },
-              }, undefined, { shallow: false, scroll: false })
-            } }
+            sortingOptions={ [
+              PostsPaginationSortingType.LATEST,
+              PostsPaginationSortingType.OLDEST,
+              PostsPaginationSortingType.MOST_VIEWED,
+            ] }
+            onChangeOption={ onChangeOption }
           />
 
           <PostCardGallery
@@ -105,31 +117,10 @@ export const HomePage: NextPage<Props> = ({
 
           <PaginationBar
             availablePages={ PaginationHelper.getShowablePages(
-              page,
-              calculatePagesNumber(postsNumber, defaultPerPage)
-            ) }
-            onPageNumberChange={ async (pageNumber) => {
-              const newQuery: ParsedUrlQuery = {}
-
-              if (activeProducer && activeProducer.slug !== allPostsProducerDto.slug) {
-                newQuery.producerSlug = activeProducer.slug
-              }
-
-              if (order !== PostsPaginationOrderType.LATEST) {
-                newQuery.order = order
-              }
-
-              if (pageNumber !== 1) {
-                newQuery.page = String(pageNumber)
-              }
-
-              await router.push({
-                pathname,
-                query: { ...newQuery },
-              }, undefined, { shallow: false, scroll: true })
-            } }
+              page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
+            onPageNumberChange={ onChangePageNumber }
             pageNumber={ page }
-            pagesNumber={ calculatePagesNumber(postsNumber, defaultPerPage) }
+            pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
           />
         </>
         : <EmptyState

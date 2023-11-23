@@ -73,14 +73,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const props: Props = {
     order: paginationQueryParams.sortingOptionType ?? PostsPaginationOrderType.LATEST,
     page: paginationQueryParams.page ?? 1,
-    initialPosts: [],
+    posts: [],
     producers: [],
-    initialPostsNumber: 0,
+    postsNumber: 0,
     ...i18nSSRConfig,
-    initialProducerFilter: {
-      type: PostFilterOptions.PRODUCER_SLUG,
-      value: allPostsProducerDto.slug,
-    },
+    activeProducer: null,
   }
 
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
@@ -118,16 +115,22 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     // Add default producer
     producerComponents.unshift(allPostsProducerDto)
 
-    const producerIdFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
+    const producerFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
 
-    if (producerIdFilter) {
-      props.initialProducerFilter.value = producerIdFilter.value
+    if (producerFilter) {
+      const selectedProducer = producers.find((producer) => producer.slug === producerFilter.value)
+
+      if (selectedProducer) {
+        props.activeProducer = selectedProducer
+      }
+    } else {
+      props.activeProducer = allPostsProducerDto
     }
 
-    props.initialPosts = posts.posts.map((post) => {
+    props.posts = posts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.initialPostsNumber = posts.postsNumber
+    props.postsNumber = posts.postsNumber
     props.producers = producerComponents
   } catch (exception: unknown) {
     console.error(exception)

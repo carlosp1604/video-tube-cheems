@@ -29,7 +29,7 @@
   }
 
   &__user-avatar {
-    @apply h-12 w-12 rounded-full object-cover overflow-hidden;
+    @apply h-12 w-12 rounded-full object-cover;
 
     @screen md {
       @apply h-14 w-14;

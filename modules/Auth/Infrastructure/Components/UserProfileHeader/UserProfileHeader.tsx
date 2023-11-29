@@ -22,6 +22,7 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
       size={ '120' }
       name={ componentDto.name }
       textSizeRatio={ 2 }
+      maxInitials={ 2 }
     />
   )
 
@@ -45,8 +46,9 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
         { componentDto.username }
       </div>
 
-      { /**
-      <div className={ styles.userProfileHeader__userActivities }>
+      <div className={ styles.userProfileHeader__userInfoContaier }>
+        { /**
+        <div className={ styles.userProfileHeader__userActivities }>
         <span className={ styles.userProfileHeader__activityItem }>
           4
           <small className={ styles.userProfileHeader__activityItemActivity }>
@@ -68,26 +70,27 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
           </small>
         </span>
         </div>
-      */ }
+        */ }
 
-      <div className={ styles.userProfileHeader__userInfo }>
-        <div className={ styles.userProfileHeader__userInfoItem }>
-          <BiCalendarEvent className={ styles.userProfileHeader__userInfoItemIcon }/>
-          <span className={ styles.userProfileHeader__userInfoItemTitle }>
+        <div className={ styles.userProfileHeader__userInfo }>
+          <div className={ styles.userProfileHeader__userInfoItem }>
+            <BiCalendarEvent className={ styles.userProfileHeader__userInfoItemIcon }/>
+            <span className={ styles.userProfileHeader__userInfoItemTitle }>
             { t('user_joined_at_label_title') }
           </span>
-          <span className={ styles.userProfileHeader__userInfoItemContent }>
+            <span className={ styles.userProfileHeader__userInfoItemContent }>
             { componentDto.createdAt }
           </span>
-        </div>
-        <div className={ styles.userProfileHeader__userInfoItem }>
-          <BiIdCard className={ styles.userProfileHeader__userInfoItemIcon }/>
-          <span className={ styles.userProfileHeader__userInfoItemTitle }>
+          </div>
+          <div className={ styles.userProfileHeader__userInfoItem }>
+            <BiIdCard className={ styles.userProfileHeader__userInfoItemIcon }/>
+            <span className={ styles.userProfileHeader__userInfoItemTitle }>
             { t('user_name_label_title') }
           </span>
-          <span className={ styles.userProfileHeader__userInfoItemContent }>
+            <span className={ styles.userProfileHeader__userInfoItemContent }>
             { componentDto.name }
           </span>
+          </div>
         </div>
       </div>
 

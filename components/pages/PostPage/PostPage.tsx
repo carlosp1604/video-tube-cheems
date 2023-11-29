@@ -40,7 +40,11 @@ export const PostPage: NextPage<VideoPageProps> = ({
         { t('video_related_videos_title') }
       </span>
 
-      <PostCardCarousel posts={ relatedPosts } />
+      <PostCardCarousel
+        posts={ relatedPosts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        ownerId={ undefined }
+      />
     </div>
   )
 }

@@ -87,7 +87,7 @@ export const HomePage: NextPage<Props> = ({
 
   // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
-    <div className={ styles.home__container } key={ asPath }>
+    <div className={ styles.home__container }>
       <ProducerList
         producers={ producers }
         onChangeProducer={ onChangeProducer }

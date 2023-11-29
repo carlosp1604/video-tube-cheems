@@ -2,11 +2,11 @@ import { z, ZodError } from 'zod'
 import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
 import { ActorFilterOptions } from './ActorFilter'
 import { GetActorsApiRequestDto } from './GetActorsApiRequestDto'
-import { maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export class GetActorsApiRequestValidator {
   private static getActorsApiRequestSchema = z.object({

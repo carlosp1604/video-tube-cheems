@@ -46,7 +46,7 @@ export class AddPostView {
       throw AddPostViewApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as Post
   }
 
   private async getUser (userId: AddPostViewApplicationRequest['userId']): Promise<User> {

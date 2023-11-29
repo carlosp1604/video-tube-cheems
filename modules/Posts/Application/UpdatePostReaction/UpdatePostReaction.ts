@@ -5,6 +5,7 @@ import { UpdatePostReactionApplicationException } from './UpdatePostReactionAppl
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { ReactionableModelDomainException } from '~/modules/Reactions/Domain/ReactionableModelDomainException'
+import { Post } from '~/modules/Posts/Domain/Post'
 
 export class UpdatePostReaction {
   private options: RepositoryOptions[] = ['reactions', 'reactions.user']
@@ -18,7 +19,7 @@ export class UpdatePostReaction {
   public async update (
     request: UpdatePostReactionRequestDto
   ): Promise<ModelReactionApplicationDto> {
-    const post = await this.postRepository.findById(request.postId, this.options)
+    const post = await this.postRepository.findById(request.postId, this.options) as Post
 
     if (post === null) {
       throw UpdatePostReactionApplicationException.postNotFound(request.postId)

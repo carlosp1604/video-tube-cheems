@@ -10,7 +10,6 @@ import {
 import {
   GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsResponseDto'
-import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import toast from 'react-hot-toast'
@@ -22,6 +21,7 @@ import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/Comm
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { signOut } from 'next-auth/react'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 interface Props {
   commentToReply: PostCommentComponentDto
@@ -116,7 +116,7 @@ export const PostChildComments: FC<Props> = ({
 
     setReplies([...replies, ...childComments])
 
-    const pagesNumber = calculatePagesNumber(newReplies.childCommentsCount, defaultPerPage)
+    const pagesNumber = PaginationHelper.calculatePagesNumber(newReplies.childCommentsCount, defaultPerPage)
 
     setCanLoadMore(pageNumber < pagesNumber)
     setPageNumber(pageNumber + 1)

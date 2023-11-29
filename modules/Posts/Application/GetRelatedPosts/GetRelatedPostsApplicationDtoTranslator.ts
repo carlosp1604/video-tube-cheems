@@ -3,20 +3,15 @@ import {
   GetRelatedPostsApplicationDto
 } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPostsApplicationDto'
 import {
-  PostWithProducerAndMetaApplicationDtoTranslator
-} from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'
+  PostWithRelationsAndViewsApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/PostWithRelationsAndViewsDtoTranslator'
 
 export class GetRelatedPostsApplicationDtoTranslator {
   public static fromDomain (postsWithViews: PostWithViewsInterface[]): GetRelatedPostsApplicationDto {
-    const posts = postsWithViews.map((postWithViews) => {
-      return {
-        post: PostWithProducerAndMetaApplicationDtoTranslator.fromDomain(postWithViews.post),
-        postViews: postWithViews.postViews,
-      }
-    })
-
     return {
-      posts,
+      posts: postsWithViews.map((postWithViews) => {
+        return PostWithRelationsAndViewsApplicationDtoTranslator.fromDomain(postWithViews.post, postWithViews.postViews)
+      }),
     }
   }
 }

@@ -44,7 +44,7 @@ export class CreatePostChildComment {
       throw CreatePostChildCommentApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as Post
   }
 
   private async getUser (userId: CreatePostChildCommentApplicationRequestDto['userId']): Promise<User> {

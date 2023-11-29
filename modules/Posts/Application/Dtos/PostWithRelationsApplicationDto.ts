@@ -3,7 +3,7 @@ import { ProducerApplicationDto } from '~/modules/Producers/Application/Producer
 import { ModelTranslationsApplicationDto } from '~/modules/Translations/Application/ModelTranslationsApplicationDto'
 import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
 
-export interface PostWithProducerAndMetaApplicationDto {
+export interface PostWithRelationsApplicationDto {
   readonly id: string
   readonly title: string
   readonly description: string

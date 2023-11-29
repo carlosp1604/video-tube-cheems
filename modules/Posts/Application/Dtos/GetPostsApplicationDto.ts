@@ -1,13 +1,8 @@
 import {
-  PostWithProducerAndMetaApplicationDto
-} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
-
-export interface GetPostsApplicationDto {
-  post: PostWithProducerAndMetaApplicationDto
-  postViews: number
-}
+  PostWithRelationsAndViewsApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 
 export interface GetPostsApplicationResponse {
-  posts: GetPostsApplicationDto[]
+  posts: PostWithRelationsAndViewsApplicationDto[]
   postsNumber: number
 }

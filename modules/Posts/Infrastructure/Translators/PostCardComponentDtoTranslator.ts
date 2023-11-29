@@ -6,13 +6,13 @@ import {
 } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostAnimationDto } from '~/modules/Posts/Infrastructure/Dtos/PostAnimationDto'
 import {
-  PostWithProducerAndMetaApplicationDto
-} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
+  PostWithRelationsApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithRelationsApplicationDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
 export class PostCardComponentDtoTranslator {
   public static fromApplication (
-    applicationDto: PostWithProducerAndMetaApplicationDto,
+    applicationDto: PostWithRelationsApplicationDto,
     postViews: number,
     locale: string
   ): PostCardComponentDto {

@@ -6,7 +6,7 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto

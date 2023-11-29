@@ -123,7 +123,7 @@ export const AppMenu: FC = () => {
   return (
     <>
       { userMenu }
-      <LoginModal isOpen={ loginModalOpen } setIsOpen={ setLoginModalOpen }/>
+      <LoginModal />
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
           <Link href='/' scroll={ false } shallow={ true }>

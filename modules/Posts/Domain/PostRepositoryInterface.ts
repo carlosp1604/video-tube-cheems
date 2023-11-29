@@ -27,6 +27,7 @@ export type RepositoryOptions =
   'comments' |
   'postMedia' |
   'reactions' |
+  'viewsCount' |
   'translations' |
   'comments.user' |
   'reactions.user' |
@@ -48,7 +49,7 @@ export interface PostRepositoryInterface {
    * @param options Post relations to load
    * @return Post if found or null
    */
-  findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | null>
+  findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | PostWithViewsInterface | null>
 
   /**
    * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its Slug

@@ -4,11 +4,11 @@ import { bindings as PostBindings } from '~/modules/Posts/Infrastructure/Binding
 import { ActorPageProps, ActorPage } from '~/components/pages/ActorPage/ActorPage'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetActor } from '~/modules/Actors/Application/GetActor'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { ActorPageComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorPageComponentDtoTranslator'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   const actorId = context.query.actorId

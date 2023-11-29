@@ -18,11 +18,35 @@
 
   &__user-posts-header {
     @apply flex flex-row justify-between mb-4 font-black text-lg
-      items-center;
+      items-center gap-x-4;
+  }
+
+  &__user-posts-header-title {
+    @apply flex flex-row justify-between gap-x-2 items-center;
+  }
+
+  &__user-posts-header-posts-quantity {
+    @apply font-semibold text-brand-300 text-sm;
+  }
+
+  &__user-posts-header-separator-icon {
+    @apply text-sm text-base-400;
   }
 
   &__user-posts-see-all-button {
-    @apply p-2 px-3 rounded-full border border-base-700
+    @apply hidden p-2 px-3 rounded-full border border-base-700
       text-xs font-medium;
+
+    &__visible {
+      @apply block;
+    }
+  }
+
+  &__no-posts-title {
+    @apply hidden text-sm text-base-600 font-normal;
+
+    &_visible {
+      @apply block;
+    }
   }
 }

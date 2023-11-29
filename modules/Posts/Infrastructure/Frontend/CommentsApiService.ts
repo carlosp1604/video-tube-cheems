@@ -1,5 +1,4 @@
 import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import {
@@ -15,6 +14,7 @@ import { PostChildCommentApplicationDto } from '~/modules/Posts/Application/Dtos
 import {
   GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsResponseDto'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export class CommentsApiService {
   public async create (

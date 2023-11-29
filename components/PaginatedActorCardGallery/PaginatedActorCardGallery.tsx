@@ -7,11 +7,11 @@ import {
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
-import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
 import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { ActorCardList } from '~/modules/Actors/Infrastructure/Components/ActorCardList'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 const useFirstRender = () => {
   const firstRender = useRef(true)
@@ -36,7 +36,8 @@ export const PaginatedActorCardGallery: FC<Props> = ({
   initialActorsNumber,
   filters,
 }) => {
-  const [pagesNumber, setPagesNumber] = useState<number>(calculatePagesNumber(initialActorsNumber, defaultPerPage))
+  const [pagesNumber, setPagesNumber] = useState<number>(
+    PaginationHelper.calculatePagesNumber(initialActorsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
   const [currentActors, setCurrentActors] = useState<ActorComponentDto[]>(initialActors)
   const [activeSortingOption, setActiveSortingOption] = useState<ComponentSortingOption>(HomePostsDefaultSortingOption)
@@ -62,7 +63,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
       return ActorComponentDtoTranslator.fromApplicationDto(actor)
     }))
     setActorsNumber(actors.actorsNumber)
-    setPagesNumber(calculatePagesNumber(actors.actorsNumber, defaultPerPage))
+    setPagesNumber(PaginationHelper.calculatePagesNumber(actors.actorsNumber, defaultPerPage))
   }
 
   useEffect(() => {

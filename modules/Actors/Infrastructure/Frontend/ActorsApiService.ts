@@ -4,7 +4,7 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export class ActorsApiService {
   public async getActors (

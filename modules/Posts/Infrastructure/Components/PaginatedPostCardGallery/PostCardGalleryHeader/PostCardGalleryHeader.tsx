@@ -2,7 +2,7 @@ import { FC } from 'react'
 import styles from './PostCardGalleryHeader.module.scss'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { BsDot } from 'react-icons/bs'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
 interface Props {
   title: string

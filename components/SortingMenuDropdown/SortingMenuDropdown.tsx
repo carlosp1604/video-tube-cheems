@@ -3,10 +3,8 @@ import styles from './SortingMenuDropdown.module.scss'
 import { BsSortDown } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import { IconButton } from '~/components/IconButton/IconButton'
-import {
-  PostsPaginationSortingType,
-  PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
 interface Props {
   activeOption: PostsPaginationSortingType

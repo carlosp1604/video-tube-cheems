@@ -1,51 +1,51 @@
-import { Dispatch, FC, SetStateAction, useState } from 'react'
+import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
 import { RetrievePassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/RetrievePassword'
+import { useLoginContext } from '~/hooks/LoginContext'
 
-export interface Props {
-  isOpen: boolean
-  setIsOpen: Dispatch<SetStateAction<boolean>>
-}
+export type AuthMode = 'login' | 'retrieve' | 'register'
 
-export const LoginModal: FC<Props> = ({ isOpen, setIsOpen }) => {
-  const [openRegisterModal, setOpenRegisterModal] = useState<boolean>(false)
-  const [openRetrievePasswordModal, setOpenRetrievePasswordModal] = useState<boolean>(false)
+export const LoginModal: FC = () => {
+  const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
 
-  let onClose: (() => void) | null = () => setIsOpen(false)
+  let onClose: (() => void) | null = () => setLoginModalOpen(false)
 
   let modalContent = (
     <Login
-      onClickForgotPassword={ () => setOpenRetrievePasswordModal(true) }
-      onClickSignup={ () => setOpenRegisterModal(true) }
-      onSuccessLogin={ () => setIsOpen(false) }
+      onClickForgotPassword={ () => setMode('retrieve') }
+      onClickSignup={ () => setMode('register') }
+      onSuccessLogin={ () => {
+        setMode('login')
+        setLoginModalOpen(false)
+      } }
     />
   )
 
-  if (openRegisterModal) {
+  if (mode === 'register') {
     modalContent = (
       <Register
-        onConfirm={ () => setOpenRegisterModal(false) }
-        onCancel={ () => setOpenRegisterModal(false) }
+        onConfirm={ () => setMode('login') }
+        onCancel={ () => setMode('login') }
       />
     )
 
-    onClose = () => setOpenRegisterModal(false)
+    onClose = () => setMode('login')
   }
 
-  if (openRetrievePasswordModal) {
+  if (mode === 'retrieve') {
     modalContent = (
       <RetrievePassword
-        onConfirm={ () => setOpenRetrievePasswordModal(false) }
-        onCancel={ () => setOpenRetrievePasswordModal(false) }
+        onConfirm={ () => setMode('login') }
+        onCancel={ () => setMode('login') }
       />
     )
   }
 
   return (
     <Modal
-      isOpen={ isOpen }
+      isOpen={ loginModalOpen }
       onClose={ onClose }
     >
       { modalContent }

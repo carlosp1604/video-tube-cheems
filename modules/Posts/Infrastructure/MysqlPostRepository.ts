@@ -228,11 +228,15 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param options Post relations to load
    * @return Post if found or null
    */
-  public async findById (postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
+  public async findById (
+    postId: Post['id'],
+    options: RepositoryOptions[] = []
+  ): Promise<Post | PostWithViewsInterface | null> {
     let includeComments: boolean | Prisma.Post$commentsArgs<DefaultArgs> | undefined = false
     let includeProducer: boolean | Prisma.Post$producerArgs<DefaultArgs> | undefined = false
     let includeActors: boolean | Prisma.Post$actorsArgs<DefaultArgs> | undefined = false
     let includeTags: boolean | Prisma.Post$tagsArgs<DefaultArgs> | undefined
+    let countStatement: boolean | Prisma.PostCountOutputTypeDefaultArgs<DefaultArgs> | undefined
 
     if (options.includes('comments')) {
       includeComments = true
@@ -283,6 +287,12 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
     }
 
+    if (options.includes('viewsCount')) {
+      countStatement = {
+        select: { views: true },
+      }
+    }
+
     const post = await prisma.post.findFirst({
       where: {
         id: postId,
@@ -301,11 +311,19 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         tags: includeTags,
         translations: options.includes('translations'),
         actor: options.includes('actor'),
+        _count: countStatement,
       },
     })
 
     if (post === null) {
       return null
+    }
+
+    if (options.includes('viewsCount')) {
+      return {
+        post: PostModelTranslator.toDomain(post, options),
+        postViews: post._count.views,
+      }
     }
 
     return PostModelTranslator.toDomain(post, options)

@@ -5,12 +5,12 @@ import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search

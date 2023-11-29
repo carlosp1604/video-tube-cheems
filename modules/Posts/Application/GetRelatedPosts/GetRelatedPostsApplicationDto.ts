@@ -1,5 +1,7 @@
-import { GetPostsApplicationDto } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
+import {
+  PostWithRelationsAndViewsApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 
 export interface GetRelatedPostsApplicationDto {
-  posts: GetPostsApplicationDto[]
+  posts: PostWithRelationsAndViewsApplicationDto[]
 }

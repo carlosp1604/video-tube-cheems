@@ -7,12 +7,13 @@ import {
   AddSavedPostApplicationException
 } from '~/modules/Auth/Application/AddSavedPost/AddSavedPostApplicationException'
 import { UserDomainException } from '~/modules/Auth/Domain/UserDomainException'
+import { PostWithViewsInterface } from '~/modules/Posts/Domain/PostWithCountInterface'
 import {
-  PostWithProducerAndMetaApplicationDtoTranslator
-} from '~/modules/Posts/Application/Translators/PostWithProducerAndMetaApplicationDtoTranslator'
+  PostWithRelationsAndViewsApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 import {
-  PostWithProducerAndMetaApplicationDto
-} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
+  PostWithRelationsAndViewsApplicationDtoTranslator
+} from '~/modules/Posts/Application/Translators/PostWithRelationsAndViewsDtoTranslator'
 
 export class AddSavedPost {
   // eslint-disable-next-line no-useless-constructor
@@ -21,15 +22,15 @@ export class AddSavedPost {
     private readonly postRepository: PostRepositoryInterface
   ) {}
 
-  public async add (request: AddSavedPostApplicationRequest): Promise<PostWithProducerAndMetaApplicationDto> {
+  public async add (request: AddSavedPostApplicationRequest): Promise<PostWithRelationsAndViewsApplicationDto> {
     const user = await this.getUser(request.userId)
     const post = await this.getPost(request.postId)
 
-    AddSavedPost.addPostToUserSavedPosts(user, post)
+    AddSavedPost.addPostToUserSavedPosts(user, post.post)
 
-    await this.userRepository.addPostToSavedPosts(user.id, post.id)
+    await this.userRepository.addPostToSavedPosts(user.id, post.post.id)
 
-    return PostWithProducerAndMetaApplicationDtoTranslator.fromDomain(post)
+    return PostWithRelationsAndViewsApplicationDtoTranslator.fromDomain(post.post, post.postViews)
   }
 
   public async getUser (userId: AddSavedPostApplicationRequest['userId']): Promise<User> {
@@ -42,19 +43,20 @@ export class AddSavedPost {
     return user
   }
 
-  public async getPost (postId: AddSavedPostApplicationRequest['postId']): Promise<Post> {
+  public async getPost (postId: AddSavedPostApplicationRequest['postId']): Promise<PostWithViewsInterface> {
     const post = await this.postRepository.findById(postId, [
       'meta',
       'producer',
       'actor',
       'translations',
+      'viewsCount',
     ])
 
     if (post === null) {
       throw AddSavedPostApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as PostWithViewsInterface
   }
 
   public static addPostToUserSavedPosts (user: User, post: Post): void {

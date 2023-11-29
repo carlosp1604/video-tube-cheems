@@ -17,11 +17,14 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUserHistory'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import {
+  UserProfilePostsSectionSelectorType, UserProfilePostsSectionSelectorTypes
+} from '~/components/pages/UserProfilePage/UserProfilePostsSectionSelector/UserProfilePostsSectionSelector'
 
 export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
-  let { username } = context.query
+  let { username, section } = context.query
 
   if (!username) {
     return {
@@ -29,11 +32,27 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
     }
   }
 
+  let parsedSection: UserProfilePostsSectionSelectorType = 'savedPosts'
+
+  if (section) {
+    if (UserProfilePostsSectionSelectorTypes.includes(section as UserProfilePostsSectionSelectorType)) {
+      parsedSection = section as UserProfilePostsSectionSelectorType
+    } else {
+      return {
+        redirect: {
+          destination: `/${locale}/users/${username}?section=savedPosts`,
+          permanent: false,
+        },
+      }
+    }
+  }
+
   username = username.toString()
 
   const props: UserProfilePageProps = {
-    savedPosts: [],
-    historyPosts: [],
+    section: parsedSection,
+    posts: [],
+    postsNumber: 0,
     userComponentDto: {
       createdAt: '',
       email: '',
@@ -58,12 +77,11 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
     }
   }
 
-  const getSavedPosts = container.resolve<GetUserSavedPosts>('getUserSavedPostsUseCase')
-  const getUserHistory = container.resolve<GetUserHistory>('getUserHistoryUseCase')
+  if (parsedSection === 'savedPosts') {
+    const getSavedPosts = container.resolve<GetUserSavedPosts>('getUserSavedPostsUseCase')
 
-  try {
-    const [savedPosts, viewedPosts] = await Promise.all([
-      getSavedPosts.get({
+    try {
+      const savedPosts = await getSavedPosts.get({
         page: 1,
         filters: [{
           type: PostFilterOptions.SAVED_BY,
@@ -72,8 +90,20 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
         postsPerPage: defaultPerPage,
         sortCriteria: InfrastructureSortingCriteria.DESC,
         sortOption: InfrastructureSortingOptions.SAVED_DATE,
-      }),
-      getUserHistory.get({
+      })
+
+      props.posts = savedPosts.posts.map((post) => {
+        return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
+      })
+      props.postsNumber = savedPosts.postsNumber
+    } catch (exception: unknown) {
+      console.error(exception)
+    }
+  } else {
+    const getUserHistory = container.resolve<GetUserHistory>('getUserHistoryUseCase')
+
+    try {
+      const viewedPosts = await getUserHistory.get({
         page: 1,
         filters: [{
           type: PostFilterOptions.VIEWED_BY,
@@ -82,18 +112,15 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
         postsPerPage: defaultPerPage,
         sortCriteria: InfrastructureSortingCriteria.DESC,
         sortOption: InfrastructureSortingOptions.VIEW_DATE,
-      }),
-    ])
+      })
 
-    props.savedPosts = savedPosts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
-    })
-
-    props.historyPosts = viewedPosts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
-    })
-  } catch (exception: unknown) {
-    console.error(exception)
+      props.posts = viewedPosts.posts.map((post) => {
+        return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
+      })
+      props.postsNumber = viewedPosts.postsNumber
+    } catch (exception: unknown) {
+      console.error(exception)
+    }
   }
 
   return {
@@ -104,15 +131,16 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
         'user_profile',
         'app_menu',
         'menu',
-        'sorting_menu_dropdown',
         'user_menu',
         'user_signup',
         'user_login',
         'user_retrieve_password',
         'post_card',
-        'pagination_bar',
         'common',
-        'paginated_post_card_gallery',
+        'api_exceptions',
+        'post_card_options',
+        'post_card_gallery',
+        'carousel',
       ]),
     },
   }

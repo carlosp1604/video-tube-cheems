@@ -4,27 +4,29 @@ import { Modal } from '~/components/Modal/Modal'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
 import { BsTools } from 'react-icons/bs'
+import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 
 export interface PostCardGalleryOption {
   title: string
   icon: ReactElement
-  onClick: () => void
+  onClick: (postCard: PostCardComponentDto) => void
 }
 
 interface Props {
   isOpen: boolean
   onClose: () => void
   options: PostCardGalleryOption[]
+  selectedPostCard: PostCardComponentDto
 }
 
-export const PostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, options }) => {
+export const PostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, options, selectedPostCard }) => {
   const { t } = useTranslation('post_card_gallery')
 
   const buildOptions: MenuOptionComponentInterface[] = options.map((option) => {
     return {
       title: option.title,
       isActive: false,
-      onClick: () => option.onClick(),
+      onClick: () => option.onClick(selectedPostCard),
       action: undefined,
       picture: option.icon,
     }

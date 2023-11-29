@@ -2,6 +2,14 @@
   &__container {
     @apply flex flex-col items-center justify-center p-5
       gap-y-4;
+
+    @screen md {
+      @apply flex flex-row gap-x-10;
+    }
+  }
+
+  &__user-info-contaier {
+    @apply flex flex-col gap-y-2;
   }
 
   &__user-data {

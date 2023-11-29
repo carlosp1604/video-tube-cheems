@@ -10,9 +10,6 @@ import {
   USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS, USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
   USER_USER_NOT_FOUND
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
-import {
-  PostWithProducerAndMetaApplicationDto
-} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import {
   POST_REACTION_NOT_FOUND,
@@ -20,6 +17,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { PostWithRelationsAndViewsApplicationDto } from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 
 export class PostsApiService {
   public async getPosts (
@@ -247,7 +245,7 @@ export class PostsApiService {
     return fetch(fetchRoute)
   }
 
-  public async savePost (userId: string, postId: string): Promise<PostWithProducerAndMetaApplicationDto> {
+  public async savePost (userId: string, postId: string): Promise<PostWithRelationsAndViewsApplicationDto> {
     const fetchRoute = `/api/users/${userId}/saved-posts/${postId}`
 
     const response = await fetch(fetchRoute, {
@@ -257,7 +255,7 @@ export class PostsApiService {
     const jsonResponse = await response.json()
 
     if (response.ok) {
-      return jsonResponse as PostWithProducerAndMetaApplicationDto
+      return jsonResponse as PostWithRelationsAndViewsApplicationDto
     }
 
     switch (response.status) {

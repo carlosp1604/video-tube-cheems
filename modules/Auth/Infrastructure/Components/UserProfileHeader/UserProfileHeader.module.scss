@@ -32,11 +32,12 @@
   }
 
   &__user-info-item-title {
-    @apply flex flex-row font-light text-sm
+    @apply flex flex-row font-normal text-sm
       text-base-400;
   }
 
   &__user-info-item-content {
+    @apply text-sm font-light;
     &:first-letter {
       @apply uppercase;
     }

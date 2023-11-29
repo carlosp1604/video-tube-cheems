@@ -1,29 +1,44 @@
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 import { Modal } from '~/components/Modal/Modal'
-import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
 import { RetrievePassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/RetrievePassword'
 import { useLoginContext } from '~/hooks/LoginContext'
+import { useSession } from 'next-auth/react'
+import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 
 export type AuthMode = 'login' | 'retrieve' | 'register'
 
 export const LoginModal: FC = () => {
   const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
 
+  const { status } = useSession()
+
   let onClose: (() => void) | null = () => setLoginModalOpen(false)
 
-  let modalContent = (
-    <Login
-      onClickForgotPassword={ () => setMode('retrieve') }
-      onClickSignup={ () => setMode('register') }
-      onSuccessLogin={ () => {
-        setMode('login')
-        setLoginModalOpen(false)
-      } }
-    />
-  )
+  let modalContent: ReactElement | null = null
 
-  if (mode === 'register') {
+  /** Login and register only allowed if user is not authenticated */
+  if (
+    (mode === 'login' || mode === 'register') &&
+    status === 'authenticated'
+  ) {
+    setLoginModalOpen(false)
+  }
+
+  if (mode === 'login' && status === 'unauthenticated') {
+    modalContent = (
+      <Login
+        onClickForgotPassword={ () => setMode('retrieve') }
+        onClickSignup={ () => setMode('register') }
+        onSuccessLogin={ () => {
+          setMode('login')
+          setLoginModalOpen(false)
+        } }
+      />
+    )
+  }
+
+  if (mode === 'register' && status === 'unauthenticated') {
     modalContent = (
       <Register
         onConfirm={ () => setMode('login') }

@@ -1,14 +1,14 @@
 import Avatar from 'react-avatar'
 import styles from './UserMenu.module.scss'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { signOut } from 'next-auth/react'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
 import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
 import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
-import { useRouter } from 'next/router'
 import { useLoginContext } from '~/hooks/LoginContext'
+import { usePathname } from 'next/navigation'
 
 interface Props {
   user: UserProviderUserDto
@@ -19,11 +19,12 @@ interface Props {
 export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
   const { setLoginModalOpen, setMode } = useLoginContext()
-  const { pathname, isReady } = useRouter()
+
+  const pathname = usePathname()
 
   const menuOptions: MenuOptionComponentInterface[] = [{
     // TODO: This should be extracted to an object when grow up
-    title: t('user_menu_profile_button'),
+    title: 'Cambiar contraseña',
     isActive: false,
     action: undefined,
     picture: <CiUnlock />,
@@ -34,23 +35,20 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
     },
   }]
 
-  useEffect(() => {
-    if (isReady) {
-      if (pathname !== `/users/${user.username}`) {
-        menuOptions.push({
-          // TODO: This should be extracted to an object when grow up
-          title: t('user_menu_profile_button'),
-          isActive: false,
-          action: {
-            url: `/users/${user.username}?section=savedPosts`,
-            blank: false,
-          },
-          picture: <CiUser />,
-          onClick: () => setIsOpen(false),
-        })
-      }
-    }
-  }, [isReady])
+  console.log(pathname)
+
+  if (pathname !== `/users/${user.username}`) {
+    menuOptions.unshift({
+      title: t('user_menu_profile_button'),
+      isActive: false,
+      action: {
+        url: `/users/${user.username}?section=savedPosts`,
+        blank: false,
+      },
+      picture: <CiUser />,
+      onClick: () => setIsOpen(false),
+    })
+  }
 
   let avatar = (
     <Avatar
@@ -89,8 +87,7 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
         </div>
 
         <div className={ styles.userMenu__menuOptionsContainer }>
-          <MenuOptions
-            menuOptions={ menuOptions } />
+          <MenuOptions menuOptions={ menuOptions } />
         </div>
 
         <button

@@ -8,7 +8,7 @@
     }
   }
 
-  &__user-info-contaier {
+  &__user-info-container {
     @apply flex flex-col gap-y-2;
   }
 
@@ -56,15 +56,6 @@
 
   &__activity-item-activity {
     @apply font-light text-base-400;
-  }
-
-  &__edit-profile-button {
-    @apply flex flex-row gap-x-2 items-center p-2.5 border rounded-lg
-      text-base-100 border-base-500 transition-colors text-base-300;
-
-    &:focus, &:hover {
-      @apply bg-brand-900 transition-colors;
-    }
   }
 
   &__user-avatar-container {

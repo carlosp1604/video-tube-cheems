@@ -113,6 +113,17 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     setLoading(false)
   }
 
+  const onSectionChange = async (section: UserProfilePostsSectionSelectorType) => {
+    setSelectedSection(section)
+    await replace({
+      query: {
+        username: userComponentDto.username,
+        section,
+      },
+    }, undefined, { shallow: true, scroll: false })
+    await updatePosts(section)
+  }
+
   const postsPerList = 20
 
   let postsList: ReactElement | null
@@ -133,10 +144,11 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
         postCardOptions={ currentPostsNumber === 0
           ? []
           : (selectedSection === 'savedPosts'
-              ? [{ type: 'deleteSavedPost', onDelete: onDeleteSavedPost }, { type: 'react' }]
+              ? [{ type: 'react' }, { type: 'deleteSavedPost', onDelete: onDeleteSavedPost }]
               : [{ type: 'react' }, { type: 'savePost' }]
             )
         }
+        owner={ userComponentDto.id }
       />
     )
   }
@@ -147,32 +159,22 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 
       <UserProfilePostsSectionSelector
         selectedSection={ selectedSection }
-        onClickOption={ async (section) => {
-          setSelectedSection(section)
-          await replace({
-            query: {
-              username: userComponentDto.username,
-              section,
-            },
-          }, undefined, { shallow: true, scroll: false })
-          await updatePosts(section)
-        } }
-        />
+        onClickOption={ onSectionChange }
+      />
 
       <div className={ styles.userProfilePage__userPosts }>
         <div className={ styles.userProfilePage__userPostsHeader }>
           <div className={ styles.userProfilePage__userPostsHeaderTitle }>
-            { section === 'savedPosts' ? t('user_saved_posts_title') : t('user_history_title') }
+            { selectedSection === 'savedPosts' ? t('user_saved_posts_title') : t('user_history_title') }
             <BsDot className={ styles.userProfilePage__userPostsHeaderSeparatorIcon }/>
             <span className={ styles.userProfilePage__userPostsHeaderPostsQuantity }>
               { t('posts_number_title', { postsNumber: currentPostsNumber }) }
             </span>
           </div>
-          <button
-            className={ `
-              ${styles.userProfilePage__userPostsSeeAllButton}
-              ${currentPostsNumber > postsPerList ? styles.userProfilePage__userPostsSeeAllButton__visible : ''}
-            ` }
+          <button className={ `
+            ${styles.userProfilePage__userPostsSeeAllButton}
+            ${currentPostsNumber > postsPerList ? styles.userProfilePage__userPostsSeeAllButton__visible : ''}
+          ` }
             title={ t('see_all_button_title') }
           >
             { t('see_all_button_title') }

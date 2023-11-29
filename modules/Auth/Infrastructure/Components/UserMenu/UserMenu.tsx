@@ -1,4 +1,3 @@
-import Avatar from 'react-avatar'
 import styles from './UserMenu.module.scss'
 import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
@@ -9,6 +8,7 @@ import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
 import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { usePathname } from 'next/navigation'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   user: UserProviderUserDto
@@ -24,7 +24,7 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
 
   const menuOptions: MenuOptionComponentInterface[] = [{
     // TODO: This should be extracted to an object when grow up
-    title: 'Cambiar contraseña',
+    title: t('user_menu_change_password_button'),
     isActive: false,
     action: undefined,
     picture: <CiUnlock />,
@@ -34,8 +34,6 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
       setIsOpen(false)
     },
   }]
-
-  console.log(pathname)
 
   if (pathname !== `/users/${user.username}`) {
     menuOptions.unshift({
@@ -50,26 +48,6 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
     })
   }
 
-  let avatar = (
-    <Avatar
-      className={ styles.userMenu__userAvatar }
-      round={ true }
-      size={ '50' }
-      name={ user.name }
-      textSizeRatio={ 2 }
-    />
-  )
-
-  if (user.image !== null) {
-    avatar = (
-      <img
-        className={ styles.userMenu__userAvatar }
-        src={ user.image }
-        alt={ user.name }
-      />
-    )
-  }
-
   return (
     <Modal
       isOpen={ isOpen }
@@ -77,7 +55,15 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
     >
       <div className={ styles.userMenu__container }>
         <div className={ styles.userMenu__userData }>
-          { avatar }
+          <AvatarImage
+            imageUrl={ user.image }
+            avatarClassName={ styles.userMenu__userAvatar }
+            imageClassName={ styles.userMenu__userAvatar }
+            avatarName={ user.name }
+            size={ '50' }
+            round={ true }
+            imageAlt={ user.username }
+          />
           <span className={ styles.userMenu__userDataText }>
             { user.name }
             <small className={ styles.userMenu__userEmail }>

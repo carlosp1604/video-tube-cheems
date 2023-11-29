@@ -18,12 +18,14 @@ interface Props {
   posts: PostCardComponentDto[]
   postCardOptions: PostCardOptionConfiguration[]
   loading: boolean
+  owner: string
 }
 
 export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCardOptions'>> = ({
   posts,
   postCardOptions,
   loading = false,
+  owner = undefined,
 }) => {
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostCard, setSelectedPostCard] = useState<PostCardComponentDto | null>(null)
@@ -34,7 +36,8 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
 
   const postCardGalleryOptions = buildOptions(
     postCardOptions,
-    () => setPostCardOptionsMenuOpen(!postCardOptionsMenuOpen)
+    () => setPostCardOptionsMenuOpen(!postCardOptionsMenuOpen),
+    owner
   )
 
   let onClickOptions : ((post: PostCardComponentDto) => void) | undefined

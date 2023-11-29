@@ -13,8 +13,7 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { CiUser } from 'react-icons/ci'
 import toast from 'react-hot-toast'
-import Avatar from 'react-avatar'
-import Image from 'next/image'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
@@ -32,11 +31,7 @@ export const AppMenu: FC = () => {
     userAvatar = (
       <IconButton
         onClick={ undefined }
-        icon={
-          <AiOutlineLoading
-            className={ styles.appMenu__loadingMenuIcon }
-          />
-        }
+        icon={ <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/> }
         title={ t('app_menu_loading_user_button_title') }
       />
     )
@@ -55,38 +50,22 @@ export const AppMenu: FC = () => {
   let userMenu = null
 
   if (session.status === 'authenticated' && user !== null) {
-    if (user?.image !== null) {
-      userAvatar = (
-        <button
-          className={ styles.appMenu__userAvatarButton }
-          onClick={ () => {
-            setUserMenuOpen(true)
-          } }
-        >
-          <Image
-            alt={ user.name }
-            className={ styles.appMenu__userAvatarImage }
-            src={ user.image }
-            width={ 0 }
-            height={ 0 }
-            sizes={ '100vw' }
-          />
-        </button>
-      )
-    } else {
-      userAvatar = (
-        <div
-          className={ styles.appMenu__userAvatarContainer }
-          onClick={ () => setUserMenuOpen(true) }
-        >
-          <Avatar
-            name={ user.name }
-            textSizeRatio={ 6 }
-            size={ '80' }
-          />
-        </div>
-      )
-    }
+    userAvatar = (
+      <button
+        className={ styles.appMenu__userAvatarContainer }
+        onClick={ () => setUserMenuOpen(true) }
+      >
+        <AvatarImage
+          imageUrl={ user.image }
+          avatarClassName={ styles.userProfileHeader__userAvatarContainer }
+          imageClassName={ styles.appMenu__userAvatarContainer }
+          avatarName={ user.name }
+          size={ '28' }
+          round={ true }
+          imageAlt={ user.username }
+        />
+      </button>
+    )
 
     userMenu = (
       <UserMenu

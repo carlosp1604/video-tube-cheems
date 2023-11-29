@@ -1,12 +1,11 @@
 import { FC } from 'react'
 import styles from './UserProfileHeader.module.scss'
-import Avatar from 'react-avatar'
 import { useTranslation } from 'next-i18next'
 import { BiCalendarEvent, BiIdCard } from 'react-icons/bi'
 import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
-import Image from 'next/image'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   componentDto: UserProfileHeaderComponentDto
@@ -15,38 +14,22 @@ interface Props {
 export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
   const { t } = useTranslation('user_profile')
 
-  let avatar = (
-    <Avatar
-      className={ styles.userProfileHeader__userAvatarContainer }
-      round={ true }
-      size={ '120' }
-      name={ componentDto.name }
-      textSizeRatio={ 2 }
-      maxInitials={ 2 }
-    />
-  )
-
-  if (componentDto.imageUrl !== null) {
-    avatar = (
-      <Image
-        alt={ t('user_profile_image_alt_title', { username: componentDto.username }) }
-        className={ styles.userProfileHeader__userAvatarImage }
-        src={ componentDto.imageUrl }
-        width={ 0 }
-        height={ 0 }
-        sizes={ '100vw' }
-      />
-    )
-  }
-
   return (
     <div className={ styles.userProfileHeader__container }>
       <div className={ styles.userProfileHeader__userData }>
-        { avatar }
-        { componentDto.username }
+        <AvatarImage
+          imageUrl={ componentDto.imageUrl }
+          avatarClassName={ styles.userProfileHeader__userAvatarContainer }
+          imageClassName={ styles.userProfileHeader__userAvatarImage }
+          avatarName={ componentDto.name }
+          size={ '120' }
+          round={ true }
+          imageAlt={ t('user_profile_image_alt_title', { username: componentDto.username }) }
+        />
+        { `@${componentDto.username}` }
       </div>
 
-      <div className={ styles.userProfileHeader__userInfoContaier }>
+      <div className={ styles.userProfileHeader__userInfoContainer }>
         { /**
         <div className={ styles.userProfileHeader__userActivities }>
         <span className={ styles.userProfileHeader__activityItem }>
@@ -93,16 +76,6 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
           </div>
         </div>
       </div>
-
-      { /**
-        <div className={ styles.userProfile__options }>
-          <button className={ styles.userProfile__editProfileButton }>
-            <BsPencil />
-            { t('user_my_profile_button') }
-          </button>
-        </div>
-      */ }
-
     </div>
   )
 }

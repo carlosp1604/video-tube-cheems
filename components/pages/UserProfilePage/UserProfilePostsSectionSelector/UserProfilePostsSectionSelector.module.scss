@@ -3,7 +3,7 @@
 
   &__container {
     @apply flex flex-row mt-5 items-center justify-start
-      overflow-x-scroll scrollbar-hide border-b border-b-base-800;
+      overflow-x-scroll scrollbar-hide;
   }
 
   &__option {
@@ -18,6 +18,10 @@
       }
     }
 
+    &:disabled {
+      @apply text-base-700;
+    }
+
     &_active {
       @apply bg-base-800 border-base-800 text-base-100
       transition-all;
@@ -28,6 +32,10 @@
         #{$parentBlock}__option-icon-wrapper {
           @apply text-base-100 transition-colors;
         }
+      }
+
+      &:disabled {
+        @apply text-base-100;
       }
 
       #{$parentBlock}__option-icon-wrapper {

@@ -11,31 +11,37 @@ interface Props {
   activeOption: PostsPaginationSortingType
   sortingOptions: PostsPaginationSortingType[]
   onChangeOption: (option: PostsPaginationSortingType) => void
+  loading: boolean
 }
 
-export const PostCardGalleryHeader: FC<Props> = ({
+export const PostCardGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading'>> = ({
   title,
   subtitle,
   showSortingOptions,
   activeOption,
   sortingOptions,
   onChangeOption,
+  loading = false,
 }) => {
   return (
     <div className={ styles.postCardGalleryHeader__container }>
-      <span className={ styles.postCardGalleryHeader__title }>
+      <div className={ styles.postCardGalleryHeader__title }>
         { title }
         <BsDot className={ styles.postCardGalleryHeader__separatorIcon }/>
-        <small className={ styles.postCardGalleryHeader__videosQuantity }>
-          { subtitle }
-        </small>
-      </span>
+        { loading
+          ? <span className={ styles.postCardGalleryHeader__videosQuantitySkeeleton }/>
+          : <small className={ styles.postCardGalleryHeader__videosQuantity }>
+              { subtitle }
+            </small>
+        }
+      </div>
 
-      { showSortingOptions
+      { showSortingOptions || loading
         ? <SortingMenuDropdown
           activeOption={ activeOption }
           options={ sortingOptions }
           onChangeOption={ onChangeOption }
+          loading={ loading }
         />
         : null
       }

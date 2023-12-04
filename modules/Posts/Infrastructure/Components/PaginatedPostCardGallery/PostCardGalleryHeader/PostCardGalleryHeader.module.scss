@@ -27,4 +27,9 @@
       @apply font-semibold text-brand-300;
     }
   }
+
+  &__videos-quantity-skeeleton {
+    @apply w-10 rounded-lg h-2.5 bg-base-700 mt-1
+      animate-pulse;
+  }
 }

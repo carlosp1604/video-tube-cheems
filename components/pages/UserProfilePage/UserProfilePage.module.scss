@@ -12,8 +12,8 @@
   }
 
   &__user-posts {
-    @apply flex flex-col gap-x-5 pt-4
-      rounded-lg mb-2;
+    @apply flex flex-col gap-x-5 pt-4 border border-base-800 p-2
+      rounded-lg rounded-tl-none mb-2;
   }
 
   &__user-posts-header {
@@ -35,7 +35,11 @@
 
   &__user-posts-see-all-button {
     @apply hidden p-2 px-3 rounded-full border border-base-700
-      text-xs font-medium;
+      text-xs font-medium transition-colors;
+
+    &:hover {
+      @apply bg-base-700 transition-colors;
+    }
 
     &__visible {
       @apply block;

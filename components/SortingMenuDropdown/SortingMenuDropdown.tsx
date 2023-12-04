@@ -10,9 +10,15 @@ interface Props {
   activeOption: PostsPaginationSortingType
   onChangeOption: (option: PostsPaginationSortingType) => void
   options: PostsPaginationSortingType[]
+  loading: boolean
 }
 
-export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, options }) => {
+export const SortingMenuDropdown: FC<Partial<Props> & Omit<Props, 'loading'>> = ({
+  activeOption,
+  onChangeOption,
+  options,
+  loading = false,
+}) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
   const { t } = useTranslation('sorting_menu_dropdown')
 
@@ -27,13 +33,17 @@ export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, o
           onClick={ () => setOpenMenu(!openMenu) }
           icon={ <BsSortDown /> }
           title={ t('dropdown_sort_button_title', { criteria: t(componentActiveSortingOption.translationKey) }) }
+          disabled={ loading }
         />
-        { t(componentActiveSortingOption.translationKey) }
+        { loading
+          ? <span className={ styles.sortingMenuDropdown__currentOrderTitleSkeleton } />
+          : t(componentActiveSortingOption.translationKey)
+        }
       </span>
 
       <div className={ `
         ${styles.sortingMenuDropdown__dropdownContainer}
-        ${openMenu ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
+        ${openMenu && !loading ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
       ` }
         onMouseLeave={ () => setOpenMenu(false) }
         onClick={ () => setOpenMenu(!openMenu) }

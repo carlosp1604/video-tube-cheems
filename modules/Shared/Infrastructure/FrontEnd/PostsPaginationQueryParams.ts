@@ -3,12 +3,12 @@ import { ParsedUrlQuery } from 'querystring'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   ComponentSortingOption,
-  HistoryDefaultSortingOption, HistoryOldestViewedSortingOption,
-  HomeMoreViewsEntriesSortingOption,
-  HomeOldestEntriesSortingOption,
-  HomePostsDefaultSortingOption,
-  SavedPostsDefaultSortingOption,
-  SavedPostsOldestSavedSortingOption
+  NewestViewedSortingOption, OldestViewedSortingOption,
+  MoreViewsPostsSortingOption,
+  OldestPostsSortingOption,
+  NewestPostsSortingOption,
+  NewestSavedPostsSortingOption,
+  OldestSavedPostsSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
@@ -197,19 +197,19 @@ export class PostsPaginationQueryParams {
   public static fromOrderTypeToComponentSortingOption (type: PostsPaginationSortingType): ComponentSortingOption {
     switch (type) {
       case PostsPaginationSortingType.LATEST:
-        return HomePostsDefaultSortingOption
+        return NewestPostsSortingOption
       case PostsPaginationSortingType.MOST_VIEWED:
-        return HomeMoreViewsEntriesSortingOption
+        return MoreViewsPostsSortingOption
       case PostsPaginationSortingType.OLDEST:
-        return HomeOldestEntriesSortingOption
+        return OldestPostsSortingOption
       case PostsPaginationSortingType.NEWEST_SAVED:
-        return SavedPostsDefaultSortingOption
+        return NewestSavedPostsSortingOption
       case PostsPaginationSortingType.NEWEST_VIEWED:
-        return HistoryDefaultSortingOption
+        return NewestViewedSortingOption
       case PostsPaginationSortingType.OLDEST_SAVED:
-        return SavedPostsOldestSavedSortingOption
+        return OldestSavedPostsSortingOption
       case PostsPaginationSortingType.OLDEST_VIEWED:
-        return HistoryOldestViewedSortingOption
+        return OldestViewedSortingOption
 
       default:
         throw Error('Sorting option not implemented or not exists')

@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import styles from './PaginatedActorCardGallery.module.scss'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 import {
-  HomePostsDefaultSortingOption,
+  NewestPostsSortingOption,
   ComponentSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
@@ -40,7 +40,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
     PaginationHelper.calculatePagesNumber(initialActorsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
   const [currentActors, setCurrentActors] = useState<ActorComponentDto[]>(initialActors)
-  const [activeSortingOption, setActiveSortingOption] = useState<ComponentSortingOption>(HomePostsDefaultSortingOption)
+  const [activeSortingOption, setActiveSortingOption] = useState<ComponentSortingOption>(NewestPostsSortingOption)
   const [actorsNumber, setActorsNumber] = useState<number>(initialActorsNumber)
   const firstRender = useFirstRender()
 

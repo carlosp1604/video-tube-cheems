@@ -55,7 +55,18 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     }
   }
 
-  const postsSkeletonNumber = defaultPerPage - posts.length
+  let postsSkeletonNumber
+
+  if (posts.length <= defaultPerPage) {
+    postsSkeletonNumber = defaultPerPage - posts.length
+  } else {
+    postsSkeletonNumber = posts.length % defaultPerPage
+  }
+
+  if (loading) {
+    postsSkeletonNumber = defaultPerPage
+  }
+
   const skeletonPosts = Array.from(Array(postsSkeletonNumber).keys())
     .map((index) => (
       <PostCardSkeleton
@@ -65,14 +76,16 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
       />))
 
   return (
-    <div className={ styles.postCardGallery__container }>
+    <div className={ `
+      ${styles.postCardGallery__container}
+      ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
+    ` }>
       <PostCardGalleryOptions
         options={ postCardGalleryOptions }
         isOpen={ postCardOptionsMenuOpen }
         onClose={ () => setPostCardOptionsMenuOpen(false) }
         selectedPostCard={ selectedPostCard as PostCardComponentDto }
       />
-
       { posts.map((post) => {
         return (
           <PostCardWithOptions
@@ -88,7 +101,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           />
         )
       }) }
-      { skeletonPosts }
+      { loading ? skeletonPosts : null }
     </div>
   )
 }

@@ -10,9 +10,10 @@ export const UserProfilePostsSectionSelectorTypes: UserProfilePostsSectionSelect
 interface Props {
   selectedSection: UserProfilePostsSectionSelectorType
   onClickOption: (section: UserProfilePostsSectionSelectorType) => void
+  disabled: boolean
 }
 
-export const UserProfilePostsSectionSelector: FC<Props> = ({ selectedSection, onClickOption }) => {
+export const UserProfilePostsSectionSelector: FC<Props> = ({ selectedSection, onClickOption, disabled }) => {
   const { t } = useTranslation('user_profile')
 
   return (
@@ -25,6 +26,7 @@ export const UserProfilePostsSectionSelector: FC<Props> = ({ selectedSection, on
           if (selectedSection !== 'savedPosts') { onClickOption('savedPosts') }
         } }
         title={ t('user_saved_posts_selector_button_title') }
+        disabled={ disabled }
       >
         <span className={ styles.userProfilePostsSectionSelector__optionIconWrapper }>
           <BsBookmark className={ styles.userProfilePostsSectionSelector__optionIcon }/>
@@ -37,9 +39,10 @@ export const UserProfilePostsSectionSelector: FC<Props> = ({ selectedSection, on
         ${selectedSection === 'history' ? styles.userProfilePostsSectionSelector__option_active : ''}
       ` }
         onClick={ () => {
-          if (selectedSection !== 'history') { onClickOption('history') }
+          if (selectedSection !== 'history' && !disabled) { onClickOption('history') }
         } }
         title={ t('user_history_selector_button_title') }
+        disabled={ disabled }
       >
         <span className={ styles.userProfilePostsSectionSelector__optionIconWrapper }>
           <BsClockHistory className={ styles.userProfilePostsSectionSelector__optionIcon }/>

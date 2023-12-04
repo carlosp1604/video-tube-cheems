@@ -2,6 +2,11 @@
 
   &__container {
     @apply grid gap-4 mb-2;
+
+    &__loading {
+      @apply animate-pulse;
+    }
+
     grid-template-columns: repeat(1, 1fr);
 
     @screen sm {

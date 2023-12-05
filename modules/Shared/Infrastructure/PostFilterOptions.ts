@@ -7,5 +7,5 @@ export enum PostFilterOptions {
   ACTOR_NAME = 'actorName',
   TAG_NAME = 'tagName',
   SAVED_BY = 'savedBy',
-  VIEWED_BY = 'viewedBy'
+  VIEWED_BY = 'viewedBy',
 }

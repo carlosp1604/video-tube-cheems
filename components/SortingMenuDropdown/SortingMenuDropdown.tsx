@@ -11,13 +11,15 @@ interface Props {
   onChangeOption: (option: PostsPaginationSortingType) => void
   options: PostsPaginationSortingType[]
   loading: boolean
+  visible: boolean
 }
 
-export const SortingMenuDropdown: FC<Partial<Props> & Omit<Props, 'loading'>> = ({
+export const SortingMenuDropdown: FC<Partial<Props> & Omit<Props, 'loading' | 'visible'>> = ({
   activeOption,
   onChangeOption,
   options,
   loading = false,
+  visible = true,
 }) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
   const { t } = useTranslation('sorting_menu_dropdown')
@@ -27,7 +29,10 @@ export const SortingMenuDropdown: FC<Partial<Props> & Omit<Props, 'loading'>> = 
   [activeOption])
 
   return (
-    <div className={ styles.sortingMenuDropdown__container }>
+    <div className={ `
+      ${styles.sortingMenuDropdown__container}
+      ${visible || loading ? styles.sortingMenuDropdown__container_visible : ''}
+    ` }>
       <span className={ styles.sortingMenuDropdown__dropdownButton }>
         <IconButton
           onClick={ () => setOpenMenu(!openMenu) }

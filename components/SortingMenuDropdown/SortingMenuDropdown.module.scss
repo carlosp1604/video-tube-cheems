@@ -1,7 +1,10 @@
 .sorting-menu-dropdown {
   &__container {
-    @apply relative inline-block text-left whitespace-nowrap
-      transition-all;
+    @apply invisible relative inline-block text-left whitespace-nowrap;
+
+    &_visible {
+      @apply visible;
+    }
   }
 
   &__dropdown-button {

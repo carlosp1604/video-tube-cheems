@@ -133,6 +133,17 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
 
   const paginationQueryParams = new PostsPaginationQueryParams(context.query, configuration)
 
+  if (paginationQueryParams.parseFailed) {
+    const query = paginationQueryParams.getParsedQueryString()
+
+    return {
+      redirect: {
+        destination: `/${locale}/users/${username}?section=savedPosts${query !== '' ? `&${query}` : ''}`,
+        permanent: false,
+      },
+    }
+  }
+
   username = username.toString()
 
   const props: UserProfilePageProps = {

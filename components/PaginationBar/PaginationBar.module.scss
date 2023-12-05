@@ -64,4 +64,13 @@
       @apply bg-brand-400 transition-colors;
     }
   }
+
+  &__no-paginated-state {
+    @apply flex justify-center items-center gap-x-3 border-b
+      border-base-800 p-2 text-base-200 font-light mt-5;
+  }
+
+  &__no-paginated-state-icon {
+    @apply bg-brand-400 p-1 text-2xl rounded-lg;
+  }
 }

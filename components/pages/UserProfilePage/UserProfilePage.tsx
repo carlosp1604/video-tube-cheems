@@ -7,10 +7,10 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import styles from './UserProfilePage.module.scss'
 import {
   UserProfilePostsSectionSelector,
-  UserProfilePostsSectionSelectorType
+  UserProfilePostsSectionSelectorType, UserProfilePostsSectionSelectorTypes
 } from '~/components/pages/UserProfilePage/UserProfilePostsSectionSelector/UserProfilePostsSectionSelector'
 import { useRouter } from 'next/router'
-import { ReactElement, useMemo, useState } from 'react'
+import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -62,10 +62,48 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   const [order, setOrder] = useState(initialOrder)
 
   const { t } = useTranslation('user_profile')
-  const { replace } = useRouter()
+  const { replace, query } = useRouter()
   const { status, data } = useSession()
 
   const locale = useRouter().locale ?? 'en'
+
+  useEffect(() => {
+    let currentSection: string
+
+    if (!query.section || Array.isArray(query.section)) {
+      currentSection = 'savedPosts'
+    } else {
+      currentSection = String(query.section)
+    }
+
+    if (UserProfilePostsSectionSelectorTypes.includes(currentSection as UserProfilePostsSectionSelectorType)) {
+      currentSection = currentSection as UserProfilePostsSectionSelectorType
+    } else {
+      replace({
+        query: {
+          username: userComponentDto.username,
+          section: 'savedPosts',
+        },
+      }, undefined, { shallow: true, scroll: false })
+    }
+
+    if (selectedSection !== currentSection) {
+      let newOrder: PostsPaginationSortingType = PostsPaginationSortingType.NEWEST_SAVED
+
+      if (currentSection === 'history') {
+        newOrder = PostsPaginationSortingType.NEWEST_VIEWED
+      }
+
+      setLoading(true)
+      setSelectedSection(currentSection as UserProfilePostsSectionSelectorType)
+      setPage(1)
+      setOrder(newOrder)
+      updatePosts(1, newOrder, currentSection as UserProfilePostsSectionSelectorType)
+        .then(() => {
+          setLoading(false)
+        })
+    }
+  }, [query])
 
   const onDeleteSavedPost = (postId: string) => {
     const newPostList = posts.filter((post) => post.id !== postId)
@@ -154,6 +192,13 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   }
 
   const onSectionChange = async (section: UserProfilePostsSectionSelectorType) => {
+    await replace({
+      query: {
+        username: userComponentDto.username,
+        section,
+      },
+    }, undefined, { shallow: true, scroll: false })
+    /**
     setLoading(true)
     let newOrder: PostsPaginationSortingType = PostsPaginationSortingType.NEWEST_SAVED
 
@@ -175,6 +220,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     await updatePosts(1, newOrder, section)
 
     setLoading(false)
+    **/
   }
 
   const onChangeOption = async (newOrder: PostsPaginationSortingType) => {

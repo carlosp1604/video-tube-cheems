@@ -2,27 +2,40 @@ import { FC, ReactElement } from 'react'
 import styles from './PaginationBar.module.scss'
 import { BsCaretLeft, BsCaretRight, BsSkipEnd, BsSkipStart, BsXCircle } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
+import { TbNumber1 } from 'react-icons/tb'
 
 interface Props {
   availablePages: Array<number>
   pageNumber: number
   pagesNumber: number
   onPageNumberChange: (pageNumber: number) => void
+  onePageStateTitle: string
 }
 
-export const PaginationBar: FC<Props> = ({
-  availablePages,
-  pagesNumber,
-  pageNumber,
-  onPageNumberChange,
-}) => {
-  const { t } = useTranslation('pagination_bar')
+export const PaginationBar: FC<Partial<Props>
+  & Pick<Props, 'availablePages' | 'pagesNumber' | 'pageNumber' | 'onPageNumberChange'>> = ({
+    availablePages,
+    pagesNumber,
+    pageNumber,
+    onPageNumberChange,
+    onePageStateTitle,
+  }) => {
+    const { t } = useTranslation('pagination_bar')
 
-  if (availablePages.length === 1) {
-    return null
-  }
+    if (availablePages.length === 1) {
+      if (onePageStateTitle) {
+        return (
+          <span className={ styles.paginationBar__noPaginatedState }>
+          <TbNumber1 className={ styles.paginationBar__noPaginatedStateIcon }/>
+            { onePageStateTitle }
+        </span>
+        )
+      }
 
-  const errorState: ReactElement = (
+      return null
+    }
+
+    const errorState: ReactElement = (
     <div className={ styles.paginationBar__errorState }>
       <BsXCircle className={ styles.paginationBar__errorIcon }/>
       { t('error_state_description') }
@@ -34,18 +47,18 @@ export const PaginationBar: FC<Props> = ({
         { t('error_state_button_title') }
       </button>
     </div>
-  )
+    )
 
-  const handleChange = (newPageNumber: number) => {
-    if (newPageNumber !== pageNumber) {
-      onPageNumberChange(newPageNumber)
+    const handleChange = (newPageNumber: number) => {
+      if (newPageNumber !== pageNumber) {
+        onPageNumberChange(newPageNumber)
+      }
     }
-  }
 
-  return (
-    pageNumber > pagesNumber
-      ? errorState
-      : <div className={ styles.paginationBar__container }>
+    return (
+      pageNumber > pagesNumber
+        ? errorState
+        : <div className={ styles.paginationBar__container }>
         <button
           className={ `
           ${styles.paginationBar__stepPageButton}
@@ -106,5 +119,5 @@ export const PaginationBar: FC<Props> = ({
           <BsSkipEnd/>
         </button>
       </div>
-  )
-}
+    )
+  }

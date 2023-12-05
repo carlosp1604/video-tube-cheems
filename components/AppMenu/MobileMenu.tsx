@@ -1,13 +1,13 @@
-import { Dispatch, FC, SetStateAction } from 'react'
+import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
-import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
-import { useRouter } from 'next/router'
+import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
 import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useUserContext } from '~/hooks/UserContext'
+import { useRouter } from 'next/router'
 
 interface Props {
   openMenu: boolean
@@ -15,11 +15,50 @@ interface Props {
 }
 
 export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
-  const { pathname, push } = useRouter()
-
   const { t } = useTranslation('menu')
-  const { status, user } = useUserContext()
   const { setLoginModalOpen } = useLoginContext()
+  const { status, user } = useUserContext()
+  const { pathname, asPath } = useRouter()
+
+  const buildAuthenticationAction = (
+    url: string,
+    picture: ReactElement,
+    isActive: boolean,
+    title: string
+  ) => {
+    const option: MenuOptionComponentInterface = {
+      action: undefined,
+      onClick: undefined,
+      picture,
+      isActive,
+      title,
+    }
+
+    if (status !== 'SIGNED_IN' || !user) {
+      option.onClick = () => {
+        toast.error(t('user_must_be_authenticated_error_message'))
+
+        setLoginModalOpen(true)
+      }
+
+      return option
+    }
+
+    if (url === asPath) {
+      option.onClick = () => {
+        toast.error(t('user_already_on_path'))
+      }
+
+      return option
+    }
+
+    option.action = {
+      url,
+      blank: false,
+    }
+
+    return option
+  }
 
   return (
       <CSSTransition
@@ -80,21 +119,12 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                   onClick: undefined,
                 },
                  **/
-                {
-                  title: t('menu_saved_button_title'),
-                  isActive: pathname.startsWith('/users/'),
-                  action: undefined,
-                  picture: <BsBookmarks />,
-                  onClick: async () => {
-                    if (status !== 'SIGNED_IN' || !user) {
-                      toast.error(t('user_must_be_authenticated_error_message'))
-
-                      setLoginModalOpen(true)
-                    } else {
-                      await push(`/users/${user.username}?section=savedPosts`)
-                    }
-                  },
-                },
+                buildAuthenticationAction(
+                  `/users/${user ? user.username : ''}?section=savedPosts`,
+                  <BsBookmarks />,
+                  false,
+                  t('menu_saved_button_title')
+                ),
                 {
                   title: t('menu_stars_button_title'),
                   isActive: pathname === '/actors',
@@ -114,21 +144,12 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                     toast.success(t('user_menu_option_not_available_message'))
                   },
                 },
-                {
-                  title: t('menu_user_history_button_title'),
-                  isActive: false,
-                  action: undefined,
-                  picture: <BsClock />,
-                  onClick: async () => {
-                    if (status !== 'SIGNED_IN' || !user) {
-                      toast.error(t('user_must_be_authenticated_error_message'))
-
-                      setLoginModalOpen(true)
-                    } else {
-                      await push(`/users/${user.username}?section=history`)
-                    }
-                  },
-                },
+                buildAuthenticationAction(
+                  `/users/${user ? user.username : ''}?section=history`,
+                  <BsClock />,
+                  false,
+                  t('menu_user_history_button_title')
+                ),
                 /**
                 {
                   title: t('menu_live_cams_button_title'),

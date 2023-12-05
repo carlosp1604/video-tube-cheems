@@ -1,6 +1,6 @@
 .search-page {
     &__container {
-      @apply container mx-auto px-5 scroll-smooth mt-5;
+      @apply container mx-auto px-5 scroll-smooth mt-5 mb-10;
     }
   
     &__title {
@@ -10,5 +10,22 @@
   
     &__videos-quantity {
       @apply normal-case text-xs font-thin;
+    }
+
+
+    &__search-term-title {
+      @apply flex flex-col items-start flex-wrap text-xl font-bold;
+
+      @screen md {
+        @apply flex-row gap-x-4 text-2xl items-center;
+      }
+    }
+
+    &__search-term-title-term {
+      @apply text-base font-normal text-brand-300 normal-case;
+
+      @screen md {
+        @apply text-xl font-normal text-brand-300;
+      }
     }
   }

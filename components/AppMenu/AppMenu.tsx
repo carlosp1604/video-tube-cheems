@@ -83,19 +83,22 @@ export const AppMenu: FC = () => {
       return
     }
 
-    if (router.pathname === '/posts/search') {
+    const { search } = router.query
+
+    if (
+      !search ||
+      (search && search !== title)
+    ) {
       await router.push({
-        query: {
-          search: title,
-        },
-      })
-    } else {
-      await router.replace({
         pathname: '/posts/search/',
         query: {
           search: title,
         },
-      })
+      }, undefined, { shallow: true, scroll: false })
+    }
+
+    if (search && search === title) {
+      toast.error(t('already_searching_term_error_message'))
     }
   }
 

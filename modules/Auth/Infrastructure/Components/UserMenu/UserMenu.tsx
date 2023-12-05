@@ -23,7 +23,6 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
   const pathname = usePathname()
 
   const menuOptions: MenuOptionComponentInterface[] = [{
-    // TODO: This should be extracted to an object when grow up
     title: t('user_menu_change_password_button'),
     isActive: false,
     action: undefined,

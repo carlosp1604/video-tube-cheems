@@ -128,7 +128,6 @@ export const HomePage: NextPage<Props> = ({
           subtitle={ t('post_gallery_empty_state_subtitle') }
         />
       }
-
     </div>
   )
 }

@@ -1,23 +1,11 @@
 .post-card-gallery-header {
   &__container {
-    @apply flex justify-between items-center gap-x-4 mb-4;
+    @apply flex flex-grow justify-between items-center gap-x-4 mb-4;
   }
 
   &__title {
-    @apply flex flex-col text-base-100 text-2xl
-    uppercase font-black;
-
-    @screen md {
-      @apply flex flex-row items-center gap-x-3;
-    }
-  }
-
-  &__separator-icon {
-    @apply hidden;
-
-    @screen md {
-      @apply block text-xs text-base-500;
-    }
+    @apply flex flex-col flex-wrap text-base-100 text-2xl
+    uppercase font-black gap-y-1;
   }
 
   &__videos-quantity {

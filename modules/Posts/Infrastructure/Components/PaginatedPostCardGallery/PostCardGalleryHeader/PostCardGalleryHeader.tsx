@@ -1,11 +1,10 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import styles from './PostCardGalleryHeader.module.scss'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { BsDot } from 'react-icons/bs'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
 interface Props {
-  title: string
+  title: string | ReactNode
   subtitle: string
   showSortingOptions: boolean
   activeOption: PostsPaginationSortingType
@@ -27,7 +26,6 @@ export const PostCardGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading'>> 
     <div className={ styles.postCardGalleryHeader__container }>
       <div className={ styles.postCardGalleryHeader__title }>
         { title }
-        <BsDot className={ styles.postCardGalleryHeader__separatorIcon }/>
         { loading
           ? <span className={ styles.postCardGalleryHeader__videosQuantitySkeeleton }/>
           : <small className={ styles.postCardGalleryHeader__videosQuantity }>
@@ -36,15 +34,13 @@ export const PostCardGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading'>> 
         }
       </div>
 
-      { showSortingOptions || loading
-        ? <SortingMenuDropdown
-          activeOption={ activeOption }
-          options={ sortingOptions }
-          onChangeOption={ onChangeOption }
-          loading={ loading }
-        />
-        : null
-      }
+      <SortingMenuDropdown
+        activeOption={ activeOption }
+        options={ sortingOptions }
+        onChangeOption={ onChangeOption }
+        loading={ loading }
+        visible={ showSortingOptions }
+      />
 
     </div>
   )

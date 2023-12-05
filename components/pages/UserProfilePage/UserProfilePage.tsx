@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
@@ -108,8 +108,8 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   const onDeleteSavedPost = (postId: string) => {
     const newPostList = posts.filter((post) => post.id !== postId)
 
-    setPosts(newPostList)
     setPostsNumber(postsNumber - 1)
+    setPosts(newPostList)
   }
 
   const postCardOptions: PostCardOptionConfiguration[] = useMemo(() => {
@@ -275,7 +275,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     content = (
       <InfiniteScroll
         next={ onEndGalleryReach }
-        hasMore={ posts.length < postsNumber }
+        hasMore={ page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         loader={ null }
         dataLength={ posts.length }
       >

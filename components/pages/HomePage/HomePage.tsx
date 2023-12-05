@@ -94,40 +94,38 @@ export const HomePage: NextPage<Props> = ({
         activeProducer={ activeProducer }
       />
 
+      <PostCardGalleryHeader
+        key={ asPath }
+        title={ galleryTitle }
+        subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
+        showSortingOptions={ postsNumber > defaultPerPage }
+        activeOption={ order }
+        sortingOptions={ [
+          PostsPaginationSortingType.LATEST,
+          PostsPaginationSortingType.OLDEST,
+          PostsPaginationSortingType.MOST_VIEWED,
+        ] }
+        onChangeOption={ onChangeOption }
+      />
+
       { postsNumber > 0
-        ? <>
-          <PostCardGalleryHeader
-            key={ asPath }
-            title={ galleryTitle }
-            subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
-            showSortingOptions={ postsNumber > defaultPerPage }
-            activeOption={ order }
-            sortingOptions={ [
-              PostsPaginationSortingType.LATEST,
-              PostsPaginationSortingType.OLDEST,
-              PostsPaginationSortingType.MOST_VIEWED,
-            ] }
-            onChangeOption={ onChangeOption }
-          />
-
-          <PostCardGallery
-            posts={ posts }
-            postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-          />
-
-          <PaginationBar
-            availablePages={ PaginationHelper.getShowablePages(
-              page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
-            onPageNumberChange={ onChangePageNumber }
-            pageNumber={ page }
-            pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-          />
-        </>
+        ? <PostCardGallery
+          posts={ posts }
+          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        />
         : <EmptyState
           title={ t('post_gallery_empty_state_title') }
           subtitle={ t('post_gallery_empty_state_subtitle') }
         />
       }
+
+      <PaginationBar
+        availablePages={ PaginationHelper.getShowablePages(
+          page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
+        onPageNumberChange={ onChangePageNumber }
+        pageNumber={ page }
+        pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+      />
     </div>
   )
 }

@@ -41,7 +41,6 @@
     "next": "13.0.6",
     "next-auth": "^4.6.1",
     "next-i18next": "^10.5.0",
-    "next-usequerystate": "^1.10.2",
     "objection": "^3.0.1",
     "pg": "^8.11.0",
     "react": "18.2.0",

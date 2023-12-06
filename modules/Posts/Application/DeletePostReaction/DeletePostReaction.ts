@@ -33,7 +33,7 @@ export class DeletePostReaction {
       throw DeletePostReactionApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as Post
   }
 
   private async getUser (userId: DeletePostReactionApplicationRequestDto['userId']): Promise<User> {

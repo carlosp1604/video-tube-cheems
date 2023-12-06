@@ -14,6 +14,7 @@ export interface PostRawModel {
 
 export interface PostProducerRawModel {
   producer_id: string
+  producer_slug: string
   producer_name: string
   producer_description: string
   producer_parent_producer_id: string | null

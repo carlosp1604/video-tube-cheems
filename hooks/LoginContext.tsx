@@ -1,8 +1,11 @@
 import { createContext, Dispatch, SetStateAction, useContext, useMemo } from 'react'
+import { AuthMode } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
 
 export interface LoginState {
   loginModalOpen: boolean
   setLoginModalOpen: Dispatch<SetStateAction<boolean>>
+  mode: AuthMode
+  setMode: Dispatch<SetStateAction<AuthMode>>
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -18,9 +21,9 @@ export const useLoginContext = (): LoginState => {
     )
   }
 
-  const { loginModalOpen, setLoginModalOpen } = loginContext
+  const { loginModalOpen, setLoginModalOpen, mode, setMode } = loginContext
 
   return useMemo<LoginState>(() => {
-    return { loginModalOpen, setLoginModalOpen }
-  }, [loginModalOpen, setLoginModalOpen])
+    return { loginModalOpen, setLoginModalOpen, mode, setMode }
+  }, [loginModalOpen, setLoginModalOpen, mode, setMode])
 }

@@ -1,0 +1,24 @@
+.post-card-gallery {
+
+  &__container {
+    @apply grid gap-4 mb-2;
+
+    &__loading {
+      @apply animate-pulse;
+    }
+
+    grid-template-columns: repeat(1, 1fr);
+
+    @screen sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @screen lg {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @screen 2xl {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, ReactElement, useState } from 'react'
 import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -19,6 +19,7 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
   if (menuOption.action) {
     return (
       <Link
+        scroll={ false }
         href={ menuOption.action.url }
         className={ `
         ${styles.menuSideBar__menuItemContent}
@@ -66,11 +67,51 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
 }
 
 export const MenuSideBar: FC = () => {
-  const { pathname, push } = useRouter()
+  const { pathname, asPath } = useRouter()
   const { t } = useTranslation('menu')
 
   const { status, user } = useUserContext()
   const { setLoginModalOpen } = useLoginContext()
+
+  const buildAuthenticationAction = (
+    url: string,
+    picture: ReactElement,
+    isActive: boolean,
+    title: string
+  ) => {
+    const option: MenuOptionComponentInterface = {
+      action: undefined,
+      onClick: undefined,
+      picture,
+      isActive,
+      title,
+    }
+
+    if (status !== 'SIGNED_IN' || !user) {
+      option.onClick = () => {
+        toast.error(t('user_must_be_authenticated_error_message'))
+
+        setLoginModalOpen(true)
+      }
+
+      return option
+    }
+
+    if (url === asPath) {
+      option.onClick = () => {
+        toast.error(t('user_already_on_path'))
+      }
+
+      return option
+    }
+
+    option.action = {
+      url,
+      blank: false,
+    }
+
+    return option
+  }
 
   const menuOptions: MenuOptionComponentInterface[] = [
     {
@@ -95,21 +136,12 @@ export const MenuSideBar: FC = () => {
                   onClick: undefined,
                 },
      **/
-    {
-      title: t('menu_saved_button_title'),
-      isActive: pathname.startsWith('/users/'),
-      action: undefined,
-      picture: <BsBookmarks />,
-      onClick: async () => {
-        if (status !== 'SIGNED_IN' || !user) {
-          toast.error(t('user_must_be_authenticated_error_message'))
-
-          setLoginModalOpen(true)
-        } else {
-          await push(`/users/${user.username}`)
-        }
-      },
-    },
+    buildAuthenticationAction(
+      `/users/${user ? user.username : ''}?section=savedPosts`,
+      <BsBookmarks />,
+      false,
+      t('menu_saved_button_title')
+    ),
     {
       title: t('menu_stars_button_title'),
       isActive: pathname === '/actors',
@@ -129,15 +161,12 @@ export const MenuSideBar: FC = () => {
         toast.success(t('user_menu_option_not_available_message'))
       },
     },
-    {
-      title: t('menu_user_history_button_title'),
-      isActive: false,
-      action: undefined,
-      picture: <BsClock />,
-      onClick: () => {
-        toast.success(t('user_menu_option_not_available_message'))
-      },
-    },
+    buildAuthenticationAction(
+      `/users/${user ? user.username : ''}?section=history`,
+      <BsClock />,
+      false,
+      t('menu_user_history_button_title')
+    ),
     /**
     {
       title: t('menu_live_cams_button_title'),

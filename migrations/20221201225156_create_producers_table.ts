@@ -4,6 +4,7 @@ export async function up (knex: Knex): Promise<void> {
   return knex.schema
     .createTable('producers', (table) => {
       table.string('id', 36).primary().notNullable()
+      table.string('slug', 64).notNullable().unique()
       table.string('name', 64).notNullable().index()
       table.string('parent_producer_id', 36)
         .references('id')

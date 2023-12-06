@@ -1,12 +1,14 @@
-import Avatar from 'react-avatar'
 import styles from './UserMenu.module.scss'
 import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { signOut } from 'next-auth/react'
-import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
+import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
-import { CiLogout, CiUser } from 'react-icons/ci'
+import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
 import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
+import { useLoginContext } from '~/hooks/LoginContext'
+import { usePathname } from 'next/navigation'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   user: UserProviderUserDto
@@ -16,25 +18,33 @@ interface Props {
 
 export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
+  const { setLoginModalOpen, setMode } = useLoginContext()
 
-  let avatar = (
-    <Avatar
-      className={ styles.userMenu__userAvatar }
-      round={ true }
-      size={ '50' }
-      name={ user.name }
-      textSizeRatio={ 2 }
-    />
-  )
+  const pathname = usePathname()
 
-  if (user.image !== null) {
-    avatar = (
-      <img
-        className={ styles.userMenu__userAvatar }
-        src={ user.image }
-        alt={ user.name }
-      />
-    )
+  const menuOptions: MenuOptionComponentInterface[] = [{
+    title: t('user_menu_change_password_button'),
+    isActive: false,
+    action: undefined,
+    picture: <CiUnlock />,
+    onClick: () => {
+      setMode('retrieve')
+      setLoginModalOpen(true)
+      setIsOpen(false)
+    },
+  }]
+
+  if (pathname !== `/users/${user.username}`) {
+    menuOptions.unshift({
+      title: t('user_menu_profile_button'),
+      isActive: false,
+      action: {
+        url: `/users/${user.username}?section=savedPosts`,
+        blank: false,
+      },
+      picture: <CiUser />,
+      onClick: () => setIsOpen(false),
+    })
   }
 
   return (
@@ -44,7 +54,15 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
     >
       <div className={ styles.userMenu__container }>
         <div className={ styles.userMenu__userData }>
-          { avatar }
+          <AvatarImage
+            imageUrl={ user.image }
+            avatarClassName={ styles.userMenu__userAvatar }
+            imageClassName={ styles.userMenu__userAvatar }
+            avatarName={ user.name }
+            size={ '50' }
+            round={ true }
+            imageAlt={ user.username }
+          />
           <span className={ styles.userMenu__userDataText }>
             { user.name }
             <small className={ styles.userMenu__userEmail }>
@@ -54,20 +72,7 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
         </div>
 
         <div className={ styles.userMenu__menuOptionsContainer }>
-          <MenuOptions
-            menuOptions={ [
-              {
-                // TODO: This should be extracted to an object when grow up
-                title: t('user_menu_profile_button'),
-                isActive: false,
-                action: {
-                  url: `/users/${user.username}`,
-                  blank: false,
-                },
-                picture: <CiUser />,
-                onClick: () => setIsOpen(false),
-              },
-            ] } />
+          <MenuOptions menuOptions={ menuOptions } />
         </div>
 
         <button

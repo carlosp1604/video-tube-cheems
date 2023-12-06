@@ -228,11 +228,15 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param options Post relations to load
    * @return Post if found or null
    */
-  public async findById (postId: Post['id'], options: RepositoryOptions[] = []): Promise<Post | null> {
+  public async findById (
+    postId: Post['id'],
+    options: RepositoryOptions[] = []
+  ): Promise<Post | PostWithViewsInterface | null> {
     let includeComments: boolean | Prisma.Post$commentsArgs<DefaultArgs> | undefined = false
     let includeProducer: boolean | Prisma.Post$producerArgs<DefaultArgs> | undefined = false
     let includeActors: boolean | Prisma.Post$actorsArgs<DefaultArgs> | undefined = false
     let includeTags: boolean | Prisma.Post$tagsArgs<DefaultArgs> | undefined
+    let countStatement: boolean | Prisma.PostCountOutputTypeDefaultArgs<DefaultArgs> | undefined
 
     if (options.includes('comments')) {
       includeComments = true
@@ -283,6 +287,12 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
     }
 
+    if (options.includes('viewsCount')) {
+      countStatement = {
+        select: { views: true },
+      }
+    }
+
     const post = await prisma.post.findFirst({
       where: {
         id: postId,
@@ -301,11 +311,19 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         tags: includeTags,
         translations: options.includes('translations'),
         actor: options.includes('actor'),
+        _count: countStatement,
       },
     })
 
     if (post === null) {
       return null
+    }
+
+    if (options.includes('viewsCount')) {
+      return {
+        post: PostModelTranslator.toDomain(post, options),
+        postViews: post._count.views,
+      }
     }
 
     return PostModelTranslator.toDomain(post, options)
@@ -390,7 +408,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     const [savedPosts, count] = await prisma.$transaction([
       prisma.savedPost.findMany({
         where: {
-          userId,
+          OR: [
+            { userId },
+            {
+              user: {
+                username: userId,
+              },
+            },
+          ],
           post: postsWhereFilters,
         },
         include: {
@@ -411,7 +436,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }),
       prisma.savedPost.count({
         where: {
-          userId,
+          OR: [
+            { userId },
+            {
+              user: {
+                username: userId,
+              },
+            },
+          ],
           post: postsWhereFilters,
         },
       }),
@@ -425,6 +457,97 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         }
       }),
       count,
+    }
+  }
+
+  /**
+   * Find ViewedPosts based on filter and order criteria
+   * @param userId User ID
+   * @param offset Post offset
+   * @param limit
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
+   * @param filters Post filters
+   * @return PostsWithViewsInterfaceWithTotalCount if found or null
+   */
+  public async findViewedPostsWithOffsetAndLimit (
+    userId: string,
+    offset: number,
+    limit: number,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
+  ): Promise<PostsWithViewsInterfaceWithTotalCount> {
+    const postsIncludeFilters = MysqlPostRepository.buildIncludes(filters)
+    const postsWhereFilters = MysqlPostRepository.buildFilters(filters)
+    const postsSortCriteria = MysqlPostRepository.buildOrder(sortingOption, sortingCriteria)
+    let sortCriteria:
+      Prisma.PostViewOrderByWithRelationInput | Prisma.PostViewOrderByWithRelationInput[] | undefined = {
+        post: postsSortCriteria,
+      }
+
+    if (sortingOption === 'view-date') {
+      sortCriteria = {
+        ...sortCriteria,
+        createdAt: sortingCriteria,
+      }
+    }
+
+    const [viewedPosts, posts] = await prisma.$transaction([
+      prisma.postView.findMany({
+        where: {
+          OR: [
+            { userId },
+            {
+              user: {
+                username: userId,
+              },
+            },
+          ],
+          post: postsWhereFilters,
+        },
+        include: {
+          post: {
+            include: {
+              _count: {
+                select: {
+                  views: true,
+                },
+              },
+              ...postsIncludeFilters,
+            },
+          },
+        },
+        distinct: ['postId'],
+        take: limit,
+        skip: offset,
+        orderBy: sortCriteria,
+      }),
+      // Prisma doest not support distinct on count :/. Workaround
+      prisma.postView.findMany({
+        where: {
+          OR: [
+            { userId },
+            {
+              user: {
+                username: userId,
+              },
+            },
+          ],
+          post: postsWhereFilters,
+        },
+        distinct: 'postId',
+      }),
+    ])
+
+    return {
+      posts: viewedPosts.map((viewedPost) => {
+        return {
+          post: PostModelTranslator.toDomain(viewedPost.post, ['meta', 'producer', 'actor', 'translations']),
+          postViews: viewedPost.post._count.views,
+        }
+      }),
+      count: posts.length,
     }
   }
 
@@ -778,11 +901,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
 
       if (filter.type.startsWith('producer')) {
-        if (filter.type === 'producerId') {
+        if (filter.type === 'producerSlug') {
           whereClause = {
             ...whereClause,
             producer: {
-              id: filter.value,
+              slug: filter.value,
             },
           }
         }

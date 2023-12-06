@@ -13,6 +13,7 @@ datasource db {
 
 model Producer {
   id               String     @id
+  slug             String
   name             String
   description      String
   parentProducer   Producer?  @relation("parentProducer", fields: [parentProducerId], references: [id])

@@ -13,12 +13,12 @@ export const EmptyState: FC<Props> = ({ title, subtitle }) => {
       <span className={ styles.emptyState__iconWrapper }>
         <HiOutlineDocumentMagnifyingGlass className={ styles.emptyState__icon }/>
       </span>
-      <span className={ styles.emptyState__title }>
+      <div className={ styles.emptyState__title }>
         { title }
-        <small className={ styles.emptyState__subtitle }>
+        <p className={ styles.emptyState__subtitle }>
           { subtitle }
-        </small>
-      </span>
+        </p>
+      </div>
     </div>
   )
 }

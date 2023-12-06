@@ -1,54 +1,74 @@
-import { FC, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import styles from './SortingMenuDropdown.module.scss'
 import { BsSortDown } from 'react-icons/bs'
-import { SortingOption } from '~/components/SortingMenuDropdown/SortingMenuDropdownOptions'
 import { useTranslation } from 'next-i18next'
 import { IconButton } from '~/components/IconButton/IconButton'
+import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
 interface Props {
-  activeOption: SortingOption
-  onChangeOption: (option: SortingOption) => void
-  options: SortingOption[]
+  activeOption: PostsPaginationSortingType
+  onChangeOption: (option: PostsPaginationSortingType) => void
+  options: PostsPaginationSortingType[]
+  loading: boolean
+  visible: boolean
 }
 
-export const SortingMenuDropdown: FC<Props> = ({ activeOption, onChangeOption, options }) => {
+export const SortingMenuDropdown: FC<Partial<Props> & Omit<Props, 'loading' | 'visible'>> = ({
+  activeOption,
+  onChangeOption,
+  options,
+  loading = false,
+  visible = true,
+}) => {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
   const { t } = useTranslation('sorting_menu_dropdown')
 
+  const componentActiveSortingOption = useMemo(() =>
+    PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(activeOption),
+  [activeOption])
+
   return (
-    <div className={ styles.sortingMenuDropdown__container }>
+    <div className={ `
+      ${styles.sortingMenuDropdown__container}
+      ${visible || loading ? styles.sortingMenuDropdown__container_visible : ''}
+    ` }>
       <span className={ styles.sortingMenuDropdown__dropdownButton }>
         <IconButton
           onClick={ () => setOpenMenu(!openMenu) }
-          icon={
-            <BsSortDown />
-          }
-          title={ t('dropdown_sort_button_title', { criteria: t(activeOption.translationKey) }) }
+          icon={ <BsSortDown /> }
+          title={ t('dropdown_sort_button_title', { criteria: t(componentActiveSortingOption.translationKey) }) }
+          disabled={ loading }
         />
-        { t(activeOption.translationKey) }
+        { loading
+          ? <span className={ styles.sortingMenuDropdown__currentOrderTitleSkeleton } />
+          : t(componentActiveSortingOption.translationKey)
+        }
       </span>
 
       <div className={ `
         ${styles.sortingMenuDropdown__dropdownContainer}
-        ${openMenu ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
+        ${openMenu && !loading ? styles.sortingMenuDropdown__dropdownContainer_open : ''}
       ` }
         onMouseLeave={ () => setOpenMenu(false) }
         onClick={ () => setOpenMenu(!openMenu) }
       >
         { options.map((option) => {
+          const componentOption = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(option)
+
           return (
             <span
-              key={ option.translationKey }
+              key={ componentOption.translationKey }
               className={ `
               ${styles.sortingMenuDropdown__dropdownItem}
-              ${option.translationKey === activeOption.translationKey
+              ${componentOption.translationKey === componentActiveSortingOption.translationKey
                 ? styles.sortingMenuDropdown__dropdownItem_active
                 : ''}
             ` }
-              onClick={ () => onChangeOption(option) }
-              title={ t('dropdown_sort_option_title', { criteria: t(option.translationKey) }) }
+              onClick={ () => { if (activeOption !== option) { onChangeOption(option) } } }
+              title={ t('dropdown_sort_option_title', { criteria: t(componentOption.translationKey) }) }
             >
-              { t(option.translationKey) }
+              { t(componentOption.translationKey) }
             </span>
           )
         }) }

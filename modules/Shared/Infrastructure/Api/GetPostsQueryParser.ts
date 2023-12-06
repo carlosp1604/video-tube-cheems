@@ -3,7 +3,7 @@ import {
   GetPostsApiFilterRequestDto,
   GetPostsApiRequestDto
 } from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestDto'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 
 export class GetPostsQueryParser {
   public static parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto> {

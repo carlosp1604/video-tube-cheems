@@ -10,16 +10,13 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 
 export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
-  let slug = context.query.slug
-
-  if (!slug) {
+  if (!context.query.slug) {
     return {
       notFound: true,
     }
   }
 
-  slug = String(slug)
-
+  const slug = String(context.query.slug)
   const locale = context.locale ?? 'en'
 
   const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')
@@ -56,6 +53,9 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
             'user_login',
             'user_retrieve_password',
             'api_exceptions',
+            'api_exceptions',
+            'post_card_options',
+            'post_card_gallery',
           ]
         ),
       },

@@ -1,0 +1,23 @@
+.post-card-gallery-header {
+  &__container {
+    @apply flex flex-grow justify-between items-center gap-x-4 mb-4;
+  }
+
+  &__title {
+    @apply flex flex-col flex-wrap text-base-100 text-2xl
+    uppercase font-black gap-y-1;
+  }
+
+  &__videos-quantity {
+    @apply normal-case text-xs font-thin;
+
+    @screen md {
+      @apply font-semibold text-brand-300;
+    }
+  }
+
+  &__videos-quantity-skeeleton {
+    @apply w-10 rounded-lg h-2.5 bg-base-700 mt-1
+      animate-pulse;
+  }
+}

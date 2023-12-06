@@ -45,4 +45,32 @@
   &__left-page-button-hide {
     @apply opacity-0 -translate-x-full;
   }
+
+  &__error-state {
+    @apply flex flex-col gap-y-10 justify-center items-center text-base
+      p-5 mb-5 bg-base-800 text-base-400 rounded-lg text-center
+      whitespace-pre-wrap;
+  }
+
+  &__error-icon {
+    @apply text-red h-20 w-20;
+  }
+
+  &__error-button {
+    @apply border border-brand-400 p-2 text-base-100 rounded-lg
+      transition-colors text-sm;
+
+    &:hover {
+      @apply bg-brand-400 transition-colors;
+    }
+  }
+
+  &__no-paginated-state {
+    @apply flex justify-center items-center gap-x-3 border-b
+      border-base-800 p-2 text-base-200 font-light mt-5;
+  }
+
+  &__no-paginated-state-icon {
+    @apply bg-brand-400 p-1 text-2xl rounded-lg;
+  }
 }

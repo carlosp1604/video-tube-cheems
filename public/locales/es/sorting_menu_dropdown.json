@@ -3,8 +3,9 @@
   "dropdown_sort_option_title": "Ordenar por {{criteria}}",
   "latest_entries_option": "Más recientes",
   "most_viewed_entries_option": "Más vistos",
-  "newest_saved_posts_options": "Guardados reciente",
+  "newest_viewed_posts_option": "Vistos reciente",
+  "newest_saved_posts_option": "Guardados reciente",
   "oldest_entries_option": "Más antiguos",
-  "oldest_saved_posts_option": "Guardados antiguos"
-
+  "oldest_saved_posts_option": "Guardados antiguos",
+  "oldest_viewed_posts_option": "Vistos antiguos"
 }

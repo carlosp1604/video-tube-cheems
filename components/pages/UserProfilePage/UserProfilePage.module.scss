@@ -12,7 +12,45 @@
   }
 
   &__user-posts {
-    @apply flex flex-col gap-x-5 px-5 pt-4 border border-base-800
-      rounded-lg mb-10;
+    @apply flex flex-col gap-x-5 pt-4 border border-base-800 p-2
+      rounded-lg rounded-tl-none mb-2;
+  }
+
+  &__user-posts-header {
+    @apply flex flex-row justify-between mb-4 font-black text-lg
+      items-center gap-x-4;
+  }
+
+  &__user-posts-header-title {
+    @apply flex flex-row justify-between gap-x-2 items-center;
+  }
+
+  &__user-posts-header-posts-quantity {
+    @apply font-semibold text-brand-300 text-sm;
+  }
+
+  &__user-posts-header-separator-icon {
+    @apply text-sm text-base-400;
+  }
+
+  &__user-posts-see-all-button {
+    @apply hidden p-2 px-3 rounded-full border border-base-700
+      text-xs font-medium transition-colors;
+
+    &:hover {
+      @apply bg-base-700 transition-colors;
+    }
+
+    &__visible {
+      @apply block;
+    }
+  }
+
+  &__no-posts-title {
+    @apply hidden text-sm text-base-600 font-normal;
+
+    &_visible {
+      @apply block;
+    }
   }
 }

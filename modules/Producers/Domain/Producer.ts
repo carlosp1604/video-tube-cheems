@@ -3,6 +3,7 @@ import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 
 export class Producer {
   public readonly id: string
+  public readonly slug: string
   public readonly name: string
   public readonly description: string
   public readonly imageUrl: string | null
@@ -18,6 +19,7 @@ export class Producer {
 
   public constructor (
     id: string,
+    slug: string,
     name: string,
     description: string,
     imageUrl: string | null,
@@ -29,6 +31,7 @@ export class Producer {
     parentProducer: Relationship<Producer | null> = Relationship.notLoaded()
   ) {
     this.id = id
+    this.slug = slug
     this.name = name
     this.description = description
     this.imageUrl = imageUrl

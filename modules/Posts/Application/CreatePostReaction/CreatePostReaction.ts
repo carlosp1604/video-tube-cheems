@@ -44,7 +44,7 @@ export class CreatePostReaction {
       throw CreatePostReactionApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as Post
   }
 
   private async getUser (userId: CreatePostReactionApplicationRequest['userId']): Promise<User> {

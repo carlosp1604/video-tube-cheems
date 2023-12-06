@@ -3,14 +3,14 @@ import { ProducerApplicationDto } from '~/modules/Producers/Application/Producer
 import { MetaApplicationDtoTranslator } from './MetaApplicationDtoTranslator'
 import { ProducerApplicationDtoTranslator } from '~/modules/Producers/Application/ProducerApplicationDtoTranslator'
 import {
-  PostWithProducerAndMetaApplicationDto
-} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
+  PostWithRelationsApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithRelationsApplicationDto'
 import { PostTranslationsDtoTranslator } from '~/modules/Posts/Application/Translators/PostTranslationsDtoTranslator'
 import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
 import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
 
-export class PostWithProducerAndMetaApplicationDtoTranslator {
-  public static fromDomain (post: Post): PostWithProducerAndMetaApplicationDto {
+export class PostWithRelationsDtoTranslator {
+  public static fromDomain (post: Post): PostWithRelationsApplicationDto {
     let producer: ProducerApplicationDto | null = null
 
     if (post.producer !== null) {

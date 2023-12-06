@@ -2,6 +2,7 @@ import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/Pr
 
 export const allPostsProducerDto: ProducerComponentDto = {
   id: '',
+  slug: 'all-posts',
   name: 'all_videos_producer',
-  brandHexColor: '#44403C',
+  brandHexColor: '#a06c3f',
 }

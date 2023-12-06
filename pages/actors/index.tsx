@@ -2,13 +2,13 @@ import { GetServerSideProps } from 'next'
 import { ActorsPageProps, ActorsPage } from '~/components/pages/ActorsPage/ActorsPage'
 import { container } from '~/awilix.container'
 import { GetActors } from '~/modules/Actors/Application/GetActors'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
   const getActors = container.resolve<GetActors>('getActors')

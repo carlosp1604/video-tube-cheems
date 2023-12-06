@@ -2,24 +2,22 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { FetchPostsFilter } from '~/modules/Posts/Infrastructure/FetchPostsFilter'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import {
   USER_POST_NOT_FOUND,
   USER_SAVED_POSTS_CANNOT_DELETE_POST_FROM_SAVED_POSTS, USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
   USER_USER_NOT_FOUND
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
-import {
-  PostWithProducerAndMetaApplicationDto
-} from '~/modules/Posts/Application/Dtos/PostWithProducerAndMetaApplicationDto'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import {
   POST_REACTION_NOT_FOUND,
   POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { PostWithRelationsAndViewsApplicationDto } from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 
 export class PostsApiService {
   public async getPosts (
@@ -66,7 +64,31 @@ export class PostsApiService {
       }
     }
 
-    return ((await fetch(`$/api/users/${userId}/saved-posts?${params}`)).json())
+    return ((await fetch(`/api/users/${userId}/saved-posts?${params}`)).json())
+  }
+
+  public async getUserHistory (
+    userId: string,
+    pageNumber: number,
+    perPage: number = defaultPerPage,
+    order: InfrastructureSortingCriteria,
+    orderBy: InfrastructureSortingOptions,
+    filters: FetchPostsFilter[]
+  ): Promise<GetPostsApplicationResponse> {
+    const params = new URLSearchParams()
+
+    params.append('page', pageNumber.toString())
+    params.append('perPage', perPage.toString())
+    params.append('orderBy', orderBy)
+    params.append('order', order)
+
+    for (const filter of filters) {
+      if (filter.value !== null) {
+        params.append(filter.type, filter.value)
+      }
+    }
+
+    return ((await fetch(`/api/users/${userId}/history?${params}`)).json())
   }
 
   public async addPostView (postId: string): Promise<Response> {
@@ -223,7 +245,7 @@ export class PostsApiService {
     return fetch(fetchRoute)
   }
 
-  public async savePost (userId: string, postId: string): Promise<PostWithProducerAndMetaApplicationDto> {
+  public async savePost (userId: string, postId: string): Promise<PostWithRelationsAndViewsApplicationDto> {
     const fetchRoute = `/api/users/${userId}/saved-posts/${postId}`
 
     const response = await fetch(fetchRoute, {
@@ -233,7 +255,7 @@ export class PostsApiService {
     const jsonResponse = await response.json()
 
     if (response.ok) {
-      return jsonResponse as PostWithProducerAndMetaApplicationDto
+      return jsonResponse as PostWithRelationsAndViewsApplicationDto
     }
 
     switch (response.status) {

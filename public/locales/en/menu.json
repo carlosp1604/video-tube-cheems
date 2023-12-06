@@ -9,7 +9,8 @@
   "menu_saved_button_title": "Saved",
   "menu_stars_button_title": "Stars",
   "menu_user_history_button_title": "History",
+  "user_already_on_path": "You are here already",
   "user_menu_option_not_available_message": "This feature will be available soon. Stay tuned!",
   "user_menu_profile_button": "My Profile",
-  "user_must_be_authenticated_error_message": "Sign in to access this feature"
+  "user_must_be_authenticated_error_message": "Sign in to access this feature",
 }

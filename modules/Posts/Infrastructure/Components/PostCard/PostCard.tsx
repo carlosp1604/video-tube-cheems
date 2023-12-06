@@ -158,7 +158,7 @@ export const PostCard: FC<Props> = ({
               : '' }
             { post.producer !== null || post.actor !== null ? <BsDot /> : '' }
             { t('post_card_post_views', { views: post.views }) }
-            <BsDot className={ styles.commentCard__separatorIcon }/>
+            <BsDot className={ styles.postCard__separatorIcon }/>
             { post.date }
           </div>
         </div>

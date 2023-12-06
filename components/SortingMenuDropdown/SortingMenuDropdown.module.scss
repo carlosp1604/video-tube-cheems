@@ -1,21 +1,29 @@
 .sorting-menu-dropdown {
   &__container {
-    @apply relative inline-block text-left whitespace-nowrap;
+    @apply invisible relative inline-block text-left whitespace-nowrap;
+
+    &_visible {
+      @apply visible;
+    }
   }
 
   &__dropdown-button {
-    @apply flex flex-col justify-center items-center truncate
-      justify-center text-xs font-thin leading-none text-base-100;
+    @apply flex flex-col justify-center items-end truncate
+      text-xs font-thin leading-none text-base-100;
 
     @screen md {
       @apply font-semibold text-brand-300;
     }
   }
 
+  &__current-order-title-skeleton {
+    @apply w-full h-3 bg-base-700 rounded-lg animate-pulse;
+  }
+
   &__dropdown-container {
-    @apply absolute right-0 z-sort-menu-dropdown mt-2 rounded-md
-      w-auto border border-base-800 bg-body transition-all overflow-hidden hidden
-      bg-base-900 text-left;
+    @apply absolute right-0 z-sort-menu-dropdown mt-2 rounded-lg
+      w-auto transition-all overflow-hidden hidden
+      bg-base-800 text-left shadow-2xl shadow-base-800;
 
     &_open {
       @apply block transition-all;
@@ -24,10 +32,10 @@
 
   &__dropdown-item {
     @apply flex flex-row gap-x-2 items-center text-base-500
-    px-2 py-1 text-sm font-medium transition-colors m-1 rounded-md;
+    px-2 py-1 text-sm font-medium transition-colors m-1 rounded-lg;
 
     &:hover, &:focus {
-      @apply cursor-pointer bg-base-800 text-base-300;
+      @apply cursor-pointer bg-base-900 text-base-300;
     }
 
     @screen lg {
@@ -35,7 +43,11 @@
     }
 
     &_active {
-      @apply bg-brand-500 text-base-100 font-bold;
+      @apply bg-brand-400 text-base-100 font-bold;
+
+      &:hover {
+        @apply bg-brand-400 text-base-100;
+      }
     }
   }
 }

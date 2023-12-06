@@ -37,7 +37,7 @@ export class DeletePostComment {
       throw DeletePostCommentApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as Post
   }
 
   private async getUser (userId: DeletePostCommentApplicationRequestDto['userId']): Promise<User> {

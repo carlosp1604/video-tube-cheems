@@ -85,7 +85,7 @@ function App ({
               />
               <AppMenu />
 
-              <Component { ...pageProps } />
+              <Component { ...pageProps }/>
             </main>
           </div>
         </LoginProvider>

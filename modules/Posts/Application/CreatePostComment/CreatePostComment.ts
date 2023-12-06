@@ -38,7 +38,7 @@ export class CreatePostComment {
       throw CreatePostCommentApplicationException.postNotFound(postId)
     }
 
-    return post
+    return post as Post
   }
 
   private async getUser (userId: CreatePostCommentApplicationRequestDto['userId']): Promise<User> {

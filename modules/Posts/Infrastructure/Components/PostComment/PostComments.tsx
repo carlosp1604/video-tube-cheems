@@ -7,7 +7,6 @@ import {
   PostCommentComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCommentComponentDtoTranslator'
 import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
-import { calculatePagesNumber, defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { useTranslation } from 'next-i18next'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
@@ -18,6 +17,7 @@ import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Compone
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut } from 'next-auth/react'
 import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 interface Props {
   postId: string
@@ -104,7 +104,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
     })
 
     setComments([...comments, ...componentDtos])
-    const pagesNumber = calculatePagesNumber(newComments.postPostCommentsCount, defaultPerPage)
+    const pagesNumber = PaginationHelper.calculatePagesNumber(newComments.postPostCommentsCount, defaultPerPage)
 
     setCanLoadMore(pageNumber < pagesNumber)
     setPageNumber(pageNumber + 1)

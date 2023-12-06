@@ -151,7 +151,7 @@ async function handleDelete (request: NextApiRequest, response: NextApiResponse)
   try {
     const post = await useCase.delete(applicationRequest)
 
-    return response.status(201).json(post)
+    return response.status(204).json(post)
   } catch (exception: unknown) {
     if (!(exception instanceof DeleteSavedPostApplicationException)) {
       console.error(exception)

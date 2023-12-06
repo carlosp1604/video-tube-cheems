@@ -5,6 +5,7 @@ import { PostCommentApplicationDtoTranslator } from './Translators/PostCommentAp
 import { PostCommentApplicationDto } from './Dtos/PostCommentApplicationDto'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
 import { PostDomainException } from '~/modules/Posts/Domain/PostDomainException'
+import { Post } from '~/modules/Posts/Domain/Post'
 
 export class UpdatePostComment {
   private options: RepositoryOptions[] = ['comments', 'comments.user']
@@ -18,7 +19,7 @@ export class UpdatePostComment {
   public async update (
     request: UpdatePostCommentRequestDto
   ): Promise<PostCommentApplicationDto> {
-    const post = await this.postRepository.findById(request.postId, this.options)
+    const post = await this.postRepository.findById(request.postId, this.options) as Post
 
     if (post === null) {
       throw UpdatePostCommentApplicationException.postNotFound(request.postId)

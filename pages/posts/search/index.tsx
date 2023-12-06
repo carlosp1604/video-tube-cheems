@@ -1,16 +1,11 @@
 import { GetServerSideProps } from 'next'
 import { SearchPage, SearchPageProps } from '~/components/pages/SearchPage/SearchPage'
-import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
-import {
-  PostCardComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/Pagination'
-import {
-  InfrastructureSortingCriteria,
-  InfrastructureSortingOptions
-} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import {
+  PostsPaginationConfiguration,
+  PostsPaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -37,37 +32,48 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     'pagination_bar',
     'search',
     'common',
-    'paginated_post_card_gallery',
     'api_exceptions',
+    'post_card_options',
+    'post_card_gallery',
   ])
 
-  const getPosts = bindings.get<GetPosts>('GetPosts')
-
-  try {
-    const posts = await getPosts.get({
-      page: 1,
-      postsPerPage: defaultPerPage,
-      sortCriteria: InfrastructureSortingCriteria.DESC,
-      sortOption: InfrastructureSortingOptions.DATE,
-      filters: [{ type: 'postTitle', value: search.toLocaleString() }],
-    })
-
-    return {
-      props: {
-        posts: posts.posts.map((post) =>
-          PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
-        ),
-        title: search.toLocaleString(),
-        postsNumber: posts.postsNumber,
-        ...i18nSSRConfig,
+  const configuration: Partial<PostsPaginationConfiguration> &
+    Pick<PostsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
+      page: {
+        defaultValue: 1,
+        maxValue: Infinity,
+        minValue: 1,
+      },
+      sortingOptionType: {
+        defaultValue: PostsPaginationSortingType.LATEST,
+        parseableOptionTypes: [
+          PostsPaginationSortingType.LATEST,
+          PostsPaginationSortingType.OLDEST,
+          PostsPaginationSortingType.MOST_VIEWED,
+        ],
       },
     }
-  } catch (exception: unknown) {
-    console.error(exception)
+
+  const paginationQueryParams = new PostsPaginationQueryParams(context.query, configuration)
+
+  if (paginationQueryParams.parseFailed) {
+    const query = paginationQueryParams.getParsedQueryString()
 
     return {
-      notFound: true,
+      redirect: {
+        destination: `/${locale}/posts/search?search=${search}${query !== '' ? `&${query}` : ''}`,
+        permanent: false,
+      },
     }
+  }
+
+  return {
+    props: {
+      initialSearchTerm: search.toLocaleString(),
+      initialSortingOption: paginationQueryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
+      initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
+      ...i18nSSRConfig,
+    },
   }
 }
 

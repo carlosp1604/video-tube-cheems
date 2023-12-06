@@ -9,5 +9,9 @@
     &:active {
       @apply bg-base-700 text-brand-500 transition-colors;
     }
+
+    &:disabled {
+      @apply text-base-700;
+    }
   }
 }

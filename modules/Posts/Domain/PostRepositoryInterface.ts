@@ -27,6 +27,7 @@ export type RepositoryOptions =
   'comments' |
   'postMedia' |
   'reactions' |
+  'viewsCount' |
   'translations' |
   'comments.user' |
   'reactions.user' |
@@ -48,7 +49,7 @@ export interface PostRepositoryInterface {
    * @param options Post relations to load
    * @return Post if found or null
    */
-  findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | null>
+  findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | PostWithViewsInterface | null>
 
   /**
    * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its Slug
@@ -129,6 +130,25 @@ export interface PostRepositoryInterface {
    * @return PostsWithViewsInterfaceWithTotalCount if found or null
    */
   findSavedPostsWithOffsetAndLimit (
+    userId: string,
+    offset: number,
+    limit: number,
+    sortingOption: PostSortingOption,
+    sortingCriteria: SortingCriteria,
+    filters: PostFilterOptionInterface[]
+  ): Promise<PostsWithViewsInterfaceWithTotalCount>
+
+  /**
+   * Find ViewedPosts based on filter and order criteria
+   * @param userId User ID
+   * @param offset Post offset
+   * @param limit
+   * @param sortingOption Post sorting option
+   * @param sortingCriteria Post sorting criteria
+   * @param filters Post filters
+   * @return PostsWithViewsInterfaceWithTotalCount if found or null
+   */
+  findViewedPostsWithOffsetAndLimit (
     userId: string,
     offset: number,
     limit: number,

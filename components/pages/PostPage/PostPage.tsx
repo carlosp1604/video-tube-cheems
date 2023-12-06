@@ -43,7 +43,6 @@ export const PostPage: NextPage<VideoPageProps> = ({
       <PostCardCarousel
         posts={ relatedPosts }
         postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        ownerId={ undefined }
       />
     </div>
   )

@@ -28,7 +28,6 @@ import {
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import { useTranslation } from 'next-i18next'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { useSession } from 'next-auth/react'
@@ -36,6 +35,13 @@ import { EmptyState } from '~/components/EmptyState/EmptyState'
 import {
   UserSavedPostsEmptyState
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
+import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
+
+interface PaginationState {
+  page: number
+  order:PostsPaginationSortingType
+  section: UserProfilePostsSectionSelectorType
+}
 
 export interface UserProfilePageProps {
   userComponentDto: UserProfileHeaderComponentDto
@@ -56,10 +62,13 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
 }) => {
   const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
-  const [selectedSection, setSelectedSection] = useState<UserProfilePostsSectionSelectorType>(section)
+
+  const [paginationState, setPaginationState] = useState<PaginationState>({
+    order: initialOrder,
+    page: initialPage,
+    section,
+  })
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState<number>(initialPage)
-  const [order, setOrder] = useState(initialOrder)
 
   const { t } = useTranslation('user_profile')
   const { replace, query } = useRouter()
@@ -68,17 +77,19 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   const locale = useRouter().locale ?? 'en'
 
   useEffect(() => {
-    let currentSection: string
+    let querySection: string
 
     if (!query.section || Array.isArray(query.section)) {
-      currentSection = 'savedPosts'
+      querySection = 'savedPosts'
     } else {
-      currentSection = String(query.section)
+      querySection = String(query.section)
     }
 
-    if (UserProfilePostsSectionSelectorTypes.includes(currentSection as UserProfilePostsSectionSelectorType)) {
-      currentSection = currentSection as UserProfilePostsSectionSelectorType
+    if (UserProfilePostsSectionSelectorTypes.includes(querySection as UserProfilePostsSectionSelectorType)) {
+      querySection = querySection as UserProfilePostsSectionSelectorType
     } else {
+      querySection = 'savedPosts'
+
       replace({
         query: {
           username: userComponentDto.username,
@@ -87,18 +98,17 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       }, undefined, { shallow: true, scroll: false })
     }
 
-    if (selectedSection !== currentSection) {
+    if (paginationState.section !== querySection) {
+      setLoading(true)
+
       let newOrder: PostsPaginationSortingType = PostsPaginationSortingType.NEWEST_SAVED
 
-      if (currentSection === 'history') {
+      if (querySection === 'history') {
         newOrder = PostsPaginationSortingType.NEWEST_VIEWED
       }
 
-      setLoading(true)
-      setSelectedSection(currentSection as UserProfilePostsSectionSelectorType)
-      setPage(1)
-      setOrder(newOrder)
-      updatePosts(1, newOrder, currentSection as UserProfilePostsSectionSelectorType)
+      setPaginationState({ section: querySection as UserProfilePostsSectionSelectorType, page: 1, order: newOrder })
+      updatePosts(1, newOrder, querySection as UserProfilePostsSectionSelectorType)
         .then(() => {
           setLoading(false)
         })
@@ -106,27 +116,24 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   }, [query])
 
   const onDeleteSavedPost = (postId: string) => {
-    const newPostList = posts.filter((post) => post.id !== postId)
-
+    setPosts(posts.filter((post) => post.id !== postId))
     setPostsNumber(postsNumber - 1)
-    setPosts(newPostList)
   }
 
-  const postCardOptions: PostCardOptionConfiguration[] = useMemo(() => {
-    if (selectedSection === 'savedPosts') {
-      return [{ type: 'deleteSavedPost', onDelete: onDeleteSavedPost }, { type: 'react' }]
-    } else {
-      return [{ type: 'savePost' }, { type: 'react' }]
-    }
-  }, [selectedSection])
+  let postCardOptions: PostCardOptionConfiguration[] =
+    [{ type: 'deleteSavedPost', onDelete: onDeleteSavedPost, ownerId: userComponentDto.id }, { type: 'react' }]
+
+  if (section === 'history') {
+    postCardOptions = [{ type: 'savePost' }, { type: 'react' }]
+  }
 
   const sortingOptions: PostsPaginationSortingType[] = useMemo(() => {
-    if (selectedSection === 'savedPosts') {
+    if (section === 'savedPosts') {
       return [PostsPaginationSortingType.NEWEST_SAVED, PostsPaginationSortingType.OLDEST_SAVED]
     } else {
       return [PostsPaginationSortingType.NEWEST_VIEWED, PostsPaginationSortingType.OLDEST_VIEWED]
     }
-  }, [selectedSection])
+  }, [paginationState.section])
 
   const updatePosts = async (
     page:number,
@@ -198,29 +205,6 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
         section,
       },
     }, undefined, { shallow: true, scroll: false })
-    /**
-    setLoading(true)
-    let newOrder: PostsPaginationSortingType = PostsPaginationSortingType.NEWEST_SAVED
-
-    if (section === 'history') {
-      newOrder = PostsPaginationSortingType.NEWEST_VIEWED
-    }
-
-    setSelectedSection(section)
-    setPage(1)
-    setOrder(newOrder)
-
-    await replace({
-      query: {
-        username: userComponentDto.username,
-        section,
-      },
-    }, undefined, { shallow: true, scroll: false })
-
-    await updatePosts(1, newOrder, section)
-
-    setLoading(false)
-    **/
   }
 
   const onChangeOption = async (newOrder: PostsPaginationSortingType) => {
@@ -240,32 +224,31 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       []
     )
 
-    setOrder(newOrder)
-    setPage(1)
+    setPaginationState({ ...paginationState, order: newOrder, page: 1 })
 
     await replace({
       query: {
         ...newQuery,
         username: userComponentDto.username,
-        section: selectedSection,
+        section: paginationState.section,
       },
     }, undefined, { shallow: true, scroll: false })
 
-    await updatePosts(1, newOrder, selectedSection)
+    await updatePosts(1, newOrder, paginationState.section)
 
     setLoading(false)
   }
 
   const onEndGalleryReach = async () => {
     setLoading(true)
-    setPage(page + 1)
-    await updatePosts(page + 1, order, selectedSection)
+    setPaginationState({ ...paginationState, page: paginationState.page + 1 })
+    await updatePosts(paginationState.page + 1, paginationState.order, paginationState.section)
     setLoading(false)
   }
 
   let galleryTitle = t('user_saved_posts_title')
 
-  if (selectedSection === 'history') {
+  if (paginationState.section === 'history') {
     galleryTitle = t('user_history_title')
   }
 
@@ -275,7 +258,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     content = (
       <InfiniteScroll
         next={ onEndGalleryReach }
-        hasMore={ page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         loader={ null }
         dataLength={ posts.length }
       >
@@ -283,13 +266,12 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
           posts={ posts }
           postCardOptions={ postCardOptions }
           loading={ loading }
-          owner={ userComponentDto.id }
         />
       </InfiniteScroll>
     )
   }
 
-  if (selectedSection === 'history' && !loading && postsNumber === 0) {
+  if (paginationState.section === 'history' && !loading && postsNumber === 0) {
     content = (
       <EmptyState
         title={ t('history_empty_title') }
@@ -298,7 +280,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     )
   }
 
-  if (selectedSection === 'savedPosts' && !loading && postsNumber === 0) {
+  if (paginationState.section === 'savedPosts' && !loading && postsNumber === 0) {
     if (status === 'authenticated' && data && userComponentDto.id === data.user.id) {
       content = <UserSavedPostsEmptyState />
     } else {
@@ -316,7 +298,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
       <UserProfileHeader componentDto={ userComponentDto } />
 
       <UserProfilePostsSectionSelector
-        selectedSection={ selectedSection }
+        selectedSection={ paginationState.section }
         onClickOption={ onSectionChange }
         disabled={ loading }
       />
@@ -327,7 +309,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
           title={ galleryTitle }
           subtitle={ t('posts_number_title', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
           showSortingOptions={ postsNumber > defaultPerPage }
-          activeOption={ order }
+          activeOption={ paginationState.order }
           sortingOptions={ sortingOptions }
           onChangeOption={ onChangeOption }
         />

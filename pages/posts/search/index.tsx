@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
 
   return {
     props: {
-      initialTitle: search.toLocaleString(),
+      initialSearchTerm: search.toLocaleString(),
       initialSortingOption: paginationQueryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
       initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
       ...i18nSSRConfig,

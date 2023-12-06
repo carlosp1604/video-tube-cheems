@@ -16,10 +16,9 @@ import { undefined } from 'zod'
 interface Props {
   posts: PostCardComponentDto[]
   postCardOptions: PostCardOptionConfiguration[]
-  ownerId: string | undefined
 }
 
-export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions, ownerId }) => {
+export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostCard, setSelectedPostCard] = useState<PostCardComponentDto | null>(null)
   const buildOptions = usePostCardOptions()
@@ -29,8 +28,7 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions, ownerId })
 
   const postCardGalleryOptions = buildOptions(
     postCardOptions,
-    () => setPostCardOptionsMenuOpen(!postCardOptionsMenuOpen),
-    ownerId
+    () => setPostCardOptionsMenuOpen(!postCardOptionsMenuOpen)
   )
 
   let onClickOptions : ((postCard: PostCardComponentDto) => void) | undefined

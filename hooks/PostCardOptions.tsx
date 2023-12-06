@@ -25,6 +25,7 @@ export interface PostCardOption {
 export interface PostCardDeletableOption {
   type: PostCardDeletableOptions
   onDelete: (postId: string) => void
+  ownerId: string
 }
 
 export type PostCardOptionConfiguration =
@@ -146,8 +147,7 @@ export function usePostCardOptions () {
 
   return useCallback((
     optionsConfiguration: PostCardOptionConfiguration[],
-    onSuccess: (() => void) | undefined,
-    ownerId?: string
+    onSuccess: (() => void) | undefined
   ): PostCardGalleryOption[] => {
     const options: PostCardGalleryOption[] = []
 
@@ -181,7 +181,7 @@ export function usePostCardOptions () {
         }
 
         case 'deleteSavedPost': {
-          if (status === 'authenticated' && data && ownerId === data.user.id) {
+          if (status === 'authenticated' && data && optionConfiguration.ownerId === data.user.id) {
             options.push({
               icon: <BsTrash />,
               title: t('delete_saved_post_option_title', { ns: 'post_card_options' }),

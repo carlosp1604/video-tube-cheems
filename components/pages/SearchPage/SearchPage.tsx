@@ -28,22 +28,30 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 
+interface PaginationState {
+  page: number
+  order: PostsPaginationSortingType
+  searchTerm: string
+}
+
 export interface SearchPageProps {
-  initialTitle: string
+  initialSearchTerm: string
   initialPage: number
   initialSortingOption: PostsPaginationSortingType
 }
 
 export const SearchPage: NextPage<SearchPageProps> = ({
-  initialTitle,
+  initialSearchTerm,
   initialPage,
   initialSortingOption,
 }) => {
   const [posts, setPosts] = useState<PostCardComponentDto[]>([])
   const [postsNumber, setPostsNumber] = useState<number>(0)
-  const [order, setOrder] = useState<PostsPaginationSortingType>(initialSortingOption)
-  const [page, setPage] = useState<number>(initialPage)
-  const [title, setTitle] = useState<string>(initialTitle)
+
+  const [paginationState, setPaginationState] = useState<PaginationState>({
+    page: initialPage, order: initialSortingOption, searchTerm: initialSearchTerm,
+  })
+
   const [loading, setLoading] = useState<boolean>(false)
 
   const firstRender = useFirstRender()
@@ -107,18 +115,18 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   useEffect(() => {
     if (firstRender) {
       setLoading(true)
-      updatePosts(page, order, title)
+      updatePosts(paginationState.page, paginationState.order, paginationState.searchTerm)
         .then(() => setLoading(false))
     }
 
     const queryParams = new PostsPaginationQueryParams(query, configuration)
 
-    let currentTitle = title
+    let currentTitle = paginationState.searchTerm
 
     if (query.search && !Array.isArray(query.search)) {
       currentTitle = String(query.search)
     } else {
-      // TODO: Error message and return -> no action take
+      // TODO: Error message and return -> no action taken
       return
     }
 
@@ -129,9 +137,11 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       currentTitle
     )
       .then(() => {
-        setPage(queryParams.page ?? configuration.page.defaultValue)
-        setOrder(queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue)
-        setTitle(currentTitle)
+        setPaginationState({
+          page: queryParams.page ?? configuration.page.defaultValue,
+          order: queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
+          searchTerm: currentTitle,
+        })
         setLoading(false)
       })
   }, [query])
@@ -149,7 +159,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     await router.push({
       query: {
         ...newQuery,
-        search: title,
+        search: paginationState.searchTerm,
       },
     }, undefined, { shallow: true, scroll: false })
   }
@@ -159,7 +169,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     const newQuery = PostsPaginationQueryParams.buildQuery(
       String(newPage),
       String(configuration.page.defaultValue),
-      order,
+      paginationState.order,
       configuration.sortingOptionType.defaultValue,
       []
     )
@@ -167,7 +177,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     await router.push({
       query: {
         ...newQuery,
-        search: title,
+        search: paginationState.searchTerm,
       },
     }, undefined, { shallow: true, scroll: false })
   }
@@ -177,7 +187,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       <Trans
         i18nKey={ t('search_result_title') }
         components={ [<div key={ 'search_result_title' } className={ styles.searchPage__searchTermTitleTerm }/>] }
-        values={ { searchTerm: title } }
+        values={ { searchTerm: paginationState.searchTerm } }
       />
     </span>)
 
@@ -188,7 +198,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
         title={ titleElement }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         showSortingOptions={ postsNumber > defaultPerPage }
-        activeOption={ order }
+        activeOption={ paginationState.order }
         sortingOptions={ [
           PostsPaginationSortingType.LATEST,
           PostsPaginationSortingType.OLDEST,
@@ -201,7 +211,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       { postsNumber === 0 && !loading
         ? <EmptyState
           title={ t('post_gallery_empty_state_title') }
-          subtitle={ t('post_gallery_empty_state_subtitle', { searchTerm: title }) }
+          subtitle={ t('post_gallery_empty_state_subtitle', { searchTerm: paginationState.searchTerm }) }
         />
         : <PostCardGallery
           posts={ posts }
@@ -211,9 +221,9 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       }
       <PaginationBar
         availablePages={ PaginationHelper.getShowablePages(
-          page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
+          paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
         onPageNumberChange={ onPageChange }
-        pageNumber={ page }
+        pageNumber={ paginationState.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
       />

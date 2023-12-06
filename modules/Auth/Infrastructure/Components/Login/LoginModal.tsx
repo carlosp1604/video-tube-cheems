@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react'
+import { FC, ReactElement, useEffect } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
 import { RetrievePassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/RetrievePassword'
@@ -17,13 +17,15 @@ export const LoginModal: FC = () => {
 
   let modalContent: ReactElement | null = null
 
-  /** Login and register only allowed if user is not authenticated */
-  if (
-    (mode === 'login' || mode === 'register') &&
-    status === 'authenticated'
-  ) {
-    setLoginModalOpen(false)
-  }
+  useEffect(() => {
+    /** Login and register only allowed if user is not authenticated */
+    if (
+      (mode === 'login' || mode === 'register') &&
+      status === 'authenticated'
+    ) {
+      setLoginModalOpen(false)
+    }
+  }, [mode])
 
   if (mode === 'login' && status === 'unauthenticated') {
     modalContent = (

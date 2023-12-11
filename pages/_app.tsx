@@ -15,6 +15,7 @@ import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
+// eslint-disable-next-line camelcase
 import { Roboto } from '@next/font/google'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
@@ -31,9 +32,11 @@ function applyMixins (derivedCtor: any, constructors: any[]) {
 }
 
 const roboto = Roboto({
-  subsets: ['latin'],
   weight: ['100', '300', '400', '500', '700', '900'],
   variable: '--font-roboto',
+  display: 'swap',
+  style: 'normal',
+  subsets: ['latin'],
 })
 
 function App ({

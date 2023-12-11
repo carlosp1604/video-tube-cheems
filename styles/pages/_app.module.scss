@@ -1,12 +1,12 @@
 .app {
   &__layout {
     @screen lg {
-      @apply grid;
+      @apply grid font-roboto;
       grid-template-columns: auto 1fr;
     }
   }
 
   &__container {
-    @apply min-h-screen;
+    @apply min-h-screen font-roboto;
   }
 }

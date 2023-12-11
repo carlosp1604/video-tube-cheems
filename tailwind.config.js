@@ -101,7 +101,7 @@ module.exports = {
         transparent: 'transparent',
       },
       fontFamily: {
-        roboto: ['Roboto', 'sans-serif'],
+        roboto: ['var(--font-roboto)'],
       },
       transitionProperty: {
         width: 'width',

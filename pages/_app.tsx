@@ -15,6 +15,7 @@ import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
+import { Roboto } from '@next/font/google'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {
@@ -28,6 +29,12 @@ function applyMixins (derivedCtor: any, constructors: any[]) {
     })
   })
 }
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['100', '300', '400', '500', '700', '900'],
+  variable: '--font-roboto',
+})
 
 function App ({
   Component,
@@ -62,7 +69,10 @@ function App ({
               openMenu={ openMenu }
               setOpenMenu={ setOpenMenu }
             />
-            <main className={ styles.app__container } >
+            <main className={ `
+              ${styles.app__container}
+              ${roboto.variable}
+            ` } >
               <Toaster
                 position={ 'top-center' }
                 containerStyle={ {

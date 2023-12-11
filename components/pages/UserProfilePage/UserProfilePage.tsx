@@ -123,12 +123,12 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
   let postCardOptions: PostCardOptionConfiguration[] =
     [{ type: 'deleteSavedPost', onDelete: onDeleteSavedPost, ownerId: userComponentDto.id }, { type: 'react' }]
 
-  if (section === 'history') {
+  if (paginationState.section === 'history') {
     postCardOptions = [{ type: 'savePost' }, { type: 'react' }]
   }
 
   const sortingOptions: PostsPaginationSortingType[] = useMemo(() => {
-    if (section === 'savedPosts') {
+    if (paginationState.section === 'savedPosts') {
       return [PostsPaginationSortingType.NEWEST_SAVED, PostsPaginationSortingType.OLDEST_SAVED]
     } else {
       return [PostsPaginationSortingType.NEWEST_VIEWED, PostsPaginationSortingType.OLDEST_VIEWED]
@@ -275,7 +275,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
     content = (
       <EmptyState
         title={ t('history_empty_title') }
-        subtitle={ t('history_empty_subtitle') }
+        subtitle={ t('history_empty_subtitle', { name: userComponentDto.name }) }
       />
     )
   }

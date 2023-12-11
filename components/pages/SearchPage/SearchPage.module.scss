@@ -14,7 +14,7 @@
 
 
     &__search-term-title {
-      @apply flex flex-col items-start flex-wrap text-xl font-bold;
+      @apply flex flex-col items-start flex-wrap text-xl font-normal normal-case;
 
       @screen md {
         @apply flex-row gap-x-4 text-2xl items-center;
@@ -22,10 +22,10 @@
     }
 
     &__search-term-title-term {
-      @apply text-base font-normal text-brand-300 normal-case;
+      @apply text-xl font-normal text-brand-300 normal-case;
 
       @screen md {
-        @apply text-xl font-normal text-brand-300;
+        @apply text-2xl font-normal text-brand-300;
       }
     }
   }

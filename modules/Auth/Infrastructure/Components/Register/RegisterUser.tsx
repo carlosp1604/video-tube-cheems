@@ -2,7 +2,7 @@ import styles from './Register.module.scss'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
-import { FC, FormEvent, useState } from 'react'
+import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import {
   nameValidator,
   passwordValidator,
@@ -17,14 +17,23 @@ import {
   USER_USERNAME_ALREADY_REGISTERED
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
+import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 
 export interface Props {
   email: string
   code: string
   onConfirm: () => void
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
+export const RegisterUser: FC<Props> = ({
+  email,
+  code,
+  onConfirm,
+  loading,
+  setLoading,
+}) => {
   const [username, setUsername] = useState<string>('')
   const [name, setName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -46,12 +55,14 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
     }
 
     try {
+      setLoading(true)
+
       const result = await authApiService.createUser(
         name,
         email,
         password,
         username,
-        // FIXME: -----
+        // FIXME: Decide the user language
         'es',
         code
       )
@@ -117,10 +128,13 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
           }
         }
 
+        setLoading(false)
+
         return
       }
 
       onConfirm()
+      setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
       toast.error(t('signup_server_error_message'))
@@ -145,12 +159,16 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
       !invalidUsername && username !== '' &&
       !invalidPassword && password !== '' &&
       !invalidPasswordRepeat && passwordRepeat !== '' &&
-      password === passwordRepeat
+      password === passwordRepeat &&
+      !loading
   }
 
   return (
     <form
-      className={ styles.register__container }
+      className={ `
+        ${styles.register__container}
+        ${loading ? styles.register__container_loading : ''}
+      ` }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.register__title }>
@@ -215,16 +233,11 @@ export const RegisterUser: FC<Props> = ({ email, code, onConfirm }) => {
         { t('signup_retype_password_error_message') }
       </p>
 
-      <button
-        type={ 'submit' }
-        className={ `
-          ${styles.register__submit}
-          ${canSubmit() ? styles.register__submit__enabled : ''}
-        ` }
-        disabled={ !canSubmit() }
-      >
-        { t('signup_submit_button') }
-      </button>
+      <SubmitButton
+        title={ t('signup_submit_button') }
+        enableButton={ canSubmit() }
+        loading={ loading }
+      />
     </form>
   )
 }

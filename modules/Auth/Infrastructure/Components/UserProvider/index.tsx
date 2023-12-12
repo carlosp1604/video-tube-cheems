@@ -20,7 +20,7 @@ const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
         if (response.status === 404) {
           await signOut({ redirect: false })
 
-          toast.error('user_not_found_error_message')
+          toast.error(t('user_not_found_error_message'))
         }
 
         return null
@@ -29,8 +29,6 @@ const UserProvider: FC<{ children: ReactElement }> = ({ children }) => {
       const authUser = await response.json()
 
       return UserProviderUserDtoTranslator.fromApplication(authUser)
-
-      return null
     } catch (exception: unknown) {
       console.error('UserProvider: Failed to fetch user data')
       console.error(exception)

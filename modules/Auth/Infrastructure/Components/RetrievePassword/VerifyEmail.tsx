@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from 'react'
+import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import styles from './RetrievePassword.module.scss'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { useTranslation } from 'next-i18next'
@@ -9,12 +9,15 @@ import {
   USER_TOKEN_ALREADY_ISSUED
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
+import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 
 export interface Props {
   onConfirm: (email: string) => void
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
+export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
   const [email, setEmail] = useState<string>('')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [resendEmail, setResendEmail] = useState<boolean>(false)
@@ -31,6 +34,8 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
+      setLoading(true)
+
       const result = await authApiService.verifyEmailForRecoverPassword(email, resendEmail)
 
       if (!result.ok) {
@@ -87,10 +92,13 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
           }
         }
 
+        setLoading(false)
+
         return
       }
 
       onConfirm(email)
+      setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
       toast.error(t('verify_email_server_error_message'))
@@ -104,12 +112,17 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
   }
 
   const canSubmit = (): boolean => {
-    return !invalidEmail && email !== ''
+    return !invalidEmail &&
+      email !== '' &&
+      !loading
   }
 
   return (
     <form
-      className={ styles.retrievePassword__container }
+      className={ `
+        ${styles.retrievePassword__container}
+        ${loading ? styles.retrievePassword__container_loading : ''}
+      ` }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.retrievePassword__title }>
@@ -131,23 +144,19 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         } }
       />
 
-      <button
-        type={ 'submit' }
-        className={ `
-          ${styles.retrievePassword__submit}
-          ${canSubmit() ? styles.retrievePassword__submit__enabled : ''}
-          ${resendEmail ? styles.retrievePassword__submit_resendEmail : ''}
-        ` }
-        disabled={ !canSubmit() }
-      >
-        { resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
-      </button>
+      <SubmitButton
+        title={ resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
+        enableButton={ canSubmit() }
+        loading={ loading }
+        emphasize={ resendEmail }
+      />
+
       <button className={ `
         ${styles.retrievePassword__verificationCodeLink}
         ${!invalidEmail && email !== '' ? styles.retrievePassword__verificationCodeLink_active : ''}
       ` }
         onClick={ onClickHasVerificationCode }
-        disabled={ !canSubmit() }
+        disabled={ !canSubmit() || loading }
       >
         { t('verify_email_already_has_a_code_button_title') }
       </button>

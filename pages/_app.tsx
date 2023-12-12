@@ -15,8 +15,8 @@ import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
-// eslint-disable-next-line camelcase
 import { Roboto } from '@next/font/google'
+import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {
@@ -60,48 +60,50 @@ function App ({
   return (
     <SessionProvider session={ session }>
       <UserProvider>
-        <LoginProvider>
-          <div className={ styles.app__layout }>
-            <MenuSideBar />
+        <UsingRouterProvider >
+          <LoginProvider>
+            <div className={ styles.app__layout }>
+              <MenuSideBar />
 
-            <MobileMenu
-              openMenu={ openMenu }
-              setOpenMenu={ setOpenMenu }
-            />
-            <FloatingActionAppMenu
-              openMenu={ openMenu }
-              setOpenMenu={ setOpenMenu }
-            />
-            <main className={ `
-              ${styles.app__container}
-              ${roboto.variable}
-            ` } >
-              <Toaster
-                position={ 'top-center' }
-                containerStyle={ {
-                  marginTop: '40px',
-                } }
-                toastOptions={ {
-                  className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
-                  iconTheme: {
-                    secondary: '#FAFAF9',
-                    primary: '#b88b5c',
-                  },
-                  error: {
-                    className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
-                    iconTheme: {
-                      secondary: '#DC143C',
-                      primary: '#FFA07A',
-                    },
-                  },
-                } }
+              <MobileMenu
+                openMenu={ openMenu }
+                setOpenMenu={ setOpenMenu }
               />
-              <AppMenu />
+              <FloatingActionAppMenu
+                openMenu={ openMenu }
+                setOpenMenu={ setOpenMenu }
+              />
+              <main className={ `
+                ${styles.app__container}
+                ${roboto.variable}
+              ` } >
+                <Toaster
+                  position={ 'top-center' }
+                  containerStyle={ {
+                    marginTop: '40px',
+                  } }
+                  toastOptions={ {
+                    className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
+                    iconTheme: {
+                      secondary: '#FAFAF9',
+                      primary: '#b88b5c',
+                    },
+                    error: {
+                      className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
+                      iconTheme: {
+                        secondary: '#DC143C',
+                        primary: '#FFA07A',
+                      },
+                    },
+                  } }
+                />
+                <AppMenu />
 
-              <Component { ...pageProps }/>
-            </main>
-          </div>
-        </LoginProvider>
+                <Component { ...pageProps }/>
+              </main>
+            </div>
+          </LoginProvider>
+        </UsingRouterProvider>
       </UserProvider>
     </SessionProvider>
   )

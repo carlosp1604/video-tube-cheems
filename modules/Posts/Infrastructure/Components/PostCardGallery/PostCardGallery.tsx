@@ -60,10 +60,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     postsSkeletonNumber = posts.length % defaultPerPage
   }
 
-  if (loading) {
-    postsSkeletonNumber = defaultPerPage
-  }
-
   const skeletonPosts = Array.from(Array(postsSkeletonNumber).keys())
     .map((index) => (
       <PostCardSkeleton

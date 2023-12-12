@@ -18,6 +18,7 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
   const [email, setEmail] = useState<string>('')
   const [code, setCode] = useState<string>('')
   const [registrationStep, setRegistrationStep] = useState<RegistrationSteps>('verifying_email')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { t } = useTranslation('user_signup')
 
@@ -27,28 +28,42 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
 
   if (registrationStep === 'verifying_email') {
     content = (
-      <VerifyEmail onConfirm={ (email: string) => {
-        setEmail(email)
-        setRegistrationStep('validating_token')
-      } } />
+      <VerifyEmail
+        onConfirm={ (email: string) => {
+          setEmail(email)
+          setRegistrationStep('validating_token')
+        } }
+        loading={ loading }
+        setLoading={ setLoading }
+      />
     )
   }
 
   if (registrationStep === 'validating_token') {
     onClickCancel = () => { setRegistrationStep('verifying_email') }
     content = (
-      <ValidateCode email={ email } onConfirm={ (token: string) => {
-        setCode(token)
-        setRegistrationStep('validated_token')
-      } }/>
+      <ValidateCode
+        email={ email }
+        onConfirm={ (token: string) => {
+          setCode(token)
+          setRegistrationStep('validated_token')
+        } }
+        loading={ loading }
+        setLoading={ setLoading }
+      />
     )
   }
 
   if (registrationStep === 'validated_token') {
     content = (
-      <RegisterUser email={ email } code={ code } onConfirm={ () => {
-        setRegistrationStep('signup_completed')
-      } }/>
+      <RegisterUser
+        email={ email }
+        code={ code } onConfirm={ () => {
+          setRegistrationStep('signup_completed')
+        } }
+        loading = { loading }
+        setLoading = { setLoading }
+      />
     )
   }
 
@@ -65,10 +80,10 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
       <span className={ styles.register__backSection }>
         <BsArrowLeft
           className={ styles.register__backIcon }
-          onClick={ () => onClickCancel() }
-          title={ t('back_button_title') ?? '' }
+          onClick={ () => { if (!loading) { onClickCancel() } } }
+          title={ t('back_button_title') }
         />
-        { t('back_button_title') ?? '' }
+        { t('back_button_title') }
       </span>
       { content }
     </div>

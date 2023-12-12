@@ -2,6 +2,10 @@
   &__container {
     @apply mx-auto p-5;
 
+    &_loading {
+      @apply animate-pulse;
+    }
+
     @screen tb {
       @apply max-w-xs;
     }

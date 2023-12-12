@@ -27,6 +27,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
+import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 
 interface PaginationState {
   page: number
@@ -56,6 +57,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
 
   const firstRender = useFirstRender()
   const { t } = useTranslation('search')
+  const { setBlocked } = useUsingRouterContext()
   const router = useRouter()
   const query = router.query
   const locale = router.locale ?? 'en'
@@ -115,8 +117,14 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   useEffect(() => {
     if (firstRender) {
       setLoading(true)
+      setBlocked(true)
       updatePosts(paginationState.page, paginationState.order, paginationState.searchTerm)
-        .then(() => setLoading(false))
+        .then(() => {
+          setLoading(false)
+          setBlocked(false)
+        })
+
+      return
     }
 
     const queryParams = new PostsPaginationQueryParams(query, configuration)
@@ -131,6 +139,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     }
 
     setLoading(true)
+    setBlocked(true)
     updatePosts(
       queryParams.page ?? configuration.page.defaultValue,
       queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
@@ -142,7 +151,9 @@ export const SearchPage: NextPage<SearchPageProps> = ({
           order: queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
           searchTerm: currentTitle,
         })
+
         setLoading(false)
+        setBlocked(false)
       })
   }, [query])
 

@@ -5,6 +5,7 @@ import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure
 import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import toast from 'react-hot-toast'
+import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 
 export interface Props {
   onClickSignup: () => void
@@ -17,6 +18,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
   const [password, setPassword] = useState<string>('')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { t } = useTranslation('user_login')
 
@@ -26,6 +28,8 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
     if (password === '' || email === '') {
       return
     }
+
+    setLoading(true)
 
     const result = await signIn(
       'credentials',
@@ -40,18 +44,24 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
     } else {
       onSuccessLogin()
     }
+
+    setLoading(false)
   }
 
   const canEnableSubmitButton = () => {
     return !invalidEmail &&
       !invalidPassword &&
       email !== '' &&
-      password !== ''
+      password !== '' &&
+      !loading
   }
 
   return (
     <form
-      className={ styles.login__container }
+      className={ `
+        ${styles.login__container}
+        ${loading ? styles.login__container_loading : ''}
+      ` }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.login__title }>
@@ -85,21 +95,17 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
         } }
       />
 
-      <button
-        type={ 'submit' }
-        className={ `
-          ${styles.login__submit}
-          ${canEnableSubmitButton() ? styles.login__submit__enabled : ''}
-        ` }
-        disabled={ !canEnableSubmitButton() }
-      >
-        { t('submit_button_title') }
-      </button>
+      <SubmitButton
+        title={ t('submit_button_title') }
+        enableButton={ canEnableSubmitButton() }
+        loading={ loading }
+      />
 
       <div className={ styles.login__registerRecoverSection }>
         <button
           className={ styles.login__signupButton }
           onClick={ onClickSignup }
+          disabled={ loading }
         >
           { t('sign_in_button_title') }
         </button>
@@ -107,6 +113,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
         <button
           className={ styles.login__forgotPasswordButton }
           onClick={ onClickForgotPassword }
+          disabled={ loading }
         >
           { t('forgot_password_button_title') }
         </button>

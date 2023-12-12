@@ -1,4 +1,4 @@
-import { FC, FormEvent, useState } from 'react'
+import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import styles from './Register.module.scss'
 import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
@@ -10,12 +10,15 @@ import {
   USER_TOKEN_ALREADY_ISSUED
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
+import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 
 export interface Props {
   onConfirm: (email: string) => void
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
+export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
   const { t } = useTranslation('user_signup')
 
   const [email, setEmail] = useState<string>('')
@@ -32,6 +35,8 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
     }
 
     try {
+      setLoading(true)
+
       const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
 
       if (!result.ok) {
@@ -88,10 +93,13 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
           }
         }
 
+        setLoading(false)
+
         return
       }
 
       onConfirm(email)
+      setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
       toast.error(t('verify_email_server_error_message'))
@@ -105,12 +113,17 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
   }
 
   const canSubmit = (): boolean => {
-    return !invalidEmail && email !== ''
+    return !invalidEmail &&
+      email !== '' &&
+      !loading
   }
 
   return (
     <form
-      className={ styles.register__container }
+      className={ `
+        ${styles.register__container}
+        ${loading ? styles.register__container_loading : ''}
+      ` }
       onSubmit={ onSubmit }
     >
       <div className={ styles.register__title }>
@@ -132,23 +145,19 @@ export const VerifyEmail: FC<Props> = ({ onConfirm }) => {
         } }
       />
 
-      <button
-        type={ 'submit' }
-        className={ `
-          ${styles.register__submit}
-          ${canSubmit() ? styles.register__submit__enabled : ''}
-          ${resendEmail ? styles.register__submit_resendEmail : ''}
-        ` }
-        disabled={ !canSubmit() }
-      >
-        { resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
-      </button>
+      <SubmitButton
+        title={ resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
+        enableButton={ canSubmit() }
+        loading={ loading }
+        emphasize={ resendEmail }
+      />
+
       <button className={ `
         ${styles.register__verificationCodeLink}
         ${canSubmit() ? styles.register__verificationCodeLink_active : ''}
       ` }
         onClick={ onClickHasVerificationCode }
-        disabled={ !canSubmit() }
+        disabled={ !canSubmit() || loading }
       >
         { t('verify_email_already_has_a_code_button_title') }
       </button>

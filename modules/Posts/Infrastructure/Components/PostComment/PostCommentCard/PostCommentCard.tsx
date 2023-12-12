@@ -2,41 +2,24 @@ import { FC } from 'react'
 import styles from './PostCommentCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import { PostCommentCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentCardComponentDto'
-import Avatar from 'react-avatar'
-import Image from 'next/image'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   postComment: PostCommentCardComponentDto
 }
 
 export const PostCommentCard: FC<Props> = ({ postComment }) => {
-  let avatar
-
-  if (postComment.user.imageUrl !== null) {
-    avatar = (
-      <Image
-        className={ styles.postCommentCard__userLogo }
-        src={ postComment.user.imageUrl ?? '' }
-        alt={ postComment.user.name }
-        width={ 0 }
-        height={ 0 }
-        sizes={ '100vw' }
-      />
-    )
-  } else {
-    avatar = (
-      <Avatar
-        className={ styles.commentCard__userLogo }
-        round={ true }
-        size={ '24' }
-        name={ postComment.user.name }
-        textSizeRatio={ 2 }
-    />)
-  }
-
   return (
     <div className={ styles.postCommentCard__container }>
-      { avatar }
+      <AvatarImage
+        imageUrl={ postComment.user.imageUrl }
+        avatarClassName={ styles.commentCard__userLogo }
+        imageClassName={ styles.postCommentCard__userLogo }
+        avatarName={ postComment.user.name }
+        size={ '24' }
+        round={ true }
+        imageAlt={ postComment.user.name }
+      />
       <div className={ styles.postCommentCard__userNameDate }>
         <span className={ styles.postCommentCard__userName }>
           { postComment.user.name }

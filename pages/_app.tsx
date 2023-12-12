@@ -15,6 +15,9 @@ import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
+import { Roboto } from '@next/font/google'
+import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
+import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {
@@ -29,6 +32,14 @@ function applyMixins (derivedCtor: any, constructors: any[]) {
   })
 }
 
+const roboto = Roboto({
+  weight: ['100', '300', '400', '500', '700', '900'],
+  variable: '--font-roboto',
+  display: 'swap',
+  style: 'normal',
+  subsets: ['latin'],
+})
+
 function App ({
   Component,
   pageProps: {
@@ -37,6 +48,7 @@ function App ({
   },
 }: AppProps) {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
+  const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
 
   const { i18n } = useTranslation()
 
@@ -50,45 +62,53 @@ function App ({
   return (
     <SessionProvider session={ session }>
       <UserProvider>
-        <LoginProvider>
-          <div className={ styles.app__layout }>
-            <MenuSideBar />
+        <UsingRouterProvider >
+          <LoginProvider>
+            <div className={ styles.app__layout }>
+              <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) } />
 
-            <MobileMenu
-              openMenu={ openMenu }
-              setOpenMenu={ setOpenMenu }
-            />
-            <FloatingActionAppMenu
-              openMenu={ openMenu }
-              setOpenMenu={ setOpenMenu }
-            />
-            <main className={ styles.app__container } >
-              <Toaster
-                position={ 'top-center' }
-                containerStyle={ {
-                  marginTop: '40px',
-                } }
-                toastOptions={ {
-                  className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
-                  iconTheme: {
-                    secondary: '#FAFAF9',
-                    primary: '#b88b5c',
-                  },
-                  error: {
-                    className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
-                    iconTheme: {
-                      secondary: '#DC143C',
-                      primary: '#FFA07A',
-                    },
-                  },
-                } }
+              <MenuSideBar setOpenLanguageMenu={ setOpenLanguageMenu } />
+
+              <MobileMenu
+                setOpenLanguageMenu={ setOpenLanguageMenu }
+                openMenu={ openMenu }
+                setOpenMenu={ setOpenMenu }
               />
-              <AppMenu />
+              <FloatingActionAppMenu
+                openMenu={ openMenu }
+                setOpenMenu={ setOpenMenu }
+              />
+              <main className={ `
+                ${styles.app__container}
+                ${roboto.variable}
+              ` } >
+                <Toaster
+                  position={ 'top-center' }
+                  containerStyle={ {
+                    marginTop: '40px',
+                  } }
+                  toastOptions={ {
+                    className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
+                    iconTheme: {
+                      secondary: '#FAFAF9',
+                      primary: '#b88b5c',
+                    },
+                    error: {
+                      className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
+                      iconTheme: {
+                        secondary: '#DC143C',
+                        primary: '#FFA07A',
+                      },
+                    },
+                  } }
+                />
+                <AppMenu />
 
-              <Component { ...pageProps }/>
-            </main>
-          </div>
-        </LoginProvider>
+                <Component { ...pageProps }/>
+              </main>
+            </div>
+          </LoginProvider>
+        </UsingRouterProvider>
       </UserProvider>
     </SessionProvider>
   )

@@ -1,17 +1,20 @@
-import { FC, FormEvent, useState } from 'react'
+import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import styles from './Register.module.scss'
 import { useTranslation } from 'next-i18next'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import toast from 'react-hot-toast'
+import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 
 export interface Props {
   email: string
   onConfirm: (code: string) => void
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
+export const ValidateCode: FC<Props> = ({ email, onConfirm, loading, setLoading }) => {
   const [code, setCode] = useState<string>('')
   const [invalidCode, setInvalidCode] = useState<boolean>(false)
 
@@ -27,6 +30,8 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
     }
 
     try {
+      setLoading(true)
+
       const result = await authApiService.validateVerificationCode(email, code)
 
       if (!result.ok) {
@@ -41,10 +46,13 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
             break
         }
 
+        setLoading(false)
+
         return
       }
 
       onConfirm(code)
+      setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
       toast.error(t('validate_code_server_error_message'))
@@ -52,12 +60,17 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
   }
 
   const canSubmit = (): boolean => {
-    return !invalidCode && code !== ''
+    return !invalidCode &&
+      code !== '' &&
+      !loading
   }
 
   return (
     <form
-      className={ styles.register__container }
+      className={ `
+        ${styles.register__container}
+        ${loading ? styles.register__container_loading : ''}
+      ` }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.register__title }>
@@ -79,16 +92,11 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm }) => {
         } }
       />
 
-      <button
-        type={ 'submit' }
-        className={ `
-          ${styles.register__submit}
-          ${canSubmit() ? styles.register__submit__enabled : ''}
-        ` }
-        disabled={ !canSubmit() }
-      >
-        { t('validate_code_submit_button') }
-      </button>
+      <SubmitButton
+        title={ t('validate_code_submit_button') }
+        enableButton={ canSubmit() }
+        loading={ loading }
+      />
     </form>
   )
 }

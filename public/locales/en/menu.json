@@ -1,8 +1,13 @@
 {
   "copyright_section_title": "Cheems © 2023.\nMade with ❤\uFE0F by CP.",
+  "language_menu_english_option_title": "English",
+  "language_menu_spanish_option_title": "Spanish",
+  "language_menu_subtitle": "Choose the language in which you want the application to be displayed",
+  "language_menu_title": "Application Language",
   "menu_button_title": "Menú",
   "menu_following_button_title": "Following",
   "menu_home_button_title": "Home",
+  "menu_language_button_title": "Language",
   "menu_live_cams_button_title": "Live cams",
   "menu_logo_alt_title": "Cheems",
   "menu_reacted_button_title": "Reacted",
@@ -12,5 +17,5 @@
   "user_already_on_path": "You are here already",
   "user_menu_option_not_available_message": "This feature will be available soon. Stay tuned!",
   "user_menu_profile_button": "My Profile",
-  "user_must_be_authenticated_error_message": "Sign in to access this feature",
+  "user_must_be_authenticated_error_message": "Sign in to access this feature"
 }

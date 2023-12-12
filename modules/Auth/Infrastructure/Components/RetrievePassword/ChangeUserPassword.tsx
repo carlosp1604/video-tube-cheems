@@ -1,18 +1,21 @@
-import { FC, FormEvent, useState } from 'react'
+import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import styles from './RetrievePassword.module.scss'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import toast from 'react-hot-toast'
+import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 
 export interface Props {
   email: string
   token: string
   onConfirm: () => void
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
+export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm, loading, setLoading }) => {
   const [password, setPassword] = useState<string>('')
   const [passwordRepeat, setPasswordRepeat] = useState<string>('')
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
@@ -30,6 +33,8 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
     }
 
     try {
+      setLoading(true)
+
       const result = await authApiService.changeUserPassword(email, password, token)
 
       if (!result.ok) {
@@ -55,10 +60,13 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
           }
         }
 
+        setLoading(false)
+
         return
       }
 
       onConfirm()
+      setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
       toast.error(t('change_password_server_error_message'))
@@ -83,12 +91,16 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
       password !== '' &&
       !invalidPasswordRepeat &&
       passwordRepeat !== '' &&
-      password === passwordRepeat
+      password === passwordRepeat &&
+      !loading
   }
 
   return (
     <form
-      className={ styles.retrievePassword__container }
+      className={ `
+        ${styles.retrievePassword__container}
+        ${loading ? styles.retrievePassword__container_loading : ''}
+      ` }
       onSubmit={ onSubmit }
     >
       <h1 className={ styles.retrievePassword__title }>
@@ -129,16 +141,11 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm }) => {
         { t('change_password_retype_password_error_message') }
       </p>
 
-      <button
-        type={ 'submit' }
-        className={ `
-          ${styles.retrievePassword__submit}
-          ${canSubmit() ? styles.retrievePassword__submit__enabled : ''}
-        ` }
-        disabled={ !canSubmit() }
-      >
-        { t('change_password_submit_button') }
-      </button>
+      <SubmitButton
+        title={ t('change_password_submit_button') }
+        enableButton={ canSubmit() }
+        loading={ loading }
+      />
     </form>
   )
 }

@@ -2,12 +2,11 @@ import { FC, ReactNode, useState } from 'react'
 import styles from './AddCommentInput.module.scss'
 import { BsChatDots } from 'react-icons/bs'
 import { AutoSizableTextArea } from './AutoSizableTextArea'
-import Avatar from 'react-avatar'
 import { useTranslation } from 'next-i18next'
 import { useLoginContext } from '~/hooks/LoginContext'
-import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   onAddComment: (comment: string) => void
@@ -23,28 +22,18 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
 
   let avatar = null
 
-  if (status === 'authenticated' && data.user !== null) {
-    if (data.user.image) {
-      avatar = (
-        <Image
-          className={ styles.addCommentInput__userAvatar }
-          src={ data.user.image }
-          alt={ data.user.name ?? '' }
-          width={ 0 }
-          height={ 0 }
-          sizes={ '100vw' }
-        />
-      )
-    } else {
-      avatar = (
-        <Avatar
-          className={ styles.commentCard__userLogo }
-          round={ true }
-          size={ '28' }
-          name={ data.user.name ?? '' }
-          textSizeRatio={ 2 }
-        />)
-    }
+  if (status === 'authenticated' && data && data.user) {
+    avatar = (
+      <AvatarImage
+        imageUrl={ data.user.image ?? null }
+        avatarClassName={ styles.addCommentInput__userAvatar }
+        imageClassName={ styles.addCommentInput__userAvatar }
+        avatarName={ data.user.name ?? '' }
+        size={ '28' }
+        round={ true }
+        imageAlt={ data.user.name ?? '' }
+      />
+    )
   }
 
   let content: ReactNode | null = null

@@ -14,10 +14,12 @@ import { IconButton } from '~/components/IconButton/IconButton'
 import { CiUser } from 'react-icons/ci'
 import toast from 'react-hot-toast'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
+import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
   const { loginModalOpen, setLoginModalOpen } = useLoginContext()
+  const { blocked } = useUsingRouterContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
 
   const { user } = useUserContext()
@@ -83,11 +85,17 @@ export const AppMenu: FC = () => {
       return
     }
 
+    if (blocked) {
+      toast.error(t('action_cannot_be_performed_error_message'))
+
+      return
+    }
+
     const { search } = router.query
 
     if (
       !search ||
-      (search && search !== title)
+        (search && search !== title)
     ) {
       await router.push({
         pathname: '/posts/search/',
@@ -95,9 +103,7 @@ export const AppMenu: FC = () => {
           search: title,
         },
       }, undefined, { shallow: true, scroll: false })
-    }
-
-    if (search && search === title) {
+    } else {
       toast.error(t('already_searching_term_error_message'))
     }
   }

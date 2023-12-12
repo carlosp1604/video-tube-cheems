@@ -2,6 +2,10 @@
   &__container {
     @apply mx-auto p-5;
 
+    &_loading {
+      @apply animate-pulse;
+    }
+
     @screen tb {
       @apply max-w-sm;
     }
@@ -24,24 +28,6 @@
 
     @screen md {
       @apply text-base;
-    }
-  }
-
-  &__submit {
-    @apply w-full px-4 py-2 border-2 border-base-700 rounded-lg
-      text-sm font-bold text-base-700 transition-colors duration-100;
-
-    &__enabled {
-      @apply text-base-300 bg-transparent border-brand-500
-        transition-colors duration-500;
-
-      &:active, &:focus, &:hover {
-        @apply bg-brand-500;
-      }
-    }
-
-    @screen md {
-      @apply text-base font-black;
     }
   }
 
@@ -70,6 +56,10 @@
       @apply text-brand-300 transition-colors;
     }
 
+    &:disabled {
+      @apply text-base-400;
+    }
+
     @screen md {
       @apply text-sm;
     }
@@ -80,6 +70,10 @@
 
     &:hover, &:focus {
       @apply text-base-300 transition-colors;
+    }
+
+    &:disabled {
+      @apply text-base-400;
     }
 
     @screen md {

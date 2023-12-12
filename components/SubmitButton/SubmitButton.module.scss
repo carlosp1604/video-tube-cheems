@@ -1,0 +1,31 @@
+.submit-button {
+  &__loading-icon {
+    @apply h-6 w-6 animate-spin mx-auto text-brand-400;
+  }
+
+  &__container {
+    @apply w-full px-4 py-2 border-2 border-base-700 rounded-lg
+    text-sm font-bold text-base-700 transition-colors duration-100;
+
+    &__enabled {
+      @apply text-base-300 bg-transparent border-brand-500
+      transition-colors duration-500;
+
+      &:active, &:focus, &:hover {
+        @apply bg-brand-500;
+      }
+    }
+
+    &__emphasize {
+      @apply border-blue bg-blue/50 text-base-100 ;
+
+      &:active, &:focus, &:hover {
+        @apply bg-blue text-base-100;
+      }
+    }
+
+    @screen md {
+      @apply text-base font-black;
+    }
+  }
+}

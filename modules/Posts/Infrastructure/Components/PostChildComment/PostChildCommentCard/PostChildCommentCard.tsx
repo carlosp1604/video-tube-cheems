@@ -2,41 +2,24 @@ import { FC } from 'react'
 import styles from './PostChildCommentCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
-import Image from 'next/image'
-import Avatar from 'react-avatar'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   postChildComment: PostChildCommentComponentDto
 }
 
 export const PostChildCommentCard: FC<Props> = ({ postChildComment }) => {
-  let avatar
-
-  if (postChildComment.user.imageUrl !== null) {
-    avatar = (
-      <Image
-        className={ styles.postChildCommentCard__userLogo }
-        src={ postChildComment.user.imageUrl ?? '' }
-        alt={ postChildComment.user.name }
-        width={ 0 }
-        height={ 0 }
-        sizes={ '100vw' }
-      />
-    )
-  } else {
-    avatar = (
-      <div className={ styles.postChildCommentCard__userAvatarContainer }>
-        <Avatar
-          name={ postChildComment.user.name }
-          textSizeRatio={ 7 }
-        />
-      </div>
-    )
-  }
-
   return (
     <div className={ styles.postChildCommentCard__container }>
-      { avatar }
+      <AvatarImage
+        imageUrl={ postChildComment.user.imageUrl }
+        avatarClassName={ styles.postChildCommentCard__userAvatarContainer }
+        imageClassName={ styles.postChildCommentCard__userLogo }
+        avatarName={ postChildComment.user.name }
+        size={ '24' }
+        round={ true }
+        imageAlt={ postChildComment.user.name }
+      />
       <div className={ styles.postChildCommentCard__userNameDate }>
         <span className={ styles.postChildCommentCard__userName }>
           { postChildComment.user.name }

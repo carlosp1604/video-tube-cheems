@@ -1,4 +1,5 @@
 {
+  "action_cannot_be_performed_error_message": "You can't do this now. Wait for the current action to finish and try again",
   "already_searching_term_error_message": "You are already searching for this term",
   "app_menu_loading_user_button_title": "Loading",
   "app_menu_logo_url_alt": "Cheems",

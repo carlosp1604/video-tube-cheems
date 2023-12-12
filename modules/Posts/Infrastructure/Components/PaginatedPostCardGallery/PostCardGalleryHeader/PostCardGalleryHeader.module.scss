@@ -4,8 +4,8 @@
   }
 
   &__title {
-    @apply flex flex-col flex-wrap text-base-100 text-2xl
-    uppercase font-black gap-y-1;
+    @apply font-black flex flex-col flex-wrap text-base-100 text-2xl
+    uppercase gap-y-1;
   }
 
   &__videos-quantity {

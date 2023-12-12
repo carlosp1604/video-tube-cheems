@@ -18,6 +18,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
   const [email, setEmail] = useState<string>('')
   const [token, setToken] = useState<string>('')
   const [retrieveStep, setRetrieveStep] = useState<RetrieveSteps>('verifying_email')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { t } = useTranslation('user_retrieve_password')
 
@@ -27,37 +28,48 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
 
   if (retrieveStep === 'verifying_email') {
     content = (
-      <VerifyEmail onConfirm={ (email: string) => {
-        setEmail(email)
-        setRetrieveStep('validating_token')
-      } } />
+      <VerifyEmail
+        onConfirm={ (email: string) => {
+          setEmail(email)
+          setRetrieveStep('validating_token')
+        } }
+        loading = { loading }
+        setLoading = { setLoading }
+      />
     )
   }
 
   if (retrieveStep === 'validating_token') {
     onClickCancel = () => { setRetrieveStep('verifying_email') }
     content = (
-      <ValidateCode email={ email } onConfirm={ (token: string) => {
-        setToken(token)
-        setRetrieveStep('validated_token')
-      } }/>
+      <ValidateCode
+        email={ email }
+        onConfirm={ (token: string) => {
+          setToken(token)
+          setRetrieveStep('validated_token')
+        } }
+        loading = { loading }
+        setLoading = { setLoading }
+      />
     )
   }
 
   if (retrieveStep === 'validated_token') {
     content = (
-      <ChangeUserPassword email={ email } token={ token } onConfirm={ () => {
-        setRetrieveStep('password_changed')
-      } }/>
+      <ChangeUserPassword
+        email={ email }
+        token={ token }
+        onConfirm={ () => {
+          setRetrieveStep('password_changed')
+        } }
+        loading = { loading }
+        setLoading = { setLoading }
+      />
     )
   }
 
   if (retrieveStep === 'password_changed') {
-    content = (
-      <ConfirmingPasswordChange onConfirm={ () => {
-        onConfirm()
-      } }/>
-    )
+    content = <ConfirmingPasswordChange onConfirm={ () => { onConfirm() } }/>
   }
 
   return (
@@ -65,7 +77,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
       <span className={ styles.retrievePassword__backSection }>
         <BsArrowLeft
           className={ styles.retrievePassword__backIcon }
-          onClick={ () => onClickCancel() }
+          onClick={ () => { if (!loading) { onClickCancel() } } }
         />
         { t('back_button_title') }
       </span>

@@ -17,6 +17,7 @@ import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
 import { Roboto } from '@next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
+import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {
@@ -47,6 +48,7 @@ function App ({
   },
 }: AppProps) {
   const [openMenu, setOpenMenu] = useState<boolean>(false)
+  const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
 
   const { i18n } = useTranslation()
 
@@ -63,9 +65,12 @@ function App ({
         <UsingRouterProvider >
           <LoginProvider>
             <div className={ styles.app__layout }>
-              <MenuSideBar />
+              <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) } />
+
+              <MenuSideBar setOpenLanguageMenu={ setOpenLanguageMenu } />
 
               <MobileMenu
+                setOpenLanguageMenu={ setOpenLanguageMenu }
                 openMenu={ openMenu }
                 setOpenMenu={ setOpenMenu }
               />

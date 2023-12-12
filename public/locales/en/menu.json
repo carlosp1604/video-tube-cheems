@@ -1,8 +1,13 @@
 {
   "copyright_section_title": "Cheems © 2023.\nMade with ❤\uFE0F by CP.",
+  "language_menu_english_option_title": "English",
+  "language_menu_spanish_option_title": "Spanish",
+  "language_menu_subtitle": "Choose the language in which you want the application to be displayed",
+  "language_menu_title": "Application Language",
   "menu_button_title": "Menú",
   "menu_following_button_title": "Following",
   "menu_home_button_title": "Home",
+  "menu_language_button_title": "Language",
   "menu_live_cams_button_title": "Live cams",
   "menu_logo_alt_title": "Cheems",
   "menu_reacted_button_title": "Reacted",

@@ -8,13 +8,15 @@ import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useUserContext } from '~/hooks/UserContext'
 import { useRouter } from 'next/router'
+import { TfiWorld } from 'react-icons/tfi'
 
 interface Props {
   openMenu: boolean
   setOpenMenu: Dispatch<SetStateAction<boolean>>
+  setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
 }
 
-export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
+export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMenu }) => {
   const { t } = useTranslation('menu')
   const { setLoginModalOpen } = useLoginContext()
   const { status, user } = useUserContext()
@@ -150,6 +152,15 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu }) => {
                   false,
                   t('menu_user_history_button_title')
                 ),
+                {
+                  title: t('menu_language_button_title'),
+                  isActive: false,
+                  action: undefined,
+                  picture: <TfiWorld />,
+                  onClick: () => {
+                    setOpenLanguageMenu(true)
+                  },
+                },
                 /**
                 {
                   title: t('menu_live_cams_button_title'),

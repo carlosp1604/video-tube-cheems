@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from 'react'
+import { Dispatch, FC, ReactElement, SetStateAction, useState } from 'react'
 import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -9,6 +9,7 @@ import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptio
 import toast from 'react-hot-toast'
 import { useUserContext } from '~/hooks/UserContext'
 import { useLoginContext } from '~/hooks/LoginContext'
+import { TfiWorld } from 'react-icons/tfi'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionComponentInterface
@@ -66,7 +67,11 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
   return null
 }
 
-export const MenuSideBar: FC = () => {
+export interface Props {
+  setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
+}
+
+export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
   const { pathname, asPath } = useRouter()
   const { t } = useTranslation('menu')
 
@@ -167,6 +172,15 @@ export const MenuSideBar: FC = () => {
       false,
       t('menu_user_history_button_title')
     ),
+    {
+      title: t('menu_language_button_title'),
+      isActive: false,
+      action: undefined,
+      picture: <TfiWorld />,
+      onClick: () => {
+        setOpenLanguageMenu(true)
+      },
+    },
     /**
     {
       title: t('menu_live_cams_button_title'),

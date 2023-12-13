@@ -18,7 +18,7 @@ import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
-  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
+  const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
   const { blocked } = useUsingRouterContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
 

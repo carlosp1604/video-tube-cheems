@@ -6,6 +6,7 @@ import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingPasswordChange } from './ConfirmingPasswordChange'
 import { ChangeUserPassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/ChangeUserPassword'
 import { useTranslation } from 'next-i18next'
+import { useSession } from 'next-auth/react'
 
 type RetrieveSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'password_changed'
 
@@ -20,6 +21,7 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
   const [retrieveStep, setRetrieveStep] = useState<RetrieveSteps>('verifying_email')
   const [loading, setLoading] = useState<boolean>(false)
 
+  const { status } = useSession()
   const { t } = useTranslation('user_retrieve_password')
 
   let onClickCancel = onCancel
@@ -74,7 +76,13 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
 
   return (
     <div className={ styles.retrievePassword__registerForgotContainer }>
-      <span className={ styles.retrievePassword__backSection }>
+      <span className={ `
+        ${styles.retrievePassword__backSection}
+        ${status !== 'unauthenticated' && (retrieveStep === 'verifying_email' || retrieveStep === 'password_changed')
+          ? styles.retrievePassword__backSection_disabled
+          : ''
+        }
+      ` }>
         <BsArrowLeft
           className={ styles.retrievePassword__backIcon }
           onClick={ () => { if (!loading) { onClickCancel() } } }

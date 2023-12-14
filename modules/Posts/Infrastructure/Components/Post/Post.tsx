@@ -96,7 +96,7 @@ export const Post: FC<Props> = ({
 
             setSavedPost(jsonResponse.savedPost)
 
-            if (jsonResponse === null) {
+            if (jsonResponse.userReaction === null) {
               setUserReaction(null)
 
               return

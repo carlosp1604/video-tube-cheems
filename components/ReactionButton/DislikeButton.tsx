@@ -1,9 +1,9 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import styles from './DislikeButton.module.scss'
 import { useTranslation } from 'next-i18next'
 import { BiDislike, BiSolidDislike } from 'react-icons/bi'
 import * as uuid from 'uuid'
-import { Tooltip } from 'react-tooltip'
+import { Tooltip } from '~/components/Tooltip/Tooltip'
 
 interface Props {
   disliked: boolean
@@ -13,8 +13,13 @@ interface Props {
 
 export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike }) => {
   const { t } = useTranslation('common')
+  const [mounted, setMounted] = useState<boolean>(false)
+  const [tooltipId, setTooltipId] = useState<string>('')
 
-  const tooltipUuid = uuid.v4()
+  useEffect(() => {
+    setMounted(true)
+    setTooltipId(uuid.v4())
+  }, [])
 
   return (
     <div className={ styles.dislikeButton__container }>
@@ -25,17 +30,21 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike 
             ${styles.dislikeButton__dislikeIcon_active}
         ` }
           onClick={ () => onDeleteDislike() }
-          data-tooltip-id={ tooltipUuid }
+          data-tooltip-id={ tooltipId }
           data-tooltip-content={ t('dislike_reaction_active_title_button') }
         />
         : <BiDislike
           className={ styles.dislikeButton__dislikeIcon }
           onClick={ () => onDislike() }
-          data-tooltip-id={ tooltipUuid }
+          data-tooltip-id={ tooltipId }
           data-tooltip-content={ t('dislike_reaction_title_button') }
         />
       }
-      <Tooltip id={ tooltipUuid }/>
+      { mounted &&
+        <Tooltip
+          tooltipId={ tooltipId }
+          place={ 'bottom' }
+        /> }
     </div>
   )
 }

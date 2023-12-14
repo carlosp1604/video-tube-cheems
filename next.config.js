@@ -2,7 +2,7 @@
 const { i18n } = require('./next-i18next.config')
 
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   swcMinify: true,
   webpack: (config) => {
     const rules = config.module.rules

@@ -1,4 +1,4 @@
-import { FC, ReactElement, ReactNode, useState } from 'react'
+import { Dispatch, FC, ReactElement, ReactNode, SetStateAction, useState } from 'react'
 import styles from './PostCommentOptions.module.scss'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
@@ -17,15 +17,33 @@ interface Props {
   postId: string
   postCommentId: string
   parentCommentId: string | null
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const PostCommentOptions: FC<Props> = ({ ownerId, postId, parentCommentId, postCommentId, onDeleteComment }) => {
+export const PostCommentOptions: FC<Props> = ({
+  ownerId,
+  postId,
+  parentCommentId,
+  postCommentId,
+  onDeleteComment,
+  loading,
+  setLoading,
+}) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
   const { t } = useTranslation(['post_comments', 'api_exceptions'])
   const { user } = useUserContext()
 
   const onClickDelete = async () => {
+    if (loading) {
+      toast.error('No se puede ejecutar esta acción en este momento')
+
+      return
+    }
+
+    setLoading(true)
+
     try {
       await new CommentsApiService().delete(postId, postCommentId, parentCommentId)
       onDeleteComment(postCommentId)
@@ -44,6 +62,8 @@ export const PostCommentOptions: FC<Props> = ({ ownerId, postId, parentCommentId
 
       toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
+
+    setLoading(false)
   }
 
   let content: ReactNode | null = null

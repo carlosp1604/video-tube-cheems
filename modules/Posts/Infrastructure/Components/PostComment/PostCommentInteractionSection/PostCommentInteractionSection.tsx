@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { Dispatch, FC, SetStateAction } from 'react'
 import styles from './PostCommentInteractionSection.module.scss'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
 import { useTranslation } from 'next-i18next'
@@ -19,9 +19,17 @@ interface Props {
   postComment: PostCommentComponentDto
   onClickReply: ((postComment: PostCommentComponentDto) => void) | undefined
   onClickLikeComment: (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
+  loading: boolean
+  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
-export const PostCommentInteractionSection: FC<Props> = ({ postComment, onClickReply, onClickLikeComment }) => {
+export const PostCommentInteractionSection: FC<Props> = ({
+  postComment,
+  onClickReply,
+  onClickLikeComment,
+  loading,
+  setLoading,
+}) => {
   const { t } = useTranslation(['post_comments', 'api_exceptions'])
 
   const apiService = new CommentsApiService()

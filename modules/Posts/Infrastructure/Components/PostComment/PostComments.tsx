@@ -32,6 +32,8 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   const [comments, setComments] = useState<PostCommentComponentDto[]>([])
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const [pageNumber, setPageNumber] = useState<number>(1)
+  const [loading, setLoading] = useState<boolean>(false)
+
   const commentsAreaRef = useRef<HTMLDivElement>(null)
   const commentApiService = new CommentsApiService()
 
@@ -49,6 +51,10 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
 
     try {
       const postComment = await commentApiService.create(postId, comment, null)
+
+      await new Promise((resolve) => {
+        setTimeout(resolve, 5000)
+      })
 
       // When a comment is created it does not have replies or reactions
       const componentResponse = PostCommentComponentDtoTranslator
@@ -103,6 +109,10 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
       )
     })
 
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5000)
+    })
+
     setComments([...comments, ...componentDtos])
     const pagesNumber = PaginationHelper.calculatePagesNumber(newComments.postPostCommentsCount, defaultPerPage)
 
@@ -112,7 +122,9 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   }
 
   useEffect(() => {
+    setLoading(true)
     updatePostComments()
+      .then(() => setLoading(false))
   }, [])
 
   const onClickLikeComment = (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => {
@@ -214,20 +226,28 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
               setRepliesOpen(true)
             } }
             onClickLikeComment={ onClickLikeComment }
+            loading={ loading }
           />
           <button className={ `
             ${styles.postComments__loadMore}
             ${canLoadMore ? styles.postComments__loadMore__visible : ''}
           ` }
-            onClick={ () => updatePostComments() }
+            onClick={ async () => {
+              setLoading(true)
+              await updatePostComments()
+              setLoading(false)
+            } }
           >
             { t('comment_section_load_more') }
           </button>
         </div>
 
         <AddCommentInput
+          disabled={ loading }
           onAddComment={ async (comment: string) => {
+            setLoading(true)
             await createComment(comment)
+            setLoading(false)
           } }
         />
       </div>

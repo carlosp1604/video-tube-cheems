@@ -7,12 +7,16 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
+import { Simulate } from 'react-dom/test-utils'
+import load = Simulate.load;
+import toast from 'react-hot-toast'
 
 interface Props {
   onAddComment: (comment: string) => void
+  disabled: boolean
 }
 
-export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
+export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
   const [comment, setComment] = useState<string>('')
   const { t } = useTranslation('post_comments')
 
@@ -68,11 +72,18 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
           placeHolder={ t('add_comment_placeholder') }
           comment={ comment }
           onCommentChange={ (value) => setComment(value) }
+          disabled={ disabled }
         />
         <button className={ styles.addCommentInput__addCommentButton }>
           <BsChatDots
             className={ styles.addCommentInput__addCommentIcon }
             onClick={ () => {
+              if (disabled) {
+                toast.error('No puedes agregar un comentario en este momento')
+
+                return
+              }
+
               onAddComment(comment)
               setComment('')
             } }

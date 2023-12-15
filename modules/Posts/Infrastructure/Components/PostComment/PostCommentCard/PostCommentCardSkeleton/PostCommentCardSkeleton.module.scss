@@ -1,0 +1,62 @@
+.post-comment-card-skeleton {
+  &__container {
+    @apply grid gap-2 border-opacity-50 animate-pulse;
+    grid-template-areas:
+      "user-logo  user-name-date  options"
+      "user-logo  comment         options"
+      "user-logo  interaction     interaction";
+
+    grid-auto-columns: auto 1fr auto;
+    grid-auto-rows: auto auto auto;
+  }
+
+  &__user-logo {
+    @apply h-6 w-6 self-start rounded-full bg-base-700;
+    grid-area: user-logo;
+  }
+
+  &__user-name-date {
+    @apply flex gap-x-1 justify-start
+      items-center self-start;
+    grid-area: user-name-date;
+  }
+
+  &__user-name {
+    @apply h-2.5 w-20 bg-base-700 rounded-lg;
+  }
+
+  &__comment-date {
+    @apply h-2.5 w-16 bg-base-700 rounded-lg;
+  }
+
+  &__separator-icon {
+    @apply text-base-600;
+  }
+
+  &__comment {
+    @apply w-full rounded-lg h-4 bg-base-700;
+
+    @screen md {
+      @apply w-1/2;
+    }
+    grid-area: comment;
+  }
+
+  &__interaction-skeleton {
+    @apply flex flex-row gap-x-4 items-center justify-start mt-2;
+    grid-area: interaction;
+  }
+
+  &__response-button-skeleton {
+    @apply h-3 w-12 bg-base-700 rounded-lg;
+  }
+
+  &__like-button-skeleton {
+    @apply h-3 w-5 bg-base-700 rounded-lg;
+  }
+
+  &__options-skeleton {
+    @apply h-10 w-10 p-3 text-base-600 self-start;
+    grid-area: options;
+  }
+}

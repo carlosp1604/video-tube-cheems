@@ -1,6 +1,10 @@
 .post-comment-list {
   &__container {
     @apply flex flex-col gap-y-4 bg-body;
+
+    &_loading {
+      @apply animate-pulse;
+    }
   }
 
   &__post-comment-container {

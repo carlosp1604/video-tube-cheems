@@ -51,6 +51,7 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
         <Tooltip
           tooltipId={ tooltipId }
           place={ 'top' }
+
         /> }
       { NumberFormatter.compatFormat(reactionsNumber, locale) }
     </div>

@@ -118,17 +118,12 @@ export const PostCommentInteractionSection: FC<Props> = ({
 
   return (
     <div className={ styles.postCommentInteractionSection__container }>
-      <button
-        className={
-          onClickReply
-            ? styles.postCommentInteractionSection__repliesButton
-            : styles.postCommentInteractionSection__repliesButton_noActionable
+      <button className={
+        onClickReply
+          ? styles.postCommentInteractionSection__repliesButton
+          : styles.postCommentInteractionSection__repliesButton_noActionable
         }
-        onClick={ () => {
-          if (onClickReply) {
-            onClickReply(postComment)
-          }
-        } }
+        onClick={ () => { if (onClickReply) { onClickReply(postComment) } } }
       >
         { postComment.repliesNumber > 0
           ? t('comment_replies_button', { replies: NumberFormatter.compatFormat(postComment.repliesNumber, locale) })

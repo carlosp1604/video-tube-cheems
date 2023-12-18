@@ -1,15 +1,11 @@
-import { Dispatch, FC, SetStateAction } from 'react'
+import { FC } from 'react'
 import styles from './PostCommentList.module.scss'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
-import { PostCommentOptions } from '~/modules/Posts/Infrastructure/Components/PostCommentOptions/PostCommentOptions'
-import {
-  PostCommentInteractionSection
-} from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentInteractionSection/PostCommentInteractionSection'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
-import { PostCommentCard } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCard'
-import {
-  PostCommentCardSkeleton
-} from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCardSkeleton/PostCommentCardSkeleton'
+// eslint-disable-next-line max-len
+import { PostCommentCardSkeleton } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCardSkeleton/PostCommentCardSkeleton'
+// eslint-disable-next-line max-len
+import { PostCommentWithOptions } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentWithOptions/PostCommentWithOptions'
 
 interface Props {
   postComments: PostCommentComponentDto[]
@@ -17,7 +13,6 @@ interface Props {
   onClickReply: (comment: PostCommentComponentDto) => void
   onClickLikeComment: (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
   loading: boolean
-  setLoading: Dispatch<SetStateAction<boolean>>
 }
 
 export const PostCommentList: FC<Props> = ({
@@ -26,38 +21,25 @@ export const PostCommentList: FC<Props> = ({
   onClickReply,
   onClickLikeComment,
   loading,
-  setLoading,
 }) => {
   const postCommentSkeleton = Array.from(Array(5).keys())
     .map((index) => <PostCommentCardSkeleton key={ index }/>)
 
-  const postCommentElements = postComments.map((comment) => {
+  const postCommentElements = postComments.map((postComment) => {
     return (
       <div
+        key={ postComment.id }
         className={ styles.postCommentList__postCommentContainer }
-        key={ comment.id }
       >
-        <div className={ styles.postCommentList__commentWithOptions }>
-          <PostCommentCard postComment={ comment } />
-          <PostCommentOptions
-            ownerId={ comment.user.id }
-            onDeleteComment={ () => onDeletePostComment(comment.id) }
-            parentCommentId={ null }
-            postCommentId={ comment.id }
-            postId={ comment.postId }
-            loading={ loading }
-            setLoading={ setLoading }
-          />
-        </div>
-        <PostCommentInteractionSection
-          key={ comment.id }
-          postComment={ comment }
+        <PostCommentWithOptions
+          postComment={ postComment }
+          onDeletePostComment={ onDeletePostComment }
           onClickReply={ onClickReply }
           onClickLikeComment={ onClickLikeComment }
-          loading={ loading }
-          setLoading={ setLoading }
+          optionsDisabled={ loading }
         />
       </div>
+
     )
   })
 

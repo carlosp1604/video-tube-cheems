@@ -7,6 +7,10 @@
 
   &__add-comment-button {
     @apply rounded-full bg-brand-500 text-base-100 transition-colors;
+
+    &:disabled {
+      @apply bg-body;
+    }
   }
 
   &__add-comment-icon {

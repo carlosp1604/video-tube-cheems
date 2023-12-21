@@ -17,6 +17,10 @@
       @apply text-brand-400 transition-colors;
     }
 
+    &:disabled {
+      @apply bg-base-900 text-base-600 transition-colors;
+    }
+
     &_active {
       @apply text-brand-400 bg-base-900 transition-colors;
     }
@@ -26,47 +30,13 @@
     @apply flex flex-row flex-shrink-0 items-center gap-x-2
     rounded-full bg-base-800 py-2 cursor-pointer text-xs px-3
     transition-colors;
-  }
 
-  &__like-icon {
-    @apply text-base outline-none;
-
-    &_active {
-      @apply text-base text-brand-400 transition-colors
-        outline-none border-0;
-
-      &:hover {
-        @apply text-base-100 transition-colors;
-      }
-    }
-
-    &:hover {
-      @apply text-brand-400 transition-colors outline-none border-0;
-    }
-
-    &:focus {
-      @apply outline-none border-0;
+    &_disabled {
+      @apply bg-base-900 transition-colors;
     }
   }
 
-  &__dislike-icon {
-    @apply text-base outline-none;
-
-    &_active {
-      @apply text-base text-base text-red transition-colors
-        outline-none border-0;
-
-      &:hover {
-        @apply text-base-100 transition-colors;
-      }
-    }
-
-    &:hover {
-      @apply text-red transition-colors outline-none border-0;
-    }
-
-    &:focus {
-      @apply outline-none border-0;
-    }
+  &__loading-icon {
+    @apply animate-spin;
   }
 }

@@ -11,7 +11,7 @@ interface Props {
   postComments: PostCommentComponentDto[]
   onDeletePostComment: (postCommentId: string) => void
   onClickReply: (comment: PostCommentComponentDto) => void
-  onClickLikeComment: (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
+  onClickLikeComment: (commentId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
   loading: boolean
 }
 
@@ -23,7 +23,14 @@ export const PostCommentList: FC<Props> = ({
   loading,
 }) => {
   const postCommentSkeleton = Array.from(Array(5).keys())
-    .map((index) => <PostCommentCardSkeleton key={ index }/>)
+    .map((index) => (
+      <div
+        key={ index }
+        className={ styles.postCommentList__postCommentSkeletonContainer }
+      >
+        <PostCommentCardSkeleton key={ index }/>
+      </div>
+    ))
 
   const postCommentElements = postComments.map((postComment) => {
     return (
@@ -37,9 +44,9 @@ export const PostCommentList: FC<Props> = ({
           onClickReply={ onClickReply }
           onClickLikeComment={ onClickLikeComment }
           optionsDisabled={ loading }
+          showOptions={ true }
         />
       </div>
-
     )
   })
 

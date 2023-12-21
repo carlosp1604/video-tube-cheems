@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
+import { RiEye2Line, RiEyeCloseLine } from 'react-icons/ri'
 
 export interface Props {
   onClickSignup: () => void
@@ -19,6 +20,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [invalidPassword, setInvalidPassword] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const { t } = useTranslation('user_login')
 
@@ -83,17 +85,30 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
         } }
       />
 
-      <FormInputSection
-        label={ t('password_input_label') }
-        errorLabel={ t('password_input_error_message') }
-        type={ 'password' }
-        placeholder={ t('password_input_placeholder') }
-        validator={ passwordValidator }
-        onChange={ (value, invalidInput) => {
-          setPassword(value)
-          setInvalidPassword(invalidInput)
-        } }
-      />
+        <div className={ styles.login__passwordSection }>
+          <FormInputSection
+            label={ t('password_input_label') }
+            errorLabel={ t('password_input_error_message') }
+            type={ showPassword ? 'text' : 'password' }
+            placeholder={ t('password_input_placeholder') }
+            validator={ passwordValidator }
+            onChange={ (value, invalidInput) => {
+              setPassword(value)
+              setInvalidPassword(invalidInput)
+            } }
+          />
+          <span
+            className={ styles.login__showHidePasswordButton }
+            onClick={ (event) => {
+              event.preventDefault()
+              setShowPassword(!showPassword)
+            } }
+          >
+            { showPassword
+              ? <RiEyeCloseLine />
+              : <RiEye2Line /> }
+           </span>
+        </div>
 
       <SubmitButton
         title={ t('submit_button_title') }

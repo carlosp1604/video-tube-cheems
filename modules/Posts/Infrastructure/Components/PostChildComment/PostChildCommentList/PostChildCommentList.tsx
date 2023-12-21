@@ -1,23 +1,31 @@
 import { FC } from 'react'
 import styles from './PostChildCommentList.module.scss'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
-import { PostCommentOptions } from '~/modules/Posts/Infrastructure/Components/PostCommentOptions/PostCommentOptions'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
-import { PostCommentCard } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCard'
-import {
-  PostChildCommentCard
-} from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentCard/PostChildCommentCard'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 // eslint-disable-next-line max-len
-import { PostChildCommentInteractionSection } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentInteractionSection/PostChildCommentInteractionSection'
 // eslint-disable-next-line max-len
-import { PostCommentInteractionSection } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentInteractionSection/PostCommentInteractionSection'
+import {
+  PostCommentCardSkeleton
+} from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCardSkeleton/PostCommentCardSkeleton'
+import {
+  PostCommentWithOptions
+} from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentWithOptions/PostCommentWithOptions'
+import {
+  PostChildCommentWithOptions
+} from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentWithOptions/PostChildCommentWithOptions'
 
 interface Props {
   postComment: PostCommentComponentDto
   postChildComments: PostChildCommentComponentDto[]
   onDeletePostChildComment: (postCommentId: string) => void
-  onClickLikeComment: (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
+  onClickLikeComment: (commentId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
+  onClickLikeChildComment: (
+    childCommentId: string,
+    userReaction: ReactionComponentDto | null,
+    reactionsNumber: number
+  ) => void
+  loading:boolean
 }
 
 export const PostChildCommentList: FC<Props> = ({
@@ -25,24 +33,31 @@ export const PostChildCommentList: FC<Props> = ({
   postChildComments,
   onDeletePostChildComment,
   onClickLikeComment,
+  onClickLikeChildComment,
+  loading,
 }) => {
+  const postCommentSkeleton = (
+    Array.from(Array(5).keys()).map((index) => (
+      <div key={ index } className={ styles.postCommentChildList__postChildCommentSkeletonContainer }>
+        <PostCommentCardSkeleton />
+      </div>
+    )
+    )
+  )
+
   const childCommentElements = postChildComments.map((childComment) => {
     return (
-      <div className={ styles.postCommentChildList__postChildCommentContainer } key={ childComment.id }>
-        <div className={ styles.postCommentChildList__commentWithOptions }>
-          <PostChildCommentCard
-            postChildComment={ childComment }
-            key={ childComment.id }
-          />
-          <PostCommentOptions
-            ownerId={ childComment.user.id }
-            postId={ postComment.postId }
-            postCommentId={ childComment.id }
-            parentCommentId={ childComment.parentCommentId }
-            onDeleteComment={ () => onDeletePostChildComment(childComment.id) }
-          />
-        </div>
-        <PostChildCommentInteractionSection postChildComment={ childComment }/>
+      <div
+        key={ childComment.id }
+        className={ styles.postCommentChildList__postChildCommentContainer }
+      >
+        <PostChildCommentWithOptions
+          postId={ postComment.postId }
+          postChildComment={ childComment }
+          onDeletePostComment={ () => onDeletePostChildComment(childComment.id) }
+          onClickLikeComment={ onClickLikeChildComment }
+          optionsDisabled={ false }
+        />
       </div>
     )
   })
@@ -50,18 +65,19 @@ export const PostChildCommentList: FC<Props> = ({
   return (
     <div className={ styles.postCommentChildList__container }>
       <div className={ styles.postCommentChildList__postCommentContainer }>
-        <PostCommentCard
+        <PostCommentWithOptions
           postComment={ postComment }
-        />
-        <PostCommentInteractionSection
-          postComment={ postComment }
-          onClickReply={ undefined }
           onClickLikeComment={ onClickLikeComment }
+          optionsDisabled={ false }
+          onDeletePostComment={ undefined }
+          onClickReply={ undefined }
+          showOptions={ false }
         />
       </div>
 
       <div className={ styles.postCommentChildList__postChildCommentsListContainer }>
         { childCommentElements }
+        { loading && postChildComments.length === 0 ? postCommentSkeleton : null }
       </div>
     </div>
   )

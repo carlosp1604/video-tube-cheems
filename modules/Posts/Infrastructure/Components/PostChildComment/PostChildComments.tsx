@@ -43,6 +43,8 @@ export const PostChildComments: FC<Props> = ({
   const [replies, setReplies] = useState<PostChildCommentComponentDto[]>([])
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+
   const repliesAreaRef = useRef<HTMLDivElement>(null)
 
   const { t } = useTranslation(['post_comments', 'api_exceptions'])
@@ -102,7 +104,12 @@ export const PostChildComments: FC<Props> = ({
   }
 
   const updateReplies = async () => {
+    setLoading(true)
     const newReplies = await fetchReplies()
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5000)
+    })
 
     if (newReplies === null) {
       return
@@ -120,11 +127,29 @@ export const PostChildComments: FC<Props> = ({
 
     setCanLoadMore(pageNumber < pagesNumber)
     setPageNumber(pageNumber + 1)
+    setLoading(false)
   }
 
   useEffect(() => {
     updateReplies()
   }, [])
+
+  const onClickLikeChildComment = (childCommentId: string,
+    userReaction: ReactionComponentDto | null,
+    reactionsNumber: number
+  ) => {
+    const commentIndex = replies.findIndex((currentReply) => currentReply.id === childCommentId)
+
+    if (commentIndex !== -1) {
+      const reply = replies[commentIndex]
+
+      reply.reactionsNumber = reactionsNumber
+      reply.userReaction = userReaction
+
+      replies[commentIndex] = reply
+      setReplies([...replies])
+    }
+  }
 
   return (
     <div
@@ -164,6 +189,8 @@ export const PostChildComments: FC<Props> = ({
               onDeleteReply()
             } }
             onClickLikeComment={ onClickLikeComment }
+            onClickLikeChildComment={ onClickLikeChildComment }
+            loading={ loading }
           />
 
           <button className={ `
@@ -175,9 +202,13 @@ export const PostChildComments: FC<Props> = ({
         </div>
 
         <AddCommentInput
+          disabled={ loading }
           onAddComment={ async (comment: string) => {
+            setLoading(true)
             await createReply(comment)
-          } } />
+            setLoading(false)
+          } }
+        />
       </div>
   </div>
   )

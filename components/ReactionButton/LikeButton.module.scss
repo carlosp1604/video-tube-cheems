@@ -2,18 +2,17 @@
   &__container {
     @apply flex flex-row items-center gap-x-1 text-brand-400 text-sm
     transition-all;
+
+    &_disabled {
+      @apply text-base-600 transition-colors;
+    }
   }
 
-  &__like-icon {
-    @apply text-base-400 text-base outline-none;
+  &__like-button {
+    @apply text-base-400 text-base;
 
     &:hover {
-      @apply text-brand-400 cursor-pointer scale-110 transition-all
-      outline-none;
-    }
-
-    &:focus {
-      @apply outline-none;
+      @apply text-brand-400 transition-all;
     }
 
     &_active {
@@ -23,5 +22,25 @@
         @apply text-base-100 transition-colors;
       }
     }
+
+    &:disabled {
+      @apply text-base-600;
+    }
+  }
+
+  &__like-icon {
+    @apply outline-none;
+
+    &:hover {
+      @apply scale-110 transition-all outline-none;
+    }
+
+    &:focus {
+      @apply outline-none;
+    }
+  }
+
+  &__loading-icon {
+    @apply animate-spin;
   }
 }

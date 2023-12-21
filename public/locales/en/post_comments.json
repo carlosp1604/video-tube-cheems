@@ -1,4 +1,5 @@
 {
+  "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
   "add_comment_button_title": "Add your comment",
   "add_comment_placeholder": "Type your comment",
   "add_comment_section_login_button_title": "Log in",

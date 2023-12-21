@@ -31,6 +31,15 @@
     }
   }
 
+  &__password-section {
+    @apply relative;
+  }
+
+  &__show-hide-password-button {
+    @apply text-base-100 absolute -top-3.5 py-1.5
+      right-0 px-2 bg-brand-400 rounded-lg ;
+  }
+
   &__error {
     @apply text-xs font-light text-red opacity-0 mb-2
     transition duration-300;

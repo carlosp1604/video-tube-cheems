@@ -1,8 +1,6 @@
 import { FC, ReactNode, useState } from 'react'
-import styles from './PostCommentWithOptions.module.scss'
-import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
+import styles from './PostChildCommentWithOptions.module.scss'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
-import { PostCommentCard } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCard'
 import toast from 'react-hot-toast'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
@@ -18,26 +16,27 @@ import { FiTrash } from 'react-icons/fi'
 import {
   ReactionComponentDtoTranslator
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
-import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { useRouter } from 'next/router'
+import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
+import {
+  PostChildCommentCard
+} from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentCard/PostChildCommentCard'
 
 interface Props {
-  postComment: PostCommentComponentDto
-  onDeletePostComment: ((postCommentId: string) => void) | undefined
-  onClickReply: ((comment: PostCommentComponentDto) => void) | undefined
+  postId: string
+  postChildComment: PostChildCommentComponentDto
+  onDeletePostComment: (postCommentId: string) => void
   onClickLikeComment: (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
   optionsDisabled: boolean
-  showOptions: boolean
 }
 
-export const PostCommentWithOptions: FC<Props> = ({
-  postComment,
+export const PostChildCommentWithOptions: FC<Props> = ({
+  postId,
+  postChildComment,
   onDeletePostComment,
-  onClickReply,
   onClickLikeComment,
   optionsDisabled,
-  showOptions,
 }) => {
   const [optionsMenuOpen, setOptionsMenuOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -48,10 +47,6 @@ export const PostCommentWithOptions: FC<Props> = ({
   const { status, data } = useSession()
 
   const onClickDelete = async () => {
-    if (!onDeletePostComment) {
-      return
-    }
-
     if (optionsDisabled || loading) {
       toast.error(t('action_cannot_be_performed_error_message'))
 
@@ -61,8 +56,8 @@ export const PostCommentWithOptions: FC<Props> = ({
     setLoading(true)
 
     try {
-      await new CommentsApiService().delete(postComment.postId, postComment.id, null)
-      onDeletePostComment(postComment.id)
+      await new CommentsApiService().delete(postId, postChildComment.id, postChildComment.parentCommentId)
+      onDeletePostComment(postChildComment.id)
 
       toast.success(t('post_comment_deleted_success_message'))
     } catch (exception: unknown) {
@@ -89,7 +84,7 @@ export const PostCommentWithOptions: FC<Props> = ({
       return
     }
 
-    if (postComment.userReaction !== null) {
+    if (postChildComment.userReaction !== null) {
       toast.error(t('post_comment_reaction_user_already_reacted'))
 
       return
@@ -104,7 +99,8 @@ export const PostCommentWithOptions: FC<Props> = ({
     setLoading(true)
 
     try {
-      const reaction = await new CommentsApiService().createPostCommentReaction(postComment.id)
+      const reaction = await new CommentsApiService()
+        .createPostChildCommentReaction(postChildComment.id, postChildComment.parentCommentId)
 
       await new Promise((resolve) => {
         setTimeout(resolve, 5000)
@@ -112,10 +108,10 @@ export const PostCommentWithOptions: FC<Props> = ({
 
       const reactionComponent = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
 
-      const newCommentReactionsNumber = postComment.reactionsNumber + 1
+      const newCommentReactionsNumber = postChildComment.reactionsNumber + 1
 
       onClickLikeComment(
-        postComment.id,
+        postChildComment.id,
         reactionComponent,
         newCommentReactionsNumber
       )
@@ -145,7 +141,7 @@ export const PostCommentWithOptions: FC<Props> = ({
       return
     }
 
-    if (postComment.userReaction === null) {
+    if (postChildComment.userReaction === null) {
       toast.error(t('post_comment_reaction_user_has_not_reacted'))
 
       return
@@ -160,15 +156,16 @@ export const PostCommentWithOptions: FC<Props> = ({
     setLoading(true)
 
     try {
-      await new CommentsApiService().deletePostCommentReaction(postComment.id)
+      await new CommentsApiService()
+        .deletePostChildCommentReaction(postChildComment.id, postChildComment.parentCommentId)
 
       await new Promise((resolve) => {
         setTimeout(resolve, 5000)
       })
 
-      const newCommentReactionsNumber = postComment.reactionsNumber - 1
+      const newCommentReactionsNumber = postChildComment.reactionsNumber - 1
 
-      onClickLikeComment(postComment.id, null, newCommentReactionsNumber)
+      onClickLikeComment(postChildComment.id, null, newCommentReactionsNumber)
 
       toast.success(t('post_comment_reaction_reaction_removed_successfully'))
     } catch (exception: unknown) {
@@ -190,15 +187,15 @@ export const PostCommentWithOptions: FC<Props> = ({
 
   let postCommentOptionsElement: ReactNode | null = null
 
-  if (status === 'authenticated' && data && postComment.user.id === data.user.id && showOptions) {
+  if (status === 'authenticated' && data && postChildComment.user.id === data.user.id) {
     postCommentOptionsElement = (
       <MenuDropdown
         buttonIcon={
           <button disabled={ optionsDisabled || loading }>
             <BsThreeDotsVertical
               className={ `
-              ${styles.postCommentWithOptions__optionsIcon}
-              ${optionsMenuOpen ? styles.postCommentWithOptions__optionsIcon_open : ''}
+              ${styles.postChildCommentWithOptions__optionsIcon}
+              ${optionsMenuOpen ? styles.postChildCommentWithOptions__optionsIcon_open : ''}
             ` }
               onClick={ () => setOptionsMenuOpen(!optionsMenuOpen) }
             />
@@ -219,33 +216,22 @@ export const PostCommentWithOptions: FC<Props> = ({
   return (
     <>
       <div className={ `
-        ${styles.postCommentWithOptions__commentWithOptionsContainer}
-        ${loading ? styles.postCommentWithOptions__commentWithOptionsContainer_loading : ''}
+        ${styles.postChildCommentWithOptions__commentWithOptionsContainer}
+        ${loading ? styles.postChildCommentWithOptions__commentWithOptionsContainer_loading : ''}
       ` }>
-        <PostCommentCard postComment={ postComment } />
+        <PostChildCommentCard postChildComment={ postChildComment } />
         { postCommentOptionsElement }
       </div>
-      <div className={ styles.postCommentWithOptions__interactionSectionContainer }>
-        <button className={ `
-          ${styles.postCommentWithOptions__repliesButton}
-          ${onClickReply ? styles.postCommentWithOptions__repliesButton_actionable : ''} 
-        ` }
-          onClick={ () => { if (onClickReply) { onClickReply(postComment) } } }
-          disabled={ optionsDisabled || loading }
-        >
-          { postComment.repliesNumber === 0 && onClickReply
-            ? t('comment_reply_button')
-            : t('comment_replies_button', { replies: NumberFormatter.compatFormat(postComment.repliesNumber, locale) })
-          }
-        </button>
+      <div className={ styles.postChildCommentWithOptions__interactionSection }>
         <LikeButton
-          liked={ postComment.userReaction !== null }
+          liked={ postChildComment.userReaction !== null }
           onLike={ async () => { if (!optionsDisabled && !loading) { await onReact() } } }
           onDeleteLike={ async () => { if (!optionsDisabled && !loading) { await onDeleteReaction() } } }
-          reactionsNumber={ postComment.reactionsNumber }
+          reactionsNumber={ postChildComment.reactionsNumber }
           disabled={ optionsDisabled || loading }
         />
       </div>
+
     </>
   )
 }

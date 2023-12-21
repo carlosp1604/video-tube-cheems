@@ -93,6 +93,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   }
 
   const updatePostComments = async () => {
+    setLoading(true)
     const newComments = await fetchPostComments()
 
     if (newComments === null) {
@@ -119,16 +120,20 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
     setCanLoadMore(pageNumber < pagesNumber)
     setPageNumber(pageNumber + 1)
     setCommentsNumber(newComments.postPostCommentsCount)
+
+    setLoading(false)
   }
 
   useEffect(() => {
-    setLoading(true)
     updatePostComments()
-      .then(() => setLoading(false))
   }, [])
 
-  const onClickLikeComment = (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => {
-    const commentIndex = comments.findIndex((currentComment) => currentComment.id === postId)
+  const onClickLikeComment = (
+    commentId: string,
+    userReaction: ReactionComponentDto | null,
+    reactionsNumber: number
+  ) => {
+    const commentIndex = comments.findIndex((currentComment) => currentComment.id === commentId)
 
     if (commentIndex !== -1) {
       const postComment = comments[commentIndex]

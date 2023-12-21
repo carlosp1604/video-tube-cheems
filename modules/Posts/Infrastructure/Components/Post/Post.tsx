@@ -146,6 +146,10 @@ export const Post: FC<Props> = ({
       return
     }
 
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5000)
+    })
+
     if (userReaction !== null && userReaction.reactionType === type) {
       try {
         await postsApiService.deletePostReaction(post.id)
@@ -222,6 +226,10 @@ export const Post: FC<Props> = ({
 
       return
     }
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 5000)
+    })
 
     if (savedPost && data) {
       try {
@@ -322,9 +330,9 @@ export const Post: FC<Props> = ({
         <PostOptions
           userReaction={ userReaction }
           savedPost={ savedPost }
-          onClickReactButton={ (type) => onClickReactButton(type) }
+          onClickReactButton={ async (type) => await onClickReactButton(type) }
           onClickCommentsButton={ onClickCommentsButton }
-          onClickSaveButton={ onClickSavePostButton }
+          onClickSaveButton={ async () => await onClickSavePostButton() }
           likesNumber={ likesNumber }
           mediaUrls={ downloadUrls }
       />

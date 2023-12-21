@@ -1,4 +1,4 @@
-.post-comment-with-options {
+.post-child-comment-with-options {
   &__comment-with-options-container {
     @apply grid items-start;
     grid-template-columns: 1fr auto;
@@ -20,23 +20,7 @@
     }
   }
 
-  &__interaction-section-container {
-    @apply flex flex-row gap-x-4 items-center ml-8 my-2;
-  }
-
-  &__replies-button {
-    @apply text-xs font-medium text-brand-300 cursor-auto
-      transition-colors;
-
-    &_actionable {
-      @apply cursor-pointer;
-      &:hover, &:focus {
-        @apply text-brand-900 transition;
-      }
-
-      &:disabled {
-        @apply text-base-600 transition-colors;
-      }
-    }
+  &__interaction-section {
+    @apply ml-8 my-2;
   }
 }

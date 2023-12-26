@@ -36,15 +36,4 @@ const nextConfig = {
   },
 }
 
-module.exports = {
-  ...nextConfig,
-  async redirects () {
-    return [
-      {
-        source: '/404',
-        destination: '/not-found',
-        permanent: true,
-      },
-    ]
-  },
-}
+module.exports = nextConfig

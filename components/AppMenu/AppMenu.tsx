@@ -115,7 +115,7 @@ export const AppMenu: FC = () => {
       <LoginModal />
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
-          <Link href='/' scroll={ false } shallow={ true }>
+          <Link href='/' scroll={ false }>
             <Image
               alt={ t('app_menu_logo_url_alt') }
               className={ styles.appMenu__logoImage }

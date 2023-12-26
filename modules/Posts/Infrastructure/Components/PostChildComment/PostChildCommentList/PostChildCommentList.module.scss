@@ -1,10 +1,14 @@
 .post-comment-child-list {
   &__container {
-    @apply flex flex-col gap-y-4;
+    @apply flex flex-col gap-y-4 bg-body;
   }
 
   &__post-comment-container {
     @apply sticky bg-base-950 top-0 px-5 py-4 z-comment-to-reply;
+  }
+
+  &__post-child-comment-list-container-loading {
+    @apply animate-pulse;
   }
 
   &__post-child-comment-container {
@@ -19,8 +23,15 @@
     }
   }
 
-  &__comment-with-options {
-    @apply grid items-start z-comment-options;
-    grid-template-columns: 1fr auto;
+  &__post-child-comment-skeleton-container {
+    @apply border-b border-base-800 pl-8 pb-4 px-5 pt-4;
+
+    &:last-of-type {
+      @apply border-0;
+    }
+
+    &:first-of-type {
+      @apply pt-0;
+    }
   }
 }

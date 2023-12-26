@@ -1,4 +1,5 @@
 {
+  "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
   "dislike_reaction_active_title_button": "Remove reaction",
   "dislike_reaction_title_button": "Don't like",
   "like_reaction_active_title_button": "Remove reaction",

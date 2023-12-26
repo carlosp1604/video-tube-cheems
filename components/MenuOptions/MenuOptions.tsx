@@ -20,7 +20,7 @@ interface Props {
 }
 
 export const MenuOptions: FC<Props> = ({ menuOptions }) => {
-  const buildContent = (menuOption: MenuOptionComponentInterface): ReactElement => {
+  const buildOptionContent = (menuOption: MenuOptionComponentInterface): ReactElement => {
     if (menuOption.action) {
       return (
         <div className={ `
@@ -52,7 +52,6 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
        key={ menuOption.title }
        onClick={ menuOption.onClick }
       >
-
         <div className={ styles.menuOptions__menuItemContent }>
           <span className={ styles.menuOptions__menuIcon }>
             { menuOption.picture }
@@ -66,7 +65,7 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
   return (
     <div className={ styles.menuOptions__menuContainer }>
       { menuOptions.map((menuOption) => {
-        return buildContent(menuOption)
+        return buildOptionContent(menuOption)
       }) }
     </div>
   )

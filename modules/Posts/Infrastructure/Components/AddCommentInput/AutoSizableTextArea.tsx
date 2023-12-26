@@ -5,12 +5,14 @@ interface AutoSizableTextAreaProps {
   placeHolder: string
   onCommentChange: (value: string) => void
   comment: string
+  disabled: boolean
 }
 
 export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({
   placeHolder,
   onCommentChange,
   comment,
+  disabled,
 }) => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -39,6 +41,7 @@ export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({
       onChange={ handleOnChange }
       value={ comment }
       ref={ textAreaRef }
+      disabled={ disabled }
     />
   )
 }

@@ -7,12 +7,14 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
+import toast from 'react-hot-toast'
 
 interface Props {
   onAddComment: (comment: string) => void
+  disabled: boolean
 }
 
-export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
+export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
   const [comment, setComment] = useState<string>('')
   const { t } = useTranslation('post_comments')
 
@@ -61,6 +63,17 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
   }
 
   if (status === 'authenticated') {
+    const onClickAddComment = (comment: string) => {
+      if (disabled) {
+        toast.error(t('action_cannot_be_performed_error_message'))
+
+        return
+      }
+
+      onAddComment(comment)
+      setComment('')
+    }
+
     content = (
       <div className={ styles.addCommentInput__addCommentSection }>
         { avatar }
@@ -68,16 +81,15 @@ export const AddCommentInput: FC<Props> = ({ onAddComment }) => {
           placeHolder={ t('add_comment_placeholder') }
           comment={ comment }
           onCommentChange={ (value) => setComment(value) }
+          disabled={ disabled }
         />
-        <button className={ styles.addCommentInput__addCommentButton }>
-          <BsChatDots
-            className={ styles.addCommentInput__addCommentIcon }
-            onClick={ () => {
-              onAddComment(comment)
-              setComment('')
-            } }
-            title={ t('add_comment_button_title') }
-          />
+        <button
+          className={ styles.addCommentInput__addCommentButton }
+          disabled={ disabled }
+          onClick={ () => onClickAddComment(comment) }
+          title={ t('add_comment_button_title') }
+        >
+          <BsChatDots className={ styles.addCommentInput__addCommentIcon }/>
         </button>
       </div>
     )

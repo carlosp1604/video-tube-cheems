@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router'
+import toast from 'react-hot-toast'
+import * as uuid from 'uuid'
 
 export interface Props {
   isOpen: boolean
@@ -16,6 +18,8 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
   const { t } = useTranslation('menu')
 
   const { pathname, query, asPath, locale, push } = useRouter()
+
+  const languageMenuToastId = uuid.v4()
 
   return (
     <Modal
@@ -35,43 +39,52 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
           </span>
         </div>
         <div className={ styles.languageMenu__menuOptionsContainer }>
-          <MenuOptions menuOptions={ [
-            {
-              title: t('language_menu_spanish_option_title'),
-              action: undefined,
-              picture: (
-                <Image
-                  alt={ t('language_menu_spanish_option_title') }
-                  className={ styles.languageMenu__optionImage }
-                  src={ '/img/es-locale.svg' }
-                  width={ 0 }
-                  height={ 0 }
-                  sizes={ '100vw' }
-                />
-              ),
-              isActive: locale === 'es',
-              onClick: async () => {
+          <MenuOptions menuOptions={ [{
+            title: t('language_menu_spanish_option_title'),
+            action: undefined,
+            picture: (
+              <Image
+                alt={ t('language_menu_spanish_option_title') }
+                className={ styles.languageMenu__optionImage }
+                src={ '/img/es-locale.svg' }
+                width={ 0 }
+                height={ 0 }
+                sizes={ '100vw' }
+              />
+            ),
+            isActive: locale === 'es',
+            onClick: async () => {
+              if (locale !== 'es') {
                 await push({ pathname, query }, asPath, { locale: 'es' })
-              },
+                toast.remove(languageMenuToastId)
+              } else {
+                toast.error(t('language_menu_already_on_language_error_message'), { id: languageMenuToastId })
+              }
             },
-            {
-              title: t('language_menu_english_option_title'),
-              action: undefined,
-              picture: (
-                <Image
-                  alt={ t('language_menu_english_option_title') }
-                  className={ styles.languageMenu__optionImage }
-                  src={ '/img/en-locale.svg' }
-                  width={ 0 }
-                  height={ 0 }
-                  sizes={ '100vw' }
-                />
-              ),
-              isActive: locale === 'en',
-              onClick: async () => {
+          },
+          {
+            title: t('language_menu_english_option_title'),
+            action: undefined,
+            picture: (
+              <Image
+                alt={ t('language_menu_english_option_title') }
+                className={ styles.languageMenu__optionImage }
+                src={ '/img/en-locale.svg' }
+                width={ 0 }
+                height={ 0 }
+                sizes={ '100vw' }
+              />
+            ),
+            isActive: locale === 'en',
+            onClick: async () => {
+              if (locale !== 'en') {
                 await push({ pathname, query }, asPath, { locale: 'en' })
-              },
+                toast.remove(languageMenuToastId)
+              } else {
+                toast.error(t('language_menu_already_on_language_error_message'), { id: languageMenuToastId })
+              }
             },
+          },
           ] } />
         </div>
       </div>

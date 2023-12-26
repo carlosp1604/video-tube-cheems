@@ -3,7 +3,6 @@ import styles from './VideoPostPlayer.module.scss'
 import { BsFileEarmarkBreak, BsThreeDotsVertical } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import * as uuid from 'uuid'
-import { Tooltip } from 'react-tooltip'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
@@ -14,6 +13,7 @@ import {
 import {
   VideoPostPlayerHelper
 } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoPostPlayerHelper'
+import { Tooltip } from '~/components/Tooltip/Tooltip'
 
 export interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -25,6 +25,8 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [videoReady, setVideoReady] = useState<boolean>(false)
   const [showVideoOptions, setShowVideoOptions] = useState<boolean>(false)
+  const [mounted, setMounted] = useState<boolean>(false)
+  const [tooltipId, setTooltipId] = useState<string>('')
 
   const selectedMediaUrl = useMemo(
     () => VideoPostPlayerHelper.getFirstMediaUrl(mediaUrls),
@@ -37,13 +39,15 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
 
   const { t } = useTranslation('post')
 
-  const tooltipUuid = uuid.v4()
   const iframeRef = createRef<HTMLIFrameElement>()
 
   useEffect(() => {
     if (iframeRef.current && selectedUrl) {
       iframeRef.current.src = selectedUrl.url
     }
+
+    setMounted(true)
+    setTooltipId(uuid.v4())
   }, [])
 
   if (mediaUrls.length === 0) {
@@ -68,7 +72,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
          ` }
         onClick={ () => setMenuOpen(!menuOpen) }
         title={ t('post_video_player_selector_button_title') }
-        data-tooltip-id={ tooltipUuid }
+        data-tooltip-id={ tooltipId }
         data-tooltip-content={ t('post_video_player_selector_button_title') }
       >
         <BsThreeDotsVertical className={ styles.videoPostPlayer__optionIcon }/>
@@ -93,9 +97,8 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
 
     sourceSelectorButtonToolTip = (
       <Tooltip
-        id={ tooltipUuid }
-        place={ 'top' }
-        positionStrategy={ 'fixed' }
+        tooltipId={ tooltipId }
+        place={ 'left' }
       />
     )
   }
@@ -152,7 +155,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
       { !videoReady ? <VideoLoadingState /> : null }
       { playerElement }
       { sourceSelectorButton }
-      { sourceSelectorButtonToolTip }
+      { mounted && sourceSelectorButtonToolTip }
     </div>
   )
 }

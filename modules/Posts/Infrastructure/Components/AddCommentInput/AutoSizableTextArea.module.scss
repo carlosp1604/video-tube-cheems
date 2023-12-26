@@ -6,5 +6,9 @@
     &:active, &:focus, &:hover {
       @apply outline-none border-base-700;
     }
+
+    &:disabled {
+      @apply bg-body text-base-700 placeholder-base-700;
+    }
   }
 }

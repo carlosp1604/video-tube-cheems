@@ -96,7 +96,7 @@ export const Post: FC<Props> = ({
 
             setSavedPost(jsonResponse.savedPost)
 
-            if (jsonResponse === null) {
+            if (jsonResponse.userReaction === null) {
               setUserReaction(null)
 
               return
@@ -322,9 +322,9 @@ export const Post: FC<Props> = ({
         <PostOptions
           userReaction={ userReaction }
           savedPost={ savedPost }
-          onClickReactButton={ (type) => onClickReactButton(type) }
+          onClickReactButton={ async (type) => await onClickReactButton(type) }
           onClickCommentsButton={ onClickCommentsButton }
-          onClickSaveButton={ onClickSavePostButton }
+          onClickSaveButton={ async () => await onClickSavePostButton() }
           likesNumber={ likesNumber }
           mediaUrls={ downloadUrls }
       />

@@ -1,6 +1,7 @@
 .post-card-gallery-header {
   &__container {
-    @apply flex flex-grow justify-between items-center gap-x-4 mb-4;
+    @apply flex flex-grow justify-between items-center gap-x-4 mb-4
+      cursor-default;
   }
 
   &__title {

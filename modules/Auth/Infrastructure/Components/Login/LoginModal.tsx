@@ -58,6 +58,8 @@ export const LoginModal: FC = () => {
         onCancel={ () => setMode('login') }
       />
     )
+
+    onClose = () => setMode('login')
   }
 
   return (

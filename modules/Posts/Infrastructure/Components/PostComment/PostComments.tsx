@@ -1,4 +1,4 @@
-import { Dispatch, FC, SetStateAction, useEffect, useRef, useState } from 'react'
+import { Dispatch, FC, ReactElement, SetStateAction, useEffect, useRef, useState } from 'react'
 import styles from './PostComments.module.scss'
 import { BsX } from 'react-icons/bs'
 import { useRouter } from 'next/router'
@@ -32,6 +32,9 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   const [comments, setComments] = useState<PostCommentComponentDto[]>([])
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const [pageNumber, setPageNumber] = useState<number>(1)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [creatingComment, setCreatingComment] = useState<boolean>(false)
+
   const commentsAreaRef = useRef<HTMLDivElement>(null)
   const commentApiService = new CommentsApiService()
 
@@ -47,6 +50,8 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
       return
     }
 
+    commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
     try {
       const postComment = await commentApiService.create(postId, comment, null)
 
@@ -56,8 +61,6 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
 
       setComments([componentResponse, ...comments])
       setCommentsNumber(commentsNumber + 1)
-
-      commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
       toast.success(t('post_comment_added_success_message'))
     } catch (exception: unknown) {
@@ -87,6 +90,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   }
 
   const updatePostComments = async () => {
+    setLoading(true)
     const newComments = await fetchPostComments()
 
     if (newComments === null) {
@@ -109,14 +113,20 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
     setCanLoadMore(pageNumber < pagesNumber)
     setPageNumber(pageNumber + 1)
     setCommentsNumber(newComments.postPostCommentsCount)
+
+    setLoading(false)
   }
 
   useEffect(() => {
     updatePostComments()
   }, [])
 
-  const onClickLikeComment = (postId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => {
-    const commentIndex = comments.findIndex((currentComment) => currentComment.id === postId)
+  const onClickLikeComment = (
+    commentId: string,
+    userReaction: ReactionComponentDto | null,
+    reactionsNumber: number
+  ) => {
+    const commentIndex = comments.findIndex((currentComment) => currentComment.id === commentId)
 
     if (commentIndex !== -1) {
       const postComment = comments[commentIndex]
@@ -132,105 +142,135 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   let replies = null
 
   if (repliesOpen && commentToReply !== null) {
+    const onCloseChildComments = () => {
+      setCommentToReply(null)
+      setRepliesOpen(false)
+      setIsOpen(false)
+    }
+
+    const onRetry = () => {
+      setCommentToReply(null)
+      setRepliesOpen(false)
+    }
+
+    const onAddReply = (repliesNumber: number | null) => {
+      const commentIndex = comments.indexOf(commentToReply)
+
+      if (commentIndex !== -1) {
+        const commentToUpdate = comments[commentIndex]
+
+        if (repliesNumber === null) {
+          commentToUpdate.repliesNumber = commentToUpdate.repliesNumber + 1
+        } else {
+          commentToUpdate.repliesNumber = repliesNumber
+        }
+        comments[commentIndex] = commentToUpdate
+        setComments(comments)
+      }
+    }
+
+    const onDeleteReply = () => {
+      const commentIndex = comments.indexOf(commentToReply)
+
+      if (commentIndex !== -1) {
+        const commentToUpdate = comments[commentIndex]
+
+        commentToUpdate.repliesNumber = commentToUpdate.repliesNumber - 1
+        comments[commentIndex] = commentToUpdate
+        setComments(comments)
+      }
+    }
+
     replies = (
       <PostChildComments
-        onClickClose={ () => {
-          setCommentToReply(null)
-          setRepliesOpen(false)
-          setIsOpen(false)
-        } }
-        onClickRetry={ () => {
-          setCommentToReply(null)
-          setRepliesOpen(false)
-        } }
-        onAddReply={ (repliesNumber) => {
-          const commentIndex = comments.indexOf(commentToReply)
-
-          if (commentIndex !== -1) {
-            const commentToUpdate = comments[commentIndex]
-
-            if (repliesNumber === null) {
-              commentToUpdate.repliesNumber = commentToUpdate.repliesNumber + 1
-            } else {
-              commentToUpdate.repliesNumber = repliesNumber
-            }
-            comments[commentIndex] = commentToUpdate
-            setComments(comments)
-          }
-        } }
-        onDeleteReply={ () => {
-          const commentIndex = comments.indexOf(commentToReply)
-
-          if (commentIndex !== -1) {
-            const commentToUpdate = comments[commentIndex]
-
-            commentToUpdate.repliesNumber = commentToUpdate.repliesNumber - 1
-            comments[commentIndex] = commentToUpdate
-            setComments(comments)
-          }
-        } }
+        onClickClose={ onCloseChildComments }
+        onClickRetry={ onRetry }
+        onAddReply={ onAddReply }
+        onDeleteReply={ onDeleteReply }
         commentToReply={ commentToReply }
         onClickLikeComment={ onClickLikeComment }
       />
     )
   }
 
+  const onDeletePostComment = (postCommentId: string) => {
+    setComments(comments.filter((comment) => comment.id !== postCommentId))
+    setCommentsNumber(commentsNumber - 1)
+  }
+
+  const onClickReply = (comment: PostCommentComponentDto) => {
+    setCommentToReply(comment)
+    setRepliesOpen(true)
+  }
+
+  const onLoadMore = async () => {
+    setLoading(true)
+    await updatePostComments()
+    setLoading(false)
+  }
+
+  const onAddReply = async (comment: string) => {
+    setLoading(true)
+    setCreatingComment(true)
+    await createComment(comment)
+    setCreatingComment(false)
+    setLoading(false)
+  }
+
+  const postCommentsContent: ReactElement = (
+    <div
+      className={ styles.postComments__container }
+      onClick={ (event) => event.stopPropagation() }
+    >
+      <div className={ styles.postComments__commentsTitleBar }>
+        <div className={ styles.postComments__commentsTitle }>
+          { t('comment_section_title') }
+          <span className={ styles.postComments__commentsQuantity }>
+            { commentsNumber }
+          </span>
+        </div>
+        <BsX
+          className={ styles.postComments__commentsCloseIcon }
+          onClick={ () => setIsOpen(false) }
+          title={ t('close_comment_section_button_title') }
+        />
+      </div>
+      <div
+        className={ styles.postComments__comments }
+        ref={ commentsAreaRef }
+      >
+        <PostCommentList
+          onDeletePostComment={ onDeletePostComment }
+          postComments={ comments }
+          onClickReply={ onClickReply }
+          onClickLikeComment={ onClickLikeComment }
+          loading={ loading }
+          creatingComment={ creatingComment }
+        />
+        <button className={ `
+          ${styles.postComments__loadMore}
+          ${canLoadMore ? styles.postComments__loadMore__visible : ''}
+        ` }
+          onClick={ onLoadMore }
+          title={ t('comment_section_load_more') }
+        >
+          { t('comment_section_load_more') }
+        </button>
+      </div>
+
+      <AddCommentInput
+        disabled={ loading }
+        onAddComment={ onAddReply }
+      />
+    </div>
+  )
+
   return (
     <div
       className={ styles.postComments__backdrop }
       onClick={ () => setIsOpen(false) }
     >
-      { replies }
-      <div
-        className={ styles.postComments__container }
-        onClick={ (event) => event.stopPropagation() }
-      >
-        <div className={ styles.postComments__commentsTitleBar }>
-          <div className={ styles.postComments__commentsTitle }>
-            { t('comment_section_title') }
-            <span className={ styles.postComments__commentsQuantity }>
-              { commentsNumber }
-            </span>
-          </div>
-
-          <BsX
-            className={ styles.postComments__commentsCloseIcon }
-            onClick={ () => setIsOpen(false) }
-            title={ t('close_comment_section_button') }
-          />
-        </div>
-        <div
-          className={ styles.postComments__comments }
-          ref={ commentsAreaRef }
-        >
-          <PostCommentList
-            onDeletePostComment={ (postCommentId: string) => {
-              setComments(comments.filter((comment) => comment.id !== postCommentId))
-              setCommentsNumber(commentsNumber - 1)
-            } }
-            postComments={ comments }
-            onClickReply={ (comment: PostCommentComponentDto) => {
-              setCommentToReply(comment)
-              setRepliesOpen(true)
-            } }
-            onClickLikeComment={ onClickLikeComment }
-          />
-          <button className={ `
-            ${styles.postComments__loadMore}
-            ${canLoadMore ? styles.postComments__loadMore__visible : ''}
-          ` }
-            onClick={ () => updatePostComments() }
-          >
-            { t('comment_section_load_more') }
-          </button>
-        </div>
-
-        <AddCommentInput
-          onAddComment={ async (comment: string) => {
-            await createComment(comment)
-          } }
-        />
-      </div>
+      { repliesOpen ? replies : postCommentsContent }
     </div>
   )
 }

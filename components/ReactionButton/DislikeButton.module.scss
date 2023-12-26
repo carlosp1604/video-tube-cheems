@@ -1,26 +1,46 @@
 .dislike-button {
   &__container {
     @apply flex flex-row items-center gap-x-1 text-brand-400 text-sm
-    transition-all;
+      transition-all;
+
+    &_disabled {
+      @apply text-base-600 transition-colors;
+    }
   }
 
-  &__dislike-icon {
-    @apply text-base-400 text-base outline-none;
+  &__dislike-button {
+    @apply text-base-400 text-base;
 
     &:hover {
-      @apply text-red transition-colors outline-none border-0;
-    }
-
-    &:focus {
-      @apply outline-none;
+      @apply text-red transition-all;
     }
 
     &_active {
-      @apply text-base text-red transition-colors outline-none;
+      @apply text-red transition-colors outline-none;
 
       &:hover {
         @apply text-base-100 transition-colors;
       }
     }
+
+    &:disabled {
+      @apply text-base-600;
+    }
+  }
+
+  &__dislike-icon {
+    @apply outline-none;
+
+    &:hover {
+      @apply scale-110 transition-all outline-none;
+    }
+
+    &:focus {
+      @apply outline-none;
+    }
+  }
+
+  &__loading-icon {
+    @apply animate-spin;
   }
 }

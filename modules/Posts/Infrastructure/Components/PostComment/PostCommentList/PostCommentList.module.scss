@@ -1,6 +1,10 @@
 .post-comment-list {
   &__container {
     @apply flex flex-col gap-y-4 bg-body;
+
+    &_loading {
+      @apply animate-pulse;
+    }
   }
 
   &__post-comment-container {
@@ -11,38 +15,11 @@
     }
   }
 
-  &__comment-with-options {
-    @apply grid items-start;
-    grid-template-columns: 1fr auto;
-  }
+  &__post-comment-skeleton-container {
+    @apply border-b border-base-800 pb-2;
 
-  &__comment-interaction-section {
-    @apply flex flex-row gap-x-4 items-center ml-8 my-2;
-  }
-
-  &__replies-button {
-    @apply text-xs font-medium text-brand-300 cursor-pointer
-    transition;
-
-    &:hover, &:focus {
-      @apply text-brand-900 transition;
-    }
-  }
-
-  &__like-section {
-    @apply flex flex-row items-center gap-x-1 text-brand-400 text-sm
-      transition-all;
-  }
-
-  &__like-icon {
-    @apply text-base-500 text-base;
-
-    &:hover {
-      @apply text-base-100 cursor-pointer scale-110 transition-all;
-    }
-
-    &_active {
-      @apply text-brand-400 transition-colors;
+    &:last-of-type {
+      @apply border-0;
     }
   }
 }

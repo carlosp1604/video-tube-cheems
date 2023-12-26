@@ -43,6 +43,9 @@ export const PostChildComments: FC<Props> = ({
   const [replies, setReplies] = useState<PostChildCommentComponentDto[]>([])
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [creatingChildComment, setCreatingChildComment] = useState<boolean>(false)
+
   const repliesAreaRef = useRef<HTMLDivElement>(null)
 
   const { t } = useTranslation(['post_comments', 'api_exceptions'])
@@ -57,6 +60,8 @@ export const PostChildComments: FC<Props> = ({
       return
     }
 
+    repliesAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
     try {
       const postChildComment =
         await new CommentsApiService().createReply(commentToReply.postId, comment, commentToReply.id)
@@ -66,8 +71,6 @@ export const PostChildComments: FC<Props> = ({
 
       setReplies([componentResponse, ...replies])
       onAddReply(null)
-
-      repliesAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
       toast.success(t('post_child_comment_added_success_message'))
     } catch (exception: unknown) {
@@ -102,6 +105,7 @@ export const PostChildComments: FC<Props> = ({
   }
 
   const updateReplies = async () => {
+    setLoading(true)
     const newReplies = await fetchReplies()
 
     if (newReplies === null) {
@@ -120,65 +124,102 @@ export const PostChildComments: FC<Props> = ({
 
     setCanLoadMore(pageNumber < pagesNumber)
     setPageNumber(pageNumber + 1)
+    setLoading(false)
   }
 
   useEffect(() => {
     updateReplies()
   }, [])
 
+  const onClickLikeChildComment = (
+    childCommentId: string,
+    userReaction: ReactionComponentDto | null,
+    reactionsNumber: number
+  ) => {
+    const commentIndex = replies.findIndex((currentReply) => currentReply.id === childCommentId)
+
+    if (commentIndex !== -1) {
+      const reply = replies[commentIndex]
+
+      reply.reactionsNumber = reactionsNumber
+      reply.userReaction = userReaction
+
+      replies[commentIndex] = reply
+      setReplies([...replies])
+    }
+  }
+
+  const onDeletePostChildComment = (postCommentId: string) => {
+    setReplies(replies.filter((childComment) => childComment.id !== postCommentId))
+    onDeleteReply()
+  }
+
+  const onAddComment = async (comment: string) => {
+    setLoading(true)
+    setCreatingChildComment(true)
+    await createReply(comment)
+    setCreatingChildComment(false)
+    setLoading(false)
+  }
+
+  const onLoadMore = async () => {
+    setLoading(true)
+    await updateReplies()
+    setLoading(false)
+  }
+
   return (
     <div
-      className={ styles.postChildComments__backdrop }
-      onClick={ onClickClose }
+      className={ styles.postChildComments__container }
+      onClick={ (event) => event.stopPropagation() }
     >
-      <div
-        className={ styles.postChildComments__container }
-        onClick={ (event) => event.stopPropagation() }
-      >
-        <div className={ styles.postChildComments__titleBar }>
-          <div className={ styles.postChildComments__title }>
-            <BsArrowLeftShort
-              className={ styles.postChildComments__titleBarIcon }
-              onClick={ onClickRetry }
-            />
-            { t('replies_section_title') }
-            <span className={ styles.postChildComments__commentsQuantity }>
-              { commentToReply.repliesNumber }
-            </span>
-          </div>
-
-          <BsX
+      <div className={ styles.postChildComments__titleBar }>
+        <div className={ styles.postChildComments__title }>
+          <BsArrowLeftShort
             className={ styles.postChildComments__titleBarIcon }
-            onClick={ onClickClose }
+            onClick={ onClickRetry }
+            title={ t('back_to_comments_section_button_title') }
           />
+          { t('replies_section_title') }
+          <span className={ styles.postChildComments__commentsQuantity }>
+            { commentToReply.repliesNumber }
+          </span>
         </div>
-        <div
-          className={ styles.postChildComments__postChildComments }
-          ref={ repliesAreaRef }
-        >
-          <PostChildCommentList
-            postComment={ commentToReply }
-            postChildComments={ replies }
-            onDeletePostChildComment={ (postCommentId: string) => {
-              setReplies(replies.filter((childComment) => childComment.id !== postCommentId))
-              onDeleteReply()
-            } }
-            onClickLikeComment={ onClickLikeComment }
-          />
-
-          <button className={ `
-            ${styles.postChildComments__loadMore}
-            ${canLoadMore ? styles.postChildComments__loadMore__open : ''}
-          ` }>
-            { t('replies_section_load_more') }
-          </button>
-        </div>
-
-        <AddCommentInput
-          onAddComment={ async (comment: string) => {
-            await createReply(comment)
-          } } />
+        <BsX
+          className={ styles.postChildComments__titleBarIcon }
+          onClick={ onClickClose }
+          title={ t('close_comment_section_button_title') }
+        />
       </div>
-  </div>
+      <div
+        className={ styles.postChildComments__postChildComments }
+        ref={ repliesAreaRef }
+      >
+        <PostChildCommentList
+          postComment={ commentToReply }
+          postChildComments={ replies }
+          onDeletePostChildComment={ onDeletePostChildComment }
+          onClickLikeComment={ onClickLikeComment }
+          onClickLikeChildComment={ onClickLikeChildComment }
+          loading={ loading }
+          creatingChildComment={ creatingChildComment }
+        />
+
+        <button className={ `
+          ${styles.postChildComments__loadMore}
+          ${canLoadMore ? styles.postChildComments__loadMore__visible : ''}
+        ` }
+          onClick={ onLoadMore }
+          title={ t('replies_section_load_more') }
+        >
+          { t('replies_section_load_more') }
+        </button>
+      </div>
+
+      <AddCommentInput
+        disabled={ loading }
+        onAddComment={ onAddComment }
+      />
+    </div>
   )
 }

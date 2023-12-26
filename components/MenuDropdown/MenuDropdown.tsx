@@ -27,7 +27,7 @@ export const MenuDropdown: FC<Props> = ({ title, buttonIcon, isOpen, setIsOpen, 
         ${styles.menuDropdown__dropdownContainer}
         ${isOpen ? styles.menuDropdown__dropdownContainer_open : ''}
       ` }
-         onMouseLeave={ () => setIsOpen(false) }
+        onMouseLeave={ () => setIsOpen(false) }
       >
         { options.map((option) => {
           return (

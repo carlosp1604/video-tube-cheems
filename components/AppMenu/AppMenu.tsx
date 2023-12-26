@@ -15,10 +15,11 @@ import { CiUser } from 'react-icons/ci'
 import toast from 'react-hot-toast'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
+import Image from 'next/image'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
-  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
+  const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
   const { blocked } = useUsingRouterContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
 
@@ -95,12 +96,12 @@ export const AppMenu: FC = () => {
 
     if (
       !search ||
-        (search && search !== title)
+        (search && search !== title.trim())
     ) {
       await router.push({
         pathname: '/posts/search/',
         query: {
-          search: title,
+          search: title.trim(),
         },
       }, undefined, { shallow: true, scroll: false })
     } else {
@@ -114,11 +115,14 @@ export const AppMenu: FC = () => {
       <LoginModal />
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
-          <Link href='/' scroll={ false } shallow={ true }>
-            <img
-              className={ styles.appMenu__logoImage }
-              src='/img/cheems-logo.png'
+          <Link href='/' scroll={ false }>
+            <Image
               alt={ t('app_menu_logo_url_alt') }
+              className={ styles.appMenu__logoImage }
+              src={ '/img/cheems-logo-text.png' }
+              width={ 0 }
+              height={ 0 }
+              sizes={ '100vw' }
             />
           </Link>
 

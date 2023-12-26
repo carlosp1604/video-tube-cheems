@@ -24,7 +24,7 @@ export class BcryptCryptoService implements CryptoServiceInterface {
   }
 
   public randomString (): string {
-    const allowedCharacters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const allowedCharacters = '0123456789'
     const defaultLength = 8
     let result = ''
 

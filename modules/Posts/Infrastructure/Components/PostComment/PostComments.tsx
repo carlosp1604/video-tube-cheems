@@ -50,6 +50,8 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
       return
     }
 
+    commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
     try {
       const postComment = await commentApiService.create(postId, comment, null)
 
@@ -59,8 +61,6 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
 
       setComments([componentResponse, ...comments])
       setCommentsNumber(commentsNumber + 1)
-
-      commentsAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
       toast.success(t('post_comment_added_success_message'))
     } catch (exception: unknown) {

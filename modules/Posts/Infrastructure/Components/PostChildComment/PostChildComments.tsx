@@ -60,6 +60,8 @@ export const PostChildComments: FC<Props> = ({
       return
     }
 
+    repliesAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
     try {
       const postChildComment =
         await new CommentsApiService().createReply(commentToReply.postId, comment, commentToReply.id)
@@ -69,8 +71,6 @@ export const PostChildComments: FC<Props> = ({
 
       setReplies([componentResponse, ...replies])
       onAddReply(null)
-
-      repliesAreaRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
       toast.success(t('post_child_comment_added_success_message'))
     } catch (exception: unknown) {

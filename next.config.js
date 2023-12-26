@@ -45,11 +45,6 @@ module.exports = {
         destination: '/not-found',
         permanent: true,
       },
-      {
-        source: '/500',
-        destination: '/server-error',
-        permanent: true,
-      },
     ]
   },
 }

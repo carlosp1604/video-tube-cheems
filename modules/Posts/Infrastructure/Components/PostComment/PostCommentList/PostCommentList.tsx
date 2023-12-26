@@ -13,6 +13,7 @@ interface Props {
   onClickReply: (comment: PostCommentComponentDto) => void
   onClickLikeComment: (commentId: string, userReaction: ReactionComponentDto | null, reactionsNumber: number) => void
   loading: boolean
+  creatingComment: boolean
 }
 
 export const PostCommentList: FC<Props> = ({
@@ -21,14 +22,12 @@ export const PostCommentList: FC<Props> = ({
   onClickReply,
   onClickLikeComment,
   loading,
+  creatingComment,
 }) => {
   const postCommentSkeleton = Array.from(Array(5).keys())
     .map((index) => (
-      <div
-        key={ index }
-        className={ styles.postCommentList__postCommentSkeletonContainer }
-      >
-        <PostCommentCardSkeleton key={ index }/>
+      <div key={ index } className={ styles.postCommentList__postCommentSkeletonContainer }>
+        <PostCommentCardSkeleton />
       </div>
     ))
 
@@ -55,6 +54,12 @@ export const PostCommentList: FC<Props> = ({
       ${styles.postCommentList__container}
       ${loading ? styles.postCommentList__container_loading : ''}
     ` } >
+      { creatingComment
+        ? <div className={ styles.postCommentList__postCommentSkeletonContainer }>
+          <PostCommentCardSkeleton/>
+        </div>
+        : null
+      }
       { postCommentElements }
       { loading && postComments.length === 0 ? postCommentSkeleton : null }
     </div>

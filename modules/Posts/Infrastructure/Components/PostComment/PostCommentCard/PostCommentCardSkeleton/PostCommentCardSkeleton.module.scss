@@ -17,7 +17,7 @@
 
   &__user-name-date {
     @apply flex gap-x-1 justify-start
-      items-center self-start;
+      items-center self-start flex-wrap;
     grid-area: user-name-date;
   }
 

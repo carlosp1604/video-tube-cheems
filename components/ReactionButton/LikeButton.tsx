@@ -88,7 +88,7 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
         { iconElement }
       </button>
 
-      { mounted &&
+      { mounted && !disabled && !loading &&
         <Tooltip
           tooltipId={ tooltipId }
           place={ 'top' }

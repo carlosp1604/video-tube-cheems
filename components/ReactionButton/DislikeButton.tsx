@@ -81,7 +81,7 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike,
       >
         { iconElement }
       </button>
-      { mounted &&
+      { mounted && !disabled && !loading &&
         <Tooltip
           tooltipId={ tooltipId }
           place={ 'bottom' }

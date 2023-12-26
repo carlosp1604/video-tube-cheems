@@ -1,10 +1,14 @@
 .post-comment-child-list {
   &__container {
-    @apply flex flex-col gap-y-4;
+    @apply flex flex-col gap-y-4 bg-body;
   }
 
   &__post-comment-container {
     @apply sticky bg-base-950 top-0 px-5 py-4 z-comment-to-reply;
+  }
+
+  &__post-child-comment-list-container-loading {
+    @apply animate-pulse;
   }
 
   &__post-child-comment-container {

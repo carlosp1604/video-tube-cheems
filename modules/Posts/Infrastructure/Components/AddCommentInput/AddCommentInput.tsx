@@ -63,6 +63,17 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
   }
 
   if (status === 'authenticated') {
+    const onClickAddComment = (comment: string) => {
+      if (disabled) {
+        toast.error(t('action_cannot_be_performed_error_message'))
+
+        return
+      }
+
+      onAddComment(comment)
+      setComment('')
+    }
+
     content = (
       <div className={ styles.addCommentInput__addCommentSection }>
         { avatar }
@@ -75,21 +86,10 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
         <button
           className={ styles.addCommentInput__addCommentButton }
           disabled={ disabled }
-          onClick={ () => {
-            if (disabled) {
-              toast.error('No puedes agregar un comentario en este momento')
-
-              return
-            }
-
-            onAddComment(comment)
-            setComment('')
-          } }
+          onClick={ () => onClickAddComment(comment) }
+          title={ t('add_comment_button_title') }
         >
-          <BsChatDots
-            className={ styles.addCommentInput__addCommentIcon }
-            title={ t('add_comment_button_title') }
-          />
+          <BsChatDots className={ styles.addCommentInput__addCommentIcon }/>
         </button>
       </div>
     )

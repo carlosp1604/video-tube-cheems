@@ -87,7 +87,8 @@
   }
 
   &__actors-item-link {
-    @apply flex items-center rounded-lg p-1 font-normal;
+    @apply flex items-center rounded-lg p-1 font-normal
+    line-clamp-2 overflow-hidden;
 
     &:hover, &:focus {
       @apply bg-base-800;

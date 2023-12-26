@@ -10,8 +10,8 @@ export const Tooltip: FC<Partial<Props> & Pick<Props, 'tooltipId'>> = ({ tooltip
   return (
     <ReactTooltip
       id={ tooltipId }
-      className={ `bg-brand-400 text-base-50 text-base
-        rounded-xl py-1.5 px-2.5` }
+      className={ `bg-brand-400 text-base-50 font-light text-base
+        rounded-md py-1.5 px-2.5` }
       opacity={ 1 }
       place={ place }
     />

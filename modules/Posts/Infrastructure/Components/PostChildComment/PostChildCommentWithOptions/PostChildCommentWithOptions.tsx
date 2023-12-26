@@ -17,7 +17,6 @@ import {
   ReactionComponentDtoTranslator
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
-import { useRouter } from 'next/router'
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
 import {
   PostChildCommentCard
@@ -40,8 +39,6 @@ export const PostChildCommentWithOptions: FC<Props> = ({
 }) => {
   const [optionsMenuOpen, setOptionsMenuOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-
-  const locale = useRouter().locale ?? 'en'
 
   const { t } = useTranslation(['post_comments', 'api_exceptions'])
   const { status, data } = useSession()
@@ -102,10 +99,6 @@ export const PostChildCommentWithOptions: FC<Props> = ({
       const reaction = await new CommentsApiService()
         .createPostChildCommentReaction(postChildComment.id, postChildComment.parentCommentId)
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, 5000)
-      })
-
       const reactionComponent = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
 
       const newCommentReactionsNumber = postChildComment.reactionsNumber + 1
@@ -159,10 +152,6 @@ export const PostChildCommentWithOptions: FC<Props> = ({
       await new CommentsApiService()
         .deletePostChildCommentReaction(postChildComment.id, postChildComment.parentCommentId)
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, 5000)
-      })
-
       const newCommentReactionsNumber = postChildComment.reactionsNumber - 1
 
       onClickLikeComment(postChildComment.id, null, newCommentReactionsNumber)
@@ -191,21 +180,21 @@ export const PostChildCommentWithOptions: FC<Props> = ({
     postCommentOptionsElement = (
       <MenuDropdown
         buttonIcon={
-          <button disabled={ optionsDisabled || loading }>
-            <BsThreeDotsVertical
-              className={ `
-              ${styles.postChildCommentWithOptions__optionsIcon}
-              ${optionsMenuOpen ? styles.postChildCommentWithOptions__optionsIcon_open : ''}
-            ` }
-              onClick={ () => setOptionsMenuOpen(!optionsMenuOpen) }
-            />
+          <button className={ `
+            ${styles.postChildCommentWithOptions__optionsButton}
+            ${optionsMenuOpen ? styles.postChildCommentWithOptions__optionsButton_open : ''}
+          ` }
+            disabled={ optionsDisabled || loading }
+            onClick={ () => setOptionsMenuOpen(!optionsMenuOpen) }
+          >
+            <BsThreeDotsVertical className={ styles.postChildCommentWithOptions__optionsIcon }/>
           </button>
         }
         isOpen={ optionsMenuOpen }
         setIsOpen={ setOptionsMenuOpen }
         options={ [{
           title: t('delete_comment_option_title'),
-          icon: <FiTrash />,
+          icon: <FiTrash/>,
           onClick: async () => { await onClickDelete() },
         }] }
         title={ t('post_comment_menu_options_title') }
@@ -231,7 +220,6 @@ export const PostChildCommentWithOptions: FC<Props> = ({
           disabled={ optionsDisabled || loading }
         />
       </div>
-
     </>
   )
 }

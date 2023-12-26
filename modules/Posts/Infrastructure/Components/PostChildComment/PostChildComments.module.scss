@@ -1,12 +1,4 @@
 .post-child-comments {
-  &__backdrop {
-    @apply fixed inset-0 bg-transparent z-comment-replies;
-
-    @screen md {
-      @apply absolute;
-    }
-  }
-
   &__container {
     @apply flex flex-col fixed bottom-0 overflow-hidden bg-body transition
       rounded-t-lg w-full h-2/3 border-t border-base-800;
@@ -42,7 +34,7 @@
   }
 
   &__load-more {
-    @apply hidden text-center bg-base-700 mt-2 py-1 px-4 font-bold text-xs
+    @apply hidden text-center bg-base-700 mt-2 mb-4 py-1 px-4 font-bold text-xs
     uppercase rounded-lg transition-colors mx-auto;
 
     &:hover, &:focus {

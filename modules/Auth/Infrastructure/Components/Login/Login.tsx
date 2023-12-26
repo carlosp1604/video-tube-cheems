@@ -103,6 +103,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
               event.preventDefault()
               setShowPassword(!showPassword)
             } }
+            title={ showPassword ? t('hide_password_button_title') : t('show_password_button_title') }
           >
             { showPassword
               ? <RiEyeCloseLine />

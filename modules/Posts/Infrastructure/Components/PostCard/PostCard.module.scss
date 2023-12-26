@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply relative overflow-hidden;
+    @apply relative overflow-hidden cursor-default;
   }
 
   &__video-container {

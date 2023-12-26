@@ -106,10 +106,6 @@ export const PostCommentWithOptions: FC<Props> = ({
     try {
       const reaction = await new CommentsApiService().createPostCommentReaction(postComment.id)
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, 5000)
-      })
-
       const reactionComponent = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
 
       const newCommentReactionsNumber = postComment.reactionsNumber + 1
@@ -162,10 +158,6 @@ export const PostCommentWithOptions: FC<Props> = ({
     try {
       await new CommentsApiService().deletePostCommentReaction(postComment.id)
 
-      await new Promise((resolve) => {
-        setTimeout(resolve, 5000)
-      })
-
       const newCommentReactionsNumber = postComment.reactionsNumber - 1
 
       onClickLikeComment(postComment.id, null, newCommentReactionsNumber)
@@ -194,14 +186,14 @@ export const PostCommentWithOptions: FC<Props> = ({
     postCommentOptionsElement = (
       <MenuDropdown
         buttonIcon={
-          <button disabled={ optionsDisabled || loading }>
-            <BsThreeDotsVertical
-              className={ `
-              ${styles.postCommentWithOptions__optionsIcon}
-              ${optionsMenuOpen ? styles.postCommentWithOptions__optionsIcon_open : ''}
-            ` }
-              onClick={ () => setOptionsMenuOpen(!optionsMenuOpen) }
-            />
+          <button className={ `
+            ${styles.postCommentWithOptions__optionsButton}
+            ${optionsMenuOpen ? styles.postCommentWithOptions__optionsButton_open : ''}
+          ` }
+            disabled={ optionsDisabled || loading }
+            onClick={ () => setOptionsMenuOpen(!optionsMenuOpen) }
+          >
+            <BsThreeDotsVertical className={ styles.postCommentWithOptions__optionsIcon }/>
           </button>
         }
         isOpen={ optionsMenuOpen }

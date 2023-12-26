@@ -117,7 +117,7 @@ export const AppMenu: FC = () => {
           <Link href='/' scroll={ false } shallow={ true }>
             <img
               className={ styles.appMenu__logoImage }
-              src='/img/cheems-logo.png'
+              src='/img/cheems-logo-text.png'
               alt={ t('app_menu_logo_url_alt') }
             />
           </Link>

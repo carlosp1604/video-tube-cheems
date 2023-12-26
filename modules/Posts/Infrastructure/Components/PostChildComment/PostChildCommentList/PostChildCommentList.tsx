@@ -4,16 +4,11 @@ import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/Pos
 import { PostChildCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostChildCommentComponentDto'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 // eslint-disable-next-line max-len
+import { PostCommentCardSkeleton } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCardSkeleton/PostCommentCardSkeleton'
 // eslint-disable-next-line max-len
-import {
-  PostCommentCardSkeleton
-} from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCardSkeleton/PostCommentCardSkeleton'
-import {
-  PostCommentWithOptions
-} from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentWithOptions/PostCommentWithOptions'
-import {
-  PostChildCommentWithOptions
-} from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentWithOptions/PostChildCommentWithOptions'
+import { PostCommentWithOptions } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentWithOptions/PostCommentWithOptions'
+// eslint-disable-next-line max-len
+import { PostChildCommentWithOptions } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildCommentWithOptions/PostChildCommentWithOptions'
 
 interface Props {
   postComment: PostCommentComponentDto
@@ -26,6 +21,7 @@ interface Props {
     reactionsNumber: number
   ) => void
   loading:boolean
+  creatingChildComment: boolean
 }
 
 export const PostChildCommentList: FC<Props> = ({
@@ -35,14 +31,19 @@ export const PostChildCommentList: FC<Props> = ({
   onClickLikeComment,
   onClickLikeChildComment,
   loading,
+  creatingChildComment,
 }) => {
-  const postCommentSkeleton = (
-    Array.from(Array(5).keys()).map((index) => (
+  let postChildCommentSkeletonNumber = 10
+
+  if (postComment.repliesNumber > 0 && postComment.repliesNumber < 10) {
+    postChildCommentSkeletonNumber = postComment.repliesNumber
+  }
+  const postChildCommentSkeleton = (
+    Array.from(Array(postChildCommentSkeletonNumber).keys()).map((index) => (
       <div key={ index } className={ styles.postCommentChildList__postChildCommentSkeletonContainer }>
         <PostCommentCardSkeleton />
       </div>
-    )
-    )
+    ))
   )
 
   const childCommentElements = postChildComments.map((childComment) => {
@@ -56,7 +57,7 @@ export const PostChildCommentList: FC<Props> = ({
           postChildComment={ childComment }
           onDeletePostComment={ () => onDeletePostChildComment(childComment.id) }
           onClickLikeComment={ onClickLikeChildComment }
-          optionsDisabled={ false }
+          optionsDisabled={ loading }
         />
       </div>
     )
@@ -68,16 +69,22 @@ export const PostChildCommentList: FC<Props> = ({
         <PostCommentWithOptions
           postComment={ postComment }
           onClickLikeComment={ onClickLikeComment }
-          optionsDisabled={ false }
+          optionsDisabled={ loading }
           onDeletePostComment={ undefined }
           onClickReply={ undefined }
           showOptions={ false }
         />
       </div>
 
-      <div className={ styles.postCommentChildList__postChildCommentsListContainer }>
+      <div className={ loading ? styles.postCommentChildList__postChildCommentListContainerLoading : '' }>
+        { creatingChildComment
+          ? <div className={ styles.postCommentChildList__postChildCommentSkeletonContainer }>
+              <PostCommentCardSkeleton/>
+            </div>
+          : null
+        }
         { childCommentElements }
-        { loading && postChildComments.length === 0 ? postCommentSkeleton : null }
+        { loading && !creatingChildComment && postChildComments.length === 0 ? postChildCommentSkeleton : null }
       </div>
     </div>
   )

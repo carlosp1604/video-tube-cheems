@@ -4,11 +4,10 @@ import {
   PostComponentDtoActorDto, PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { useTranslation } from 'next-i18next'
-import Image from 'next/image'
 import Link from 'next/link'
-import Avatar from 'react-avatar'
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs'
 import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 export interface Props {
   postActors: PostComponentDtoActorDto[]
@@ -35,28 +34,17 @@ export const PostExtraData: FC<Props> = ({
         { t('post_extra_data_actors_title') }
         <div className={ styles.postExtraData__actorsContainer }>
           { postActors.map((actor) => {
-            let avatarSection: ReactElement
-
-            if (actor.imageUrl !== null) {
-              avatarSection = (
-                <Image
-                  className={ styles.postExtraData__actorLogo }
-                  src={ actor.imageUrl }
-                  alt={ actor.name }
-                  width={ 0 }
-                  height={ 0 }
-                  sizes={ '100vw' }
-                />
-              )
-            } else {
-              avatarSection = (
-                <Avatar
-                  round={ true }
-                  size={ '40' }
-                  name={ actor.name }
-                />
-              )
-            }
+            const avatarSection: ReactElement = (
+              <AvatarImage
+                imageUrl={ actor.imageUrl }
+                avatarClassName={ styles.postExtraData__actorLogo }
+                imageClassName={ styles.postExtraData__actorLogo }
+                avatarName={ actor.name }
+                size={ '32' }
+                round={ true }
+                imageAlt={ actor.name }
+              />
+            )
 
             return (
               <Link

@@ -4,7 +4,7 @@
   }
 
   &__dropdown-container {
-    @apply absolute right-0 mt-2 rounded-md bg-base-900 text-left
+    @apply absolute right-0 rounded-md bg-base-900 text-left
       transition-all overflow-hidden hidden w-48 border border-base-800;
 
     &_open {

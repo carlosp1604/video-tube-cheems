@@ -37,7 +37,11 @@
 
   &__show-hide-password-button {
     @apply text-base-100 absolute -top-3.5 py-1.5
-      right-0 px-2 bg-brand-400 rounded-lg ;
+      right-0 px-2 bg-brand-400 rounded-lg transition-colors;
+
+    &:hover, &:focus {
+      @apply bg-brand-800 transition-colors cursor-pointer;
+    }
   }
 
   &__error {

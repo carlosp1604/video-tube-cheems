@@ -18,6 +18,7 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
   const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       onSearch()
+      event.currentTarget.blur()
     }
   }
 

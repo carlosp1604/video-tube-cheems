@@ -18,6 +18,7 @@ import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableMod
 import { Roboto } from '@next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
 import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
+import 'react-tooltip/dist/react-tooltip.css'
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {

@@ -40,7 +40,12 @@
       right-0 px-2 bg-brand-400 rounded-lg transition-colors;
 
     &:hover, &:focus {
-      @apply bg-brand-800 transition-colors cursor-pointer;
+      @apply bg-brand-800 transition-colors
+        cursor-pointer text-base-400;
+    }
+
+    &:active {
+      @apply text-base-50 transition-colors;
     }
   }
 

@@ -10,6 +10,7 @@ interface Props {
   pagesNumber: number
   onPageNumberChange: (pageNumber: number) => void
   onePageStateTitle: string
+  disabled: boolean
 }
 
 export const PaginationBar: FC<Partial<Props>
@@ -19,16 +20,17 @@ export const PaginationBar: FC<Partial<Props>
     pageNumber,
     onPageNumberChange,
     onePageStateTitle,
+    disabled = false,
   }) => {
     const { t } = useTranslation('pagination_bar')
 
     if (availablePages.length === 1) {
-      if (onePageStateTitle) {
+      if (onePageStateTitle && !disabled) {
         return (
           <span className={ styles.paginationBar__noPaginatedState }>
-          <TbNumber1 className={ styles.paginationBar__noPaginatedStateIcon }/>
+            <TbNumber1 className={ styles.paginationBar__noPaginatedStateIcon }/>
             { onePageStateTitle }
-        </span>
+          </span>
         )
       }
 
@@ -36,17 +38,17 @@ export const PaginationBar: FC<Partial<Props>
     }
 
     const errorState: ReactElement = (
-    <div className={ styles.paginationBar__errorState }>
-      <BsXCircle className={ styles.paginationBar__errorIcon }/>
-      { t('error_state_description') }
-      <button
-        className={ styles.paginationBar__errorButton }
-        onClick={ () => onPageNumberChange(1) }
-        title={ t('error_state_button_title') }
-      >
-        { t('error_state_button_title') }
-      </button>
-    </div>
+      <div className={ styles.paginationBar__errorState }>
+        <BsXCircle className={ styles.paginationBar__errorIcon }/>
+        { t('error_state_description') }
+        <button
+          className={ styles.paginationBar__errorButton }
+          onClick={ () => onPageNumberChange(1) }
+          title={ t('error_state_button_title') }
+        >
+          { t('error_state_button_title') }
+        </button>
+      </div>
     )
 
     const handleChange = (newPageNumber: number) => {
@@ -56,15 +58,15 @@ export const PaginationBar: FC<Partial<Props>
     }
 
     return (
-      pageNumber > pagesNumber
+      pageNumber > pagesNumber && !disabled
         ? errorState
         : <div className={ styles.paginationBar__container }>
         <button
           className={ `
           ${styles.paginationBar__stepPageButton}
-          ${pageNumber === 1 ? styles.paginationBar__leftPageButtonHide : ''}
+          ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
         ` }
-          disabled={ pageNumber === 1 }
+          disabled={ disabled || pageNumber === 1 }
           onClick={ () => handleChange(1) }
           title={ t('first_page_button_title') }
         >
@@ -73,9 +75,9 @@ export const PaginationBar: FC<Partial<Props>
         <button
           className={ `
           ${styles.paginationBar__stepPageButton}
-          ${pageNumber === 1 ? styles.paginationBar__leftPageButtonHide : ''}
+          ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
         ` }
-          disabled={ pageNumber === 1 }
+          disabled={ disabled || pageNumber === 1 }
           onClick={ () => handleChange(pageNumber - 1) }
           title={ t('previous_page_button_title') }
         >
@@ -89,6 +91,7 @@ export const PaginationBar: FC<Partial<Props>
               ${pageNumber === page ? styles.paginationBar__pageNumberButton__active : ''}
             ` }
               key={ page }
+              disabled={ disabled }
               onClick={ () => handleChange(page) }
               title={ t('n_page_button_title', { pageNumber: page }) }
             >
@@ -99,9 +102,9 @@ export const PaginationBar: FC<Partial<Props>
         <button
           className={ `
           ${styles.paginationBar__stepPageButton}
-          ${pageNumber === pagesNumber ? styles.paginationBar__rightPageButtonHide : ''}
+          ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
         ` }
-          disabled={ pageNumber === pagesNumber }
+          disabled={ disabled || pageNumber === pagesNumber }
           onClick={ () => handleChange(pageNumber + 1) }
           title={ t('next_page_button_title') }
         >
@@ -110,9 +113,9 @@ export const PaginationBar: FC<Partial<Props>
         <button
           className={ `
           ${styles.paginationBar__stepPageButton}
-          ${pageNumber === pagesNumber ? styles.paginationBar__rightPageButtonHide : ''}
+          ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
         ` }
-          disabled={ pageNumber === pagesNumber }
+          disabled={ disabled || pageNumber === pagesNumber }
           onClick={ () => handleChange(pagesNumber) }
           title={ t('last_page_button_title') }
         >

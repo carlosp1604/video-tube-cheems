@@ -24,6 +24,10 @@
     &:hover {
       @apply text-base-100 bg-base-900 transition-colors;
     }
+
+    &:disabled {
+      @apply bg-body text-base-600 transition-colors;
+    }
   }
 
   &__step-page-button {
@@ -31,6 +35,10 @@
 
     &:hover {
       @apply bg-brand-600 transition;
+    }
+
+    &:disabled {
+      @apply bg-body text-base-400;
     }
 
     @screen md {

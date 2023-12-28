@@ -17,7 +17,9 @@ import {
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import { PostWithRelationsAndViewsApplicationDto } from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
+import {
+  PostWithRelationsAndViewsApplicationDto
+} from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 
 export class PostsApiService {
   public async getPosts (

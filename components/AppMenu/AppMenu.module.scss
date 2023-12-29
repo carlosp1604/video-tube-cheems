@@ -14,10 +14,14 @@
   }
 
   &__logo-image {
-    @apply h-10 w-auto transition;
+    @apply h-5 w-auto transition-all;
+
+    @screen md {
+      @apply h-10 transition-all;
+    }
 
     &:hover {
-      @apply invert transition;
+      @apply invert transition-all;
     }
   }
 

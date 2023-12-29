@@ -102,10 +102,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   ) => {
     const componentOrder = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order)
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 5000)
-    })
-
     try {
       const newPosts = await fetchPosts(page, componentOrder.criteria, componentOrder.option, title)
 

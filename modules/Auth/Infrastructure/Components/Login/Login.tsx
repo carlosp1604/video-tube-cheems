@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
-import { RiEye2Line, RiEyeCloseLine } from 'react-icons/ri'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 export interface Props {
   onClickSignup: () => void
@@ -106,8 +106,8 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
             title={ showPassword ? t('hide_password_button_title') : t('show_password_button_title') }
           >
             { showPassword
-              ? <RiEyeCloseLine />
-              : <RiEye2Line /> }
+              ? <FaEyeSlash />
+              : <FaEye /> }
            </span>
         </div>
 

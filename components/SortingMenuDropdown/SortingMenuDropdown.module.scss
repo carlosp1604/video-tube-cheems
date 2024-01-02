@@ -49,7 +49,7 @@
     }
 
     &_active {
-      @apply bg-brand-400 text-base-100 font-bold;
+      @apply bg-brand-400 text-base-100 font-bold pointer-events-none;
 
       &:hover {
         @apply bg-brand-400 text-base-100;

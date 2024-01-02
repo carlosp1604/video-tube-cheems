@@ -10,17 +10,22 @@ interface Props {
   activeOption: PostsPaginationSortingType
   sortingOptions: PostsPaginationSortingType[]
   loading: boolean
+  scrollOnClick: boolean
+  shallowNavigation: boolean
 }
 
-export const PostCardGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading'>> = ({
-  title,
-  subtitle,
-  showSortingOptions,
-  activeOption,
-  sortingOptions,
-  loading = false,
-}) => {
-  return (
+export const PostCardGalleryHeader: FC<Partial<Props> &
+  Omit<Props, 'loading' | 'scrollOnClick' | 'shallowNavigation'>> = ({
+    title,
+    subtitle,
+    showSortingOptions,
+    activeOption,
+    sortingOptions,
+    loading = false,
+    shallowNavigation = false,
+    scrollOnClick = true,
+  }) => {
+    return (
     <div className={ styles.postCardGalleryHeader__container }>
       <h1 className={ styles.postCardGalleryHeader__title }>
         { title }
@@ -37,7 +42,9 @@ export const PostCardGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading'>> 
         options={ sortingOptions }
         loading={ loading }
         visible={ showSortingOptions }
+        shallowNavigation={ shallowNavigation }
+        scrollOnClick={ scrollOnClick }
       />
     </div>
-  )
-}
+    )
+  }

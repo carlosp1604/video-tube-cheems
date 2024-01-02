@@ -311,7 +311,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({
           showSortingOptions={ postsNumber > defaultPerPage }
           activeOption={ paginationState.order }
           sortingOptions={ sortingOptions }
-          onChangeOption={ onChangeOption }
+          shallowNavigation={ true }
         />
         { content }
       </div>

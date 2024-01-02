@@ -159,42 +159,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       })
   }, [query])
 
-  const onChangeOption = async (newOrder: PostsPaginationSortingType) => {
-    /** When change sorting option we move to page 1 **/
-    const newQuery = PostsPaginationQueryParams.buildQuery(
-      String(configuration.page.defaultValue),
-      String(configuration.page.defaultValue),
-      newOrder,
-      configuration.sortingOptionType.defaultValue,
-      []
-    )
-
-    await router.push({
-      query: {
-        ...newQuery,
-        search: paginationState.searchTerm,
-      },
-    }, undefined, { shallow: true, scroll: true })
-  }
-
-  const onPageChange = async (newPage: number) => {
-    /** When change sorting option we move to page 1 **/
-    const newQuery = PostsPaginationQueryParams.buildQuery(
-      String(newPage),
-      String(configuration.page.defaultValue),
-      paginationState.order,
-      configuration.sortingOptionType.defaultValue,
-      []
-    )
-
-    await router.push({
-      query: {
-        ...newQuery,
-        search: paginationState.searchTerm,
-      },
-    }, undefined, { shallow: true, scroll: true })
-  }
-
   const titleElement = (
     <span className={ styles.searchPage__searchTermTitle }>
       <Trans
@@ -217,7 +181,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
           PostsPaginationSortingType.OLDEST,
           PostsPaginationSortingType.MOST_VIEWED,
         ] }
-        onChangeOption={ onChangeOption }
         loading={ loading }
       />
 
@@ -237,7 +200,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
         : <PaginationBar
           availablePages={ PaginationHelper.getShowablePages(
             paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
-          onPageNumberChange={ onPageChange }
           pageNumber={ paginationState.page }
           pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
           onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }

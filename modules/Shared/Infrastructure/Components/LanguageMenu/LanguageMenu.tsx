@@ -55,7 +55,7 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
             isActive: locale === 'es',
             onClick: async () => {
               if (locale !== 'es') {
-                await push({ pathname, query }, asPath, { locale: 'es' })
+                await push({ pathname, query }, asPath, { locale: 'es', scroll: false })
                 toast.remove(languageMenuToastId)
               } else {
                 toast.error(t('language_menu_already_on_language_error_message'), { id: languageMenuToastId })
@@ -78,7 +78,7 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
             isActive: locale === 'en',
             onClick: async () => {
               if (locale !== 'en') {
-                await push({ pathname, query }, asPath, { locale: 'en' })
+                await push({ pathname, query }, asPath, { locale: 'en', scroll: false })
                 toast.remove(languageMenuToastId)
               } else {
                 toast.error(t('language_menu_already_on_language_error_message'), { id: languageMenuToastId })

@@ -14,8 +14,6 @@ import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructur
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
-import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
-import { ParsedUrlQuery } from 'querystring'
 
 export interface Props {
   page: number
@@ -36,46 +34,8 @@ export const HomePage: NextPage<Props> = ({
 }) => {
   const { t } = useTranslation(['home_page'])
   const router = useRouter()
-  const { asPath, pathname } = router
+  const { asPath } = router
   const locale = router.locale ?? 'en'
-
-  const updateQuery = async (
-    page: number,
-    sortingOption: PostsPaginationSortingType,
-    producer: ProducerComponentDto | null
-  ) => {
-    const newQuery: ParsedUrlQuery = {}
-
-    if (producer && producer.slug !== allPostsProducerDto.slug) {
-      newQuery.producerSlug = producer.slug
-    }
-
-    if (sortingOption !== PostsPaginationSortingType.LATEST) {
-      newQuery.order = sortingOption
-    }
-
-    if (page !== 1) {
-      newQuery.page = String(page)
-    }
-
-    await router.push({
-      pathname,
-      query: { ...newQuery },
-    }, undefined, { shallow: false, scroll: true })
-  }
-
-  /** Component functions **/
-  const onChangeOption = async (newOption: PostsPaginationSortingType) => {
-    await updateQuery(1, newOption, activeProducer)
-  }
-
-  const onChangeProducer = async (producer: ProducerComponentDto) => {
-    await updateQuery(1, order, producer)
-  }
-
-  const onChangePageNumber = async (pageNumber: number) => {
-    await updateQuery(pageNumber, order, activeProducer)
-  }
 
   let galleryTitle: string
 
@@ -90,7 +50,6 @@ export const HomePage: NextPage<Props> = ({
     <div className={ styles.home__container }>
       <ProducerList
         producers={ producers }
-        onChangeProducer={ onChangeProducer }
         activeProducer={ activeProducer }
       />
 
@@ -105,7 +64,6 @@ export const HomePage: NextPage<Props> = ({
           PostsPaginationSortingType.OLDEST,
           PostsPaginationSortingType.MOST_VIEWED,
         ] }
-        onChangeOption={ onChangeOption }
       />
 
       { postsNumber > 0
@@ -122,9 +80,9 @@ export const HomePage: NextPage<Props> = ({
       <PaginationBar
         availablePages={ PaginationHelper.getShowablePages(
           page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
-        onPageNumberChange={ onChangePageNumber }
         pageNumber={ page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        shallowNavigation={ false }
       />
     </div>
   )

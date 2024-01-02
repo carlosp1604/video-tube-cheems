@@ -57,24 +57,31 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
       onMouseOver={ () => setShowScrollButtons(true) }
       onMouseLeave={ () => setShowScrollButtons(false) }
     >
-      <BsChevronLeft
+      <button
         className={ `
+          ${styles.carousel__scrollButton}
           ${styles.carousel__leftScrollButton}
-          ${scrollX === 0 ? styles.carousel__leftScrollButton__hidden : ''}        
-          ${showScrollButtons && scrollX !== 0 ? styles.carousel__leftScrollButton__active : ''}
+          ${scrollX === 0 ? styles.carousel__leftScrollButton_hidden : ''}        
+          ${showScrollButtons && scrollX !== 0 ? styles.carousel__scrollButton_active : ''}
         ` }
         onClick={ () => handleScrollXLeftClick() }
         title={ t('carousel_left_button_title') ?? '' }
-      />
-      <BsChevronRight
+      >
+        <BsChevronLeft className={ styles.carousel__carouselIcon }/>
+      </button>
+      <button
         className={ `
+          ${styles.carousel__scrollButton}
           ${styles.carousel__rightScrollButton}
-          ${scrollXBottom ? styles.carousel__rightScrollButton__hidden : ''}        
-          ${showScrollButtons && !scrollXBottom ? styles.carousel__rightScrollButton__active : ''}
+          ${scrollXBottom ? styles.carousel__rightScrollButton_hidden : ''}        
+          ${showScrollButtons && !scrollXBottom ? styles.carousel__scrollButton_active : ''}
         ` }
         onClick={ () => handleScrollXRightClick() }
         title={ t('carousel_right_button_title') ?? '' }
-      />
+      >
+        <BsChevronRight className={ styles.carousel__carouselIcon }/>
+      </button>
+
       <div
         className={ styles.carousel__slider }
         ref={ scrollElement }
@@ -89,8 +96,7 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
           return (
             <div
               key={ child.key }
-              className={ `
-                ${itemsAutoWidth ? styles.carousel__sliderItemAuto : styles.carousel__sliderItem}` }>
+              className={ itemsAutoWidth ? `${styles.carousel__sliderItem_auto}` : `${styles.carousel__sliderItem}` }>
               { child.component }
             </div>
           )

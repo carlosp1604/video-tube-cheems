@@ -9,6 +9,6 @@
   "result_posts_empty_state_subtitle": "We couldn't find any results for term: {{searchTerm}}. Try other search terms",
   "result_posts_empty_state_title": "No results found",
   "save_post_post_card_gallery_action_title": "Save",
-  "search_result_title": "Results for {{searchTerm}}",
+  "search_result_title": "Results for <0>{{searchTerm}}</0>",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action"
 }

@@ -4,8 +4,9 @@
   }
 
   &__dropdown-container {
-    @apply absolute right-0 rounded-md bg-base-900 text-left
-      transition-all overflow-hidden hidden w-48 border border-base-800;
+    @apply absolute rounded-md bg-base-900 text-left -mt-1
+      transition-all overflow-hidden hidden w-48 border
+      border-base-800 right-0;
 
     &_open {
       @apply block transition-all;

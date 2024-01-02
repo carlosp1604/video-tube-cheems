@@ -31,6 +31,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   const selectedMediaUrl = useMemo(
     () => VideoPostPlayerHelper.getFirstMediaUrl(mediaUrls),
     [embedPostMedia, videoPostMedia])
+
   const [selectedUrl, setSelectedUrl] = useState<MediaUrlComponentDto | null>(selectedMediaUrl)
 
   const selectableUrls = useMemo(
@@ -42,10 +43,6 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   const iframeRef = createRef<HTMLIFrameElement>()
 
   useEffect(() => {
-    if (iframeRef.current && selectedUrl) {
-      iframeRef.current.src = selectedUrl.url
-    }
-
     setMounted(true)
     setTooltipId(uuid.v4())
   }, [])
@@ -79,17 +76,19 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
       </button>
     )
 
+    const onClickOption = (mediaUrl: MediaUrlComponentDto) => {
+      if (selectedUrl !== mediaUrl) {
+        setVideoReady(false)
+        setSelectedUrl(mediaUrl)
+      }
+      setMenuOpen(!menuOpen)
+    }
+
     sourcesMenu = (
       <VideoSourcesMenu
         mediaUrls={ selectableUrls }
         selectedUrl={ selectedUrl }
-        onClickOption={ (mediaUrl) => {
-          if (selectedUrl !== mediaUrl) {
-            setVideoReady(false)
-            setSelectedUrl(mediaUrl)
-          }
-          setMenuOpen(!menuOpen)
-        } }
+        onClickOption={ onClickOption }
         menuOpen={ menuOpen }
         onClickMenu={ () => setMenuOpen(!menuOpen) }
       />
@@ -123,6 +122,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   ) {
     playerElement = (
       <iframe
+        key={ selectedUrl.url }
         className={ styles.videoPostPlayer__iframe }
         ref={ iframeRef }
         src={ selectedUrl.url }

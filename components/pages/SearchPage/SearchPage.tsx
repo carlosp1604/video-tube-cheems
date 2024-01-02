@@ -127,6 +127,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       return
     }
 
+    console.log(query)
+
     const queryParams = new PostsPaginationQueryParams(query, configuration)
 
     let currentTitle = paginationState.searchTerm
@@ -172,7 +174,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
         ...newQuery,
         search: paginationState.searchTerm,
       },
-    }, undefined, { shallow: true, scroll: false })
+    }, undefined, { shallow: true, scroll: true })
   }
 
   const onPageChange = async (newPage: number) => {
@@ -190,7 +192,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
         ...newQuery,
         search: paginationState.searchTerm,
       },
-    }, undefined, { shallow: true, scroll: false })
+    }, undefined, { shallow: true, scroll: true })
   }
 
   const titleElement = (
@@ -230,14 +232,18 @@ export const SearchPage: NextPage<SearchPageProps> = ({
           loading={ loading }
         />
       }
-      <PaginationBar
-        availablePages={ PaginationHelper.getShowablePages(
-          paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
-        onPageNumberChange={ onPageChange }
-        pageNumber={ paginationState.page }
-        pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
-      />
+      { firstRender
+        ? null
+        : <PaginationBar
+          availablePages={ PaginationHelper.getShowablePages(
+            paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
+          onPageNumberChange={ onPageChange }
+          pageNumber={ paginationState.page }
+          pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+          onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
+          disabled={ loading }
+        />
+      }
     </div>
   )
 }

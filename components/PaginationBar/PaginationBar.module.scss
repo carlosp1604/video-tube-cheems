@@ -1,45 +1,51 @@
 .pagination-bar {
   &__container {
-    @apply flex flex-row mx-auto items-center justify-center gap-x-1 pb-10
-      border-t pt-2 mx-0 border-base-800;
+    @apply pb-10 border-t pt-2 mx-0 border-base-800;
+  }
+
+  &__list-container {
+    @apply flex flex-row h-full w-full
+      gap-x-2 items-center justify-center;
 
     @screen md {
-      @apply gap-x-4;
+      @apply gap-x-2.5;
     }
   }
 
-  &__page-number-button {
-    @apply p-1 px-2.5 rounded-md border-2 border-transparent transition
-      text-base-600 text-sm transition-colors;
-
-    @screen md {
-      @apply p-1.5 px-3 text-base;
-    }
-
-    &_active {
-      @apply border-brand-400 transition-colors duration-500 font-black
-        text-base-100 bg-base-900 pointer-events-none;
-    }
+  &__page-number-item {
+    @apply h-full rounded-md border-2
+       text-sm transition-colors border-transparent;
+    list-style-type: none;
 
     &:hover {
-      @apply text-base-100 bg-base-900 transition-colors;
+      @apply bg-base-900 transition-colors border-brand-400;
     }
 
-    &_disabled {
-      @apply pointer-events-none;
+    &_current-page {
+      @apply border-brand-400 transition-colors duration-500
+        bg-base-900;
     }
   }
 
-  &__step-page-button {
-    @apply p-2 bg-base-900 rounded-lg opacity-100 transition;
+  &__page-number-link {
+    @apply flex items-center justify-center p-1.5 px-3
+      h-full w-full text-base-600 text-sm transition;
 
     &:hover {
-      @apply bg-brand-600 transition;
+      @apply text-base-100 transition-colors;
     }
 
-    &:disabled {
-      @apply bg-body text-base-400;
+    @screen md {
+      @apply p-2 px-3.5 text-lg;
     }
+
+    &_current-page {
+      @apply text-base-100 pointer-events-none font-black;
+    }
+  }
+
+  &__step-icon {
+    @apply text-base-100;
 
     @screen md {
       @apply text-xl;
@@ -47,11 +53,11 @@
   }
 
   &__right-page-button-hide {
-    @apply opacity-0 translate-x-full;
+    @apply opacity-0 translate-x-full transition pointer-events-none;
   }
 
   &__left-page-button-hide {
-    @apply opacity-0 -translate-x-full;
+    @apply opacity-0 -translate-x-full transition pointer-events-none;
   }
 
   &__error-state {
@@ -69,7 +75,7 @@
       transition-colors text-sm;
 
     &:hover {
-      @apply bg-brand-400 transition-colors;
+      @apply text-base-100 bg-brand-400 transition-colors;
     }
   }
 

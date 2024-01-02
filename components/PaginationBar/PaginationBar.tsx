@@ -1,4 +1,4 @@
-import { FC, ReactElement } from 'react'
+import { FC, ReactElement, useMemo } from 'react'
 import styles from './PaginationBar.module.scss'
 import { BsCaretLeft, BsCaretRight, BsSkipEnd, BsSkipStart, BsXCircle } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
@@ -10,7 +10,6 @@ interface Props {
   availablePages: Array<number>
   pageNumber: number
   pagesNumber: number
-  onPageNumberChange: (pageNumber: number) => void
   onePageStateTitle: string
   disabled: boolean
   shallowNavigation: boolean
@@ -18,11 +17,10 @@ interface Props {
 }
 
 export const PaginationBar: FC<Partial<Props>
-  & Pick<Props, 'availablePages' | 'pagesNumber' | 'pageNumber' | 'onPageNumberChange'>> = ({
+  & Pick<Props, 'availablePages' | 'pagesNumber' | 'pageNumber' >> = ({
     availablePages,
     pagesNumber,
     pageNumber,
-    onPageNumberChange,
     onePageStateTitle,
     disabled = false,
     shallowNavigation = true,
@@ -32,26 +30,42 @@ export const PaginationBar: FC<Partial<Props>
 
     const { pathname, query } = useRouter()
 
-    const buildPageElement = (page: number) => {
-      return (
-        <Link href={ {
-          pathname,
-          query: { ...query, page },
-        } }
-          className={ `
-            ${styles.paginationBar__pageNumberButton}
-            ${page === pageNumber ? styles.paginationBar__pageNumberButton_active : ''}
-            ${disabled ? styles.paginationBar__pageNumberButton_disabled : ''}
-          ` }
-          scroll={ scroll }
-          key={ page }
-          title={ t('n_page_button_title', { pageNumber: page }) }
-          shallow={ shallowNavigation }
-        >
-          { page }
-        </Link>
-      )
+    const buildQuery = (page: number) => {
+      const newQuery = { ...query }
+
+      if (page === 1) {
+        delete newQuery.page
+      } else {
+        newQuery.page = String(page)
+      }
+
+      return newQuery
     }
+
+    const pageElements = useMemo(() => {
+      return availablePages.map((availablePage) => {
+        return (
+          <li className={ `
+          ${styles.paginationBar__pageNumberItem}
+          ${availablePage === pageNumber ? styles.paginationBar__pageNumberItem_currentPage : ''}
+        ` }
+            title={ t('n_page_button_title', { pageNumber: availablePage }) }
+            key={ t('n_page_button_title', { pageNumber: availablePage }) }
+          >
+            <Link href={ { pathname, query: buildQuery(availablePage) } }
+              className={ `
+                ${styles.paginationBar__pageNumberLink}
+                ${availablePage === pageNumber ? styles.paginationBar__pageNumberLink_currentPage : ''}
+              ` }
+              scroll={ scroll }
+              shallow={ shallowNavigation }
+            >
+              { availablePage }
+            </Link>
+          </li>
+        )
+      })
+    }, [pageNumber, pagesNumber, availablePages])
 
     if (availablePages.length === 1) {
       if (onePageStateTitle && !disabled) {
@@ -70,71 +84,87 @@ export const PaginationBar: FC<Partial<Props>
       <div className={ styles.paginationBar__errorState }>
         <BsXCircle className={ styles.paginationBar__errorIcon }/>
         { t('error_state_description') }
-        <button
+        <Link
+          href={ { pathname, query: buildQuery(1) } }
           className={ styles.paginationBar__errorButton }
-          onClick={ () => onPageNumberChange(1) }
           title={ t('error_state_button_title') }
         >
           { t('error_state_button_title') }
-        </button>
+        </Link>
       </div>
     )
-
-    const handleChange = (newPageNumber: number) => {
-      if (newPageNumber !== pageNumber) {
-        onPageNumberChange(newPageNumber)
-      }
-    }
 
     return (
       pageNumber > pagesNumber && !disabled
         ? errorState
         : <div className={ styles.paginationBar__container }>
-        <button
-          className={ `
-          ${styles.paginationBar__stepPageButton}
-          ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
-        ` }
-          disabled={ disabled || pageNumber === 1 }
-          onClick={ () => handleChange(1) }
-          title={ t('first_page_button_title') }
-        >
-          <BsSkipStart/>
-        </button>
-        <button
-          className={ `
-          ${styles.paginationBar__stepPageButton}
-          ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
-        ` }
-          disabled={ disabled || pageNumber === 1 }
-          onClick={ () => handleChange(pageNumber - 1) }
-          title={ t('previous_page_button_title') }
-        >
-          <BsCaretLeft/>
-        </button>
-        { availablePages.map((page) => { return buildPageElement(page) }) }
-        <button
-          className={ `
-          ${styles.paginationBar__stepPageButton}
-          ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
-        ` }
-          disabled={ disabled || pageNumber === pagesNumber }
-          onClick={ () => handleChange(pageNumber + 1) }
-          title={ t('next_page_button_title') }
-        >
-          <BsCaretRight/>
-        </button>
-        <button
-          className={ `
-          ${styles.paginationBar__stepPageButton}
-          ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
-        ` }
-          disabled={ disabled || pageNumber === pagesNumber }
-          onClick={ () => handleChange(pagesNumber) }
-          title={ t('last_page_button_title') }
-        >
-          <BsSkipEnd/>
-        </button>
-      </div>
+          <ul className={ styles.paginationBar__listContainer }>
+            <li className={ `
+              ${styles.paginationBar__pageNumberItem}
+              ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
+            ` }
+              title={ t('first_page_button_title') }
+              key={ t('first_page_button_title') }
+            >
+              <Link href={ { pathname, query: buildQuery(1) } }
+                className={ styles.paginationBar__pageNumberLink }
+                scroll={ scroll }
+                shallow={ shallowNavigation }
+              >
+                <BsSkipStart className={ styles.paginationBar__stepIcon }/>
+              </Link>
+            </li>
+
+            <li className={ `
+              ${styles.paginationBar__pageNumberItem}
+              ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
+            ` }
+              key={ t('previous_page_button_title') }
+              title={ t('previous_page_button_title') }
+            >
+              <Link href={ { pathname, query: buildQuery(pageNumber - 1) } }
+                className={ styles.paginationBar__pageNumberLink }
+                scroll={ scroll }
+                shallow={ shallowNavigation }
+              >
+                <BsCaretLeft className={ styles.paginationBar__stepIcon }/>
+              </Link>
+            </li>
+
+            { pageElements }
+
+            <li className={ `
+              ${styles.paginationBar__pageNumberItem}
+              ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
+            ` }
+              key={ t('next_page_button_title') }
+              title={ t('next_page_button_title') }
+            >
+              <Link href={ { pathname, query: buildQuery(pageNumber + 1) } }
+                className={ styles.paginationBar__pageNumberLink }
+                scroll={ scroll }
+                shallow={ shallowNavigation }
+              >
+                <BsCaretRight className={ styles.paginationBar__stepIcon }/>
+              </Link>
+            </li>
+
+            <li className={ `
+              ${styles.paginationBar__pageNumberItem}
+              ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
+            ` }
+              key={ t('last_page_button_title') }
+              title={ t('last_page_button_title') }
+            >
+              <Link href={ { pathname, query: buildQuery(pagesNumber) } }
+                className={ styles.paginationBar__pageNumberLink }
+                scroll={ scroll }
+                shallow={ shallowNavigation }
+              >
+                <BsSkipEnd className={ styles.paginationBar__stepIcon }/>
+              </Link>
+            </li>
+          </ul>
+        </div>
     )
   }

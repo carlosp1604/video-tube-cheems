@@ -1,6 +1,7 @@
 .sorting-menu-dropdown {
   &__container {
-    @apply invisible relative inline-block text-left whitespace-nowrap;
+    @apply invisible relative inline-block text-left
+      whitespace-nowrap;
 
     &_visible {
       @apply visible;
@@ -21,8 +22,8 @@
   }
 
   &__dropdown-container {
-    @apply absolute right-0 z-sort-menu-dropdown mt-2 rounded-lg
-      w-auto transition-all overflow-hidden hidden
+    @apply absolute right-0 z-sort-menu-dropdown mt-2 rounded-md
+      w-auto h-auto transition-all hidden p-0 m-0
       bg-base-800 text-left shadow-2xl shadow-base-800;
 
     &_open {
@@ -31,11 +32,16 @@
   }
 
   &__dropdown-item {
-    @apply flex flex-row gap-x-2 items-center text-base-500
-    px-2 py-1 text-sm font-medium transition-colors m-1 rounded-lg;
+    @apply h-full rounded-md transition-colors m-1 overflow-hidden;
+    list-style-type: none;
+  }
+
+  &__dropdown-item-link {
+    @apply flex h-full w-full px-2 py-1 text-base-500
+    text-sm font-medium;
 
     &:hover, &:focus {
-      @apply cursor-pointer bg-base-900 text-base-300;
+      @apply text-base-100 bg-base-900;
     }
 
     @screen lg {

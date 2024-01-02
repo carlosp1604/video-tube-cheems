@@ -127,6 +127,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       return
     }
 
+    console.log(query)
+
     const queryParams = new PostsPaginationQueryParams(query, configuration)
 
     let currentTitle = paginationState.searchTerm

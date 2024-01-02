@@ -3,6 +3,8 @@ import styles from './PaginationBar.module.scss'
 import { BsCaretLeft, BsCaretRight, BsSkipEnd, BsSkipStart, BsXCircle } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import { TbNumber1 } from 'react-icons/tb'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 interface Props {
   availablePages: Array<number>
@@ -11,6 +13,8 @@ interface Props {
   onPageNumberChange: (pageNumber: number) => void
   onePageStateTitle: string
   disabled: boolean
+  shallowNavigation: boolean
+  scroll: boolean
 }
 
 export const PaginationBar: FC<Partial<Props>
@@ -21,8 +25,33 @@ export const PaginationBar: FC<Partial<Props>
     onPageNumberChange,
     onePageStateTitle,
     disabled = false,
+    shallowNavigation = true,
+    scroll = true,
   }) => {
     const { t } = useTranslation('pagination_bar')
+
+    const { pathname, query } = useRouter()
+
+    const buildPageElement = (page: number) => {
+      return (
+        <Link href={ {
+          pathname,
+          query: { ...query, page },
+        } }
+          className={ `
+            ${styles.paginationBar__pageNumberButton}
+            ${page === pageNumber ? styles.paginationBar__pageNumberButton_active : ''}
+            ${disabled ? styles.paginationBar__pageNumberButton_disabled : ''}
+          ` }
+          scroll={ scroll }
+          key={ page }
+          title={ t('n_page_button_title', { pageNumber: page }) }
+          shallow={ shallowNavigation }
+        >
+          { page }
+        </Link>
+      )
+    }
 
     if (availablePages.length === 1) {
       if (onePageStateTitle && !disabled) {
@@ -83,22 +112,7 @@ export const PaginationBar: FC<Partial<Props>
         >
           <BsCaretLeft/>
         </button>
-        { availablePages.map((page) => {
-          return (
-            <button
-              className={ `
-              ${styles.paginationBar__pageNumberButton}
-              ${pageNumber === page ? styles.paginationBar__pageNumberButton__active : ''}
-            ` }
-              key={ page }
-              disabled={ disabled }
-              onClick={ () => handleChange(page) }
-              title={ t('n_page_button_title', { pageNumber: page }) }
-            >
-              { page }
-            </button>
-          )
-        }) }
+        { availablePages.map((page) => { return buildPageElement(page) }) }
         <button
           className={ `
           ${styles.paginationBar__stepPageButton}

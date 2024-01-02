@@ -69,10 +69,6 @@ export const HomePage: NextPage<Props> = ({
     await updateQuery(1, newOption, activeProducer)
   }
 
-  const onChangeProducer = async (producer: ProducerComponentDto) => {
-    await updateQuery(1, order, producer)
-  }
-
   const onChangePageNumber = async (pageNumber: number) => {
     await updateQuery(pageNumber, order, activeProducer)
   }
@@ -90,7 +86,6 @@ export const HomePage: NextPage<Props> = ({
     <div className={ styles.home__container }>
       <ProducerList
         producers={ producers }
-        onChangeProducer={ onChangeProducer }
         activeProducer={ activeProducer }
       />
 
@@ -125,6 +120,7 @@ export const HomePage: NextPage<Props> = ({
         onPageNumberChange={ onChangePageNumber }
         pageNumber={ page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        shallowNavigation={ false }
       />
     </div>
   )

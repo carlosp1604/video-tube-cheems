@@ -1,10 +1,10 @@
 .producer-list {
   &__category {
-    @apply text-center rounded-lg p-2 border border-base-800 truncate
-      text-sm transition-colors;
+    @apply block text-center rounded-lg p-2 border border-base-800
+      truncate text-sm transition-colors;
 
     &:hover {
-      @apply bg-brand-400 transition-colors;
+      @apply text-base-100 transition-colors;
     }
 
     &:hover {
@@ -19,7 +19,7 @@
 
     &:hover {
       @apply bg-[color:var(--category-color)]
-        border-[color:var(--category-color)] transition-colors;
+        border-[color:var(--category-color)] transition-colors cursor-default;
     }
   }
 }

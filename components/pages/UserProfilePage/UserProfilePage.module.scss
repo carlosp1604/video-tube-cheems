@@ -3,54 +3,54 @@
     @apply container px-5;
   }
 
-  &__user-sections {
-    @apply flex justify-center items-center my-4 gap-x-2;
-  }
+  &__user-posts-container {
+    @apply -mx-5 p-5 mt-5;
 
-  &__user-section-button {
-    @apply flex flex-col items-center justify-center gap-y-2;
-  }
-
-  &__user-posts {
-    @apply flex flex-col gap-x-5 pt-4 border border-base-800 p-2
-      rounded-lg rounded-tl-none mb-2;
+    @screen md {
+      @apply border border-base-800 rounded-lg m-0 p-5;
+    }
   }
 
   &__user-posts-header {
-    @apply flex flex-row justify-between mb-4 font-black text-lg
-      items-center gap-x-4;
+    @apply flex flex-row justify-between items-center text-xl
+      font-bold mb-4 mt-10;
+
+    @screen md {
+      @apply text-2xl font-bold;
+    }
+
+    &:first-of-type {
+      @apply mt-0;
+    }
   }
 
-  &__user-posts-header-title {
-    @apply flex flex-row justify-between gap-x-2 items-center;
+  &__user-posts-see-all {
+    @apply h-full text-sm text-base-500 font-normal;
+
+    @screen md {
+      @apply text-base;
+    }
   }
 
-  &__user-posts-header-posts-quantity {
-    @apply font-semibold text-brand-300 text-sm;
+  &__user-posts-see-skeleton {
+    @apply h-4 w-10 rounded-lg bg-base-700 animate-pulse;
+
+    @screen md {
+      @apply w-20;
+    }
   }
 
-  &__user-posts-header-separator-icon {
-    @apply text-sm text-base-400;
-  }
-
-  &__user-posts-see-all-button {
-    @apply hidden p-2 px-3 rounded-full border border-base-700
-      text-xs font-medium transition-colors;
+  &__user-posts-see-all-link {
+    @apply flex items-center py-1.5 px-4 text-xs
+      text-base-100 font-medium border border-base-600 rounded-full
+      transition-colors;
 
     &:hover {
-      @apply bg-base-700 transition-colors;
+      @apply border-base-800 transition-colors bg-base-900;
     }
 
-    &__visible {
-      @apply block;
-    }
-  }
-
-  &__no-posts-title {
-    @apply hidden text-sm text-base-600 font-normal;
-
-    &_visible {
-      @apply block;
+    @screen md {
+      @apply text-base font-normal;
     }
   }
 }

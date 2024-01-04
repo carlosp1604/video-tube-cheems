@@ -14,6 +14,8 @@ import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructur
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { ReactElement } from 'react'
+import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 
 export interface Props {
   page: number
@@ -37,12 +39,42 @@ export const HomePage: NextPage<Props> = ({
   const { asPath } = router
   const locale = router.locale ?? 'en'
 
+  const sortingOptions: PostsPaginationSortingType[] = [
+    PostsPaginationSortingType.LATEST,
+    PostsPaginationSortingType.OLDEST,
+    PostsPaginationSortingType.MOST_VIEWED,
+  ]
+
+  const linkMode: ElementLinkMode = {
+    replace: false,
+    shallowNavigation: false,
+    scrollOnClick: true,
+  }
+
   let galleryTitle: string
 
   if (!activeProducer) {
     galleryTitle = t('post_gallery_no_producer_title')
   } else {
     galleryTitle = activeProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : activeProducer.name
+  }
+
+  let content: ReactElement
+
+  if (postsNumber > 0) {
+    content = (
+      <PostCardGallery
+        posts={ posts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+      />
+    )
+  } else {
+    content = (
+      <EmptyState
+        title={ t('post_gallery_empty_state_title') }
+        subtitle={ t('post_gallery_empty_state_subtitle') }
+      />
+    )
   }
 
   // FIXME: Find the way to pass the default producer's name translated from serverside
@@ -59,30 +91,19 @@ export const HomePage: NextPage<Props> = ({
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         showSortingOptions={ postsNumber > defaultPerPage }
         activeOption={ order }
-        sortingOptions={ [
-          PostsPaginationSortingType.LATEST,
-          PostsPaginationSortingType.OLDEST,
-          PostsPaginationSortingType.MOST_VIEWED,
-        ] }
+        sortingOptions={ sortingOptions }
+        linkMode= { linkMode }
       />
 
-      { postsNumber > 0
-        ? <PostCardGallery
-          posts={ posts }
-          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        />
-        : <EmptyState
-          title={ t('post_gallery_empty_state_title') }
-          subtitle={ t('post_gallery_empty_state_subtitle') }
-        />
-      }
+      { content }
 
       <PaginationBar
         availablePages={ PaginationHelper.getShowablePages(
           page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
         pageNumber={ page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        shallowNavigation={ false }
+        linkMode={ { ...linkMode, scrollOnClick: false } }
+        onPageChange={ () => window.scrollTo({ top: 0 }) }
       />
     </div>
   )

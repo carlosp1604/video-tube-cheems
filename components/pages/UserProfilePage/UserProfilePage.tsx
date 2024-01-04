@@ -26,6 +26,7 @@ import {
 import {
   UserSavedPostsEmptyState
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
+import { useSession } from 'next-auth/react'
 
 export interface UserProfilePageProps {
   userComponentDto: UserProfileHeaderComponentDto
@@ -40,6 +41,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
   const [savedPostsNumber, setSavedPostsNumber] = useState<number>(0)
 
   const { t } = useTranslation('user_profile')
+  const { status, data } = useSession()
 
   const locale = useRouter().locale ?? 'en'
 
@@ -97,7 +99,11 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
   let savedPostsContent: ReactElement
 
   if (savedPostsNumber === 0 && !loading) {
-    savedPostsContent = (<UserSavedPostsEmptyState />)
+    if (status === 'authenticated' && userComponentDto.id === data?.user.id) {
+      savedPostsContent = (<UserSavedPostsEmptyState />)
+    } else {
+      savedPostsContent = (<PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>)
+    }
   } else {
     if (loading) {
       savedPostsContent = (<PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>)
@@ -161,7 +167,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
               { savedPostsNumber < defaultPerPage
                 ? t('posts_number_title', { postsNumber: savedPostsNumber })
                 : <Link
-                  href={ '/' }
+                  href={ `/users/${userComponentDto.username}/saved-posts` }
                   className={ styles.userProfilePage__userPostsSeeAllLink }
                   shallow={ false }
                   scroll={ true }

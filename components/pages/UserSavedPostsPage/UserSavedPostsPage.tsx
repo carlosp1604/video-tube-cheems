@@ -1,42 +1,53 @@
 import { NextPage } from 'next'
-import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
-import styles from './UserProfilePage.module.scss'
-import { useRouter } from 'next/router'
-import { ReactElement, useEffect, useState } from 'react'
-import { useTranslation } from 'next-i18next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import {
-  InfrastructureSortingCriteria,
-  InfrastructureSortingOptions
-} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
-import Link from 'next/link'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
+import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
-  PostCardCarouselSkeleton
-} from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
+  UserProfileHeaderComponentDto
+} from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
+import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
 import {
-  UserSavedPostsEmptyState
-} from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
+  PostCardGalleryHeader
+} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
 
-export interface UserSavedPostsPageProps {
-  username: string
+interface PaginationState {
+  page: number
+  order:PostsPaginationSortingType
 }
 
-export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ username }) => {
-  const [loading, setLoading] = useState(false)
+export interface UserSavedPostsPage {
+  userComponentDto: UserProfileHeaderComponentDto
+}
 
+export const UserSavedPostsPage: NextPage<UserSavedPostsPage> = ({ userComponentDto }) => {
   const [posts, setPosts] = useState<PostCardComponentDto[]>([])
   const [postsNumber, setPostsNumber] = useState<number>(0)
 
-  const { t } = useTranslation('user_profile')
+  const [paginationState, setPaginationState] = useState<PaginationState>({
+    order: PostsPaginationSortingType.NEWEST_SAVED,
+    page: 1,
+  })
+
+  const [loading, setLoading] = useState(false)
 
   const locale = useRouter().locale ?? 'en'
+
+  useEffect(() => {
+    setLoading(true)
+    updatePosts(paginationState.page, paginationState.order)
+      .then(() => { setLoading(false) })
+  }, [])
 
   const onDeleteSavedPost = (postId: string) => {
     const newPosts = posts.filter((post) => post.id !== postId)
@@ -45,114 +56,95 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ username
     setPostsNumber(postsNumber - 1)
   }
 
-  const fetchPosts = async () => {
-    const posts = await (new PostsApiService())
-      .getSavedPosts(
-        username,
-        1,
-        defaultPerPage,
-        InfrastructureSortingCriteria.DESC,
-        InfrastructureSortingOptions.SAVED_DATE,
-        [{ type: PostFilterOptions.SAVED_BY, value: userComponentDto.id }]
-      )
+  const postCardOptions: PostCardOptionConfiguration[] = [
+    { type: 'deleteSavedPost', onDelete: onDeleteSavedPost, ownerId: userComponentDto.id },
+    { type: 'react' },
+  ]
 
-    setSavedPosts(savedPosts.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-    }))
-    setSavedPostsNumber(savedPosts.postsNumber)
+  const sortingOptions: PostsPaginationSortingType[] = [
+    PostsPaginationSortingType.NEWEST_SAVED,
+    PostsPaginationSortingType.OLDEST_SAVED,
+  ]
 
-    setPostsHistory(postsHistory.posts.map((post) => {
-      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-    }))
-    setPostsHistoryNumber(postsHistory.postsNumber)
+  const onChangeOption = async (newOrder: PostsPaginationSortingType) => {
+    setLoading(true)
+    setPaginationState({ ...paginationState, order: PostsPaginationSortingType.NEWEST_SAVED, page: 1 })
+
+    await updatePosts(1, newOrder)
+
+    setLoading(false)
   }
 
-  useEffect(() => {
-    setLoading(true)
-    fetchPosts()
-      .then(() => setLoading(false))
-  }, [])
+  const updatePosts = async (page:number, order: PostsPaginationSortingType) => {
+    const componentOrder = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order)
 
-  let savedPostsContent: ReactElement
+    await new Promise((resolve, reject) => {
+      setTimeout(resolve, 3000)
+    })
 
-  if (savedPostsNumber === 0 && !loading) {
-    savedPostsContent = (<UserSavedPostsEmptyState />)
-  } else {
-    if (loading) {
-      savedPostsContent = (<PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>)
-    } else {
-      savedPostsContent = (
-        <PostCardCarousel
-          posts={ savedPosts }
-          postCardOptions={ [
-            { type: 'deleteSavedPost', ownerId: userComponentDto.id, onDelete: onDeleteSavedPost },
-            { type: 'react' },
-          ] }
-        />
-      )
+    try {
+      const newPosts = await (new PostsApiService())
+        .getSavedPosts(
+          userComponentDto.id,
+          page,
+          defaultPerPage,
+          componentOrder.criteria,
+          componentOrder.option,
+          [{ type: PostFilterOptions.SAVED_BY, value: userComponentDto.id }]
+        )
+
+      if (page === 1) {
+        setPosts(newPosts.posts.map((post) => {
+          return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
+        }))
+      } else {
+        setPosts([
+          ...posts,
+          ...newPosts.posts.map((post) => {
+            return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
+          }),
+        ])
+      }
+
+      setPostsNumber(newPosts.postsNumber)
+    } catch (exception: unknown) {
+      console.error(exception)
     }
   }
 
+  const onEndGalleryReach = async () => {
+    setLoading(true)
+    setPaginationState({ ...paginationState, page: paginationState.page + 1 })
+    await updatePosts(paginationState.page + 1, paginationState.order)
+    setLoading(false)
+  }
+
   return (
-    <div className={ styles.userProfilePage__container }>
-      <UserProfileHeader componentDto={ userComponentDto }/>
+    <div className={ 'flex flex-col gap-y-2 container my-5' }>
+      <UserProfileHeader componentDto={ userComponentDto } />
 
-      <section className={ styles.userProfilePage__userPostsContainer }>
-        <div className={ styles.userProfilePage__userPostsHeader }>
-          { t('user_history_title') }
-          {
-            loading
-              ? <span className={ styles.userProfilePage__userPostsSeeSkeleton }/>
-              : <span className={ styles.userProfilePage__userPostsSeeAll }>
-              {
-                postsHistoryNumber < defaultPerPage
-                  ? t('posts_number_title', { postsNumber: postsHistoryNumber })
-                  : <Link
-                    href={ '/' }
-                    className={ styles.userProfilePage__userPostsSeeAllLink }
-                    shallow={ false }
-                    scroll={ true }
-                  >
-                    { t('see_all_button_title') }
-                  </Link>
-              }
-            </span>
-          }
-        </div>
-        {
-          loading
-            ? <PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>
-            : <PostCardCarousel
-              posts={ postsHistory }
-              postCardOptions={ [
-                { type: 'savePost', onSuccess: onSavePost },
-                { type: 'react' },
-              ] }
-            />
-        }
+      <PostCardGalleryHeader
+        title={ 'asdasd' }
+        subtitle={ String(postsNumber) }
+        showSortingOptions={ true }
+        activeOption={ PostsPaginationSortingType.NEWEST_SAVED }
+        sortingOptions={ sortingOptions }
+        onClickOption={ onChangeOption }
+        loading={ loading }
+      />
 
-        <div className={ styles.userProfilePage__userPostsHeader }>
-          { t('user_saved_posts_title') }
-          {
-            loading
-              ? <span className={ styles.userProfilePage__userPostsSeeSkeleton }/>
-              : <span className={ styles.userProfilePage__userPostsSeeAll }>
-              { savedPostsNumber < defaultPerPage
-                ? t('posts_number_title', { postsNumber: savedPostsNumber })
-                : <Link
-                  href={ '/' }
-                  className={ styles.userProfilePage__userPostsSeeAllLink }
-                  shallow={ false }
-                  scroll={ true }
-                >
-                  { t('see_all_button_title') }
-                </Link>
-              }
-            </span>
-          }
-        </div>
-        { savedPostsContent }
-      </section>
+      <InfiniteScroll
+        next={ onEndGalleryReach }
+        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        loader={ null }
+        dataLength={ posts.length }
+      >
+        <PostCardGallery
+          posts={ posts }
+          postCardOptions={ postCardOptions }
+          loading={ loading }
+        />
+      </InfiniteScroll>
     </div>
   )
 }

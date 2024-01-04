@@ -10,7 +10,6 @@ import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilt
 import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
 import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { ActorCardList } from '~/modules/Actors/Infrastructure/Components/ActorCardList'
-import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 const useFirstRender = () => {
@@ -95,13 +94,6 @@ export const PaginatedActorCardGallery: FC<Props> = ({
 
       <ActorCardList
         actors={ currentActors }
-      />
-
-      <PaginationBar
-        availablePages={ [] }
-        pageNumber={ pageNumber }
-        onPageNumberChange={ setPageNumber }
-        pagesNumber={ pagesNumber }
       />
     </div>
   )

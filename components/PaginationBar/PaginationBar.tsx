@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { TbNumber1 } from 'react-icons/tb'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 
 interface Props {
   availablePages: Array<number>
@@ -12,19 +13,19 @@ interface Props {
   pagesNumber: number
   onePageStateTitle: string
   disabled: boolean
-  shallowNavigation: boolean
-  scroll: boolean
+  linkMode: ElementLinkMode
+  onPageChange: (page: number) => void
 }
 
 export const PaginationBar: FC<Partial<Props>
-  & Pick<Props, 'availablePages' | 'pagesNumber' | 'pageNumber' >> = ({
+  & Pick<Props, 'availablePages' | 'pagesNumber' | 'pageNumber' | 'linkMode'>> = ({
     availablePages,
     pagesNumber,
     pageNumber,
     onePageStateTitle,
+    linkMode,
     disabled = false,
-    shallowNavigation = true,
-    scroll = true,
+    onPageChange = undefined,
   }) => {
     const { t } = useTranslation('pagination_bar')
 
@@ -46,19 +47,21 @@ export const PaginationBar: FC<Partial<Props>
       return availablePages.map((availablePage) => {
         return (
           <li className={ `
-          ${styles.paginationBar__pageNumberItem}
-          ${availablePage === pageNumber ? styles.paginationBar__pageNumberItem_currentPage : ''}
-        ` }
+            ${styles.paginationBar__pageNumberItem}
+            ${availablePage === pageNumber ? styles.paginationBar__pageNumberItem_currentPage : ''}
+          ` }
             title={ t('n_page_button_title', { pageNumber: availablePage }) }
             key={ t('n_page_button_title', { pageNumber: availablePage }) }
+            onClick={ () => { if (onPageChange) { onPageChange(availablePage) } } }
           >
             <Link href={ { pathname, query: buildQuery(availablePage) } }
               className={ `
                 ${styles.paginationBar__pageNumberLink}
                 ${availablePage === pageNumber ? styles.paginationBar__pageNumberLink_currentPage : ''}
               ` }
-              scroll={ scroll }
-              shallow={ shallowNavigation }
+              scroll={ linkMode.scrollOnClick }
+              shallow={ linkMode.shallowNavigation }
+              replace={ linkMode.replace }
             >
               { availablePage }
             </Link>
@@ -105,11 +108,13 @@ export const PaginationBar: FC<Partial<Props>
             ` }
               title={ t('first_page_button_title') }
               key={ t('first_page_button_title') }
+              onClick={ () => { if (onPageChange) { onPageChange(1) } } }
             >
               <Link href={ { pathname, query: buildQuery(1) } }
                 className={ styles.paginationBar__pageNumberLink }
-                scroll={ scroll }
-                shallow={ shallowNavigation }
+                scroll={ linkMode.scrollOnClick }
+                shallow={ linkMode.shallowNavigation }
+                replace={ linkMode.replace }
               >
                 <BsSkipStart className={ styles.paginationBar__stepIcon }/>
               </Link>
@@ -121,11 +126,13 @@ export const PaginationBar: FC<Partial<Props>
             ` }
               key={ t('previous_page_button_title') }
               title={ t('previous_page_button_title') }
+              onClick={ () => { if (onPageChange) { onPageChange(pageNumber - 1) } } }
             >
               <Link href={ { pathname, query: buildQuery(pageNumber - 1) } }
                 className={ styles.paginationBar__pageNumberLink }
-                scroll={ scroll }
-                shallow={ shallowNavigation }
+                scroll={ linkMode.scrollOnClick }
+                shallow={ linkMode.shallowNavigation }
+                replace={ linkMode.replace }
               >
                 <BsCaretLeft className={ styles.paginationBar__stepIcon }/>
               </Link>
@@ -139,11 +146,13 @@ export const PaginationBar: FC<Partial<Props>
             ` }
               key={ t('next_page_button_title') }
               title={ t('next_page_button_title') }
+              onClick={ () => { if (onPageChange) { onPageChange(pageNumber + 1) } } }
             >
               <Link href={ { pathname, query: buildQuery(pageNumber + 1) } }
                 className={ styles.paginationBar__pageNumberLink }
-                scroll={ scroll }
-                shallow={ shallowNavigation }
+                scroll={ linkMode.scrollOnClick }
+                shallow={ linkMode.shallowNavigation }
+                replace={ linkMode.replace }
               >
                 <BsCaretRight className={ styles.paginationBar__stepIcon }/>
               </Link>
@@ -155,11 +164,13 @@ export const PaginationBar: FC<Partial<Props>
             ` }
               key={ t('last_page_button_title') }
               title={ t('last_page_button_title') }
+              onClick={ () => { if (onPageChange) { onPageChange(pagesNumber) } } }
             >
               <Link href={ { pathname, query: buildQuery(pagesNumber) } }
                 className={ styles.paginationBar__pageNumberLink }
-                scroll={ scroll }
-                shallow={ shallowNavigation }
+                scroll={ linkMode.scrollOnClick }
+                shallow={ linkMode.shallowNavigation }
+                replace={ linkMode.replace }
               >
                 <BsSkipEnd className={ styles.paginationBar__stepIcon }/>
               </Link>

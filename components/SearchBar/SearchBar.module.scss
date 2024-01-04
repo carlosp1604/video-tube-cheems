@@ -1,6 +1,6 @@
 .search-bar {
   &__container {
-    @apply flex flex-row items-center justify-center gap-x-3;
+    @apply flex flex-row items-center justify-center gap-x-1;
   }
 
   &__search-input {
@@ -12,7 +12,7 @@
     }
 
     &__open {
-      @apply px-2 m-0 h-8 rounded-md w-32 bg-base-800 placeholder-base-400
+      @apply px-2 m-0 h-8 rounded-md w-36 bg-base-800 placeholder-base-400
         text-base-100 duration-500 transition-all;
 
       @screen tb {

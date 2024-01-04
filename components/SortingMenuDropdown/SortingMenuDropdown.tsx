@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from 'react'
+import { FC, ReactElement, useMemo, useState } from 'react'
 import styles from './SortingMenuDropdown.module.scss'
 import { BsSortDown } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
@@ -7,24 +7,25 @@ import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/Fron
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 
 interface Props {
   activeOption: PostsPaginationSortingType
   options: PostsPaginationSortingType[]
   loading: boolean
   visible: boolean
-  scrollOnClick: boolean
-  shallowNavigation: boolean
+  linkMode: ElementLinkMode | undefined
+  onClickOption: ((option: PostsPaginationSortingType) => void) | undefined
 }
 
 export const SortingMenuDropdown: FC<Partial<Props>
-  & Omit<Props, 'loading' | 'visible' | 'scrollOnClick' | 'shallowNavigation'>> = ({
+  & Omit<Props, 'loading' | 'visible' | 'linkMode' >> = ({
     activeOption,
     options,
     loading = false,
     visible = true,
-    scrollOnClick = true,
-    shallowNavigation = false,
+    linkMode = undefined,
+    onClickOption = undefined,
   }) => {
     const [openMenu, setOpenMenu] = useState<boolean>(false)
     const { t } = useTranslation('sorting_menu_dropdown')
@@ -63,29 +64,44 @@ export const SortingMenuDropdown: FC<Partial<Props>
         { options.map((option) => {
           const componentOption = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(option)
 
-          const newQuery = { ...query }
+          let content: ReactElement = (
+            <span className={ `${styles.sortingMenuDropdown__dropdownItemLink}
+                ${componentOption.translationKey === componentActiveSortingOption.translationKey
+              ? styles.sortingMenuDropdown__dropdownItemLink_active
+              : ''} ` }>
+              { t(componentOption.translationKey) }
+            </span>
+          )
 
-          delete newQuery.page
-          newQuery.order = option
+          if (linkMode) {
+            const newQuery = { ...query }
+
+            delete newQuery.page
+            newQuery.order = option
+
+            content = (
+              <Link className={ `${styles.sortingMenuDropdown__dropdownItemLink}
+                ${componentOption.translationKey === componentActiveSortingOption.translationKey
+                ? styles.sortingMenuDropdown__dropdownItemLink_active
+                : ''} ` }
+                href={ { pathname, query: newQuery } }
+                scroll={ linkMode.scrollOnClick }
+                shallow={ linkMode.shallowNavigation }
+                replace={ linkMode.replace }
+              >
+                { t(componentOption.translationKey) }
+              </Link>
+            )
+          }
 
           return (
             <li
               className={ styles.sortingMenuDropdown__dropdownItem }
               title={ t('dropdown_sort_option_title', { criteria: t(componentOption.translationKey) }) }
               key={ componentOption.translationKey }
+              onClick={ () => { if (onClickOption) { onClickOption(option) } } }
             >
-              <Link
-                className={ ` ${styles.sortingMenuDropdown__dropdownItemLink}
-                  ${componentOption.translationKey === componentActiveSortingOption.translationKey
-                    ? styles.sortingMenuDropdown__dropdownItemLink_active
-                    : ''}
-                ` }
-                href={ { pathname, query: newQuery } }
-                scroll={ scrollOnClick }
-                shallow={ shallowNavigation }
-              >
-                { t(componentOption.translationKey) }
-              </Link>
+              { content }
             </li>
           )
         }) }

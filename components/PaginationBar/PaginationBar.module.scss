@@ -1,11 +1,16 @@
 .pagination-bar {
   &__container {
-    @apply pb-10 border-t pt-2 mx-0 border-base-800;
+    @apply -mx-5 pb-10 border-t pt-2 border-base-800
+      overflow-x-scroll overflow-y-hidden scrollbar-hide;
+
+    @screen md {
+      @apply mx-0;
+    }
   }
 
   &__list-container {
     @apply flex flex-row h-full w-full
-      gap-x-2 items-center justify-center;
+      gap-x-0.5 items-center justify-center;
 
     @screen md {
       @apply gap-x-2.5;
@@ -13,34 +18,27 @@
   }
 
   &__page-number-item {
-    @apply h-full rounded-md border-2
-       text-sm transition-colors border-transparent;
+    @apply h-full transition-colors;
     list-style-type: none;
-
-    &:hover {
-      @apply bg-base-900 transition-colors border-brand-400;
-    }
-
-    &_current-page {
-      @apply border-brand-400 transition-colors duration-500
-        bg-base-900;
-    }
   }
 
   &__page-number-link {
-    @apply flex items-center justify-center p-1.5 px-3
-      h-full w-full text-base-600 text-sm transition;
+    @apply flex items-center justify-center p-1.5 px-3 rounded-md
+      h-full w-full text-base-600 text-sm border-2 border-transparent
+      transition;
 
     &:hover {
-      @apply text-base-100 transition-colors;
+      @apply text-base-100 transition-colors border-brand-400
+        bg-base-900;
     }
 
     @screen md {
-      @apply p-2 px-3.5 text-lg;
+      @apply p-2 px-4 text-lg;
     }
 
     &_current-page {
-      @apply text-base-100 pointer-events-none font-black;
+      @apply text-base-100 pointer-events-none font-black
+        border-brand-400 bg-base-900;
     }
   }
 

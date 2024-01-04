@@ -2,6 +2,7 @@ import { FC, ReactNode } from 'react'
 import styles from './PostCardGalleryHeader.module.scss'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 
 interface Props {
   title: string | ReactNode
@@ -10,20 +11,20 @@ interface Props {
   activeOption: PostsPaginationSortingType
   sortingOptions: PostsPaginationSortingType[]
   loading: boolean
-  scrollOnClick: boolean
-  shallowNavigation: boolean
+  linkMode: ElementLinkMode | undefined
+  onClickOption: ((option: PostsPaginationSortingType) => void) | undefined
 }
 
 export const PostCardGalleryHeader: FC<Partial<Props> &
-  Omit<Props, 'loading' | 'scrollOnClick' | 'shallowNavigation'>> = ({
+  Omit<Props, 'loading' | 'scrollOnClick' | 'shallowNavigation' | 'onClickOption' | 'replace' | 'linkMode'>> = ({
     title,
     subtitle,
     showSortingOptions,
     activeOption,
     sortingOptions,
     loading = false,
-    shallowNavigation = false,
-    scrollOnClick = true,
+    linkMode = undefined,
+    onClickOption = undefined,
   }) => {
     return (
     <div className={ styles.postCardGalleryHeader__container }>
@@ -42,8 +43,8 @@ export const PostCardGalleryHeader: FC<Partial<Props> &
         options={ sortingOptions }
         loading={ loading }
         visible={ showSortingOptions }
-        shallowNavigation={ shallowNavigation }
-        scrollOnClick={ scrollOnClick }
+        onClickOption={ onClickOption }
+        linkMode={ linkMode }
       />
     </div>
     )

@@ -41,7 +41,7 @@
     text-sm font-medium;
 
     &:hover, &:focus {
-      @apply text-base-100 bg-base-900;
+      @apply text-base-100 bg-base-900 cursor-pointer;
     }
 
     @screen lg {

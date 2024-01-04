@@ -28,16 +28,18 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
 
   return (
     <div className={ styles.searchBar__container }>
-
-      <IconButton
-        onClick={ () => {
-          if (expandable) {
-            setOpenSearchBar(!openSearchBar)
-          }
-        } }
-        icon={ openSearchBar ? <BsArrowRight /> : <CiSearch /> }
-        title={ searchIconTitle }
-      />
+      { expandable
+        ? <IconButton
+          onClick={ () => {
+            if (expandable) {
+              setOpenSearchBar(!openSearchBar)
+            }
+          } }
+          icon={ openSearchBar ? <BsArrowRight /> : <CiSearch /> }
+          title={ searchIconTitle }
+        />
+        : null
+      }
       <input
         className={ ` 
           ${styles.searchBar__searchInput}
@@ -51,6 +53,14 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
           handleChange(event)
         } }
       />
+      { !expandable
+        ? <IconButton
+          onClick={ undefined }
+          icon={ <CiSearch /> }
+          title={ searchIconTitle }
+        />
+        : null
+      }
     </div>
   )
 }

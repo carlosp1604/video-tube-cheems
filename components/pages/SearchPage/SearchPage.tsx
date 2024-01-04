@@ -28,6 +28,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
+import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 
 interface PaginationState {
   page: number
@@ -61,6 +62,12 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   const router = useRouter()
   const query = router.query
   const locale = router.locale ?? 'en'
+
+  const linkMode: ElementLinkMode = {
+    replace: false,
+    shallowNavigation: false,
+    scrollOnClick: false,
+  }
 
   const configuration: Partial<PostsPaginationConfiguration> &
     Pick<PostsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
@@ -127,8 +134,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       return
     }
 
-    console.log(query)
-
     const queryParams = new PostsPaginationQueryParams(query, configuration)
 
     let currentTitle = paginationState.searchTerm
@@ -182,6 +187,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({
           PostsPaginationSortingType.MOST_VIEWED,
         ] }
         loading={ loading }
+        linkMode={ linkMode }
+        onClickOption={ () => window.scrollTo({ top: 0 }) }
       />
 
       { postsNumber === 0 && !loading
@@ -204,6 +211,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({
           pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
           onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
           disabled={ loading }
+          linkMode={ linkMode }
+          onPageChange={ () => window.scrollTo({ top: 0 }) }
         />
       }
     </div>

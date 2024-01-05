@@ -10,9 +10,10 @@ interface Props {
   size: string
   round: boolean
   imageAlt: string
+  priority: boolean
 }
 
-export const AvatarImage: FC<Props> = ({
+export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority'>> = ({
   imageUrl,
   avatarClassName,
   avatarName,
@@ -20,6 +21,7 @@ export const AvatarImage: FC<Props> = ({
   imageAlt,
   size,
   round,
+  priority = false,
 }) => {
   let avatar = (
     <Avatar
@@ -41,6 +43,7 @@ export const AvatarImage: FC<Props> = ({
         width={ 0 }
         height={ 0 }
         sizes={ '100vw' }
+        priority={ priority }
       />
     )
   }

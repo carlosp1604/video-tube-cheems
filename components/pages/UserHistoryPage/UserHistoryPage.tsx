@@ -12,7 +12,6 @@ import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/Fron
 import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
@@ -21,31 +20,25 @@ import {
   PostCardGalleryHeader
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
 import { useTranslation } from 'next-i18next'
-import styles from './UserSavedPostsPage.module.scss'
-import {
-  UserSavedPostsEmptyState
-} from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
-import {
-  PostCardCarouselSkeleton
-} from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
-import { useSession } from 'next-auth/react'
+import styles from './UserHistoryPage.module.scss'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import { useSession } from 'next-auth/react'
 
 interface PaginationState {
   page: number
   order:PostsPaginationSortingType
 }
 
-export interface UserSavedPostsPageProps {
+export interface UserHistoryPageProps {
   userComponentDto: UserProfileHeaderComponentDto
 }
 
-export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComponentDto }) => {
+export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentDto }) => {
   const [posts, setPosts] = useState<PostCardComponentDto[]>([])
   const [postsNumber, setPostsNumber] = useState<number>(0)
 
   const [paginationState, setPaginationState] = useState<PaginationState>({
-    order: PostsPaginationSortingType.NEWEST_SAVED,
+    order: PostsPaginationSortingType.NEWEST_VIEWED,
     page: 1,
   })
 
@@ -65,11 +58,8 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
   const onDeleteSavedPost = (postId: string) => {
     const newPosts = posts.filter((post) => post.id !== postId)
 
-    if (newPosts.length < posts.length) {
-      setPostsNumber(postsNumber - 1)
-    }
-
     setPosts(newPosts)
+    setPostsNumber(postsNumber - 1)
   }
 
   const postCardOptions: PostCardOptionConfiguration[] = [
@@ -78,8 +68,8 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
   ]
 
   const sortingOptions: PostsPaginationSortingType[] = [
-    PostsPaginationSortingType.NEWEST_SAVED,
-    PostsPaginationSortingType.OLDEST_SAVED,
+    PostsPaginationSortingType.NEWEST_VIEWED,
+    PostsPaginationSortingType.OLDEST_VIEWED,
   ]
 
   const onChangeOption = async (newOrder: PostsPaginationSortingType) => {
@@ -96,13 +86,13 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
 
     try {
       const newPosts = await (new PostsApiService())
-        .getSavedPosts(
+        .getUserHistory(
           userComponentDto.id,
           page,
           defaultPerPage,
           componentOrder.criteria,
           componentOrder.option,
-          [{ type: PostFilterOptions.SAVED_BY, value: userComponentDto.id }]
+          []
         )
 
       if (page === 1) {
@@ -133,44 +123,45 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
 
   let content: ReactElement
 
-  if (postsNumber === 0 && !loading) {
-    if (status === 'authenticated' && userComponentDto.id === data?.user.id) {
-      content = (<UserSavedPostsEmptyState />)
+  if (!loading && postsNumber === 0) {
+    if (status === 'authenticated' && data && data.user.id === userComponentDto.id) {
+      content = (
+        <EmptyState
+          title={ t('own_history_empty_title') }
+          subtitle={ t('own_history_empty_subtitle') }
+        />
+      )
     } else {
       content = (
         <EmptyState
-          title={ t('saved_posts_empty_title') }
-          subtitle={ t('saved_posts_empty_subtitle', { name: userComponentDto.name }) }
+          title={ t('history_empty_title') }
+          subtitle={ t('history_empty_subtitle', { name: userComponentDto.name }) }
         />
       )
     }
   } else {
-    if (loading) {
-      content = (<PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>)
-    } else {
-      content = (
-        <InfiniteScroll
-          next={ onEndGalleryReach }
-          hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-          loader={ null }
-          dataLength={ posts.length }
-        >
-          <PostCardGallery
-            posts={ posts }
-            postCardOptions={ postCardOptions }
-            loading={ loading }
-          />
-        </InfiniteScroll>
-      )
-    }
+    content = (
+      <InfiniteScroll
+        next={ onEndGalleryReach }
+        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        loader={ null }
+        dataLength={ posts.length }
+      >
+        <PostCardGallery
+          posts={ posts }
+          postCardOptions={ postCardOptions }
+          loading={ loading }
+        />
+      </InfiniteScroll>
+    )
   }
 
   return (
-    <div className={ styles.userSavedPostsPage__container }>
+    <div className={ styles.userHistoryPage__container }>
       <UserProfileHeader componentDto={ userComponentDto } />
 
       <PostCardGalleryHeader
-        title={ t('user_saved_posts_title') }
+        title={ t('user_history_title') }
         subtitle={ t('posts_number_title', { postsNumber }) }
         showSortingOptions={ postsNumber > defaultPerPage }
         activeOption={ paginationState.order }

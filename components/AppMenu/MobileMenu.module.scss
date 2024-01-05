@@ -40,7 +40,8 @@
     grid-auto-rows: 1fr auto auto;
 
     @screen md {
-      @apply top-0 left-0 -translate-x-full translate-y-0 rounded-none border-r;
+      @apply top-0 left-0 -translate-x-full translate-y-0 w-auto
+        rounded-none border-r border-base-700;
       grid-template-areas:
         "logo"
         "menu"
@@ -48,7 +49,6 @@
         "copyright";
       grid-auto-rows: auto 1fr auto auto;
       height: auto;
-      width: 33%
     }
 
     &-enter-active {
@@ -94,32 +94,13 @@
   }
 
   &__logo {
-    @apply h-10 w-10;
+    @apply h-10 w-auto;
   }
 
   &__menu-container {
     grid-area: menu;
   }
 
-  &__menu-item {
-    &:hover, &:focus {
-      @apply bg-base-900 transition-colors duration-500 text-base-100
-        cursor-pointer;
-    }
-
-    &-active {
-      @apply bg-base-700 text-base-100;
-    }
-  }
-
-  &__menu-item-content {
-    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6 border-b border-base-700
-      border-opacity-10;
-  }
-
-  &__menu-icon {
-    @apply text-lg;
-  }
 
   &__footer-container {
     @apply relative flex flex-row overflow-x-scroll gap-x-2 items-center justify-between
@@ -145,9 +126,4 @@
     grid-area: copyright;
   }
 
-  &__menu-item:hover, &__menu-item:focus {
-    #{$parentBlock}__menu-icon {
-      @apply scale-110 transition-transform duration-200;
-    }
-  }
 }

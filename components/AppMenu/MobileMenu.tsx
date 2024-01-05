@@ -9,6 +9,7 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { useUserContext } from '~/hooks/UserContext'
 import { useRouter } from 'next/router'
 import { TfiWorld } from 'react-icons/tfi'
+import Image from 'next/image'
 
 interface Props {
   openMenu: boolean
@@ -91,10 +92,13 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
           >
             <div className={ styles.mobileMenu__slideOut }>
               <div className={ styles.mobileMenu__logoContainer } >
-                <img
-                  className={ styles.mobileMenu__logo }
-                  src='/img/cheems-logo.png'
+                <Image
                   alt={ t('menu_logo_alt_title') }
+                  className={ styles.mobileMenu__logo }
+                  src={ '/img/cheems-logo-text.png' }
+                  width={ 0 }
+                  height={ 0 }
+                  sizes={ '100vw' }
                 />
               </div>
 
@@ -109,22 +113,10 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   picture: <BsHouse />,
                   onClick: undefined,
                 },
-                /**
-                 {
-                  translationKey: 'menu_following_button_title',
-                  isActive: false,
-                  action: {
-                    url: '/',
-                    blank: false,
-                  },
-                  picture: <TbClipboardCheck />,
-                  onClick: undefined,
-                },
-                 **/
                 buildAuthenticationAction(
-                  `/users/${user ? user.username : ''}?section=savedPosts`,
+                  `/users/${user ? user.username : ''}/saved-posts`,
                   <BsBookmarks />,
-                  false,
+                  asPath === `/users/${user ? user.username : ''}/saved-posts`,
                   t('menu_saved_button_title')
                 ),
                 {
@@ -147,9 +139,9 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   },
                 },
                 buildAuthenticationAction(
-                  `/users/${user ? user.username : ''}?section=history`,
+                  `/users/${user ? user.username : ''}/history`,
                   <BsClock />,
-                  false,
+                  asPath === `/users/${user ? user.username : ''}/history`,
                   t('menu_user_history_button_title')
                 ),
                 {

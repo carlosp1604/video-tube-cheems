@@ -131,20 +131,20 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
     },
     /**
      {
-                  translationKey: 'menu_following_button_title',
-                  isActive: false,
-                  action: {
-                    url: '/',
-                    blank: false,
-                  },
-                  picture: <TbClipboardCheck />,
-                  onClick: undefined,
-                },
+      translationKey: 'menu_following_button_title',
+      isActive: false,
+      action: {
+        url: '/',
+        blank: false,
+      },
+      picture: <TbClipboardCheck />,
+      onClick: undefined,
+    },
      **/
     buildAuthenticationAction(
-      `/users/${user ? user.username : ''}?section=savedPosts`,
+      `/users/${user ? user.username : ''}/saved-posts`,
       <BsBookmarks />,
-      false,
+      asPath === `/users/${user ? user.username : ''}/saved-posts`,
       t('menu_saved_button_title')
     ),
     {
@@ -167,9 +167,9 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       },
     },
     buildAuthenticationAction(
-      `/users/${user ? user.username : ''}?section=history`,
+      `/users/${user ? user.username : ''}/history`,
       <BsClock />,
-      false,
+      asPath === `/users/${user ? user.username : ''}/history`,
       t('menu_user_history_button_title')
     ),
     {

@@ -1,16 +1,12 @@
 .app-menu {
   &__layer {
     @apply sticky top-0 z-app-menu transition duration-500
-      backdrop-filter backdrop-blur-sm bg-opacity-80 bg-body;
-
-    &:hover {
-      @apply border-opacity-100 transition duration-500;
-    }
+      backdrop-filter backdrop-blur-lg bg-opacity-80 bg-body;
   }
 
   &__container {
     @apply flex justify-between items-center mx-auto px-5 py-0.5 z-50
-      border-b border-base-800 overflow-hidden;
+      overflow-hidden;
   }
 
   &__logo-image {

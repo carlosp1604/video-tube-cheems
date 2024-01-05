@@ -45,11 +45,26 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
 
   const locale = useRouter().locale ?? 'en'
 
-  const onDeleteSavedPost = (postId: string) => {
+  const onDeleteSavedPost = async (postId: string) => {
     const newSavedPosts = savedPosts.filter((savedPost) => savedPost.id !== postId)
 
-    setSavedPostsNumber(savedPostsNumber - 1)
-    setSavedPosts(newSavedPosts)
+    let newPostsNumber = savedPostsNumber
+
+    if (newSavedPosts.length < savedPosts.length) {
+      newPostsNumber = savedPostsNumber - 1
+    }
+
+    if (
+      newPostsNumber > newSavedPosts.length &&
+      newSavedPosts.length <= (defaultPerPage / 2)
+    ) {
+      setLoading(true)
+      await fetchSavedPosts()
+      setLoading(false)
+    } else {
+      setSavedPostsNumber(newPostsNumber)
+      setSavedPosts(newSavedPosts)
+    }
   }
 
   const onSavePost = (postCard: PostCardComponentDto) => {
@@ -57,37 +72,45 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
     setSavedPosts([postCard, ...savedPosts])
   }
 
-  const fetchPosts = async () => {
-    const [savedPosts, postsHistory] = await Promise.all([
-      (new PostsApiService())
-        .getSavedPosts(
-          String(userComponentDto.id),
-          1,
-          defaultPerPage,
-          InfrastructureSortingCriteria.DESC,
-          InfrastructureSortingOptions.SAVED_DATE,
-          [{ type: PostFilterOptions.SAVED_BY, value: userComponentDto.id }]
-        ),
-      (new PostsApiService())
-        .getUserHistory(
-          String(userComponentDto.id),
-          1,
-          defaultPerPage,
-          InfrastructureSortingCriteria.DESC,
-          InfrastructureSortingOptions.VIEW_DATE,
-          []
-        ),
-    ])
+  const fetchSavedPosts = async () => {
+    const savedPosts = await (new PostsApiService())
+      .getSavedPosts(
+        String(userComponentDto.id),
+        1,
+        defaultPerPage,
+        InfrastructureSortingCriteria.DESC,
+        InfrastructureSortingOptions.SAVED_DATE,
+        [{ type: PostFilterOptions.SAVED_BY, value: userComponentDto.id }]
+      )
 
     setSavedPosts(savedPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
     }))
     setSavedPostsNumber(savedPosts.postsNumber)
+  }
+
+  const fetchHistory = async () => {
+    const postsHistory = await (new PostsApiService())
+      .getUserHistory(
+        String(userComponentDto.id),
+        1,
+        defaultPerPage,
+        InfrastructureSortingCriteria.DESC,
+        InfrastructureSortingOptions.VIEW_DATE,
+        []
+      )
 
     setPostsHistory(postsHistory.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
     }))
     setPostsHistoryNumber(postsHistory.postsNumber)
+  }
+
+  const fetchPosts = async () => {
+    await Promise.all([
+      fetchSavedPosts(),
+      fetchHistory(),
+    ])
   }
 
   useEffect(() => {
@@ -135,7 +158,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
                 postsHistoryNumber < defaultPerPage
                   ? t('posts_number_title', { postsNumber: postsHistoryNumber })
                   : <Link
-                    href={ '/' }
+                    href={ `/users/${userComponentDto.username}/history` }
                     className={ styles.userProfilePage__userPostsSeeAllLink }
                     shallow={ false }
                     scroll={ true }

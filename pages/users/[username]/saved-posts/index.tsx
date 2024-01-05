@@ -1,14 +1,14 @@
 import nextI18nextConfig from '~/next-i18next.config'
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { UserSavedPostsPage } from '~/components/pages/UserSavedPostsPage/UserSavedPostsPage'
-import { container } from '~/awilix.container'
+import { UserSavedPostsPage, UserSavedPostsPageProps } from '~/components/pages/UserSavedPostsPage/UserSavedPostsPage'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import {
   UserHeaderComponentDtoTranslator
 } from '~/modules/Auth/Infrastructure/Api/Translators/UserHeaderComponentDtoTranslator'
+import { container } from '~/awilix.container'
 
-export const getServerSideProps: GetServerSideProps<UserSavedPostsPage> = async (context) => {
+export const getServerSideProps: GetServerSideProps<UserSavedPostsPageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
   let { username } = context.query
 
@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps<UserSavedPostsPage> = async 
 
   username = username.toString()
 
-  const props: UserSavedPostsPage = {
+  const props: UserSavedPostsPageProps = {
     userComponentDto: {
       createdAt: '',
       email: '',

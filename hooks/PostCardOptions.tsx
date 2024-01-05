@@ -5,7 +5,10 @@ import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiExcept
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { useTranslation } from 'next-i18next'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { USER_USER_NOT_FOUND } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
+import {
+  USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
+  USER_USER_NOT_FOUND
+} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import { signOut, useSession } from 'next-auth/react'
 import { BsBookmark, BsTrash } from 'react-icons/bs'
 import {
@@ -114,7 +117,8 @@ export function usePostCardOptions () {
 
   const deleteSavedPostCardAction = async (
     postCard: PostCardComponentDto,
-    onSuccess: (() => void) | undefined
+    onSuccess: (() => void) | undefined,
+    onDelete: ((postCardId: string) => void) | undefined
   ) => {
     if (status !== 'authenticated' || !data) {
       toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
@@ -129,6 +133,10 @@ export function usePostCardOptions () {
         onSuccess()
       }
 
+      if (onDelete) {
+        onDelete(postCard.id)
+      }
+
       toast.success(t('post_save_post_successfully_removed_from_saved_post', { ns: 'post_card_options' }))
     } catch (exception) {
       if (!(exception instanceof APIException)) {
@@ -139,6 +147,13 @@ export function usePostCardOptions () {
 
       if (exception.code === USER_USER_NOT_FOUND) {
         await signOut({ redirect: false })
+      }
+
+      if (exception.code === USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS && onDelete) {
+        onDelete(postCard.id)
+        if (onSuccess) {
+          onSuccess()
+        }
       }
 
       toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
@@ -186,8 +201,7 @@ export function usePostCardOptions () {
               icon: <BsTrash />,
               title: t('delete_saved_post_option_title', { ns: 'post_card_options' }),
               onClick: async (postCard: PostCardComponentDto) => {
-                await deleteSavedPostCardAction(postCard, onSuccess)
-                optionConfiguration.onDelete(postCard.id)
+                await deleteSavedPostCardAction(postCard, onSuccess, optionConfiguration.onDelete)
               },
             })
           }

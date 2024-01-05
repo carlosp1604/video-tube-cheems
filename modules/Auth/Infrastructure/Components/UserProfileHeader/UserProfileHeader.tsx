@@ -25,6 +25,7 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
           size={ '120' }
           round={ true }
           imageAlt={ t('user_profile_image_alt_title', { username: componentDto.username }) }
+          priority={ true }
         />
         { `@${componentDto.username}` }
       </div>

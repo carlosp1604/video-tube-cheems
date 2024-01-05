@@ -15,7 +15,7 @@ export const UserSavedPostsEmptyState: FC = () => {
         </small>
       </span>
 
-      <p className={ styles.userSavedPostsEmptyState__option }>
+      <div className={ styles.userSavedPostsEmptyState__option }>
         { t('user_saved_posts_empty_state_first_option_title') }
         <div className={ styles.userSavedPostsEmptyState__explatantionItem }>
           { t('user_saved_posts_empty_state_first_option_first_step') }
@@ -34,8 +34,8 @@ export const UserSavedPostsEmptyState: FC = () => {
             </div>
           </div>
         </div>
-      </p>
-      <p className={ styles.userSavedPostsEmptyState__option }>
+      </div>
+      <div className={ styles.userSavedPostsEmptyState__option }>
         { t('user_saved_posts_empty_state_second_option_title') }
         <div className={ styles.userSavedPostsEmptyState__explatantionItem }>
           { t('user_saved_posts_empty_state_second_option_first_step') }
@@ -45,7 +45,7 @@ export const UserSavedPostsEmptyState: FC = () => {
             { t('user_saved_posts_empty_state_post_post_options_save_button_title') }
           </span>
         </div>
-      </p>
+      </div>
     </div>
   )
 }

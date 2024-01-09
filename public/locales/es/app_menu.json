@@ -3,8 +3,10 @@
   "already_searching_term_error_message": "Ya estás buscando este término",
   "app_menu_loading_user_button_title": "Cargando",
   "app_menu_logo_url_alt": "Cheems",
-  "app_menu_search_button_title": "Buscar vídeos",
-  "app_menu_search_menu_placeholder_title": "Buscar vídeos",
+  "app_menu_search_button_title": "Buscar posts",
+  "app_menu_search_menu_placeholder_title": "Buscar posts",
   "app_menu_user_button_title": "Iniciar sesión",
-  "empty_search_error_message": "Por favor, introduce un término de búsqueda"
+  "empty_search_error_message": "Por favor, introduce un término de búsqueda",
+  "search_bar_contract_title": "Contraer",
+  "search_bar_expand_title": "Abrir búsqueda"
 }

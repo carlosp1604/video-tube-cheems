@@ -4,43 +4,41 @@ import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/User
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
 import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
-import { useSession } from 'next-auth/react'
 import { FC, ReactElement, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useUserContext } from '~/hooks/UserContext'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'
-import { CiUser } from 'react-icons/ci'
+import { CiSearch, CiUser } from 'react-icons/ci'
 import toast from 'react-hot-toast'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import Image from 'next/image'
+import { BsArrowUpShort } from 'react-icons/bs'
+import { useSession } from 'next-auth/react'
 
 export const AppMenu: FC = () => {
   const [title, setTitle] = useState<string>('')
   const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
   const { blocked } = useUsingRouterContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
+  const [openSearchBar, setOpenSearchBar] = useState<boolean>(false)
 
   const { user } = useUserContext()
   const { t } = useTranslation('app_menu')
   const router = useRouter()
-  const session = useSession()
+  const { status } = useSession()
 
-  let userAvatar: ReactElement | null = null
+  let userAvatar: ReactElement | null = (
+    <IconButton
+      onClick={ undefined }
+      icon={ <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/> }
+      title={ t('app_menu_loading_user_button_title') }
+    />
+  )
 
-  if (session.status === 'loading') {
-    userAvatar = (
-      <IconButton
-        onClick={ undefined }
-        icon={ <AiOutlineLoading className={ styles.appMenu__loadingMenuIcon }/> }
-        title={ t('app_menu_loading_user_button_title') }
-      />
-    )
-  }
-
-  if (session.status === 'unauthenticated') {
+  if (status === 'unauthenticated') {
     userAvatar = (
       <IconButton
         onClick={ () => setLoginModalOpen(!loginModalOpen) }
@@ -52,7 +50,7 @@ export const AppMenu: FC = () => {
 
   let userMenu = null
 
-  if (session.status === 'authenticated' && user !== null) {
+  if (status === 'authenticated' && user) {
     userAvatar = (
       <button
         className={ styles.appMenu__userAvatarContainer }
@@ -60,23 +58,25 @@ export const AppMenu: FC = () => {
       >
         <AvatarImage
           imageUrl={ user.image }
-          avatarClassName={ styles.userProfileHeader__userAvatarContainer }
-          imageClassName={ styles.appMenu__userAvatarContainer }
+          avatarClassName={ styles.appMenu__userAvatar }
+          imageClassName={ styles.appMenu__userAvatarImage }
           avatarName={ user.name }
-          size={ '28' }
+          size={ '34' }
           round={ true }
           imageAlt={ user.username }
         />
       </button>
     )
 
-    userMenu = (
-      <UserMenu
-        user={ user }
-        setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
-        isOpen={ userMenuOpen }
-      />
-    )
+    if (user !== null) {
+      userMenu = (
+        <UserMenu
+          user={ user }
+          setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
+          isOpen={ userMenuOpen }
+        />
+      )
+    }
   }
 
   const onSearch = async () => {
@@ -103,7 +103,9 @@ export const AppMenu: FC = () => {
         query: {
           search: title.trim(),
         },
-      }, undefined, { shallow: true, scroll: false })
+      }, undefined, { shallow: true, scroll: true })
+
+      setOpenSearchBar(false)
     } else {
       toast.error(t('already_searching_term_error_message'))
     }
@@ -115,7 +117,7 @@ export const AppMenu: FC = () => {
       <LoginModal />
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
-          <Link href='/' scroll={ false }>
+          <Link href='/'>
             <Image
               alt={ t('app_menu_logo_url_alt') }
               className={ styles.appMenu__logoImage }
@@ -126,14 +128,27 @@ export const AppMenu: FC = () => {
             />
           </Link>
 
-          <div className={ styles.appMenu__rightContainer }>
+          <div className={ `
+            ${styles.appMenu__searchContainer}
+            ${openSearchBar ? styles.appMenu__searchContainer__open : ''}
+          ` }>
             <SearchBar
               onChange={ (value: string) => setTitle(value) }
               onSearch={ onSearch }
-              expandable={ true }
               placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
               searchIconTitle={ t('app_menu_search_button_title') }
             />
+          </div>
+          <div className={ styles.appMenu__rightContainer }>
+            <div className={ styles.appMenu__mobileSearchButton }>
+              <IconButton
+                onClick={ () => setOpenSearchBar(!openSearchBar) }
+                icon={ openSearchBar ? <BsArrowUpShort /> : <CiSearch /> }
+                title={ openSearchBar ? t('search_bar_contract_title') : t('search_bar_expand_title') }
+                showTooltip={ true }
+              />
+            </div>
+
             { userAvatar }
           </div>
         </div>

@@ -5,15 +5,19 @@
   }
 
   &__container {
-    @apply flex justify-between items-center mx-auto px-5 py-0.5 z-50
-      overflow-hidden;
+    @apply flex justify-between items-center mx-auto px-5
+      py-0.5 z-50 overflow-hidden;
+
+    @screen md {
+      @apply gap-x-10 justify-between basis-6;
+    }
   }
 
   &__logo-image {
-    @apply h-5 w-auto transition-all;
+    @apply object-contain w-full max-h-12 transition-all;
 
     @screen md {
-      @apply h-10 transition-all;
+      @apply max-h-12 transition-all;
     }
 
     &:hover {
@@ -21,39 +25,41 @@
     }
   }
 
-  &__avatar-wrapper {
-    @apply h-10 w-10 rounded-full overflow-hidden object-cover;
 
-    &:hover, &:focus {
-      @apply grayscale cursor-pointer;
+  &__right-container {
+    @apply flex flex-row flex-auto gap-x-4 items-center
+      justify-end;
+
+    @screen md {
+      @apply flex-grow-0;
     }
   }
 
   &__right-container {
-    @apply flex flex-row gap-x-4 items-center;
+    @apply flex flex-row gap-x-2;
   }
 
-  &__menu-button {
-    @apply p-3 rounded-full transition-colors;
+  &__mobile-search-button {
+    @apply block;
 
-    &:hover, &:focus {
-      @apply bg-base-800 transition-colors;
-    }
-
-    &:active {
-      @apply bg-base-700 text-brand-500;
+    @screen md {
+      @apply hidden;
     }
   }
 
-  &__search-button {
-    @apply p-3 rounded-full;
+  &__search-container {
+    @apply hidden absolute top-12 w-full left-0;
 
-    &:hover {
-      @apply bg-base-800 text-base-500;
+    &__open {
+      @apply block;
     }
 
-    &:active {
-      @apply bg-base-700 text-brand-500;
+    @screen md {
+      @apply block static max-w-md;
+    }
+
+    @screen lg {
+      @apply max-w-lg;
     }
   }
 
@@ -61,26 +67,9 @@
     @apply h-6 w-6 animate-spin;
   }
 
-  &__search-input {
-    @apply w-0 -m-2 transition-all duration-300 text-base-100 bg-body
-      caret-base-100 italic border-base-700;
-
-    &__open {
-      @apply px-2 h-8 rounded-md border w-40;
-
-      @screen md {
-        @apply w-64;
-      }
-    }
-  }
-
   &__user-avatar-container {
-    @apply flex h-6 w-6 items-center justify-center rounded-full overflow-hidden
-    transition-transform;
-
-    @screen md {
-      @apply h-8 w-8;
-    }
+    @apply flex items-center justify-center object-cover rounded-full
+      overflow-hidden h-12 w-12 transition-transform text-xl;
 
     &:hover, &:focus {
       @apply scale-110 transition-transform cursor-pointer;
@@ -88,14 +77,26 @@
   }
 
   &__user-avatar-image {
-    @apply h-6 w-6 object-cover self-center rounded-full;
+    @apply p-2 w-full h-full object-cover self-center rounded-full;
 
     &:hover, &:focus {
       @apply scale-110 transition-transform;
     }
 
     @screen md {
-      @apply h-8 w-8;
+      @apply p-1.5;
+    }
+
+    @screen lg {
+      @apply p-1;
+    }
+  }
+
+  &__user-avatar {
+    @apply w-full h-full text-xl text-center overflow-hidden;
+
+    &:hover, &:focus {
+      @apply scale-110 transition-transform;
     }
   }
 

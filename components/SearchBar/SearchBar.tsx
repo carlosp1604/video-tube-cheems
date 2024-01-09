@@ -1,19 +1,42 @@
-import { ChangeEvent, FC, KeyboardEvent, useState } from 'react'
+import { ChangeEvent, createRef, FC, KeyboardEvent, Ref, useEffect, useState } from 'react'
 import styles from './SearchBar.module.scss'
-import { IconButton } from '~/components/IconButton/IconButton'
 import { CiSearch } from 'react-icons/ci'
-import { BsArrowRight } from 'react-icons/bs'
+import { Tooltip } from '~/components/Tooltip/Tooltip'
+import { IconButton } from '~/components/IconButton/IconButton'
+import { TfiClose } from 'react-icons/tfi'
+import { useTranslation } from 'next-i18next'
+import * as uuid from 'uuid'
 
 interface Props {
   onChange: (value: string) => void
   onSearch: () => void
-  expandable: boolean
   placeHolderTitle: string
   searchIconTitle: string
 }
 
-export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHolderTitle, searchIconTitle }) => {
-  const [openSearchBar, setOpenSearchBar] = useState<boolean>(!expandable)
+export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, searchIconTitle }) => {
+  const [title, setTitle] = useState<string>('')
+
+  const { t } = useTranslation('common')
+
+  const [mounted, setMounted] = useState<boolean>(false)
+  const [tooltipId, setTooltipId] = useState<string>('')
+  const inputRef: Ref<HTMLInputElement> = createRef()
+
+  useEffect(() => {
+    setMounted(true)
+    setTooltipId(uuid.v4())
+
+    if (inputRef && inputRef.current && inputRef.current !== document.activeElement) {
+      inputRef.current.focus()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (inputRef && inputRef.current && inputRef.current !== document.activeElement) {
+      inputRef.current.focus()
+    }
+  })
 
   const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -24,43 +47,52 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, expandable, placeHold
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value)
+    setTitle(event.target.value)
+  }
+
+  const clearInput = () => {
+    setTitle('')
+    onChange('')
   }
 
   return (
     <div className={ styles.searchBar__container }>
-      { expandable
-        ? <IconButton
-          onClick={ () => {
-            if (expandable) {
-              setOpenSearchBar(!openSearchBar)
-            }
-          } }
-          icon={ openSearchBar ? <BsArrowRight /> : <CiSearch /> }
-          title={ searchIconTitle }
+      <div className={ styles.searchBar__searchInputContainer }>
+        <input
+          className={ styles.searchBar__searchInput }
+          placeholder={ placeHolderTitle }
+          onKeyDown={ async (event: KeyboardEvent<HTMLInputElement>) => { await handleKeyDown(event) } }
+          onChange={ (event: ChangeEvent<HTMLInputElement>) => { handleChange(event) } }
+          value={ title }
+          ref={ inputRef }
         />
-        : null
-      }
-      <input
-        className={ ` 
-          ${styles.searchBar__searchInput}
-          ${openSearchBar ? styles.searchBar__searchInput__open : ''}
-        ` }
-        placeholder={ placeHolderTitle }
-        onKeyDown={ async (event: KeyboardEvent<HTMLInputElement>) => {
-          await handleKeyDown(event)
-        } }
-        onChange={ (event: ChangeEvent<HTMLInputElement>) => {
-          handleChange(event)
-        } }
-      />
-      { !expandable
-        ? <IconButton
-          onClick={ undefined }
-          icon={ <CiSearch /> }
-          title={ searchIconTitle }
-        />
-        : null
-      }
+        { title !== ''
+          ? <span className={ styles.searchBar__clearButton }>
+            <IconButton
+              onClick={ () => clearInput() }
+              icon={ <TfiClose /> }
+              title={ t('clear_search_button_title') }
+              showTooltip={ true }
+            />
+          </span>
+          : null
+        }
+      </div>
+      <button
+        className={ styles.searchBar__searchButton }
+        onClick={ onSearch }
+        data-tooltip-id={ tooltipId }
+        data-tooltip-content={ searchIconTitle }
+      >
+        <CiSearch/>
+        { mounted
+          ? <Tooltip
+            tooltipId={ tooltipId }
+            place={ 'bottom' }
+          />
+          : null
+        }
+      </button>
     </div>
   )
 }

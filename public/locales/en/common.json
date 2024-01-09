@@ -1,7 +1,8 @@
 {
   "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
+  "clear_search_button_title": "Clear search bar",
   "dislike_reaction_active_title_button": "Remove reaction",
   "dislike_reaction_title_button": "Don't like",
   "like_reaction_active_title_button": "Remove reaction",
-  "like_reaction_title_button": "Like"
+  "like_reaction_title_button": "Like",
 }

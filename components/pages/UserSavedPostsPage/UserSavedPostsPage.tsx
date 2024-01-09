@@ -25,9 +25,6 @@ import styles from './UserSavedPostsPage.module.scss'
 import {
   UserSavedPostsEmptyState
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
-import {
-  PostCardCarouselSkeleton
-} from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
 import { useSession } from 'next-auth/react'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 
@@ -145,24 +142,20 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
       )
     }
   } else {
-    if (loading) {
-      content = (<PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>)
-    } else {
-      content = (
-        <InfiniteScroll
-          next={ onEndGalleryReach }
-          hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-          loader={ null }
-          dataLength={ posts.length }
-        >
-          <PostCardGallery
-            posts={ posts }
-            postCardOptions={ postCardOptions }
-            loading={ loading }
-          />
-        </InfiniteScroll>
-      )
-    }
+    content = (
+      <InfiniteScroll
+        next={ onEndGalleryReach }
+        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        loader={ null }
+        dataLength={ posts.length }
+      >
+        <PostCardGallery
+          posts={ posts }
+          postCardOptions={ postCardOptions }
+          loading={ loading }
+        />
+      </InfiniteScroll>
+    )
   }
 
   return (

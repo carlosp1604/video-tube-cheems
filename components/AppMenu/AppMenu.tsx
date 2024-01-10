@@ -137,6 +137,7 @@ export const AppMenu: FC = () => {
               onSearch={ onSearch }
               placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
               searchIconTitle={ t('app_menu_search_button_title') }
+              focus={ openSearchBar }
             />
           </div>
           <div className={ styles.appMenu__rightContainer }>

@@ -12,9 +12,10 @@ interface Props {
   onSearch: () => void
   placeHolderTitle: string
   searchIconTitle: string
+  focus: boolean
 }
 
-export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, searchIconTitle }) => {
+export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, searchIconTitle, focus }) => {
   const [title, setTitle] = useState<string>('')
 
   const { t } = useTranslation('common')
@@ -33,10 +34,10 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, sea
   }, [])
 
   useEffect(() => {
-    if (inputRef && inputRef.current && inputRef.current !== document.activeElement) {
+    if (focus && inputRef && inputRef.current && inputRef.current !== document.activeElement) {
       inputRef.current.focus()
     }
-  })
+  }, [focus])
 
   const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {

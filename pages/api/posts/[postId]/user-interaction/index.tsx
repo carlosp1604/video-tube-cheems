@@ -57,9 +57,9 @@ export default async function handler (
   const useCase = container.resolve<GetPostUserInteraction>('getPostUserInteractionUseCase')
 
   try {
-    const reaction = await useCase.get(applicationRequest)
+    const interaction = await useCase.get(applicationRequest)
 
-    return response.status(200).json(reaction)
+    return response.status(200).json(interaction)
   } catch (exception: unknown) {
     console.error(exception)
 

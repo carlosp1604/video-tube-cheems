@@ -21,6 +21,7 @@
     &:hover, &:focus {
       @apply bg-base-950 transition-colors border-brand-400
         outline-none;
+      box-shadow: 2px 0 5px -2px #0c0a09;
     }
 
     @screen md {

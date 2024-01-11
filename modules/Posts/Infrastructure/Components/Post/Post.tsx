@@ -9,9 +9,7 @@ import {
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
 import toast from 'react-hot-toast'
-import { useLoginContext } from '~/hooks/LoginContext'
-import { signOut, useSession } from 'next-auth/react'
-import { POST_REACTION_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { Promise } from 'es6-promise'
 import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
@@ -20,12 +18,9 @@ import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/Po
 import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/PostProducerActor/PostProducerActor'
-import {
-  USER_SAVED_POSTS_POST_ALREADY_ADDED,
-  USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
-  USER_USER_NOT_FOUND
-} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
-import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
+import { useSavePost } from '~/hooks/SavePosts'
+import { useReactPost } from '~/hooks/ReactPost'
 
 export interface Props {
   post: PostComponentDto
@@ -49,11 +44,15 @@ export const Post: FC<Props> = ({
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
   const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
   const [savedPost, setSavedPost] = useState<boolean>(false)
+  const [optionsDisabled, setOptionsDisabled] = useState<boolean>(true)
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
 
   const { t } = useTranslation(['post', 'api_exceptions'])
-  const { setLoginModalOpen } = useLoginContext()
   const postsApiService = new PostsApiService()
   const commentsRef = useRef<HTMLDivElement>(null)
+
+  const { savePost, removeSavedPost } = useSavePost('post')
+  const { reactPost, removeReaction } = useReactPost('post')
 
   const { status, data } = useSession()
 
@@ -86,6 +85,7 @@ export const Post: FC<Props> = ({
     if (status === 'unauthenticated') {
       setUserReaction(null)
       setSavedPost(false)
+      setOptionsDisabled(false)
     }
 
     if (status === 'authenticated') {
@@ -115,6 +115,7 @@ export const Post: FC<Props> = ({
         .catch((exception) => {
           console.error(exception)
         })
+        .finally(() => { setOptionsDisabled(false) })
     }
 
     if (commentsOpen) {
@@ -138,148 +139,6 @@ export const Post: FC<Props> = ({
     }
   }, [])
 
-  const onClickReactButton = async (type: ReactionType) => {
-    if (status !== 'authenticated') {
-      toast.error(t('user_must_be_authenticated_error_message'))
-      setLoginModalOpen(true)
-
-      return
-    }
-
-    if (userReaction !== null && userReaction.reactionType === type) {
-      try {
-        await postsApiService.deletePostReaction(post.id)
-
-        setUserReaction(null)
-        if (type === ReactionType.LIKE) {
-          setLikesNumber(likesNumber - 1)
-        } else {
-          setDislikesNumber(dislikesNumber - 1)
-        }
-
-        toast.success(t('post_reaction_deleted_correctly_message'))
-      } catch (exception: unknown) {
-        if (!(exception instanceof APIException)) {
-          console.error(exception)
-
-          return
-        }
-
-        if (exception.code === POST_REACTION_USER_NOT_FOUND) {
-          await signOut({ redirect: false })
-        }
-
-        if (exception.apiCode === 401) {
-          setLoginModalOpen(true)
-        }
-
-        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
-      }
-    } else {
-      try {
-        const reaction = await postsApiService.createPostReaction(post.id, type)
-        const reactionComponentDto = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
-
-        if (reactionComponentDto.reactionType === ReactionType.LIKE) {
-          if (userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE) {
-            setDislikesNumber(dislikesNumber - 1)
-          }
-          setLikesNumber(likesNumber + 1)
-        } else {
-          if (userReaction !== null && userReaction.reactionType === ReactionType.LIKE) {
-            setLikesNumber(likesNumber - 1)
-          }
-          setDislikesNumber(dislikesNumber + 1)
-        }
-
-        setUserReaction(reactionComponentDto)
-
-        toast.success(t('post_reaction_added_correctly_message'))
-      } catch (exception: unknown) {
-        if (!(exception instanceof APIException)) {
-          console.error(exception)
-
-          return
-        }
-
-        if (exception.code === POST_REACTION_USER_NOT_FOUND) {
-          await signOut({ redirect: false })
-        }
-
-        if (exception.apiCode === 401) {
-          setLoginModalOpen(true)
-        }
-
-        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
-      }
-    }
-  }
-
-  const onClickSavePostButton = async () => {
-    if (status !== 'authenticated') {
-      toast.error(t('user_must_be_authenticated_error_message'))
-      setLoginModalOpen(true)
-
-      return
-    }
-
-    if (savedPost && data) {
-      try {
-        await postsApiService.removeFromSavedPosts(data.user.id, post.id)
-        setSavedPost(false)
-        toast.success(t('post_save_post_successfully_removed_from_saved_post'))
-      } catch (exception: unknown) {
-        if (!(exception instanceof APIException)) {
-          console.error(exception)
-
-          return
-        }
-
-        if (exception.code === USER_USER_NOT_FOUND) {
-          await signOut({ redirect: false })
-        }
-
-        if (exception.code === USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS) {
-          setSavedPost(false)
-        }
-
-        if (exception.apiCode === 401) {
-          setLoginModalOpen(true)
-        }
-
-        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
-      }
-    }
-
-    if (!savedPost && data) {
-      try {
-        await postsApiService.savePost(data.user.id, post.id)
-        setSavedPost(true)
-        toast.success(t('post_save_post_successfully_saved'))
-      } catch (exception: unknown) {
-        if (!(exception instanceof APIException)) {
-          console.error(exception)
-
-          return
-        }
-
-        if (exception.code === USER_SAVED_POSTS_POST_ALREADY_ADDED) {
-          setSavedPost(true)
-        }
-
-        if (exception.code === USER_USER_NOT_FOUND) {
-          await signOut({ redirect: false })
-        }
-
-        if (exception.apiCode === 401) {
-          setLoginModalOpen(true)
-        }
-
-        toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
-      }
-    }
-  }
-
   let commentsComponent: ReactElement | null = null
 
   if (commentsOpen) {
@@ -300,10 +159,67 @@ export const Post: FC<Props> = ({
     setCommentsOpen(!commentsOpen)
 
     if (!currentValue) {
-      commentsRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
+      commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  const onClickDownloadButton = () => {
+    if (downloadUrls.length > 0) {
+      setDownloadMenuOpen(!downloadMenuOpen)
+
+      return
+    }
+    toast.error(t('post_download_no_downloads_error_message'))
+  }
+
+  const onClickReactButton = async (type: ReactionType) => {
+    if (userReaction !== null && userReaction.reactionType === type) {
+      const deletedReaction = await removeReaction(post.id)
+
+      if (deletedReaction) {
+        if (userReaction.reactionType === ReactionType.LIKE) {
+          setLikesNumber(likesNumber - 1)
+        } else {
+          setDislikesNumber(dislikesNumber - 1)
+        }
+        setUserReaction(null)
+      }
+    } else {
+      const userPostReaction = await reactPost(post.id, type)
+
+      if (userPostReaction === null) {
+        return
+      }
+
+      if (userReaction !== null) {
+        if (userPostReaction.reactionType === ReactionType.LIKE) {
+          setLikesNumber(likesNumber + 1)
+          setDislikesNumber(dislikesNumber - 1)
+        } else {
+          setLikesNumber(likesNumber - 1)
+          setDislikesNumber(dislikesNumber + 1)
+        }
+      } else {
+        if (userPostReaction.reactionType === ReactionType.LIKE) {
+          setLikesNumber(likesNumber + 1)
+        } else {
+          setDislikesNumber(dislikesNumber + 1)
+        }
+      }
+
+      setUserReaction(userPostReaction)
+    }
+  }
+
+  const onClickSavePostButton = async () => {
+    if (!savedPost) {
+      const postIsSaved = await savePost(post.id)
+
+      setSavedPost(postIsSaved)
+    } else {
+      const postIsDeleted = await removeSavedPost(post.id)
+
+      setSavedPost(!postIsDeleted)
     }
   }
 
@@ -325,10 +241,18 @@ export const Post: FC<Props> = ({
           onClickReactButton={ async (type) => await onClickReactButton(type) }
           onClickCommentsButton={ onClickCommentsButton }
           onClickSaveButton={ async () => await onClickSavePostButton() }
+          onClickDownloadButton={ onClickDownloadButton }
           likesNumber={ likesNumber }
-          mediaUrls={ downloadUrls }
-      />
+          downloadUrlNumber={ downloadUrls.length }
+          optionsDisabled={ optionsDisabled }
+        />
       ) }
+
+      <DownloadMenu
+        mediaUrls={ downloadUrls }
+        setIsOpen={ setDownloadMenuOpen }
+        isOpen={ downloadMenuOpen }
+      />
 
       <PostProducerActor
         producer={ post.producer }

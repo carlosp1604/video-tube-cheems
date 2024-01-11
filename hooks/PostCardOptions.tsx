@@ -1,20 +1,15 @@
-import toast from 'react-hot-toast'
 import { BiLike } from 'react-icons/bi'
 import { useCallback } from 'react'
-import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
-import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { useTranslation } from 'next-i18next'
-import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import {
-  USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS,
-  USER_USER_NOT_FOUND
-} from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { BsBookmark, BsTrash } from 'react-icons/bs'
 import {
   PostCardGalleryOption
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import { useSavePost } from '~/hooks/SavePosts'
+import { useReactPost } from '~/hooks/ReactPost'
+import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 
 export type PostCardOptions = 'savePost' | 'react'
 
@@ -39,20 +34,17 @@ export function usePostCardOptions () {
   const { t } = useTranslation(['post_card_options', 'api_exceptions'])
 
   const { status, data } = useSession()
+  const { savePost, removeSavedPost } = useSavePost('post_card_options')
+  const { reactPost } = useReactPost('post_card_options')
 
   const savePostPostCardAction = async (
     postCard: PostCardComponentDto,
     optionOnSuccess: ((postCard: PostCardComponentDto) => void) | undefined,
-    onSuccess:(() => void) | undefined) => {
-    if (status !== 'authenticated' || !data) {
-      toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
+    onSuccess:(() => void) | undefined
+  ) => {
+    const postIsSaved = await savePost(postCard.id)
 
-      return
-    }
-
-    try {
-      await new PostsApiService().savePost(data.user.id, postCard.id)
-
+    if (postIsSaved) {
       if (onSuccess) {
         onSuccess()
       }
@@ -60,20 +52,6 @@ export function usePostCardOptions () {
       if (optionOnSuccess) {
         optionOnSuccess(postCard)
       }
-
-      toast.success(t('post_save_post_successfully_saved', { ns: 'post_card_options' }))
-    } catch (exception: unknown) {
-      if (!(exception instanceof APIException)) {
-        console.error(exception)
-
-        return
-      }
-
-      if (exception.code === USER_USER_NOT_FOUND) {
-        await signOut({ redirect: false })
-      }
-
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 
@@ -82,15 +60,9 @@ export function usePostCardOptions () {
     optionOnSuccess: ((postCard: PostCardComponentDto) => void) | undefined,
     onSuccess: (() => void) | undefined
   ) => {
-    if (status !== 'authenticated' || !data) {
-      toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
+    const userReaction = await reactPost(postCard.id, ReactionType.LIKE)
 
-      return
-    }
-
-    try {
-      await new PostsApiService().createPostReaction(postCard.id, ReactionType.LIKE)
-
+    if (userReaction !== null) {
       if (onSuccess) {
         onSuccess()
       }
@@ -98,20 +70,6 @@ export function usePostCardOptions () {
       if (optionOnSuccess) {
         optionOnSuccess(postCard)
       }
-
-      toast.success(t('post_reaction_added_correctly_message', { ns: 'post_card_options' }))
-    } catch (exception) {
-      if (!(exception instanceof APIException)) {
-        console.error(exception)
-
-        return
-      }
-
-      if (exception.code === USER_USER_NOT_FOUND) {
-        await signOut({ redirect: false })
-      }
-
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 
@@ -120,15 +78,9 @@ export function usePostCardOptions () {
     onSuccess: (() => void) | undefined,
     onDelete: ((postCardId: string) => void) | undefined
   ) => {
-    if (status !== 'authenticated' || !data) {
-      toast.error(t('user_must_be_authenticated_error_message', { ns: 'post_card_options' }))
+    const removedPost = await removeSavedPost(postCard.id)
 
-      return
-    }
-
-    try {
-      await new PostsApiService().removeFromSavedPosts(data.user.id, postCard.id)
-
+    if (removedPost) {
       if (onSuccess) {
         onSuccess()
       }
@@ -136,27 +88,6 @@ export function usePostCardOptions () {
       if (onDelete) {
         onDelete(postCard.id)
       }
-
-      toast.success(t('post_save_post_successfully_removed_from_saved_post', { ns: 'post_card_options' }))
-    } catch (exception) {
-      if (!(exception instanceof APIException)) {
-        console.error(exception)
-
-        return
-      }
-
-      if (exception.code === USER_USER_NOT_FOUND) {
-        await signOut({ redirect: false })
-      }
-
-      if (exception.code === USER_SAVED_POSTS_POST_DOES_NOT_EXISTS_ON_SAVED_POSTS && onDelete) {
-        onDelete(postCard.id)
-        if (onSuccess) {
-          onSuccess()
-        }
-      }
-
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
     }
   }
 

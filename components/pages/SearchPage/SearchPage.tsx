@@ -147,21 +147,21 @@ export const SearchPage: NextPage<SearchPageProps> = ({
 
     setLoading(true)
     setBlocked(true)
+
+    setPaginationState({
+      page: queryParams.page ?? configuration.page.defaultValue,
+      order: queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
+      searchTerm: currentTitle,
+    })
+
     updatePosts(
       queryParams.page ?? configuration.page.defaultValue,
       queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
       currentTitle
-    )
-      .then(() => {
-        setPaginationState({
-          page: queryParams.page ?? configuration.page.defaultValue,
-          order: queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
-          searchTerm: currentTitle,
-        })
-
-        setLoading(false)
-        setBlocked(false)
-      })
+    ).then(() => {
+      setLoading(false)
+      setBlocked(false)
+    })
   }, [query])
 
   const titleElement = (

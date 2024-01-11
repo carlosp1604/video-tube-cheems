@@ -6,6 +6,7 @@ import styles from './Register.module.scss'
 import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingRegister } from '~/modules/Auth/Infrastructure/Components/Register/ConfirmingRegister'
 import { useTranslation } from 'next-i18next'
+import { IconButton } from '~/components/IconButton/IconButton'
 
 type RegistrationSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'signup_completed'
 
@@ -78,9 +79,9 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
   return (
     <div className={ styles.register__registerContainer }>
       <span className={ styles.register__backSection }>
-        <BsArrowLeft
-          className={ styles.register__backIcon }
+        <IconButton
           onClick={ () => { if (!loading) { onClickCancel() } } }
+          icon={ <BsArrowLeft /> }
           title={ t('back_button_title') }
         />
         { t('back_button_title') }

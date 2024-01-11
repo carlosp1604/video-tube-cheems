@@ -1,12 +1,12 @@
 .app-menu {
   &__layer {
     @apply sticky top-0 z-app-menu transition duration-500
-      backdrop-filter backdrop-blur-lg bg-opacity-80 bg-body;
+    backdrop-filter backdrop-blur-lg bg-opacity-80 bg-body;
   }
 
   &__container {
-    @apply flex justify-between items-center mx-auto px-5
-      py-0.5 z-50 overflow-hidden;
+    @apply flex justify-between items-center mx-auto px-5 container
+    py-0.5 z-50 overflow-hidden;
 
     @screen md {
       @apply gap-x-10 justify-between;
@@ -14,9 +14,13 @@
   }
 
   &__logo-image {
-    @apply object-contain w-full max-h-12 transition-all;
+    @apply object-contain w-full max-h-8 transition-all;
 
     @screen md {
+      @apply max-h-10 transition-all;
+    }
+
+    @screen lg {
       @apply max-h-12 transition-all;
     }
 
@@ -28,7 +32,7 @@
 
   &__right-container {
     @apply flex flex-row flex-auto gap-x-4 items-center
-      justify-end;
+    justify-end;
 
     @screen md {
       @apply flex-grow-0;
@@ -55,7 +59,7 @@
     }
 
     @screen md {
-      @apply block static max-w-md;
+      @apply block static max-w-sm;
     }
 
     @screen lg {
@@ -69,7 +73,7 @@
 
   &__user-avatar-container {
     @apply flex items-center justify-center object-cover rounded-full
-      overflow-hidden h-12 w-12 transition-transform text-xl;
+    overflow-hidden h-12 w-12 transition-transform text-xl;
 
     &:hover, &:focus {
       @apply scale-110 transition-transform cursor-pointer;
@@ -102,7 +106,7 @@
 
   &__util-links-container {
     @apply flex flex-nowrap m-auto gap-x-1 px-5 scrollbar-hide
-      sticky top-14 z-app-menu overflow-x-scroll;
+    sticky top-14 z-app-menu overflow-x-scroll;
 
     @screen lg {
       @apply hidden;
@@ -115,7 +119,7 @@
 
   &__util-link {
     @apply flex whitespace-nowrap gap-x-1 items-center bg-base-800 rounded-2xl
-      px-3 p-2 text-xs text-base-300 mr-0 ml-0;
+    px-3 p-2 text-xs text-base-300 mr-0 ml-0;
 
     @screen md {
       @apply text-sm;

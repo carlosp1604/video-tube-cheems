@@ -1,6 +1,6 @@
 .register {
   &__container {
-    @apply mx-auto p-5;
+    @apply mx-auto p-5 pt-0;
 
     &_loading {
       @apply animate-pulse;
@@ -12,7 +12,7 @@
   }
 
   &__title {
-    @apply text-xl font-black mb-1.5 pb-5 pt-1;
+    @apply text-xl font-black mb-1.5 pb-5;
 
     @screen md {
       @apply text-2xl;
@@ -115,19 +115,11 @@
   }
 
   &__back-section {
-    @apply flex gap-x-3 font-light items-center text-xs px-4 pt-2 -mb-4
+    @apply flex gap-x-3 font-light items-center text-xs px-4 pt-2
     text-sm text-base-400;
 
     @screen md {
       @apply text-sm;
-    }
-  }
-
-  &__back-icon {
-    @apply w-10 h-10 p-2 transition-colors rounded-full cursor-pointer;
-
-    &:hover, &:focus, &:active {
-      @apply text-base-700 transition-colors bg-base-900;
     }
   }
 }

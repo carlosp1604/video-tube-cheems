@@ -1,12 +1,10 @@
 import styles from './PostOptions.module.scss'
 import { FC, useState } from 'react'
 import { BsBookmarks, BsChatSquareText, BsDownload, BsMegaphone } from 'react-icons/bs'
-import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { RxDividerVertical } from 'react-icons/rx'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import { useTranslation } from 'next-i18next'
-import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import toast from 'react-hot-toast'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
@@ -18,8 +16,10 @@ export interface Props {
   onClickReactButton: (type: ReactionType) => Promise<void>
   onClickCommentsButton: () => void
   onClickSaveButton: () => Promise<void>
+  onClickDownloadButton: () => void
   likesNumber: number
-  mediaUrls: MediaUrlComponentDto[]
+  downloadUrlNumber: number
+  optionsDisabled: boolean
 }
 
 export const PostOptions: FC<Props> = ({
@@ -28,17 +28,18 @@ export const PostOptions: FC<Props> = ({
   onClickReactButton,
   onClickCommentsButton,
   onClickSaveButton,
+  onClickDownloadButton,
   likesNumber,
-  mediaUrls,
+  downloadUrlNumber,
+  optionsDisabled,
 }) => {
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false)
 
   const { t } = useTranslation('post')
 
   const onClickLikeDislike = async (reactionType: ReactionType) => {
-    if (loading) {
+    if (loading || loadingSaveButton) {
       toast.error(t('action_cannot_be_performed_error_message'))
 
       return
@@ -65,29 +66,23 @@ export const PostOptions: FC<Props> = ({
 
   return (
     <div className={ styles.postOptions__container }>
-      <DownloadMenu
-        mediaUrls={ mediaUrls }
-        setIsOpen={ setDownloadMenuOpen }
-        isOpen={ downloadMenuOpen }
-      />
-
       <span className={ `
         ${styles.postOptions__likeDislikeSection}
-        ${loading ? styles.postOptions__likeDislikeSection_disabled : ''}
+        ${loading || optionsDisabled ? styles.postOptions__likeDislikeSection_disabled : ''}
       ` }>
         <LikeButton
           liked={ userReaction !== null && userReaction.reactionType === ReactionType.LIKE }
           onLike={ () => onClickLikeDislike(ReactionType.LIKE) }
           onDeleteLike={ () => onClickLikeDislike(ReactionType.LIKE) }
           reactionsNumber={ likesNumber }
-          disabled={ loading }
+          disabled={ loading || optionsDisabled }
         />
         <RxDividerVertical />
         <DislikeButton
           disliked={ userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE }
           onDislike={ () => onClickLikeDislike(ReactionType.DISLIKE) }
           onDeleteDislike={ () => onClickLikeDislike(ReactionType.DISLIKE) }
-          disabled={ loading }
+          disabled={ loading || optionsDisabled }
         />
       </span>
       <span
@@ -102,24 +97,17 @@ export const PostOptions: FC<Props> = ({
         ${savedPost ? styles.postOptions__optionItem_active : ''}
       ` }
         onClick={ onClickSave }
-        disabled={ loading }
+        disabled={ loading || optionsDisabled }
       >
         { loadingSaveButton ? <AiOutlineLoading className={ styles.postOptions__loadingIcon } /> : <BsBookmarks /> }
         { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </button>
       <span
         className={ styles.postOptions__optionItem }
-        onClick={ () => {
-          if (mediaUrls.length > 0) {
-            setDownloadMenuOpen(!downloadMenuOpen)
-
-            return
-          }
-          toast.error(t('post_download_no_downloads_error_message'))
-        } }
+        onClick={ () => onClickDownloadButton() }
       >
         <BsDownload />
-        { t('post_download_button_title', { sourcesNumber: mediaUrls.length }) }
+        { t('post_download_button_title', { sourcesNumber: downloadUrlNumber }) }
       </span>
       <span
         className={ styles.postOptions__optionItem }

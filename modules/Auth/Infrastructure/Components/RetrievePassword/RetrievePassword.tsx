@@ -7,6 +7,7 @@ import { ConfirmingPasswordChange } from './ConfirmingPasswordChange'
 import { ChangeUserPassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/ChangeUserPassword'
 import { useTranslation } from 'next-i18next'
 import { useSession } from 'next-auth/react'
+import { IconButton } from '~/components/IconButton/IconButton'
 
 type RetrieveSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'password_changed'
 
@@ -74,18 +75,20 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
     content = <ConfirmingPasswordChange onConfirm={ () => { onConfirm() } }/>
   }
 
+  const disabledBackButton = () => {
+    return status !== 'unauthenticated' && (retrieveStep === 'verifying_email' || retrieveStep === 'password_changed')
+  }
+
   return (
-    <div className={ styles.retrievePassword__registerForgotContainer }>
+    <div className={ styles.retrievePassword__registerContainer }>
       <span className={ `
         ${styles.retrievePassword__backSection}
-        ${status !== 'unauthenticated' && (retrieveStep === 'verifying_email' || retrieveStep === 'password_changed')
-          ? styles.retrievePassword__backSection_disabled
-          : ''
-        }
+        ${disabledBackButton() ? styles.retrievePassword__backSection_disabled : ''}
       ` }>
-        <BsArrowLeft
-          className={ styles.retrievePassword__backIcon }
+        <IconButton
           onClick={ () => { if (!loading) { onClickCancel() } } }
+          icon={ <BsArrowLeft /> }
+          title={ t('back_button_title') }
         />
         { t('back_button_title') }
       </span>

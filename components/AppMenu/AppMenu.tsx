@@ -44,6 +44,7 @@ export const AppMenu: FC = () => {
         onClick={ () => setLoginModalOpen(!loginModalOpen) }
         icon={ <CiUser /> }
         title={ t('app_menu_user_button_title') }
+        showTooltip={ true }
       />
     )
   }
@@ -68,15 +69,13 @@ export const AppMenu: FC = () => {
       </button>
     )
 
-    if (user !== null) {
-      userMenu = (
-        <UserMenu
-          user={ user }
-          setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
-          isOpen={ userMenuOpen }
-        />
-      )
-    }
+    userMenu = (
+      <UserMenu
+        user={ user }
+        setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
+        isOpen={ userMenuOpen }
+      />
+    )
   }
 
   const onSearch = async () => {

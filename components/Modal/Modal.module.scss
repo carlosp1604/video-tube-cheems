@@ -1,14 +1,11 @@
 .modal {
   &__container {
-    @apply w-full rounded-lg bg-base-800 hidden translate-y-full;
+    @apply w-full rounded-lg bg-base-800 hidden translate-y-full
+      transition-width;
 
     @screen tb {
-      @apply w-auto max-w-sm bg-base-800 backdrop-filter backdrop-blur-2xl
+      @apply max-w-xs w-full bg-base-800 backdrop-filter backdrop-blur-2xl
         bg-opacity-80 border border-base-800 opacity-0 scale-50 translate-y-0;
-    }
-
-    @screen md {
-      @apply max-w-md;
     }
 
     &-enter {
@@ -53,14 +50,6 @@
       @screen tb {
         @apply hidden;
       }
-    }
-
-    @screen md {
-      @apply max-w-md;
-    }
-
-    @screen lg {
-      @apply max-w-lg;
     }
   }
 

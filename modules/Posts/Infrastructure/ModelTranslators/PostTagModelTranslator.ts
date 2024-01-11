@@ -30,6 +30,7 @@ export class PostTagModelTranslator {
 
     return new PostTag(
       prismaPostTagModel.id,
+      prismaPostTagModel.slug,
       prismaPostTagModel.name,
       prismaPostTagModel.description,
       prismaPostTagModel.imageUrl,
@@ -43,6 +44,7 @@ export class PostTagModelTranslator {
   public static toDatabase (postTag: PostTag): PrismaPostTagModel {
     return {
       id: postTag.id,
+      slug: postTag.slug,
       imageUrl: postTag.imageUrl,
       name: postTag.name,
       description: postTag.description,

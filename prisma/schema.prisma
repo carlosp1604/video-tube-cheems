@@ -58,6 +58,7 @@ model Post {
 
 model PostTag {
   id           String          @id
+  slug             String
   name         String
   description  String?
   imageUrl     String?         @map("image_url")
@@ -172,6 +173,7 @@ model PostComment {
 
 model Actor {
   id          String      @id
+  slug             String
   name        String
   description String
   imageUrl    String?     @map("image_url")

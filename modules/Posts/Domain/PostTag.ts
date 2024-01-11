@@ -5,6 +5,7 @@ import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableMod
 
 export class PostTag extends TranslatableModel {
   public readonly id: string
+  public readonly slug: string
   public readonly name: string
   public readonly description: string | null
   public readonly imageUrl: string | null
@@ -14,6 +15,7 @@ export class PostTag extends TranslatableModel {
 
   public constructor (
     id: string,
+    slug: string,
     name: string,
     description: string | null,
     imageUrl: string | null,
@@ -24,6 +26,7 @@ export class PostTag extends TranslatableModel {
   ) {
     super()
     this.id = id
+    this.slug = slug
     this.name = name
     this.description = description
     this.imageUrl = imageUrl

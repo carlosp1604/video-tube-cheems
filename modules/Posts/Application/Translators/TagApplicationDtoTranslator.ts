@@ -9,6 +9,7 @@ export class TagApplicationDtoTranslator {
   public static fromDomain (postTag: PostTag): TagApplicationDto {
     return {
       id: postTag.id,
+      slug: postTag.slug,
       name: postTag.name,
       imageUrl: postTag.imageUrl,
       description: postTag.description,

@@ -12,6 +12,7 @@ export class ActorModelTranslator {
 
     return new Actor(
       prismaActorModel.id,
+      prismaActorModel.slug,
       prismaActorModel.name,
       prismaActorModel.description,
       prismaActorModel.imageUrl,

@@ -6,6 +6,7 @@ export class ActorApplicationDtoTranslator {
   public static fromDomain (actor: Actor): ActorApplicationDto {
     return {
       id: actor.id,
+      slug: actor.slug,
       name: actor.name,
       imageUrl: actor.imageUrl,
       description: actor.description,

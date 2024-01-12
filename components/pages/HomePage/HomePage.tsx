@@ -139,9 +139,9 @@ export const HomePage: NextPage<Props> = ({
     const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue
 
     if (
-      newPage !== paginationState.page &&
-      newOrder !== paginationState.order &&
-      currentProducer !== paginationState.activeProducer
+      newPage === paginationState.page &&
+      newOrder === paginationState.order &&
+      currentProducer === paginationState.activeProducer
     ) {
       return
     }

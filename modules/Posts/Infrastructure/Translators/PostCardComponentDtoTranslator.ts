@@ -53,6 +53,7 @@ export class PostCardComponentDtoTranslator {
     if (applicationDto.actor !== null) {
       actor = {
         id: applicationDto.actor.id,
+        slug: applicationDto.actor.slug,
         imageUrl: applicationDto.actor.imageUrl,
         name: applicationDto.actor.name,
       }

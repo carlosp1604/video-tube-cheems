@@ -28,6 +28,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     'user_retrieve_password',
     'pagination_bar',
     'common',
+    'actor_page',
   ])
 
   const props: ActorsPageProps = {

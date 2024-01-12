@@ -934,13 +934,13 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           }
         }
 
-        if (filter.type === 'actorName') {
+        if (filter.type === 'actorSlug') {
           whereClause = {
             ...whereClause,
             actors: {
               some: {
                 actor: {
-                  name: filter.value,
+                  slug: filter.value,
                 },
               },
             },

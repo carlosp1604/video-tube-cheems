@@ -4,14 +4,14 @@ export type PostFilterStringTypeOption =
   'actorId' |
   'tagId' |
   'producerName' |
-  'actorName' |
+  'actorSlug' |
   'tagName' |
   'savedBy' |
   'viewedBy'
 
 export const GetPostsFilterStringTypeOptions:
-  Extract<PostFilterStringTypeOption, 'postTitle' | 'producerSlug'>[] = [
-    'postTitle', 'producerSlug',
+  Extract<PostFilterStringTypeOption, 'postTitle' | 'producerSlug' | 'actorSlug'>[] = [
+    'postTitle', 'producerSlug', 'actorSlug',
   ]
 
 export type GetPostsFilterStringTypeOption = typeof GetPostsFilterStringTypeOptions[number]

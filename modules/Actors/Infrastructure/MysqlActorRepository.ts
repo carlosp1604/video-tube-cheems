@@ -29,6 +29,26 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   /**
+   * Find an Actor given its slug
+   * @param actorSlug Actor Slug
+   * @return Actor if found or null
+   */
+  public async findBySlug (actorSlug: Actor['slug']): Promise<Actor | null> {
+    const actor = await prisma.actor.findFirst({
+      where: {
+        slug: actorSlug,
+        deletedAt: null,
+      },
+    })
+
+    if (actor === null) {
+      return null
+    }
+
+    return ActorModelTranslator.toDomain(actor)
+  }
+
+  /**
    * Find Actors based on filter and order criteria
    * @param offset Post offset
    * @param limit
@@ -64,7 +84,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   /**
-   * Count Actos based on filters
+   * Count Actors based on filters
    * @param filters Actor filters
    * @return Number of actors that accomplish with the filters
    */
@@ -95,7 +115,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
     let whereClause: Prisma.ActorWhereInput | undefined = {}
 
     for (const filter of filters) {
-      if (filter.type === 'actorName') {
+      if (filter.type === 'actorSlug') {
         whereClause = {
           ...whereClause,
           name: filter.value,

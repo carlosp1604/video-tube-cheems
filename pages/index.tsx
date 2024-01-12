@@ -71,9 +71,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   const props: Props = {
     order: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,
-    posts: [],
+    initialPosts: [],
     producers: [],
-    postsNumber: 0,
+    initialPostsNumber: 0,
     ...i18nSSRConfig,
     activeProducer: null,
   }
@@ -125,10 +125,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       props.activeProducer = allPostsProducerDto
     }
 
-    props.posts = posts.posts.map((post) => {
+    props.initialPosts = posts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.postsNumber = posts.postsNumber
+    props.initialPostsNumber = posts.postsNumber
     props.producers = producerComponents
   } catch (exception: unknown) {
     console.error(exception)

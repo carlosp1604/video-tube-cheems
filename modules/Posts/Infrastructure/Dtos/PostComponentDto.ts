@@ -3,6 +3,7 @@ import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostM
 
 export interface PostComponentDtoActorDto {
   readonly id: string
+  readonly slug: string
   readonly imageUrl: string | null
   readonly name: string
 }

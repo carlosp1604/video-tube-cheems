@@ -14,30 +14,54 @@ import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructur
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import {
+  PostCardComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import {
+  PostsPaginationConfiguration,
+  PostsPaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { useGetPosts } from '~/hooks/GetPosts'
+import { useFirstRender } from '~/hooks/FirstRender'
+import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+
+export interface HomePagePaginationState {
+  page: number
+  order: PostsPaginationSortingType
+  activeProducer: ProducerComponentDto | null
+}
 
 export interface Props {
   page: number
   order: PostsPaginationSortingType
-  posts: PostCardComponentDto[]
-  postsNumber: number
+  initialPosts: PostCardComponentDto[]
+  initialPostsNumber: number
   producers: ProducerComponentDto[]
   activeProducer: ProducerComponentDto | null
 }
 
 export const HomePage: NextPage<Props> = ({
-  postsNumber,
-  posts,
+  initialPostsNumber,
+  initialPosts,
   producers,
   page,
   order,
   activeProducer,
 }) => {
+  const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
+  const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
   const { t } = useTranslation(['home_page'])
   const router = useRouter()
-  const { asPath } = router
+  const { asPath, query } = router
   const locale = router.locale ?? 'en'
+  const { getPosts, loading } = useGetPosts()
+  const firstRender = useFirstRender()
+
+  const [paginationState, setPaginationState] = useState<HomePagePaginationState>({ page, order, activeProducer })
 
   const sortingOptions: PostsPaginationSortingType[] = [
     PostsPaginationSortingType.LATEST,
@@ -47,32 +71,111 @@ export const HomePage: NextPage<Props> = ({
 
   const linkMode: ElementLinkMode = {
     replace: false,
-    shallowNavigation: false,
+    shallowNavigation: true,
     scrollOnClick: true,
   }
 
+  const configuration: Partial<PostsPaginationConfiguration> &
+    Pick<PostsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
+      page: {
+        defaultValue: 1,
+        maxValue: Infinity,
+        minValue: 1,
+      },
+      filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
+      sortingOptionType: {
+        defaultValue: PostsPaginationSortingType.LATEST,
+        parseableOptionTypes: sortingOptions,
+      },
+    }
+
+  const updatePosts = async (page:number, order: PostsPaginationSortingType, producer: ProducerComponentDto | null) => {
+    let filters: FetchPostsFilter[] = []
+
+    if (!producer) {
+      setPostsNumber(0)
+      setPosts([])
+
+      return
+    }
+
+    if (producer !== allPostsProducerDto) {
+      filters = [{ type: PostFilterOptions.PRODUCER_SLUG, value: producer.slug }]
+    }
+
+    const newPosts =
+      await getPosts(page, order, filters)
+
+    if (newPosts) {
+      setPostsNumber(newPosts.postsNumber)
+      setPosts(newPosts.posts.map((post) => {
+        return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
+      }))
+    }
+  }
+
+  useEffect(() => {
+    if (firstRender) {
+      return
+    }
+
+    const queryParams = new PostsPaginationQueryParams(query, configuration)
+
+    const currentProducerSlug = queryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
+
+    let currentProducer: ProducerComponentDto | null = allPostsProducerDto
+
+    if (currentProducerSlug) {
+      const foundProducer = producers.find((producer) => producer.slug === currentProducerSlug.value)
+
+      if (foundProducer) {
+        currentProducer = foundProducer
+      } else {
+        currentProducer = null
+      }
+    }
+
+    const newPage = queryParams.page ?? configuration.page.defaultValue
+    const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue
+
+    if (
+      newPage !== paginationState.page &&
+      newOrder !== paginationState.order &&
+      currentProducer !== paginationState.activeProducer
+    ) {
+      return
+    }
+
+    setPaginationState({ page: newPage, order: newOrder, activeProducer: currentProducer })
+
+    updatePosts(newPage, newOrder, currentProducer)
+  }, [query])
+
   let galleryTitle: string
 
-  if (!activeProducer) {
+  if (!paginationState.activeProducer) {
     galleryTitle = t('post_gallery_no_producer_title')
   } else {
-    galleryTitle = activeProducer.id === '' ? t('all_producers_title', { ns: 'home_page' }) : activeProducer.name
+    galleryTitle = paginationState.activeProducer.id === ''
+      ? t('all_producers_title', { ns: 'home_page' })
+      : paginationState.activeProducer.name
   }
 
   let content: ReactElement
 
-  if (postsNumber > 0) {
-    content = (
-      <PostCardGallery
-        posts={ posts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-      />
-    )
-  } else {
+  if (postsNumber === 0 && !loading) {
     content = (
       <EmptyState
         title={ t('post_gallery_empty_state_title') }
         subtitle={ t('post_gallery_empty_state_subtitle') }
+      />
+    )
+  } else {
+    content = (
+      <PostCardGallery
+        posts={ posts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        loading={ loading }
       />
     )
   }
@@ -82,7 +185,7 @@ export const HomePage: NextPage<Props> = ({
     <div className={ styles.home__container }>
       <ProducerList
         producers={ producers }
-        activeProducer={ activeProducer }
+        activeProducer={ paginationState.activeProducer }
       />
 
       <PostCardGalleryHeader
@@ -93,14 +196,15 @@ export const HomePage: NextPage<Props> = ({
         activeOption={ order }
         sortingOptions={ sortingOptions }
         linkMode= { linkMode }
+        loading={ loading }
       />
 
       { content }
 
       <PaginationBar
         availablePages={ PaginationHelper.getShowablePages(
-          page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
-        pageNumber={ page }
+          paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
+        pageNumber={ paginationState.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ { ...linkMode, scrollOnClick: false } }
         onPageChange={ () => window.scrollTo({ top: 0 }) }

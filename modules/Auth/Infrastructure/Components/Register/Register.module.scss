@@ -1,6 +1,6 @@
 .register {
   &__container {
-    @apply mx-auto p-5 pt-0;
+    @apply p-5 pt-0;
 
     &_loading {
       @apply animate-pulse;
@@ -98,8 +98,8 @@
   }
 
   &__confirming-register-button {
-    @apply p-2 border-2 border-brand-500 text-sm font-bold w-full rounded-lg
-      transition-colors duration-100;
+    @apply p-2 border-2 border-brand-500 text-sm font-bold w-full
+      rounded-lg transition-colors duration-100;
 
     &:active, &:focus, &:hover {
       @apply bg-brand-500;

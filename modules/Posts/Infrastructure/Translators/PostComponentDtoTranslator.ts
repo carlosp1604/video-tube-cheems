@@ -15,6 +15,7 @@ export class PostComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: PostApplicationDto, locale: string): PostComponentDto {
     const actors: PostComponentDtoActorDto[] = applicationDto.actors.map((actor) => ({
       name: actor.name,
+      slug: actor.slug,
       id: actor.id,
       imageUrl: actor.imageUrl,
     }))

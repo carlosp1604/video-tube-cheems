@@ -4,7 +4,7 @@
       transition-width;
 
     @screen tb {
-      @apply max-w-xs w-full bg-base-800 backdrop-filter backdrop-blur-2xl
+      @apply max-w-md w-auto bg-base-800 backdrop-filter backdrop-blur-2xl
         bg-opacity-80 border border-base-800 opacity-0 scale-50 translate-y-0;
     }
 

@@ -1,0 +1,38 @@
+.profile-header {
+  &__container {
+    @apply h-auto mb-2 -mx-5;
+  }
+
+  &__background {
+    @apply bg-gradient-to-b from-body to-base-950 -mx-5
+      h-32 overflow-x-clip;
+
+    @screen lg {
+      @apply h-40;
+    }
+  }
+
+  &__background-image {
+    @apply h-32 w-full object-cover;
+  }
+
+  &__info-container {
+    @apply -mt-[72px] flex flex-col gap-y-4 px-5;
+  }
+
+  &__name-image-container {
+    @apply flex gap-x-4 gap-y-2 items-center justify-start flex-wrap;
+  }
+
+  &__image {
+    @apply place-self-center rounded-full h-32 w-32 object-cover;
+  }
+
+  &__avatar {
+    @apply font-bold;
+  }
+
+  &__name {
+    @apply text-center text-2xl font-black break-words;
+  }
+}

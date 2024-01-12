@@ -1,0 +1,7 @@
+{
+  "actor_image_alt_title": "Imagen de perfil de {{actorName}}",
+  "actor_posts_empty_state_subtitle": "There are still no posts from {{actorName}}\n\nCome back another time",
+  "actor_posts_empty_state_title": "Nada que ver por aquí",
+  "actor_posts_gallery_posts_quantity": "{{postsNumber}} posts",
+  "actor_posts_gallery_title": "Posts de {{actorName}}"
+}

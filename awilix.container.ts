@@ -41,6 +41,7 @@ import { DeleteSavedPost } from '~/modules/Auth/Application/DeleteSavedPost/Dele
 import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts/GetUserSavedPosts'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUserHistory'
+import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
 
 /**
  * We create a container to register our classes dependencies
@@ -152,5 +153,6 @@ container.register('createPostCommentReactionUseCase', asClass(CreatePostComment
 container.register('deletePostCommentReactionUseCase', asClass(DeletePostCommentReaction))
 container.register('addSavedPostUseCase', asClass(AddSavedPost))
 container.register('deleteSavedPostUseCase', asClass(DeleteSavedPost))
+container.register('getActorBySlugUseCase', asClass(GetActorBySlug))
 
 export { container }

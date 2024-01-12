@@ -48,7 +48,7 @@ export const PostExtraData: FC<Props> = ({
 
             return (
               <Link
-                href={ '/' }
+                href={ `/actors/${actor.slug}` }
                 className={ styles.postExtraData__actorsItemLink }
                 key={ actor.id }
               >

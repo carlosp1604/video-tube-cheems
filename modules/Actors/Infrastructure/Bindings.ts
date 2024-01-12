@@ -2,7 +2,7 @@ import { MysqlActorRepository } from './MysqlActorRepository'
 import { Provider } from '~/injector/Provider'
 import { DependencyInjector, makeInjector } from '~/injector/DependencyInjector'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
-import { GetActor } from '~/modules/Actors/Application/GetActor'
+import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
 import { GetActors } from '~/modules/Actors/Application/GetActors'
 
 const actorRepository: Provider<ActorRepositoryInterface> =
@@ -13,11 +13,11 @@ const actorRepository: Provider<ActorRepositoryInterface> =
     },
   }
 
-const getActor: Provider<GetActor> =
+const getActor: Provider<GetActorBySlug> =
   {
     provide: 'GetActor',
     useClass: () => {
-      return new GetActor(
+      return new GetActorBySlug(
         bindings.get<ActorRepositoryInterface>('ActorRepositoryInterface')
       )
     },

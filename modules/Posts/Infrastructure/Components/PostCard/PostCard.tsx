@@ -94,8 +94,7 @@ export const PostCard: FC<Props> = ({
 
   if (post.producer === null && post.actor !== null && post.actor.imageUrl !== null && showProducerImage) {
     producerImage = (
-      // TODO: FIX THIS WHEN ACTOR PAGE IS READY
-      <Link href={ '/' } title={ post.actor.name }>
+      <Link href={ `/actors/${post.actor.slug}` } title={ post.actor.name }>
         <Image
           className={ styles.postCard__producerLogo }
           src={ post.actor.imageUrl }
@@ -110,10 +109,9 @@ export const PostCard: FC<Props> = ({
 
   if (post.producer === null && post.actor && post.actor.imageUrl === null && showProducerImage) {
     producerImage = (
-      // TODO: FIX THIS WHEN ACTOR PAGE IS READY
       <Link
         className={ styles.postCard__producerAvatarContainer }
-        href={ '/' }
+        href={ `/actors/${post.actor.slug}` }
         title={ post.actor.name }
       >
         <Avatar
@@ -154,7 +152,12 @@ export const PostCard: FC<Props> = ({
               ? <span className={ styles.postCard__producerName }>{ post.producer.name }</span>
               : '' }
             { post.producer === null && post.actor !== null
-              ? <span className={ styles.postCard__producerName }>{ post.actor.name }</span>
+              ? <Link
+                className={ styles.postCard__producerName }
+                href={ `/actors/${post.actor.slug}` }
+              >
+                { post.actor.name }
+              </Link>
               : '' }
             { post.producer !== null || post.actor !== null ? <BsDot /> : '' }
             { t('post_card_post_views', { views: post.views }) }

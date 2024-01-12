@@ -11,10 +11,17 @@ export type ActorRepositoryFilterOption = Extract<PostFilterOptionInterface,
 export interface ActorRepositoryInterface {
   /**
    * Find an Actor given its ID
-   * @param actorId Actor ID
+   * @param actorId Actor IDç
    * @return Actor if found or null
    */
   findById(actorId: Actor['id']): Promise<Actor | null>
+
+  /**
+   * Find an Actor given its slug
+   * @param actorSlug Actor Slug
+   * @return Actor if found or null
+   */
+  findBySlug (actorSlug: Actor['slug']): Promise<Actor | null>
 
   /**
    * Find Actors based on filter and order criteria

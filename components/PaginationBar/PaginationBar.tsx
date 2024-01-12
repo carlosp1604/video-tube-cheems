@@ -13,7 +13,7 @@ interface Props {
   pagesNumber: number
   onePageStateTitle: string
   disabled: boolean
-  linkMode: ElementLinkMode
+  linkMode: ElementLinkMode | undefined
   onPageChange: (page: number) => void
 }
 

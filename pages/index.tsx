@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
-  const getProducers = container.resolve<GetAllProducers>('getAllProducers')
+  const getProducers = container.resolve<GetAllProducers>('getAllProducersUseCase')
 
   try {
     let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC

@@ -42,6 +42,7 @@ import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUserHistory'
 import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
+import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBySlug/GetProducerBySlug'
 
 /**
  * We create a container to register our classes dependencies
@@ -137,7 +138,7 @@ container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getUserSavedPostsUseCase', asClass(GetUserSavedPosts))
 container.register('getUserHistoryUseCase', asClass(GetUserHistory))
 container.register('getActors', asClass(GetActors))
-container.register('getAllProducers', asClass(GetAllProducers))
+container.register('getAllProducersUseCase', asClass(GetAllProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
 container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostViewUseCase', asClass(AddPostView))
@@ -154,5 +155,6 @@ container.register('deletePostCommentReactionUseCase', asClass(DeletePostComment
 container.register('addSavedPostUseCase', asClass(AddSavedPost))
 container.register('deleteSavedPostUseCase', asClass(DeleteSavedPost))
 container.register('getActorBySlugUseCase', asClass(GetActorBySlug))
+container.register('getProducerBySlugUseCase', asClass(GetProducerBySlug))
 
 export { container }

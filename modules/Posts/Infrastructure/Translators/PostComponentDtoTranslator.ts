@@ -55,6 +55,7 @@ export class PostComponentDtoTranslator {
 
     if (applicationDto.actor !== null) {
       actor = {
+        slug: applicationDto.actor.slug,
         name: applicationDto.actor.name,
         id: applicationDto.actor.id,
         imageUrl: applicationDto.actor.imageUrl,

@@ -14,12 +14,12 @@ export class GetProducerBySlug {
   public constructor (readonly producerRepository: ProducerRepositoryInterface) {}
 
   public async get (producerSlug: Producer['slug']): Promise<GetProducerBySlugApplicationResponseDto> {
-    const actor = await this.producerRepository.findBySlug(producerSlug)
+    const producer = await this.producerRepository.findBySlug(producerSlug)
 
-    if (actor === null) {
+    if (producer === null) {
       throw GetProducerBySlugApplicationException.producerNotFound(producerSlug)
     }
 
-    return ProducerApplicationDtoTranslator.fromDomain(actor)
+    return ProducerApplicationDtoTranslator.fromDomain(producer)
   }
 }

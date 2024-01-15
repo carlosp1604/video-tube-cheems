@@ -9,7 +9,6 @@ interface Props {
   color: string | undefined
 }
 
-// TODO: Generate a random color based on user name
 export const CommonAvatar: FC<Partial<Props> & Omit<Props, 'color'>> = ({
   className,
   avatarName,

@@ -46,8 +46,10 @@ export class PostComponentDtoTranslator {
     if (applicationDto.producer !== null) {
       producer = {
         name: applicationDto.producer.name,
+        slug: applicationDto.producer.slug,
         id: applicationDto.producer.id,
         imageUrl: applicationDto.producer.imageUrl,
+        brandHexColor: applicationDto.producer.brandHexColor,
       }
     }
 
@@ -55,6 +57,7 @@ export class PostComponentDtoTranslator {
 
     if (applicationDto.actor !== null) {
       actor = {
+        slug: applicationDto.actor.slug,
         name: applicationDto.actor.name,
         id: applicationDto.actor.id,
         imageUrl: applicationDto.actor.imageUrl,

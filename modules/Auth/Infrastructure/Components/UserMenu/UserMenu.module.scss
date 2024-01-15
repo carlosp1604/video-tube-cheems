@@ -28,8 +28,16 @@
     }
   }
 
-  &__user-avatar {
+  &__user-image {
     @apply h-12 w-12 rounded-full object-cover;
+
+    @screen md {
+      @apply h-14 w-14;
+    }
+  }
+
+  &__user-avatar {
+    @apply h-12 w-12 font-semibold text-2xl;
 
     @screen md {
       @apply h-14 w-14;

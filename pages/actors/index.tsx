@@ -6,7 +6,6 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
@@ -46,7 +45,6 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
       filters: [],
     })
 
-    props.actors = actors.actors.map((actor) => ActorComponentDtoTranslator.fromApplicationDto(actor))
     props.actorsNumber = actors.actorsNumber
 
     return {

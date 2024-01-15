@@ -2,7 +2,7 @@
   $parentBlock: &;
 
   &__container {
-    @apply relative overflow-hidden cursor-default;
+    @apply relative cursor-default;
   }
 
   &__video-container {
@@ -37,21 +37,28 @@
     grid-template-columns: auto 1fr;
   }
 
-  &__producer-logo {
-    @apply rounded-full w-8 h-8 object-cover mr-2;
-    grid-area: producer-logo;
+  &__producer-actor-logo {
+    @apply rounded-full h-full w-full object-cover transition-transform;
 
-    @screen md {
-      @apply w-9 h-9;
+    &:hover {
+      @apply scale-110 transition-transform;
     }
   }
 
-  &__producer-avatar-container {
-    @apply flex items-center justify-center h-8 w-8 rounded-full mr-2 overflow-hidden;
+  &__producer-actor-avatar-link {
+    @apply flex items-center mr-2 h-8 w-8;
     grid-area: producer-logo;
 
     @screen md {
-      @apply w-9 h-9;
+      @apply h-9 w-9;
+    }
+  }
+
+  &__producer-actor-avatar-container {
+    @apply h-full w-full text-base font-semibold transition-transform;
+
+    &:hover {
+      @apply scale-110 transition-transform text-base-50;
     }
   }
 

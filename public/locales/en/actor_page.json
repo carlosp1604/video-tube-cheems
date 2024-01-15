@@ -1,6 +1,6 @@
 {
   "actor_image_alt_title": "{{actorName}} profile image",
-  "actor_posts_empty_state_subtitle": "There is still no post from {{actorName}}\n\nCome back another time",
+  "actor_posts_empty_state_subtitle": "There is still no post from {{actorName}}\nCome back another time",
   "actor_posts_empty_state_title": "Nothing to see here",
   "actor_posts_gallery_posts_quantity": "{{postsNumber}} posts",
   "actor_posts_gallery_title": "{{actorName}} posts"

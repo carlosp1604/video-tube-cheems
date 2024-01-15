@@ -12,8 +12,8 @@
     grid-area: user-logo;
   }
 
-  &__user-avatar-container {
-    @apply flex h-6 w-6 justify-center items-center rounded-full overflow-hidden;
+  &__user-avatar {
+    @apply h-6 w-6 self-start text-sm font-bold;
     grid-area: user-logo;
   }
 

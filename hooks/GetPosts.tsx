@@ -50,10 +50,6 @@ export function useGetPosts (): GetPostsInterface {
     try {
       const posts = await fetchPosts(page, componentOrder.criteria, componentOrder.option, filters)
 
-      await new Promise((resolve, reject) => {
-        setTimeout(resolve, 2000)
-      })
-
       return posts
     } catch (exception: unknown) {
       console.error(exception)

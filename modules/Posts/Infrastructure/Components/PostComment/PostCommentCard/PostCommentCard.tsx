@@ -13,11 +13,9 @@ export const PostCommentCard: FC<Props> = ({ postComment }) => {
     <div className={ styles.postCommentCard__container }>
       <AvatarImage
         imageUrl={ postComment.user.imageUrl }
-        avatarClassName={ styles.commentCard__userLogo }
+        avatarClassName={ styles.postCommentCard__userAvatar }
         imageClassName={ styles.postCommentCard__userLogo }
         avatarName={ postComment.user.name }
-        size={ '24' }
-        round={ true }
         imageAlt={ postComment.user.name }
       />
       <div className={ styles.postCommentCard__userNameDate }>

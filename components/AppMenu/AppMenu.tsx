@@ -54,7 +54,7 @@ export const AppMenu: FC = () => {
   if (status === 'authenticated' && user) {
     userAvatar = (
       <button
-        className={ styles.appMenu__userAvatarContainer }
+        className={ styles.appMenu__userAvatarButton }
         onClick={ () => setUserMenuOpen(true) }
       >
         <AvatarImage
@@ -62,8 +62,6 @@ export const AppMenu: FC = () => {
           avatarClassName={ styles.appMenu__userAvatar }
           imageClassName={ styles.appMenu__userAvatarImage }
           avatarName={ user.name }
-          size={ '34' }
-          round={ true }
           imageAlt={ user.username }
         />
       </button>
@@ -116,7 +114,7 @@ export const AppMenu: FC = () => {
       <LoginModal />
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
-          <Link href='/'>
+          <Link href='/' shallow={ true }>
             <Image
               alt={ t('app_menu_logo_url_alt') }
               className={ styles.appMenu__logoImage }

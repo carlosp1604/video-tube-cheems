@@ -1,35 +1,40 @@
-import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { container } from '~/awilix.container'
-import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
-import { HomePage, Props } from '~/components/pages/HomePage/HomePage'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { GetServerSideProps } from 'next'
-import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import {
-  ProducerComponentDtoTranslator
-} from '~/modules/Producers/Infrastructure/Translators/ProducerComponentDtoTranslator'
+import { container } from '~/awilix.container'
+import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBySlug/GetProducerBySlug'
+import { ProducerPage, ProducerPageProps } from '~/components/pages/ProducerPage/ProducerPage'
+import {
+  ProducerPageComponentDtoTranslator
+} from '~/modules/Producers/Infrastructure/ProducerPageComponentDtoTranslator'
 import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
+export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
+  const producerSlug = context.query.producerSlug
+
+  if (!producerSlug) {
+    return {
+      notFound: true,
+    }
+  }
+
   const locale = context.locale ?? 'en'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'home_page',
     'app_menu',
     'menu',
     'sorting_menu_dropdown',
     'user_menu',
-    'carousel',
     'post_card',
     'user_signup',
     'user_login',
@@ -39,6 +44,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     'api_exceptions',
     'post_card_options',
     'post_card_gallery',
+    'producer_page',
   ])
 
   const paginationQueryParams = new PostsPaginationQueryParams(
@@ -62,24 +68,42 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     return {
       redirect: {
-        destination: `/${locale}?${stringPaginationParams}`,
+        destination: `/${locale}/producers/${producerSlug}?${stringPaginationParams}`,
         permanent: false,
       },
     }
   }
 
-  const props: Props = {
-    order: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
-    page: paginationQueryParams.page ?? 1,
+  const props: ProducerPageProps = {
+    producer: {
+      description: '',
+      slug: '',
+      name: '',
+      imageUrl: '',
+      id: '',
+      brandHexColor: '',
+    },
+    initialOrder: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
+    initialPage: paginationQueryParams.page ?? 1,
     initialPosts: [],
-    producers: [],
     initialPostsNumber: 0,
     ...i18nSSRConfig,
-    activeProducer: null,
   }
 
+  const getProducer = container.resolve<GetProducerBySlug>('getProducerBySlugUseCase')
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
-  const getProducers = container.resolve<GetAllProducers>('getAllProducersUseCase')
+
+  try {
+    const producer = await getProducer.get(producerSlug.toString())
+
+    props.producer = ProducerPageComponentDtoTranslator.fromApplicationDto(producer)
+  } catch (exception: unknown) {
+    console.error(exception)
+
+    return {
+      notFound: true,
+    }
+  }
 
   try {
     let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC
@@ -95,41 +119,18 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       page = paginationQueryParams.page
     }
 
-    const [posts, producers] = await Promise.all([
-      getPosts.get({
-        page,
-        filters: paginationQueryParams.filters,
-        sortCriteria,
-        sortOption,
-        postsPerPage: defaultPerPage,
-      }),
-      await getProducers.get(),
-    ])
-
-    const producerComponents = producers.map((producer) => {
-      return ProducerComponentDtoTranslator.fromApplication(producer)
+    const producerPosts = await getPosts.get({
+      page,
+      filters: [{ type: PostFilterOptions.PRODUCER_SLUG, value: String(producerSlug) }],
+      sortCriteria,
+      sortOption,
+      postsPerPage: defaultPerPage,
     })
 
-    // Add default producer
-    producerComponents.unshift(allPostsProducerDto)
-
-    const producerFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
-
-    if (producerFilter) {
-      const selectedProducer = producers.find((producer) => producer.slug === producerFilter.value)
-
-      if (selectedProducer) {
-        props.activeProducer = selectedProducer
-      }
-    } else {
-      props.activeProducer = allPostsProducerDto
-    }
-
-    props.initialPosts = posts.posts.map((post) => {
+    props.initialPosts = producerPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.initialPostsNumber = posts.postsNumber
-    props.producers = producerComponents
+    props.initialPostsNumber = producerPosts.postsNumber
   } catch (exception: unknown) {
     console.error(exception)
   }
@@ -139,4 +140,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 }
 
-export default HomePage
+export default ProducerPage

@@ -5,6 +5,18 @@
 
   &__producer-actor-logo {
     @apply rounded-full w-10 h-10 object-cover;
+
+    &:hover {
+      @apply scale-110 transition-transform;
+    }
+  }
+
+  &__producer-actor-avatar {
+    @apply h-10 w-10 transition-transform font-semibold;
+
+    &:hover {
+      @apply text-base-50 scale-110 transition-transform;
+    }
   }
 
   &__producer-actor-icon {
@@ -15,7 +27,7 @@
     }
   }
 
-  &__producer-actor-item {
+  &__producer-actor-link {
     @apply flex gap-x-2 items-center my-2 text-xs;
 
     @screen md {

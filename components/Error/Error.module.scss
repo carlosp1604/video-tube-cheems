@@ -2,15 +2,15 @@
   &__container {
     @apply container flex flex-col gap-y-10 items-center
       justify-center rounded-lg text-base-300
-      min-h-screen -mt-14;
+      min-h-screen px-5;
 
     @screen md {
-      @apply flex flex-row h-3/4;
+      @apply flex flex-row h-3/4 -mt-14;
     }
   }
 
   &__image {
-    @apply w-full h-auto px-10 max-w-lg;
+    @apply w-full h-auto max-w-lg;
 
     @screen md {
       @apply max-w-2xl;

@@ -13,4 +13,24 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
       (producer) => ProducerModelTranslator.toDomain(producer)
     )
   }
+
+  /**
+   * Find a Producer given its slug
+   * @param producerSlug Producer Slug
+   * @return Producer if found or null
+   */
+  public async findBySlug (producerSlug: Producer['slug']): Promise<Producer | null> {
+    const producer = await prisma.producer.findFirst({
+      where: {
+        slug: producerSlug,
+        deletedAt: null,
+      },
+    })
+
+    if (producer === null) {
+      return null
+    }
+
+    return ProducerModelTranslator.toDomain(producer)
+  }
 }

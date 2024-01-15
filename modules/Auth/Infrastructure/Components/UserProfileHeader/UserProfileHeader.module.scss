@@ -59,13 +59,8 @@
     @apply font-light text-base-400;
   }
 
-  &__user-avatar-container {
-    @apply flex h-6 w-6 items-center justify-center rounded-full overflow-hidden
-    transition-transform;
-
-    @screen md {
-      @apply h-8 w-8;
-    }
+  &__user-avatar {
+    @apply h-40 w-40 text-6xl font-bold;
   }
 
   &__user-avatar-image {

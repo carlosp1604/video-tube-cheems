@@ -31,8 +31,6 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
         avatarClassName={ styles.addCommentInput__userAvatar }
         imageClassName={ styles.addCommentInput__userAvatar }
         avatarName={ data.user.name ?? '' }
-        size={ '28' }
-        round={ true }
         imageAlt={ data.user.name ?? '' }
       />
     )

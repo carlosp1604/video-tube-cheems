@@ -1,4 +1,4 @@
-import { TagApplicationDto } from '~/modules/Posts/Application/Dtos/TagApplicationDto'
+import { TagApplicationDto } from '~/modules/PostTag/Application/TagApplicationDto'
 import { TagComponentDto } from '~/modules/Posts/Infrastructure/Dtos/TagComponentDto'
 
 export class TagComponentDtoTranslator {

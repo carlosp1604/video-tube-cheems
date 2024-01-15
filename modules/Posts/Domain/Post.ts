@@ -1,5 +1,5 @@
 import { PostMeta } from './PostMeta'
-import { PostTag } from './PostTag'
+import { PostTag } from '../../PostTag/Domain/PostTag'
 import { DateTime } from 'luxon'
 import { PostComment } from './PostComments/PostComment'
 import { Reaction, ReactionableType } from '~/modules/Reactions/Domain/Reaction'

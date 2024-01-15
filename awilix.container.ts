@@ -43,6 +43,8 @@ import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUserHistory'
 import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
 import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBySlug/GetProducerBySlug'
+import { MysqlPostTagRepository } from '~/modules/PostTag/Infrastructure/MysqlPostTagRepository'
+import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 
 /**
  * We create a container to register our classes dependencies
@@ -109,7 +111,7 @@ container.register('baseUrl', asFunction(() => {
   return baseUrl
 }))
 container.register('reactionRepository', asClass(MysqlReactionRepository))
-
+container.register('tagRepository', asClass(MysqlPostTagRepository))
 /**
  * Use-cases
  */
@@ -156,5 +158,6 @@ container.register('addSavedPostUseCase', asClass(AddSavedPost))
 container.register('deleteSavedPostUseCase', asClass(DeleteSavedPost))
 container.register('getActorBySlugUseCase', asClass(GetActorBySlug))
 container.register('getProducerBySlugUseCase', asClass(GetProducerBySlug))
+container.register('getTagBySlugUseCase', asClass(GetTagBySlug))
 
 export { container }

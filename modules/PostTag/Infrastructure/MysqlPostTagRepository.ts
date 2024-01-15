@@ -15,6 +15,9 @@ export class MysqlPostTagRepository implements PostTagRepositoryInterface {
         slug: tagSlug,
         deletedAt: null,
       },
+      include: {
+        translations: true,
+      },
     })
 
     if (tag === null) {

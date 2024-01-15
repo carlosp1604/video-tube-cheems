@@ -4,8 +4,8 @@
   }
 
   &__background {
-    @apply bg-gradient-to-b from-body to-base-950 -mx-5
-      h-32 overflow-x-clip;
+    @apply bg-gradient-to-t from-body to-[color:var(--custom-color)]
+      -mx-5 h-32 overflow-x-clip;
 
     @screen lg {
       @apply h-40;
@@ -21,15 +21,18 @@
   }
 
   &__name-image-container {
-    @apply flex gap-x-4 gap-y-2 items-center justify-start flex-wrap;
+    @apply flex gap-x-7 gap-y-2 items-center justify-start flex-wrap;
   }
 
   &__image {
-    @apply place-self-center rounded-full h-32 w-32 object-cover;
+    @apply place-self-center rounded-full h-32 w-32 object-cover
+      ring-8 ring-body;
   }
 
   &__avatar {
-    @apply font-bold;
+    @apply flex items-center justify-center text-center font-bold
+      text-4xl h-32 w-32 rounded-full bg-[color:var(--custom-color)]
+      ring-8 ring-body;
   }
 
   &__name {

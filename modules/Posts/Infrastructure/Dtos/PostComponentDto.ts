@@ -17,6 +17,8 @@ export interface PostComponentDtoProducerDto {
   readonly id: string
   readonly imageUrl: string | null
   readonly name: string
+  readonly slug: string
+  readonly brandHexColor: string
 }
 
 export interface PostComponentDto {

@@ -60,12 +60,8 @@
   }
 
   &__user-avatar-container {
-    @apply flex h-6 w-6 items-center justify-center rounded-full overflow-hidden
-    transition-transform;
-
-    @screen md {
-      @apply h-8 w-8;
-    }
+    @apply flex items-center justify-center h-40 w-40 rounded-full overflow-hidden
+      text-7xl font-bold bg-brand-600;
   }
 
   &__user-avatar-image {

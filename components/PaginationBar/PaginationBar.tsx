@@ -91,6 +91,9 @@ export const PaginationBar: FC<Partial<Props>
           href={ { pathname, query: buildQuery(1) } }
           className={ styles.paginationBar__errorButton }
           title={ t('error_state_button_title') }
+          shallow={ linkMode.shallowNavigation }
+          scroll={ linkMode.scrollOnClick }
+          replace={ true }
         >
           { t('error_state_button_title') }
         </Link>

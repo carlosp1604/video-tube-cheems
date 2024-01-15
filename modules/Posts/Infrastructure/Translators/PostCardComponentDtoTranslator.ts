@@ -43,8 +43,10 @@ export class PostCardComponentDtoTranslator {
     if (applicationDto.producer !== null) {
       producer = {
         id: applicationDto.producer.id,
+        slug: applicationDto.producer.slug,
         imageUrl: applicationDto.producer.imageUrl,
         name: applicationDto.producer.name,
+        brandHexColor: applicationDto.producer.brandHexColor,
       }
     }
 

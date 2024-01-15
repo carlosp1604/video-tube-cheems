@@ -72,11 +72,10 @@
   }
 
   &__user-avatar-container {
-    @apply flex items-center justify-center object-cover rounded-full
-    overflow-hidden h-12 w-12 transition-transform text-xl;
+    @apply h-12 w-12 overflow-hidden transition-transform;
 
     &:hover, &:focus {
-      @apply scale-110 transition-transform cursor-pointer;
+      @apply scale-110 transition-transform;
     }
   }
 
@@ -97,11 +96,8 @@
   }
 
   &__user-avatar {
-    @apply w-full h-full text-xl text-center overflow-hidden;
-
-    &:hover, &:focus {
-      @apply scale-110 transition-transform;
-    }
+    @apply flex items-center justify-center w-10 h-10 text-xl font-bold
+      text-center overflow-hidden p-2 bg-brand-600 rounded-full;
   }
 
   &__util-links-container {

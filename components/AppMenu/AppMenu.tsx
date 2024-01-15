@@ -62,8 +62,6 @@ export const AppMenu: FC = () => {
           avatarClassName={ styles.appMenu__userAvatar }
           imageClassName={ styles.appMenu__userAvatarImage }
           avatarName={ user.name }
-          size={ '34' }
-          round={ true }
           imageAlt={ user.username }
         />
       </button>

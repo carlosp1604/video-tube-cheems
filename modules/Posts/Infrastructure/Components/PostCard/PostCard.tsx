@@ -1,13 +1,13 @@
-import { FC, ReactElement } from 'react'
+import { CSSProperties, FC, ReactElement } from 'react'
 import styles from './PostCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import Link from 'next/link'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
-import Avatar from 'react-avatar'
 import HoverVideoPlayer from 'react-hover-video-player'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
+import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
   post: PostCardComponentDto
@@ -60,64 +60,43 @@ export const PostCard: FC<Props> = ({
     )
   }
 
-  if (post.producer !== null && post.producer.imageUrl !== null && showProducerImage) {
-    producerImage = (
-      // TODO: FIX THIS WHEN PRODUCER PAGE IS READY
-      <Link href={ '/' } title={ post.producer.name }>
-        <Image
-          className={ styles.postCard__producerLogo }
-          src={ post.producer.imageUrl }
-          alt={ post.producer?.name }
-          width={ 0 }
-          height={ 0 }
-          sizes={ '100vw' }
-        />
-      </Link>
-    )
-  }
-
-  if (post.producer !== null && post.producer.imageUrl === null && showProducerImage) {
+  if (post.producer !== null && showProducerImage) {
     producerImage = (
       <Link
-        className={ styles.postCard__producerAvatarContainer }
-        href={ '/' }
+        className={ styles.postCard__producerActorAvatarLink }
+        href={ `/producers/${post.producer.slug}` }
         title={ post.producer.name }
+        style={ {
+          '--producer-color': post.producer.brandHexColor,
+        } as CSSProperties }
       >
-        <Avatar
-          name={ post.producer.name }
-          size={ '40' }
-          round={ true }
+        <AvatarImage
+          imageUrl={ post.producer.imageUrl }
+          imageClassName={ styles.postCard__producerActorLogo }
+          avatarName={ post.producer.name }
+          imageAlt={ post.producer.name }
+          avatarClassName={ styles.postCard__producerActorAvatarContainer }
         />
       </Link>
     )
   }
 
-  if (post.producer === null && post.actor !== null && post.actor.imageUrl !== null && showProducerImage) {
-    producerImage = (
-      <Link href={ `/actors/${post.actor.slug}` } title={ post.actor.name }>
-        <Image
-          className={ styles.postCard__producerLogo }
-          src={ post.actor.imageUrl }
-          alt={ post.actor?.name }
-          width={ 0 }
-          height={ 0 }
-          sizes={ '100vw' }
-        />
-      </Link>
-    )
-  }
-
-  if (post.producer === null && post.actor && post.actor.imageUrl === null && showProducerImage) {
+  if (post.producer === null && post.actor !== null && showProducerImage) {
     producerImage = (
       <Link
-        className={ styles.postCard__producerAvatarContainer }
+        className={ styles.postCard__producerActorAvatarLink }
         href={ `/actors/${post.actor.slug}` }
         title={ post.actor.name }
+        style={ {
+          '--producer-color': '#834f23',
+        } as CSSProperties }
       >
-        <Avatar
-          name={ post.actor.name }
-          size={ '40' }
-          round={ true }
+        <AvatarImage
+          imageUrl={ post.actor.imageUrl }
+          imageClassName={ styles.postCard__producerActorLogo }
+          avatarName={ post.actor.name }
+          imageAlt={ post.actor.name }
+          avatarClassName={ styles.postCard__producerActorAvatarContainer }
         />
       </Link>
     )
@@ -149,7 +128,12 @@ export const PostCard: FC<Props> = ({
           </Link>
           <div className={ styles.postCard__extraData }>
             { post.producer !== null
-              ? <span className={ styles.postCard__producerName }>{ post.producer.name }</span>
+              ? <Link
+                className={ styles.postCard__producerName }
+                href={ `/producers/${post.producer.slug}` }
+              >
+                { post.producer.name }
+              </Link>
               : '' }
             { post.producer === null && post.actor !== null
               ? <Link

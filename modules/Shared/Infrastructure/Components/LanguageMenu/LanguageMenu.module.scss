@@ -32,7 +32,7 @@
   }
 
   &__icon-wrapper {
-    @apply h-8 w-8 rounded-md bg-brand-500;
+    @apply flex-shrink-0 h-8 w-8 rounded-md bg-brand-500;
 
     @screen md {
       @apply h-10 w-10;

@@ -1,5 +1,5 @@
 import styles from './PostProducerActor.module.scss'
-import { FC, ReactElement } from 'react'
+import { CSSProperties, FC, ReactElement } from 'react'
 import Link from 'next/link'
 import { BsX } from 'react-icons/bs'
 import {
@@ -23,17 +23,18 @@ export const PostProducerActor: FC<Props> = ({
   if (producer !== null) {
     producerSection = (
       <Link
-        href={ '/' }
-        className={ styles.postProducerActor__producerActorItem }
+        href={ `/producers/${producer.slug}` }
+        className={ styles.postProducerActor__producerActorLink }
         title={ producer.name }
+        style={ {
+          '--producer-color': producer.brandHexColor,
+        } as CSSProperties }
       >
         <AvatarImage
           imageUrl={ producer.imageUrl }
-          avatarClassName={ styles.postProducerActor__producerActorLogo }
+          avatarClassName={ styles.postProducerActor__producerActorAvatar }
           imageClassName={ styles.postProducerActor__producerActorLogo }
           avatarName={ producer.name }
-          size={ '40' }
-          round={ true }
           imageAlt={ producer.name }
         />
         { producer.name }
@@ -44,8 +45,8 @@ export const PostProducerActor: FC<Props> = ({
   if (actor !== null) {
     actorSection = (
       <Link
-        href={ '/' }
-        className={ styles.postProducerActor__producerActorItem }
+        href={ `/actors/${actor.slug}` }
+        className={ styles.postProducerActor__producerActorLink }
         title={ actor.name }
       >
         <AvatarImage
@@ -53,8 +54,6 @@ export const PostProducerActor: FC<Props> = ({
           avatarClassName={ styles.postProducerActor__producerActorLogo }
           imageClassName={ styles.postProducerActor__producerActorLogo }
           avatarName={ actor.name }
-          size={ '40' }
-          round={ true }
           imageAlt={ actor.name }
         />
         { actor.name }

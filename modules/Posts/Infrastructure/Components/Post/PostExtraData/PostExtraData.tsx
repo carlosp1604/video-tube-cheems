@@ -37,11 +37,9 @@ export const PostExtraData: FC<Props> = ({
             const avatarSection: ReactElement = (
               <AvatarImage
                 imageUrl={ actor.imageUrl }
-                avatarClassName={ styles.postExtraData__actorLogo }
+                avatarClassName={ styles.postExtraData__actorAvatar }
                 imageClassName={ styles.postExtraData__actorLogo }
                 avatarName={ actor.name }
-                size={ '32' }
-                round={ true }
                 imageAlt={ actor.name }
               />
             )

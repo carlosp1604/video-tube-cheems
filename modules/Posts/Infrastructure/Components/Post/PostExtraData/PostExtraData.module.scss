@@ -83,12 +83,25 @@
   }
 
   &__actor-logo {
-    @apply rounded-full w-8 h-8 object-cover mr-4;
+    @apply rounded-full w-8 h-8 object-cover transition-transform;
+
+    &:hover {
+      @apply scale-110 transition-transform;
+    }
+  }
+
+  &__actor-avatar {
+    @apply flex items-center justify-center text-center
+      rounded-full bg-brand-600 w-8 h-8 transition-transform;
+
+    &:hover {
+      @apply scale-110 text-base-100 transition-transform;
+    }
   }
 
   &__actors-item-link {
     @apply flex items-center rounded-lg p-1 font-normal
-    line-clamp-2 overflow-hidden;
+    line-clamp-2 overflow-hidden gap-x-4;
 
     &:hover, &:focus {
       @apply bg-base-800;

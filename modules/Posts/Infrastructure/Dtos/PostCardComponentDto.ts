@@ -2,8 +2,10 @@ import { PostAnimationDto } from './PostAnimationDto'
 
 export interface ProducerPostCardComponentDto {
   readonly id: string
+  readonly slug: string
   readonly name: string
   readonly imageUrl: string | null
+  readonly brandHexColor: string
 }
 
 export interface ActorPostCardComponentDto {

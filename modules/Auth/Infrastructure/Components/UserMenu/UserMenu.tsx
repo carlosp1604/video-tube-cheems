@@ -57,10 +57,8 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
           <AvatarImage
             imageUrl={ user.image }
             avatarClassName={ styles.userMenu__userAvatar }
-            imageClassName={ styles.userMenu__userAvatar }
+            imageClassName={ styles.userMenu__userImage }
             avatarName={ user.name }
-            size={ '50' }
-            round={ true }
             imageAlt={ user.username }
           />
           <span className={ styles.userMenu__userDataText }>

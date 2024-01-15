@@ -143,6 +143,30 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
     }
   }
 
+  let postsHistoryContent: ReactElement
+
+  if (postsHistoryNumber === 0 && !loading) {
+    postsHistoryContent = (
+      <PostCardCarouselSkeleton postCardsNumber={ 3 }/>
+    )
+  } else {
+    if (loading) {
+      postsHistoryContent = (
+        <PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>
+      )
+    } else {
+      postsHistoryContent = (
+        <PostCardCarousel
+          posts={ postsHistory }
+          postCardOptions={ [
+            { type: 'savePost', onSuccess: onSavePost },
+            { type: 'react' },
+          ] }
+        />
+      )
+    }
+  }
+
   return (
     <div className={ styles.userProfilePage__container }>
       <UserProfileHeader componentDto={ userComponentDto }/>
@@ -169,17 +193,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
             </span>
           }
         </div>
-        {
-          loading
-            ? <PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>
-            : <PostCardCarousel
-              posts={ postsHistory }
-              postCardOptions={ [
-                { type: 'savePost', onSuccess: onSavePost },
-                { type: 'react' },
-              ] }
-            />
-        }
+        { postsHistoryContent }
 
         <div className={ styles.userProfilePage__userPostsHeader }>
           { t('user_saved_posts_title') }

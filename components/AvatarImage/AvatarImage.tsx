@@ -1,36 +1,33 @@
 import { FC } from 'react'
-import Avatar from 'react-avatar'
 import Image from 'next/image'
+import Avatar from 'react-avatar'
 
 interface Props {
   imageUrl: string | null
   avatarClassName: string
   imageClassName: string
   avatarName: string
-  size: string
-  round: boolean
   imageAlt: string
   priority: boolean
+  color: string | undefined
 }
 
-export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority'>> = ({
+export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority' | 'color'>> = ({
   imageUrl,
   avatarClassName,
   avatarName,
   imageClassName,
   imageAlt,
-  size,
-  round,
   priority = false,
+  color = undefined,
 }) => {
   let avatar = (
     <Avatar
       className={ avatarClassName }
-      round={ round }
-      size={ size }
       name={ avatarName }
       textSizeRatio={ 2 }
       maxInitials={ 2 }
+      unstyled={ true }
     />
   )
 

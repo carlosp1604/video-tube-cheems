@@ -10,13 +10,13 @@ export interface Props {
 export const ActorCard: NextPage<Props> = ({ actor }) => {
   return (
     <Link
-      href={ `/actors/${actor.id}` }
+      href={ `/actors/${actor.slug}` }
      className={ styles.actorCard__container }>
       <div className={ styles.actorCard__imageWrapper }
       >
         <img
           className={ styles.actorCard__actorImage }
-          src={ actor.imageUrl }
+          src={ actor.imageUrl ?? '' }
           alt={ actor.name }
         />
       </div>

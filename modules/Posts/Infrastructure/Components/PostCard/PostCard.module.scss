@@ -55,9 +55,7 @@
   }
 
   &__producer-actor-avatar-container {
-    @apply flex items-center justify-center text-center text-base
-      font-bold bg-[color:var(--producer-color)] rounded-full h-full w-full
-      transition-transform;
+    @apply h-full w-full text-base font-semibold transition-transform;
 
     &:hover {
       @apply scale-110 transition-transform text-base-50;

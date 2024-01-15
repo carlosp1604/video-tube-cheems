@@ -54,7 +54,7 @@ export const AppMenu: FC = () => {
   if (status === 'authenticated' && user) {
     userAvatar = (
       <button
-        className={ styles.appMenu__userAvatarContainer }
+        className={ styles.appMenu__userAvatarButton }
         onClick={ () => setUserMenuOpen(true) }
       >
         <AvatarImage

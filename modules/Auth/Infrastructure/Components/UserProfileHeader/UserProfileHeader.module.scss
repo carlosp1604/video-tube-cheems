@@ -59,9 +59,8 @@
     @apply font-light text-base-400;
   }
 
-  &__user-avatar-container {
-    @apply flex items-center justify-center h-40 w-40 rounded-full overflow-hidden
-      text-7xl font-bold bg-brand-600;
+  &__user-avatar {
+    @apply h-40 w-40 text-6xl font-bold;
   }
 
   &__user-avatar-image {

@@ -1,4 +1,4 @@
-import { CSSProperties, FC, ReactElement } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './PostCard.module.scss'
 import { BsDot } from 'react-icons/bs'
 import Link from 'next/link'
@@ -66,9 +66,6 @@ export const PostCard: FC<Props> = ({
         className={ styles.postCard__producerActorAvatarLink }
         href={ `/producers/${post.producer.slug}` }
         title={ post.producer.name }
-        style={ {
-          '--producer-color': post.producer.brandHexColor,
-        } as CSSProperties }
       >
         <AvatarImage
           imageUrl={ post.producer.imageUrl }
@@ -76,6 +73,7 @@ export const PostCard: FC<Props> = ({
           avatarName={ post.producer.name }
           imageAlt={ post.producer.name }
           avatarClassName={ styles.postCard__producerActorAvatarContainer }
+          color={ post.producer.brandHexColor }
         />
       </Link>
     )
@@ -87,9 +85,6 @@ export const PostCard: FC<Props> = ({
         className={ styles.postCard__producerActorAvatarLink }
         href={ `/actors/${post.actor.slug}` }
         title={ post.actor.name }
-        style={ {
-          '--producer-color': '#834f23',
-        } as CSSProperties }
       >
         <AvatarImage
           imageUrl={ post.actor.imageUrl }

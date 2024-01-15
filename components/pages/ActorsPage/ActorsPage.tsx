@@ -14,8 +14,8 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({ actors, actorsNumber }) 
       <PaginatedActorCardGallery
         initialActorsNumber={ actorsNumber }
         filters={ [] }
-        initialActors={ actors }
         title={ 'Actors' }
+        initialActors={ [] }
       />
     </div>
   )

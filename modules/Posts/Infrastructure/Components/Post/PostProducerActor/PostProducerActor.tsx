@@ -36,6 +36,7 @@ export const PostProducerActor: FC<Props> = ({
           imageClassName={ styles.postProducerActor__producerActorLogo }
           avatarName={ producer.name }
           imageAlt={ producer.name }
+          color={ producer.brandHexColor }
         />
         { producer.name }
       </Link>

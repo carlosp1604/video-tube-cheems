@@ -1,6 +1,6 @@
 .profile-header {
   &__container {
-    @apply h-auto mb-2 -mx-5;
+    @apply h-auto mb-2;
   }
 
   &__background {
@@ -17,7 +17,7 @@
   }
 
   &__info-container {
-    @apply -mt-[72px] flex flex-col gap-y-4 px-5;
+    @apply -mt-[72px] flex flex-col gap-y-4;
   }
 
   &__name-image-container {
@@ -30,9 +30,7 @@
   }
 
   &__avatar {
-    @apply flex items-center justify-center text-center font-bold
-      text-4xl h-32 w-32 rounded-full bg-[color:var(--custom-color)]
-      ring-8 ring-body;
+    @apply font-bold text-4xl h-32 w-32 rounded-full ring-8 ring-body;
   }
 
   &__name {

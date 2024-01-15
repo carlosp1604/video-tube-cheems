@@ -19,7 +19,7 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
       <div className={ styles.userProfileHeader__userData }>
         <AvatarImage
           imageUrl={ componentDto.imageUrl }
-          avatarClassName={ styles.userProfileHeader__userAvatarContainer }
+          avatarClassName={ styles.userProfileHeader__userAvatar }
           imageClassName={ styles.userProfileHeader__userAvatarImage }
           avatarName={ componentDto.name }
           imageAlt={ t('user_profile_image_alt_title', { username: componentDto.username }) }

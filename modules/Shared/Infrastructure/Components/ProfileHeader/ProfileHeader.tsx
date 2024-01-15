@@ -29,12 +29,7 @@ export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor
           />
         **/ }
         <div className={ styles.profileHeader__infoContainer }>
-          <div
-            className={ styles.profileHeader__nameImageContainer }
-            style={ {
-              '--custom-color': customColor ?? '#834f23',
-            } as CSSProperties }
-          >
+          <div className={ styles.profileHeader__nameImageContainer } >
             <AvatarImage
               imageUrl={ imageUrl }
               avatarClassName={ styles.profileHeader__avatar }

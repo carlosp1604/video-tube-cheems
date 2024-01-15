@@ -12,6 +12,11 @@
     grid-area: user-logo;
   }
 
+  &__user-avatar {
+    @apply h-6 w-6 self-start text-sm font-bold;
+    grid-area: user-logo;
+  }
+
   &__child-comment-user-logo {
     @apply h-6 w-6 self-start rounded-full;
     grid-area: user-logo;

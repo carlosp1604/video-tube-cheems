@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import Image from 'next/image'
-import Avatar from 'react-avatar'
+import { CommonAvatar } from '~/components/AvatarImage/CommonAvatar'
 
 interface Props {
   imageUrl: string | null
@@ -22,13 +22,7 @@ export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority' | 'color'>>
   color = undefined,
 }) => {
   let avatar = (
-    <Avatar
-      className={ avatarClassName }
-      name={ avatarName }
-      textSizeRatio={ 2 }
-      maxInitials={ 2 }
-      unstyled={ true }
-    />
+    <CommonAvatar className={ avatarClassName } avatarName={ avatarName } color={ color }/>
   )
 
   if (imageUrl !== null) {

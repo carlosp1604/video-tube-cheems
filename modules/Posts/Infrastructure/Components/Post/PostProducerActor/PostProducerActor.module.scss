@@ -12,9 +12,7 @@
   }
 
   &__producer-actor-avatar {
-    @apply flex items-center justify-center text-center text-base
-      font-bold bg-[color:var(--producer-color)] rounded-full h-10 w-10
-      transition-transform;
+    @apply h-10 w-10 transition-transform font-semibold;
 
     &:hover {
       @apply text-base-50 scale-110 transition-transform;

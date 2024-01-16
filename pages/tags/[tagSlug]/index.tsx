@@ -11,12 +11,13 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { ProducerPageProps } from '~/components/pages/ProducerPage/ProducerPage'
 import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
+import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
+import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/TagPageComponentDtoTranslator'
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
   const tagSlug = context.query.tagSlug
 
   if (!tagSlug) {
@@ -71,14 +72,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const props: ProducerPageProps = {
-    producer: {
-      description: '',
+  const props: TagPageProps = {
+    tag: {
       slug: '',
       name: '',
-      imageUrl: '',
       id: '',
-      brandHexColor: '',
     },
     initialOrder: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
     initialPage: paginationQueryParams.page ?? 1,
@@ -93,9 +91,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const tag = await getTag.get(tagSlug.toString())
 
-    // use locale to get the correct translation
-
-    // props.producer = ProducerPageComponentDtoTranslator.fromApplicationDto(producer)
+    props.tag = TagPageComponentDtoTranslator.fromApplicationDto(tag, locale)
   } catch (exception: unknown) {
     console.error(exception)
 
@@ -139,4 +135,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-// export default ProducerPage
+export default TagPage

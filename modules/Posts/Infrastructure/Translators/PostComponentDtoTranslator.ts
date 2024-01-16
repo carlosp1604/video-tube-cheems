@@ -38,6 +38,7 @@ export class PostComponentDtoTranslator {
       return {
         name: nameTranslation,
         id: tag.id,
+        slug: tag.slug,
       }
     })
 

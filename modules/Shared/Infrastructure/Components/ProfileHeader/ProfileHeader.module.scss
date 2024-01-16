@@ -30,7 +30,11 @@
   }
 
   &__avatar {
-    @apply font-bold text-4xl h-32 w-32 rounded-full ring-8 ring-body;
+    @apply font-bold text-4xl h-32 w-32 ring-8 rounded-lg ring-body;
+
+    &__rounded {
+      @apply rounded-full ring-8 ring-body;
+    }
   }
 
   &__name {

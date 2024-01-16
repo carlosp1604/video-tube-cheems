@@ -103,6 +103,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, initialPosts, initi
         imageAlt={ t('actor_image_alt_title', { actorName: actor.name }) }
         imageUrl={ actor.imageUrl }
         customColor={ null }
+        rounded={ true }
       />
 
       <h2 className={ styles.actorPage__actorPostsHeader }>

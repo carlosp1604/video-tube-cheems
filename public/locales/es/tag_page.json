@@ -1,0 +1,7 @@
+{
+  "tag_image_alt_title": "Imagen de perfil de {{tagName}}",
+  "tag_posts_empty_state_subtitle": "Todavía no hay publicaciones de {{tagName}}\nVuelve en otro momento",
+  "tag_posts_empty_state_title": "Nada que ver por aquí",
+  "tag_posts_gallery_posts_quantity": "{{postsNumber}} posts",
+  "tag_posts_gallery_title": "Posts etiquetados por <0>{{tagName}}</0>"
+}

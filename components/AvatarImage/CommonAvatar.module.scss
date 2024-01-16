@@ -5,6 +5,10 @@
 
   &__avatar-container {
     @apply h-full w-full flex items-center justify-center text-center
-      bg-[color:var(--custom-color)] rounded-full;
+      bg-[color:var(--custom-color)] rounded-lg;
+
+    &__rounded {
+      @apply rounded-full;
+    }
   }
 }

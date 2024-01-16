@@ -7,9 +7,10 @@ export interface Props {
   imageUrl: string | null
   imageAlt: string
   customColor: string | null
+  rounded: boolean
 }
 
-export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor }) => {
+export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor, rounded }) => {
   return (
       <header className={ styles.profileHeader__container }>
         <div
@@ -32,11 +33,15 @@ export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor
           <div className={ styles.profileHeader__nameImageContainer } >
             <AvatarImage
               imageUrl={ imageUrl }
-              avatarClassName={ styles.profileHeader__avatar }
+              avatarClassName={ `
+                ${styles.profileHeader__avatar}
+                ${rounded ? styles.profileHeader__avatar__rounded : ''}
+              ` }
               imageClassName={ styles.profileHeader__image }
               avatarName={ name }
               imageAlt={ imageAlt }
               color={ customColor !== null ? customColor : undefined }
+              rounded={ rounded }
             />
 
             <h1 className={ styles.profileHeader__name }>

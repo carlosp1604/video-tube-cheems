@@ -947,6 +947,19 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           }
         }
       }
+
+      if (filter.type === 'tagSlug') {
+        whereClause = {
+          ...whereClause,
+          tags: {
+            some: {
+              tag: {
+                slug: filter.value,
+              },
+            },
+          },
+        }
+      }
     }
 
     return whereClause

@@ -33,11 +33,10 @@
   }
 
   &__menu-icon-container {
-    @apply sticky top-0 w-full pl-3 pb-1 transition-colors
-      border-base-800 border-b;
+    @apply sticky top-0 w-full pl-3 pb-1 transition-colors border-base-800;
 
     &_open {
-      @apply border-r border-b-transparent border-base-800
+      @apply border-r border-base-800
         transition-colors;
     }
   }
@@ -65,11 +64,11 @@
     }
 
     &:hover, &:focus {
-      @apply bg-sidebar-item transition-colors text-base-400
-      cursor-pointer rounded-md text-base-100;
+      @apply bg-sidebar-item transition-colors text-base-100
+      cursor-pointer rounded-md;
 
       #{$parentBlock}__menu-item-icon {
-        @apply scale-105 transition-transform;
+        @apply scale-110 transition-transform;
       }
     }
   }
@@ -95,7 +94,7 @@
   }
 
   &__copyright-container-text {
-    @apply hidden whitespace-pre-line text-base-100 p-3 m-2
+    @apply hidden whitespace-pre-line p-3 m-2
       rounded-lg bg-sidebar-copyright text-xs text-base-400 font-light;
 
     &_open {

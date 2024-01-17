@@ -1,6 +1,6 @@
 import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostMetaModelTranslator } from './PostMetaModelTranslator'
-import { PostTagModelTranslator } from '../../../PostTag/Infrastructure/PostTagModelTranslator'
+import { PostTagModelTranslator } from '~/modules/PostTag/Infrastructure/PostTagModelTranslator'
 import { ActorModelTranslator } from './ActorModelTranslator'
 import { DateTime } from 'luxon'
 import { PostCommentModelTranslator } from './PostCommentModelTranslator'

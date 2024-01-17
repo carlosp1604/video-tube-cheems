@@ -1,5 +1,5 @@
 import { MetaApplicationDto } from './MetaApplicationDto'
-import { TagApplicationDto } from '../../../PostTag/Application/TagApplicationDto'
+import { TagApplicationDto } from '~/modules/PostTag/Application/TagApplicationDto'
 import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicationDto'
 import { ProducerApplicationDto } from '~/modules/Producers/Application/ProducerApplicationDto'
 import { ModelTranslationsApplicationDto } from '~/modules/Translations/Application/ModelTranslationsApplicationDto'

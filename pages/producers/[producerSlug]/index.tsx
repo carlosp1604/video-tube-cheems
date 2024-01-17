@@ -50,7 +50,6 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
   const paginationQueryParams = new PostsPaginationQueryParams(
     context.query,
     {
-      filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
         defaultValue: PostsPaginationSortingType.LATEST,
         parseableOptionTypes: [

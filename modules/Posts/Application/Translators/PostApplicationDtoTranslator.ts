@@ -1,5 +1,5 @@
 import { MetaApplicationDtoTranslator } from './MetaApplicationDtoTranslator'
-import { TagApplicationDtoTranslator } from '../../../PostTag/Application/TagApplicationDtoTranslator'
+import { TagApplicationDtoTranslator } from '~/modules/PostTag/Application/TagApplicationDtoTranslator'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { PostApplicationDto } from '~/modules/Posts/Application/Dtos/PostApplicationDto'
 import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'

@@ -206,7 +206,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
         <IconButton
           onClick={ () => setMenuOpen(!menuOpen) }
           icon={ menuOpen ? <BsArrowLeft /> : <BsList /> }
-          title={ t('menu_button_title') }
+          title={ menuOpen ? t('menu_close_button_title') : t('menu_button_title') }
         />
       </div>
 

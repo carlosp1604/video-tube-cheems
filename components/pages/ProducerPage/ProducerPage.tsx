@@ -77,7 +77,6 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
         maxValue: Infinity,
         minValue: 1,
       },
-      filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
         defaultValue: PostsPaginationSortingType.LATEST,
         parseableOptionTypes: sortingOptions,

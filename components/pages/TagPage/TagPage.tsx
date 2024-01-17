@@ -81,7 +81,6 @@ export const TagPage: NextPage<TagPageProps> = ({
         maxValue: Infinity,
         minValue: 1,
       },
-      filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
         defaultValue: PostsPaginationSortingType.LATEST,
         parseableOptionTypes: sortingOptions,
@@ -112,7 +111,7 @@ export const TagPage: NextPage<TagPageProps> = ({
       const newPosts = await getPosts(
         page,
         order,
-        [{ type: PostFilterOptions.PRODUCER_SLUG, value: tag.slug }]
+        [{ type: PostFilterOptions.TAG_SLUG, value: tag.slug }]
       )
 
       if (newPosts) {
@@ -158,6 +157,7 @@ export const TagPage: NextPage<TagPageProps> = ({
 
   return (
     <div className={ styles.producerPage__container }>
+      { /** TODO: Add imageAlt when tags have imageUrl **/ }
       <ProfileHeader
         name={ tag.name }
         imageAlt={ '' }

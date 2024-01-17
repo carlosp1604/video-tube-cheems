@@ -4,12 +4,10 @@ import { GetActorsApplicationRequestDto } from '~/modules/Actors/Application/Get
 export class GetActorsRequestDtoTranslator {
   public static fromApiDto (request: GetActorsApiRequestDto): GetActorsApplicationRequestDto {
     return {
-      sortOption: request.sortOption,
+      sortOption: request.orderBy,
       page: request.page,
-      actorsPerPage: request.actorsPerPage,
-      sortCriteria: request.sortCriteria,
-      // TODO: FIX THIS
-      filters: [],
+      actorsPerPage: request.perPage,
+      sortCriteria: request.order,
     }
   }
 }

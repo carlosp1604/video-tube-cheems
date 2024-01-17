@@ -35,11 +35,11 @@ export class GetActors {
 
   private static validateRequest (request: GetActorsApplicationRequestDto): void {
     if (isNaN(request.page) || request.page <= 0) {
-      throw GetActorsApplicationException.invalidOffsetValue()
+      throw GetActorsApplicationException.invalidPageValue()
     }
 
     if (isNaN(request.actorsPerPage) || request.actorsPerPage < minPerPage || request.actorsPerPage > maxPerPage) {
-      throw GetActorsApplicationException.invalidLimitValue(minPerPage, maxPerPage)
+      throw GetActorsApplicationException.invalidPerPage(minPerPage, maxPerPage)
     }
   }
 

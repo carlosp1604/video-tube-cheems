@@ -1,7 +1,6 @@
 import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostMetaModelTranslator } from './PostMetaModelTranslator'
 import { PostTagModelTranslator } from '~/modules/PostTag/Infrastructure/PostTagModelTranslator'
-import { ActorModelTranslator } from './ActorModelTranslator'
 import { DateTime } from 'luxon'
 import { PostCommentModelTranslator } from './PostCommentModelTranslator'
 import { Post as PostPrismaModel } from '@prisma/client'
@@ -32,6 +31,7 @@ import {
 import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
 import { PostMediaModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
 import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
+import { ActorModelTranslator } from '~/modules/Actors/Infrastructure/ActorModelTranslator'
 
 export class PostModelTranslator {
   public static toDomain (

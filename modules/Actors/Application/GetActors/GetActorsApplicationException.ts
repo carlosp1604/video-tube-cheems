@@ -1,8 +1,8 @@
 import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
 
 export class GetActorsApplicationException extends ApplicationException {
-  public static invalidLimitValueId = 'get_actors_invalid_limit_value'
-  public static invalidOffsetValueId = 'get_actors_invalid_offset_value'
+  public static invalidPerPageValueId = 'get_actors_invalid_per_page_value'
+  public static invalidPageValueId = 'get_actors_invalid_page_value'
   public static invalidSortingOptionId = 'get_actors_invalid_sorting_option'
   public static invalidSortingCriteriaId = 'get_actors_invalid_sorting_criteria'
 
@@ -12,17 +12,17 @@ export class GetActorsApplicationException extends ApplicationException {
     Object.setPrototypeOf(this, GetActorsApplicationException.prototype)
   }
 
-  public static invalidLimitValue (minLimit: number, maxLimit: number): GetActorsApplicationException {
+  public static invalidPerPage (minLimit: number, maxLimit: number): GetActorsApplicationException {
     return new GetActorsApplicationException(
-      `Limit must be a positive integer in range [${minLimit} - ${maxLimit}]`,
-      this.invalidLimitValueId
+      `perPage must be a positive integer in range [${minLimit} - ${maxLimit}]`,
+      this.invalidPerPageValueId
     )
   }
 
-  public static invalidOffsetValue (): GetActorsApplicationException {
+  public static invalidPageValue (): GetActorsApplicationException {
     return new GetActorsApplicationException(
-      'Limit must be a integer greater or equal to 0',
-      this.invalidOffsetValueId
+      'Page must be a integer greater or equal to 0',
+      this.invalidPageValueId
     )
   }
 

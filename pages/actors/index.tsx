@@ -10,7 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
-  const getActors = container.resolve<GetActors>('getActors')
+  const getActors = container.resolve<GetActors>('getActorsUseCase')
 
   const locale = context.locale ?? 'en'
 

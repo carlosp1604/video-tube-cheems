@@ -1,26 +1,17 @@
 import { z, ZodError } from 'zod'
-import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
-import { ActorFilterOptions } from '../ActorFilter'
-import { GetActorsApiRequestDto } from './GetActorsApiRequestDto'
-import {
-  InfrastructureSortingCriteria,
-  InfrastructureSortingOptions
-} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { ActorsApiRequestValidatorError } from './ActorsApiRequestValidatorError'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { UnprocessedGetActorsApiRequestDto } from '~/modules/Actors/Infrastructure/Api/GetActorsApiRequestDto'
 
 export class GetActorsApiRequestValidator {
   private static getActorsApiRequestSchema = z.object({
     page: z.number().positive().min(0),
-    postsPerPage: z.number().positive().min(minPerPage).max(maxPerPage),
-    filters: z.array(z.object({
-      type: z.nativeEnum(ActorFilterOptions),
-      value: z.string().min(1),
-    })),
-    sortOption: z.nativeEnum(InfrastructureSortingOptions),
-    sortCriteria: z.nativeEnum(InfrastructureSortingCriteria),
+    perPage: z.number().positive().min(minPerPage).max(maxPerPage),
+    orderBy: z.string().min(1),
+    order: z.string().min(1),
   })
 
-  public static validate (request: GetActorsApiRequestDto): ActorApiRequestValidatorError | void {
+  public static validate (request: UnprocessedGetActorsApiRequestDto): ActorsApiRequestValidatorError | void {
     try {
       this.getActorsApiRequestSchema.parse(request)
     } catch (exception: unknown) {
@@ -28,7 +19,7 @@ export class GetActorsApiRequestValidator {
         throw exception
       }
 
-      return ActorApiRequestValidatorError.getActorsValidation(exception.issues)
+      return ActorsApiRequestValidatorError.getActorsValidation(exception.issues)
     }
   }
 }

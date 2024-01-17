@@ -4,7 +4,10 @@ import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositor
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import { prisma } from '~/persistence/prisma'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import { ActorsWithPostsCountWithTotalCount, ActorWithPostsCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
+import {
+  ActorsWithPostsCountWithTotalCount,
+  ActorWithPostsCount
+} from '~/modules/Actors/Domain/ActorWithCountInterface'
 import ActorOrderByWithRelationInput = Prisma.ActorOrderByWithRelationInput
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 

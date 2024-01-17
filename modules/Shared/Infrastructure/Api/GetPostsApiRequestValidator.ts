@@ -1,7 +1,8 @@
 import { z, ZodError } from 'zod'
-import { PostCommentApiRequestValidatorError } from '../../../Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
-import { PostsApiRequestValidatorError } from '../../../Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
 import { GetPostsApiRequestDto } from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestDto'
+import {
+  PostsApiRequestValidatorError
+} from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
 
 export class GetPostsApiRequestValidator {
   private static getPostsApiRequestSchema = z.object({
@@ -15,7 +16,7 @@ export class GetPostsApiRequestValidator {
     order: z.string().min(1),
   })
 
-  public static validate (request: Partial<GetPostsApiRequestDto>): PostCommentApiRequestValidatorError | void {
+  public static validate (request: Partial<GetPostsApiRequestDto>): PostsApiRequestValidatorError | void {
     try {
       this.getPostsApiRequestSchema.parse(request)
     } catch (exception: unknown) {

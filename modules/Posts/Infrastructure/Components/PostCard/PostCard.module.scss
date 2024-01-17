@@ -49,6 +49,10 @@
     @apply flex items-center mr-2 h-8 w-8;
     grid-area: producer-logo;
 
+    &__disabled {
+      @apply pointer-events-none;
+    }
+
     @screen md {
       @apply h-9 w-9;
     }
@@ -78,6 +82,10 @@
 
   &__producer-name {
     @apply text-xs overflow-x-scroll scrollbar-hide;
+
+    &__disabled {
+      @apply pointer-events-none;
+    }
   }
 
   &__video-time {

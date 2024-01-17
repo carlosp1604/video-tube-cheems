@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import styles from './TagList.module.scss'
 import Link from 'next/link'
-import { TagComponentDto } from '~/modules/Posts/Infrastructure/Dtos/TagComponentDto'
+import { PostPostTagComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostPostTagComponentDto'
 
 interface Props {
-  tags: TagComponentDto[]
+  tags: PostPostTagComponentDto[]
 }
 
 export const TagList: FC<Props> = ({ tags }) => {
@@ -14,8 +14,8 @@ export const TagList: FC<Props> = ({ tags }) => {
         return (
           <Link
             className={ styles.tagList__tagContainer }
-            href={ `/tags/${tag.id}` }
-            key={ tag.id }
+            href={ `/tags/${tag.slug}` }
+            key={ tag.slug }
           >
             { tag.name }
           </Link>

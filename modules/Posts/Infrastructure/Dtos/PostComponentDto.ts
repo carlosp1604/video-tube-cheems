@@ -11,6 +11,7 @@ export interface PostComponentDtoActorDto {
 export interface PostComponentDtoTagDto {
   readonly id: string
   readonly name: string
+  readonly slug: string
 }
 
 export interface PostComponentDtoProducerDto {

@@ -1,8 +1,8 @@
-import { TagApplicationDto } from '~/modules/Posts/Application/Dtos/TagApplicationDto'
-import { PostTag } from '~/modules/Posts/Domain/PostTag'
+import { TagApplicationDto } from '~/modules/PostTag/Application/TagApplicationDto'
+import { PostTag } from '~/modules/PostTag/Domain/PostTag'
 import {
   PostTagTranslationTranslatorDto
-} from '~/modules/Posts/Application/Translators/PostTagTranslationTranslatorDto'
+} from '~/modules/PostTag/Application/PostTagTranslationTranslatorDto'
 
 // NOTE: We are not testing this due to this class does not have logic to be tested
 export class TagApplicationDtoTranslator {

@@ -34,16 +34,23 @@ const characterValues: CharacterValue = {
 }
 
 const allowedAvatarColors = [
-  '#E74C3C',
-  '#7D3C98',
-  '#3498DB',
-  '#16A085',
-  '#2ECC71',
-  '#F39C12',
-  '#D35400',
-  '#000080',
-  '#800080',
+  '#f6ac69',
+  '#809bce',
+  '#eac4d5',
+  '#61f4de',
+  '#65cbe9',
+  '#6e78ff',
+  '#ff7477',
+  '#f5e960',
+  '#55d6c2',
   '#000000',
+  '#ECEE81',
+  '#EDB7ED',
+  '#04364A',
+  '#332941',
+  '#79AC78',
+  '#D2DE32',
+  '#61A3BA',
 ]
 
 export const useAvatarColor = () => {

@@ -14,14 +14,14 @@
   }
 
   &__logo-image {
-    @apply object-contain w-full max-h-8 transition-all;
+    @apply object-contain w-24 h-auto transition-all;
 
     @screen md {
-      @apply max-h-10 transition-all;
+      @apply w-32 transition-all;
     }
 
     @screen lg {
-      @apply max-h-12 transition-all;
+      @apply w-40 transition-all;
     }
 
     &:hover {

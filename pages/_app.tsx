@@ -4,21 +4,37 @@ import styles from '~/styles/pages/_app.module.scss'
 import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
 import UserProvider from '~/modules/Auth/Infrastructure/Components/UserProvider'
-import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
-import { Toaster } from 'react-hot-toast'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
-import { AppMenu } from '~/components/AppMenu/AppMenu'
-import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
 import { Roboto } from '@next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
-import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
 import 'react-tooltip/dist/react-tooltip.css'
+import dynamic from 'next/dynamic'
+
+const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
+  .then((module) => module.AppMenu)
+)
+
+const Toaster = dynamic(() => import('react-hot-toast')
+  .then((module) => module.Toaster)
+)
+
+const MobileMenu = dynamic(() => import('~/components/AppMenu/MobileMenu')
+  .then((module) => module.MobileMenu)
+)
+
+const MenuSideBar = dynamic(() => import('~/components/MenuSideBar/MenuSideBar')
+  .then((module) => module.MenuSideBar)
+)
+
+const LanguageMenu = dynamic(() => import('~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu')
+  .then((module) => module.LanguageMenu)
+)
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
   constructors.forEach((baseCtor) => {

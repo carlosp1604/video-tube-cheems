@@ -1,0 +1,22 @@
+.producer-page {
+  &__container {
+    @apply container px-5 mx-auto flex flex-col
+      gap-y-4 mb-10;
+  }
+
+  &__title {
+    @apply flex flex-col items-start flex-wrap text-xl font-normal normal-case;
+
+    @screen md {
+      @apply flex-row gap-x-2 text-2xl items-center;
+    }
+  }
+
+  &__title-tag-name {
+    @apply text-xl font-bold text-brand-300 normal-case;
+
+    @screen md {
+      @apply text-2xl;
+    }
+  }
+}

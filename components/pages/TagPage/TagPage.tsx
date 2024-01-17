@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { ReactElement, useEffect, useState } from 'react'
-import styles from './ProducerPage.module.scss'
+import styles from './TagPage.module.scss'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -11,9 +11,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { useTranslation } from 'next-i18next'
-import { ProducerPageComponentDto } from '~/modules/Producers/Infrastructure/ProducerPageComponentDto'
+import { Trans, useTranslation } from 'next-i18next'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
@@ -25,38 +23,44 @@ import {
   PostsPaginationQueryParams
 } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { useFirstRender } from '~/hooks/FirstRender'
+import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageComponentDto'
+import { useAvatarColor } from '~/hooks/AvatarColor'
+import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 
-export interface ProducerPagePaginationState {
+interface TagPagePaginationState {
   page: number
   order: PostsPaginationSortingType
 }
 
-export interface ProducerPageProps {
+export interface TagPageProps {
   initialPage: number
   initialOrder: PostsPaginationSortingType
-  producer: ProducerPageComponentDto
+  tag: TagPageComponentDto
   initialPosts: PostCardComponentDto[]
   initialPostsNumber: number
 }
 
-export const ProducerPage: NextPage<ProducerPageProps> = ({
+export const TagPage: NextPage<TagPageProps> = ({
   initialPage,
   initialOrder,
-  producer,
+  tag,
   initialPosts,
   initialPostsNumber,
 }) => {
   const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
 
-  const [pagination, setPagination] = useState<ProducerPagePaginationState>({ page: initialPage, order: initialOrder })
+  const [pagination, setPagination] = useState<TagPagePaginationState>({ page: initialPage, order: initialOrder })
 
   const { loading, getPosts } = useGetPosts()
+  const getRandomColor = useAvatarColor()
   const firstRender = useFirstRender()
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
-  const { t } = useTranslation('producer_page')
+  const { t } = useTranslation('tag_page')
+
+  const tagColor = getRandomColor(tag.name)
 
   const sortingOptions: PostsPaginationSortingType[] = [
     PostsPaginationSortingType.LATEST,
@@ -107,7 +111,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       const newPosts = await getPosts(
         page,
         order,
-        [{ type: PostFilterOptions.PRODUCER_SLUG, value: producer.slug }]
+        [{ type: PostFilterOptions.TAG_SLUG, value: tag.slug }]
       )
 
       if (newPosts) {
@@ -135,26 +139,37 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
   } else {
     content = (
       <EmptyState
-        title={ t('producer_posts_empty_state_title') }
-        subtitle={ t('producer_posts_empty_state_subtitle', { producerName: producer.name }) }
+        title={ t('tag_posts_empty_state_title') }
+        subtitle={ t('tag_posts_empty_state_subtitle', { tagName: tag.name }) }
       />
     )
   }
 
+  const postsTagGalleryTitle = (
+    <span className={ styles.producerPage__title }>
+      <Trans
+        i18nKey={ t('tag_posts_gallery_title') }
+        components={ [<div key={ 'tag_posts_gallery_title' } className={ styles.producerPage__titleTagName }/>] }
+        values={ { tagName: tag.name } }
+      />
+    </span>
+  )
+
   return (
     <div className={ styles.producerPage__container }>
+      { /** TODO: Add imageAlt when tags have imageUrl **/ }
       <ProfileHeader
-        name={ producer.name }
-        imageAlt={ t('producer_image_alt_title', { producerName: producer.name }) }
-        imageUrl={ producer.imageUrl }
-        customColor={ producer.brandHexColor }
-        rounded={ true }
+        name={ tag.name }
+        imageAlt={ '' }
+        imageUrl={ null }
+        customColor={ tagColor }
+        rounded={ false }
       />
 
       <PostCardGalleryHeader
         key={ router.asPath }
-        title={ t('producer_posts_gallery_title', { producerName: producer.name }) }
-        subtitle={ t('producer_posts_gallery_posts_quantity', { postsNumber }) }
+        title={ postsTagGalleryTitle }
+        subtitle={ t('tag_posts_gallery_posts_quantity', { postsNumber }) }
         showSortingOptions={ postsNumber > defaultPerPage }
         activeOption={ pagination.order }
         sortingOptions={ sortingOptions }

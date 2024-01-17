@@ -2,7 +2,7 @@ export enum PostFilterOptions {
   POST_TITLE = 'postTitle',
   PRODUCER_SLUG = 'producerSlug',
   ACTOR_SLUG = 'actorSlug',
-  TAG_ID = 'tagId',
+  TAG_SLUG = 'tagSlug',
   PRODUCER_NAME = 'producerName',
   ACTOR_NAME = 'actorName',
   TAG_NAME = 'tagName',

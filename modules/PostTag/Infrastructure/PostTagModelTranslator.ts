@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { PostTag as PrismaPostTagModel } from '@prisma/client'
-import { PostTag } from '~/modules/Posts/Domain/PostTag'
+import { PostTag } from '~/modules/PostTag/Domain/PostTag'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Translation } from '~/modules/Translations/Domain/Translation'
 import { PostTagWithTranslations } from '~/modules/Posts/Infrastructure/PrismaModels/PostTagModel'

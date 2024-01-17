@@ -2,7 +2,7 @@ import { ModelTranslationsApplicationDto } from '~/modules/Translations/Applicat
 import {
   TranslationApplicationDtoTranslator
 } from '~/modules/Translations/Application/TranslationApplicationDtoTranslator'
-import { PostTag } from '~/modules/Posts/Domain/PostTag'
+import { PostTag } from '~/modules/PostTag/Domain/PostTag'
 
 export class PostTagTranslationTranslatorDto {
   public static fromDomain (postTag: PostTag): ModelTranslationsApplicationDto[] {

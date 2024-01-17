@@ -50,9 +50,8 @@ module.exports = {
       },
       colors: {
         sidebar: {
-          background: '#28282B',
-          item: '#3b3c3f',
-          copyright: '#434349',
+          item: '#007880',
+          active: '#007880',
         },
         body: '#1d1d1d',
         base: {

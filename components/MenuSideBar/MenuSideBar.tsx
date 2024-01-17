@@ -3,7 +3,7 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar } from 'react-icons/bs'
+import { BsArrowLeft, BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
@@ -205,16 +205,13 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       ` }>
         <IconButton
           onClick={ () => setMenuOpen(!menuOpen) }
-          icon={ <BsList /> }
-          title={ t('menu_button_title') }
+          icon={ menuOpen ? <BsArrowLeft /> : <BsList /> }
+          title={ menuOpen ? t('menu_close_button_title') : t('menu_button_title') }
         />
       </div>
 
       <div className={ styles.menuSideBar__menuSectionContainer }>
-        <div className={ `
-          ${styles.menuSideBar__menuContainer}
-          ${menuOpen ? styles.menuSideBar__menuContainer_open : ''}
-        ` }>
+        <div className={ styles.menuSideBar__menuContainer }>
           { menuOptions.map((menuOption) => {
             return (
               <MenuSideBarOption

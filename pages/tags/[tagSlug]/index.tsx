@@ -11,18 +11,16 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBySlug/GetProducerBySlug'
-import { ProducerPage, ProducerPageProps } from '~/components/pages/ProducerPage/ProducerPage'
-import {
-  ProducerPageComponentDtoTranslator
-} from '~/modules/Producers/Infrastructure/ProducerPageComponentDtoTranslator'
 import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
 import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
+import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
+import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/TagPageComponentDtoTranslator'
 
-export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
-  const producerSlug = context.query.producerSlug
+export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
+  const tagSlug = context.query.tagSlug
 
-  if (!producerSlug) {
+  if (!tagSlug) {
     return {
       notFound: true,
     }
@@ -44,7 +42,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     'api_exceptions',
     'post_card_options',
     'post_card_gallery',
-    'producer_page',
+    'tag_page',
   ])
 
   const paginationQueryParams = new PostsPaginationQueryParams(
@@ -67,20 +65,17 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
     return {
       redirect: {
-        destination: `/${locale}/producers/${producerSlug}?${stringPaginationParams}`,
+        destination: `/${locale}/tags/${tagSlug}?${stringPaginationParams}`,
         permanent: false,
       },
     }
   }
 
-  const props: ProducerPageProps = {
-    producer: {
-      description: '',
+  const props: TagPageProps = {
+    tag: {
       slug: '',
       name: '',
-      imageUrl: '',
       id: '',
-      brandHexColor: '',
     },
     initialOrder: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
     initialPage: paginationQueryParams.page ?? 1,
@@ -89,13 +84,13 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     ...i18nSSRConfig,
   }
 
-  const getProducer = container.resolve<GetProducerBySlug>('getProducerBySlugUseCase')
+  const getTag = container.resolve<GetTagBySlug>('getTagBySlugUseCase')
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
 
   try {
-    const producer = await getProducer.get(producerSlug.toString())
+    const tag = await getTag.get(tagSlug.toString())
 
-    props.producer = ProducerPageComponentDtoTranslator.fromApplicationDto(producer)
+    props.tag = TagPageComponentDtoTranslator.fromApplicationDto(tag, locale)
   } catch (exception: unknown) {
     console.error(exception)
 
@@ -120,7 +115,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
     const producerPosts = await getPosts.get({
       page,
-      filters: [{ type: PostFilterOptions.PRODUCER_SLUG, value: String(producerSlug) }],
+      filters: [{ type: PostFilterOptions.TAG_SLUG, value: String(tagSlug) }],
       sortCriteria,
       sortOption,
       postsPerPage: defaultPerPage,
@@ -139,4 +134,4 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
   }
 }
 
-export default ProducerPage
+export default TagPage

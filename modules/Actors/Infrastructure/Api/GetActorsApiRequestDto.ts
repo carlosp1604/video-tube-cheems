@@ -1,4 +1,4 @@
-import { ActorFilterOptionsType } from './ActorFilter'
+import { ActorFilterOptionsType } from '../ActorFilter'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions

@@ -1,47 +1,39 @@
-import { GetActorsRequestDto } from './GetActorsRequestDto'
-import { GetActorsApplicationDto } from './GetActorsApplicationDto'
-import { GetActorsApplicationDtoTranslator } from './GetActorsApplicationDtoTranslator'
+import { GetActorsApplicationRequestDto } from './GetActorsApplicationRequestDto'
+import { GetActorsApplicationResponseDto } from './GetActorsApplicationResponseDto'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
-import { GetPostsSortingOptionValidator } from '~/modules/Shared/Domain/Posts/Validators/GetPostsSortingOptionValidator'
 import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteriaValidator'
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
-import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
-import { GetPostRequestFilterDto } from '~/modules/Shared/Application/GetPostsApplicationRequestDto'
+import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActors/GetActorsApplicationException'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
+import { GetActorsSortingOptionValidator } from '~/modules/Actors/Domain/Validators/GetActorsSortingOptionValidator'
+import {
+  GetActorsApplicationResponseDtoTranslator
+} from '~/modules/Actors/Application/GetActors/GetActorsApplicationResponseDtoTranslator'
 
 export class GetActors {
   // eslint-disable-next-line no-useless-constructor
   constructor (private readonly actorRepository: ActorRepositoryInterface) {}
 
-  public async get (request: GetActorsRequestDto): Promise<GetActorsApplicationDto> {
+  public async get (request: GetActorsApplicationRequestDto): Promise<GetActorsApplicationResponseDto> {
     GetActors.validateRequest(request)
     const offset = (request.page - 1) * request.actorsPerPage
-
-    const filters = GetActors.parseFilters(request.filters)
 
     const sortingCriteria = GetActors.validateSortingCriteria(request.sortCriteria)
     const sortingOption = GetActors.validateSortingOption(request.sortOption)
 
-    const [actors, actorsNumber] = await Promise.all([
-      await this.actorRepository.findWithOffsetAndLimit(
-        offset,
-        request.actorsPerPage,
-        sortingOption,
-        sortingCriteria,
-        filters
-      ),
-      await this.actorRepository.countPostsWithFilters(filters),
-    ])
-
-    return GetActorsApplicationDtoTranslator.fromDomain(
-      actors,
-      actorsNumber
+    const actors = await this.actorRepository.findWithOffsetAndLimit(
+      offset,
+      request.actorsPerPage,
+      sortingOption,
+      sortingCriteria
     )
+
+    return GetActorsApplicationResponseDtoTranslator.fromDomain(actors)
   }
 
-  private static validateRequest (request: GetActorsRequestDto): void {
+  private static validateRequest (request: GetActorsApplicationRequestDto): void {
     if (isNaN(request.page) || request.page <= 0) {
       throw GetActorsApplicationException.invalidOffsetValue()
     }
@@ -51,13 +43,9 @@ export class GetActors {
     }
   }
 
-  private static parseFilters (filters: GetPostRequestFilterDto[]): [] {
-    return []
-  }
-
-  private static validateSortingOption (sortingOption: string): PostSortingOption {
+  private static validateSortingOption (sortingOption: string): ActorSortingOption {
     try {
-      return new GetPostsSortingOptionValidator().validate(sortingOption)
+      return new GetActorsSortingOptionValidator().validate(sortingOption)
     } catch (exception: unknown) {
       if (!(exception instanceof ValidationException)) {
         throw exception

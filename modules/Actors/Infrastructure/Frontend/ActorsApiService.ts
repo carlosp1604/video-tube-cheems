@@ -3,7 +3,7 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
-import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
+import { GetActorsApplicationResponseDto } from '~/modules/Actors/Application/GetActors/GetActorsApplicationResponseDto'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export class ActorsApiService {
@@ -13,7 +13,7 @@ export class ActorsApiService {
     order: InfrastructureSortingCriteria,
     orderBy: InfrastructureSortingOptions,
     filters: FetchPostsFilter[]
-  ): Promise<GetActorsApplicationDto> {
+  ): Promise<GetActorsApplicationResponseDto> {
     const params = new URLSearchParams()
 
     params.append('page', pageNumber.toString())

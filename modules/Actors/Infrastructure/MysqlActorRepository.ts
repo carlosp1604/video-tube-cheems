@@ -3,9 +3,10 @@ import { ActorModelTranslator } from './ActorModelTranslator'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import { prisma } from '~/persistence/prisma'
-import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
-import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
+import { ActorsWithPostsCountWithTotalCount, ActorWithPostsCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
+import ActorOrderByWithRelationInput = Prisma.ActorOrderByWithRelationInput
+import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
   /**
@@ -49,87 +50,77 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   /**
-   * Find Actors based on filter and order criteria
-   * @param offset Post offset
+   * Find Actors based on sorting criteria
+   * @param offset Actor offset
    * @param limit
-   * @param sortingOption Post sorting option
-   * @param sortingCriteria Post sorting criteria
-   * @return Post if found or null
+   * @param sortingOption Actor sorting option
+   * @param sortingCriteria Sorting criteria
+   * @return ActorsWithPostsCountWithTotalCount
    */
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
-    sortingOption: PostSortingOption,
-    sortingCriteria: SortingCriteria,
-    filters: PostFilterOptionInterface[]
-  ): Promise<Actor[]> {
-    let whereClause: Prisma.ActorWhereInput | undefined = {
+    sortingOption: ActorSortingOption,
+    sortingCriteria: SortingCriteria
+  ): Promise<ActorsWithPostsCountWithTotalCount> {
+    const whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
     }
 
-    const whereFilters = this.buildFilters(filters)
+    const actorsSortCriteria = MysqlActorRepository.buildOrder(sortingOption, sortingCriteria)
 
-    whereClause = {
-      ...whereClause,
-      ...whereFilters,
-    }
+    const [actors, actorsNumber] = await prisma.$transaction([
+      prisma.actor.findMany({
+        where: whereClause,
+        include: {
+          _count: {
+            select: {
+              posts: true,
+            },
+          },
+        },
+        take: limit,
+        skip: offset,
+        orderBy: actorsSortCriteria,
+      }),
+      prisma.actor.count({
+        where: whereClause,
+      }),
+    ])
 
-    const actors = await prisma.actor.findMany({
-      where: whereClause,
-      take: limit,
-      skip: offset,
-    })
-
-    return actors.map((actor) => ActorModelTranslator.toDomain(actor))
-  }
-
-  /**
-   * Count Actors based on filters
-   * @param filters Actor filters
-   * @return Number of actors that accomplish with the filters
-   */
-  public async countPostsWithFilters (
-    filters: PostFilterOptionInterface[]
-  ): Promise<number> {
-    let whereClause: Prisma.ActorWhereInput | undefined = {
-      deletedAt: null,
-    }
-
-    const whereFilters = this.buildFilters(filters)
-
-    whereClause = {
-      ...whereClause,
-      ...whereFilters,
-    }
-
-    const actorsNumber = await prisma.actor.count({
-      where: whereClause,
-    })
-
-    return actorsNumber
-  }
-
-  private buildFilters (
-    filters: PostFilterOptionInterface[]
-  ): Prisma.ActorWhereInput | undefined {
-    let whereClause: Prisma.ActorWhereInput | undefined = {}
-
-    for (const filter of filters) {
-      if (filter.type === 'actorSlug') {
-        whereClause = {
-          ...whereClause,
-          name: filter.value,
-        }
+    const actorsWithPostsNumber: ActorWithPostsCount[] = actors.map((actor) => {
+      return {
+        actor: ActorModelTranslator.toDomain(actor),
+        postsNumber: actor._count.posts,
       }
+    })
 
-      if (filter.type === 'actorId') {
-        whereClause = {
-          ...whereClause,
-          id: filter.value,
-        }
+    return {
+      actors: actorsWithPostsNumber,
+      actorsNumber,
+    }
+  }
+
+  private static buildOrder (
+    sortingOption: ActorSortingOption,
+    sortingCriteria: SortingCriteria
+  ): ActorOrderByWithRelationInput | undefined {
+    let sortCriteria: ActorOrderByWithRelationInput | undefined
+
+    if (sortingOption === 'name') {
+      sortCriteria = {
+        name: sortingCriteria,
       }
     }
 
-    return whereClause
+    if (sortingOption === 'posts') {
+      sortCriteria = {
+        posts: {
+          _count: sortingCriteria,
+        },
+      }
+    }
+
+    return sortCriteria
   }
 }

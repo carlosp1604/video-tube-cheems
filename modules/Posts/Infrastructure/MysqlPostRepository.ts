@@ -26,7 +26,7 @@ import { DefaultArgs } from '@prisma/client/runtime/library'
 import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
+import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**

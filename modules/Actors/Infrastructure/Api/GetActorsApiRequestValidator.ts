@@ -1,6 +1,6 @@
 import { z, ZodError } from 'zod'
 import { ActorApiRequestValidatorError } from './ActorApiRequestValidatorError'
-import { ActorFilterOptions } from './ActorFilter'
+import { ActorFilterOptions } from '../ActorFilter'
 import { GetActorsApiRequestDto } from './GetActorsApiRequestDto'
 import {
   InfrastructureSortingCriteria,

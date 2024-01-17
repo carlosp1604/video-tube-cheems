@@ -1,12 +1,16 @@
 import { ApplicationException } from '~/modules/Exceptions/Application/ApplicationException'
 
 export class GetActorsApplicationException extends ApplicationException {
-  public static invalidLimitValueId = 'get_posts_invalid_limit_value'
-  public static invalidOffsetValueId = 'get_posts_invalid_offset_value'
-  public static invalidFilterTypeId = 'get_posts_invalid_filter_type'
-  public static invalidFilterValueId = 'get_posts_invalid_filter_value'
-  public static invalidSortingOptionId = 'get_posts_invalid_sorting_option'
-  public static invalidSortingCriteriaId = 'get_posts_invalid_sorting_criteria'
+  public static invalidLimitValueId = 'get_actors_invalid_limit_value'
+  public static invalidOffsetValueId = 'get_actors_invalid_offset_value'
+  public static invalidSortingOptionId = 'get_actors_invalid_sorting_option'
+  public static invalidSortingCriteriaId = 'get_actors_invalid_sorting_criteria'
+
+  constructor (message: string, id: string) {
+    super(message, id)
+
+    Object.setPrototypeOf(this, GetActorsApplicationException.prototype)
+  }
 
   public static invalidLimitValue (minLimit: number, maxLimit: number): GetActorsApplicationException {
     return new GetActorsApplicationException(
@@ -19,20 +23,6 @@ export class GetActorsApplicationException extends ApplicationException {
     return new GetActorsApplicationException(
       'Limit must be a integer greater or equal to 0',
       this.invalidOffsetValueId
-    )
-  }
-
-  public static invalidFilterType (filter: string): GetActorsApplicationException {
-    return new GetActorsApplicationException(
-      `Filter ${filter} is not a valid filter`,
-      this.invalidFilterTypeId
-    )
-  }
-
-  public static invalidFilterValue (): GetActorsApplicationException {
-    return new GetActorsApplicationException(
-      'Filter must be a not empty string and must not include special characters',
-      this.invalidFilterValueId
     )
   }
 

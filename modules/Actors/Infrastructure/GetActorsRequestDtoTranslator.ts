@@ -1,8 +1,8 @@
-import { GetActorsApiRequestDto } from './GetActorsApiRequestDto'
-import { GetActorsRequestDto } from '~/modules/Actors/Application/GetActorsRequestDto'
+import { GetActorsApiRequestDto } from './Api/GetActorsApiRequestDto'
+import { GetActorsApplicationRequestDto } from '~/modules/Actors/Application/GetActors/GetActorsApplicationRequestDto'
 
 export class GetActorsRequestDtoTranslator {
-  public static fromApiDto (request: GetActorsApiRequestDto): GetActorsRequestDto {
+  public static fromApiDto (request: GetActorsApiRequestDto): GetActorsApplicationRequestDto {
     return {
       sortOption: request.sortOption,
       page: request.page,

@@ -2,8 +2,8 @@ import { MysqlActorRepository } from './MysqlActorRepository'
 import { Provider } from '~/injector/Provider'
 import { DependencyInjector, makeInjector } from '~/injector/DependencyInjector'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
-import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
-import { GetActors } from '~/modules/Actors/Application/GetActors'
+import { GetActorBySlug } from '~/modules/Actors/Application/GetActorBySlug/GetActorBySlug'
+import { GetActors } from '~/modules/Actors/Application/GetActors/GetActors'
 
 const actorRepository: Provider<ActorRepositoryInterface> =
   {

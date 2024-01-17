@@ -7,7 +7,7 @@ import {
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
 import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
-import { GetActorsApplicationDto } from '~/modules/Actors/Application/GetActorsApplicationDto'
+import { GetActorsApplicationResponseDto } from '~/modules/Actors/Application/GetActors/GetActorsApplicationResponseDto'
 import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'
 import { ActorCardList } from '~/modules/Actors/Infrastructure/Components/ActorCardList'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -45,7 +45,7 @@ export const PaginatedActorCardGallery: FC<Props> = ({
 
   const apiService = new ActorsApiService()
 
-  const fetchActors = async (): Promise<GetActorsApplicationDto> => {
+  const fetchActors = async (): Promise<GetActorsApplicationResponseDto> => {
     return apiService.getActors(
       pageNumber,
       defaultPerPage,

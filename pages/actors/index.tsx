@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 import { ActorsPageProps, ActorsPage } from '~/components/pages/ActorsPage/ActorsPage'
 import { container } from '~/awilix.container'
-import { GetActors } from '~/modules/Actors/Application/GetActors'
+import { GetActors } from '~/modules/Actors/Application/GetActors/GetActors'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions

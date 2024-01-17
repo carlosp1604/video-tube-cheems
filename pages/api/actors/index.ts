@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { NextApiRequestQuery } from 'next/dist/server/api-utils'
-import { GetActorsApiRequestValidator } from '~/modules/Actors/Infrastructure/GetActorsApiRequestValidator'
+import { GetActorsApiRequestValidator } from '~/modules/Actors/Infrastructure/Api/GetActorsApiRequestValidator'
 import { container } from '~/awilix.container'
-import { GetActors } from '~/modules/Actors/Application/GetActors'
+import { GetActors } from '~/modules/Actors/Application/GetActors/GetActors'
 import { GetActorsRequestDtoTranslator } from '~/modules/Actors/Infrastructure/GetActorsRequestDtoTranslator'
-import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActorsApplicationException'
+import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActors/GetActorsApplicationException'
 import { GetPostsApiFilterRequestDto } from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestDto'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { ActorApiRequestValidatorError } from '~/modules/Actors/Infrastructure/ActorApiRequestValidatorError'
-import { GetActorsApiRequestDto } from '~/modules/Actors/Infrastructure/GetActorsApiRequestDto'
+import { ActorApiRequestValidatorError } from '~/modules/Actors/Infrastructure/Api/ActorApiRequestValidatorError'
+import { GetActorsApiRequestDto } from '~/modules/Actors/Infrastructure/Api/GetActorsApiRequestDto'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions

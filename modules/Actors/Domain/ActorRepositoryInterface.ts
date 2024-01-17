@@ -1,17 +1,12 @@
 import { Actor } from './Actor'
-import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
-import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-
-export type ActorRepositoryFilterOption = Extract<PostFilterOptionInterface,
-  'actorName' |
-  'actorId'
->
+import { ActorsWithPostsCountWithTotalCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
+import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 
 export interface ActorRepositoryInterface {
   /**
    * Find an Actor given its ID
-   * @param actorId Actor IDç
+   * @param actorId Actor ID
    * @return Actor if found or null
    */
   findById(actorId: Actor['id']): Promise<Actor | null>
@@ -24,27 +19,17 @@ export interface ActorRepositoryInterface {
   findBySlug (actorSlug: Actor['slug']): Promise<Actor | null>
 
   /**
-   * Find Actors based on filter and order criteria
-   * @param offset Post offset
+   * Find Actors based on sorting criteria
+   * @param offset Actor offset
    * @param limit
-   * @param sortingOption Post sorting option
-   * @param sortingCriteria Post sorting criteria
-   * @return Post if found or null
+   * @param sortingOption Actor sorting option
+   * @param sortingCriteria Sorting criteria
+   * @return ActorsWithPostsCountWithTotalCount
    */
   findWithOffsetAndLimit(
     offset: number,
     limit: number,
-    sortingOption: PostSortingOption,
+    sortingOption: ActorSortingOption,
     sortingCriteria: SortingCriteria,
-    filters: PostFilterOptionInterface[],
-  ): Promise<Actor[]>
-
-  /**
-   * Count Actos based on filters
-   * @param filters Actor filters
-   * @return Number of actors that accomplish with the filters
-   */
-  countPostsWithFilters(
-    filters: PostFilterOptionInterface[],
-  ): Promise<number>
+  ): Promise<ActorsWithPostsCountWithTotalCount>
 }

@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { ActorPage, ActorPageProps } from '~/components/pages/ActorPage/ActorPage'
-import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
+import { GetActorBySlug } from '~/modules/Actors/Application/GetActorBySlug/GetActorBySlug'
 import { ActorPageComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorPageComponentDtoTranslator'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'

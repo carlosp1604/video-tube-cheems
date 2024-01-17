@@ -3,7 +3,7 @@ import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositor
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import {
   GetActorBySlugApplicationResponseDto
-} from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlugApplicationResponseDto'
+} from '~/modules/Actors/Application/GetActorBySlug/GetActorBySlugApplicationResponseDto'
 import { ActorApplicationDtoTranslator } from '~/modules/Actors/Application/ActorApplicationDtoTranslator'
 
 export class GetActorBySlug {

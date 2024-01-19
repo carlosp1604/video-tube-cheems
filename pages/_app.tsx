@@ -127,7 +127,7 @@ function App ({
                   options={ {
                     showSpinner: false,
                   } }
-                  showOnShallow={ false }
+                  showOnShallow={ true }
                   height={ 1.5 }
                 />
 

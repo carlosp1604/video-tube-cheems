@@ -11,7 +11,7 @@
   }
 
   &__title-actor-name {
-    @apply text-brand-300 normal-case
+    @apply text-brand-300 normal-case -mt-2
     line-clamp-4 break-words text-xl font-bold;
   }
 }

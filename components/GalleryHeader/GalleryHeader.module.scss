@@ -14,11 +14,11 @@
   }
 
   &__quantity {
-    @apply normal-case text-xs font-light;
+    @apply normal-case text-xs font-normal text-brand-300;
     grid-area: subtitle;
 
     @screen md {
-      @apply font-semibold text-brand-300;
+      @apply font-semibold;
     }
   }
 

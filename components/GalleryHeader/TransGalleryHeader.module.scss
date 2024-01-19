@@ -1,0 +1,32 @@
+.trans-gallery-header {
+  &__container {
+    @apply grid justify-between items-start gap-x-4;
+    grid-template-areas:
+      "title      sort"
+      "subtitle   sort";
+    grid-auto-rows: auto auto;
+  }
+
+  &__title-element {
+    grid-area: title;
+  }
+
+  &__quantity {
+    @apply normal-case text-xs font-light;
+    grid-area: subtitle;
+
+    @screen md {
+      @apply font-semibold text-brand-300;
+    }
+  }
+
+  &__quantity-skeeleton {
+    @apply w-10 rounded-lg h-2.5 bg-base-700 mt-1
+    animate-pulse;
+    grid-area: subtitle;
+  }
+
+  &__sorting-element {
+    grid-area: sort;
+  }
+}

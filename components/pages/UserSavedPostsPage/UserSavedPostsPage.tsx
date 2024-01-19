@@ -8,8 +8,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
@@ -17,9 +16,6 @@ import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
 import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
-import {
-  PostCardGalleryHeader
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
 import { useTranslation } from 'next-i18next'
 import styles from './UserSavedPostsPage.module.scss'
 import {
@@ -27,6 +23,12 @@ import {
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
 import { useSession } from 'next-auth/react'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import {
+  fromOrderTypeToComponentSortingOption,
+  PaginationSortingType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
+import { GalleryHeader } from '~/components/GalleryHeader/GalleryHeader'
 
 interface PaginationState {
   page: number
@@ -42,7 +44,7 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
   const [postsNumber, setPostsNumber] = useState<number>(0)
 
   const [paginationState, setPaginationState] = useState<PaginationState>({
-    order: PostsPaginationSortingType.NEWEST_SAVED,
+    order: PaginationSortingType.NEWEST_SAVED,
     page: 1,
   })
 
@@ -75,21 +77,21 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
   ]
 
   const sortingOptions: PostsPaginationSortingType[] = [
-    PostsPaginationSortingType.NEWEST_SAVED,
-    PostsPaginationSortingType.OLDEST_SAVED,
+    PaginationSortingType.NEWEST_SAVED,
+    PaginationSortingType.OLDEST_SAVED,
   ]
 
-  const onChangeOption = async (newOrder: PostsPaginationSortingType) => {
+  const onChangeOption = async (newOrder: PaginationSortingType) => {
     setLoading(true)
-    setPaginationState({ ...paginationState, order: newOrder, page: 1 })
+    setPaginationState({ ...paginationState, order: newOrder as PostsPaginationSortingType, page: 1 })
 
-    await updatePosts(1, newOrder)
+    await updatePosts(1, newOrder as PostsPaginationSortingType)
 
     setLoading(false)
   }
 
   const updatePosts = async (page:number, order: PostsPaginationSortingType) => {
-    const componentOrder = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order)
+    const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
       const newPosts = await (new PostsApiService())
@@ -158,18 +160,25 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
     )
   }
 
+  const sortingMenu = (
+    <SortingMenuDropdown
+      activeOption={ paginationState.order }
+      options={ sortingOptions }
+      loading={ loading }
+      visible={ postsNumber > defaultPerPage }
+      onClickOption={ onChangeOption }
+    />
+  )
+
   return (
     <div className={ styles.userSavedPostsPage__container }>
       <UserProfileHeader componentDto={ userComponentDto } />
 
-      <PostCardGalleryHeader
+      <GalleryHeader
         title={ t('user_saved_posts_title') }
         subtitle={ t('posts_number_title', { postsNumber }) }
-        showSortingOptions={ postsNumber > defaultPerPage }
-        activeOption={ paginationState.order }
-        sortingOptions={ sortingOptions }
-        onClickOption={ onChangeOption }
         loading={ loading }
+        sortingMenu={ sortingMenu }
       />
 
       { content }

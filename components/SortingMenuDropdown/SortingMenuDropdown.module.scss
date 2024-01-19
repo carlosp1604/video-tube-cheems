@@ -9,7 +9,7 @@
   }
 
   &__dropdown-button {
-    @apply flex flex-col justify-center items-end truncate
+    @apply flex flex-col items-end truncate
       text-xs font-thin leading-none text-base-100;
 
     @screen md {

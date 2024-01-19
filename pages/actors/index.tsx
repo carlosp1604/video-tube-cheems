@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next'
-import { ActorsPageProps, ActorsPage } from '~/components/pages/ActorsPage/ActorsPage'
+import { ActorsPage, ActorsPageProps } from '~/components/pages/ActorsPage/ActorsPage'
 import { container } from '~/awilix.container'
 import { GetActors } from '~/modules/Actors/Application/GetActors/GetActors'
 import {
@@ -8,10 +8,11 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { ActorsPaginationQueryParams } from '~/modules/Actors/Infrastructure/Frontend/ActorPaginationQueryParams'
+import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
-  const getActors = container.resolve<GetActors>('getActorsUseCase')
-
   const locale = context.locale ?? 'en'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
@@ -27,25 +28,71 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     'user_retrieve_password',
     'pagination_bar',
     'common',
-    'actor_page',
+    'actors_page',
   ])
 
+  const paginationQueryParams = new ActorsPaginationQueryParams(
+    context.query,
+    {
+      sortingOptionType: {
+        defaultValue: PaginationSortingType.NAME_FIRST,
+        parseableOptionTypes: [
+          PaginationSortingType.NAME_FIRST,
+          PaginationSortingType.NAME_LAST,
+          PaginationSortingType.MORE_POSTS,
+          PaginationSortingType.LESS_POSTS,
+        ],
+      },
+      page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
+    }
+  )
+
+  if (paginationQueryParams.parseFailed) {
+    const stringPaginationParams = paginationQueryParams.getParsedQueryString()
+
+    return {
+      redirect: {
+        destination: `/${locale}/actors?${stringPaginationParams}`,
+        permanent: false,
+      },
+    }
+  }
+
   const props: ActorsPageProps = {
-    actors: [],
-    actorsNumber: 0,
+    initialActors: [],
+    initialActorsNumber: 0,
+    initialPage: 1,
+    initialOrder: PaginationSortingType.NAME_FIRST,
     ...i18nSSRConfig,
   }
 
+  const getActors = container.resolve<GetActors>('getActorsUseCase')
+
   try {
+    let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC
+    let sortOption: InfrastructureSortingOptions = InfrastructureSortingOptions.DATE
+    let page = 1
+
+    if (paginationQueryParams.componentSortingOption) {
+      sortOption = paginationQueryParams.componentSortingOption.option
+      sortCriteria = paginationQueryParams.componentSortingOption.criteria
+    }
+
+    if (paginationQueryParams.page) {
+      page = paginationQueryParams.page
+    }
+
     const actors = await getActors.get({
       actorsPerPage: defaultPerPage,
-      page: 1,
-      sortCriteria: InfrastructureSortingCriteria.DESC,
-      sortOption: InfrastructureSortingOptions.DATE,
-      filters: [],
+      page,
+      sortCriteria,
+      sortOption,
     })
 
-    props.actorsNumber = actors.actorsNumber
+    props.initialActorsNumber = actors.actorsNumber
+    props.initialActors = actors.actors.map((actor) => {
+      return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber)
+    })
 
     return {
       props,

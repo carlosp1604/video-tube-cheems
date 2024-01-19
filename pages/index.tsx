@@ -16,9 +16,9 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -46,11 +46,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     {
       filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: [
-          PostsPaginationSortingType.LATEST,
-          PostsPaginationSortingType.OLDEST,
-          PostsPaginationSortingType.MOST_VIEWED,
+          PaginationSortingType.LATEST,
+          PaginationSortingType.OLDEST,
+          PaginationSortingType.MOST_VIEWED,
         ],
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 
   const props: Props = {
-    order: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
+    order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,
     initialPosts: [],
     producers: [],

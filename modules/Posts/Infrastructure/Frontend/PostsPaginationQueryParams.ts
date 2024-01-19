@@ -1,16 +1,9 @@
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { ParsedUrlQuery } from 'querystring'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import {
-  ComponentSortingOption,
-  NewestViewedSortingOption, OldestViewedSortingOption,
-  MoreViewsPostsSortingOption,
-  OldestPostsSortingOption,
-  NewestPostsSortingOption,
-  NewestSavedPostsSortingOption,
-  OldestSavedPostsSortingOption
-} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
+import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
+import { fromOrderTypeToComponentSortingOption } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export interface PostsPaginationNumericParameterConfiguration {
   defaultValue: number
@@ -154,6 +147,12 @@ export class PostsPaginationQueryParams {
   }
 
   private parseSortingOption (query: ParsedUrlQuery): PostsPaginationSortingType | null {
+    if (!this.configuration.sortingOptionType) {
+      this._parseFailed = true
+
+      return null
+    }
+
     const { order } = query
 
     if (!order) {
@@ -172,16 +171,6 @@ export class PostsPaginationQueryParams {
 
     const parseOrderBy = String(order)
 
-    if (!this.configuration.sortingOptionType) {
-      if (Object.values(PostsPaginationSortingType).includes(parseOrderBy as PostsPaginationSortingType)) {
-        return parseOrderBy as PostsPaginationSortingType
-      } else {
-        this._parseFailed = true
-
-        return null
-      }
-    }
-
     const validOptionMatch = this.configuration.sortingOptionType.parseableOptionTypes.find(
       (optionToParse) => optionToParse === parseOrderBy)
 
@@ -192,28 +181,6 @@ export class PostsPaginationQueryParams {
     this._parseFailed = true
 
     return this.configuration.sortingOptionType.defaultValue
-  }
-
-  public static fromOrderTypeToComponentSortingOption (type: PostsPaginationSortingType): ComponentSortingOption {
-    switch (type) {
-      case PostsPaginationSortingType.LATEST:
-        return NewestPostsSortingOption
-      case PostsPaginationSortingType.MOST_VIEWED:
-        return MoreViewsPostsSortingOption
-      case PostsPaginationSortingType.OLDEST:
-        return OldestPostsSortingOption
-      case PostsPaginationSortingType.NEWEST_SAVED:
-        return NewestSavedPostsSortingOption
-      case PostsPaginationSortingType.NEWEST_VIEWED:
-        return NewestViewedSortingOption
-      case PostsPaginationSortingType.OLDEST_SAVED:
-        return OldestSavedPostsSortingOption
-      case PostsPaginationSortingType.OLDEST_VIEWED:
-        return OldestViewedSortingOption
-
-      default:
-        throw Error('Sorting option not implemented or not exists')
-    }
   }
 
   public getFilter (filterType: PostFilterOptions): FetchPostsFilter | null {
@@ -235,7 +202,7 @@ export class PostsPaginationQueryParams {
       return null
     }
 
-    return PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(this.sortingOptionType)
+    return fromOrderTypeToComponentSortingOption(this.sortingOptionType)
   }
 
   public getParsedQueryString (): string {
@@ -263,6 +230,10 @@ export class PostsPaginationQueryParams {
         this.configuration.sortingOptionType.defaultValue !== this.sortingOptionType)
     ) {
       queries.push(`order=${String(this.sortingOptionType)}`)
+    }
+
+    for (const filter of this.filters) {
+      queries.push(`${filter.type}=${filter.value}`)
     }
 
     return queries.join('&')

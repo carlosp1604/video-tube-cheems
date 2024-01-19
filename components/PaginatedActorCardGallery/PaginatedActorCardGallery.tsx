@@ -1,15 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import styles from './PaginatedActorCardGallery.module.scss'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
-import {
-  NewestPostsSortingOption,
-  ComponentSortingOption
-} from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-import { ActorComponentDto } from '~/modules/Actors/Infrastructure/ActorComponentDto'
+import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
-import { GetActorsApplicationResponseDto } from '~/modules/Actors/Application/GetActors/GetActorsApplicationResponseDto'
-import { ActorComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorComponentDtoTranslator'
-import { ActorCardList } from '~/modules/Actors/Infrastructure/Components/ActorCardList'
+import { ActorCardGallery } from '~/modules/Actors/Infrastructure/Components/ActorCardGallery/ActorCardGallery'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 const useFirstRender = () => {
@@ -24,7 +18,7 @@ const useFirstRender = () => {
 
 interface Props {
   title: string
-  initialActors: ActorComponentDto[]
+  initialActors: ActorCardDto[]
   initialActorsNumber: number
   filters: FetchPostsFilter[]
 }
@@ -38,46 +32,12 @@ export const PaginatedActorCardGallery: FC<Props> = ({
   const [pagesNumber, setPagesNumber] = useState<number>(
     PaginationHelper.calculatePagesNumber(initialActorsNumber, defaultPerPage))
   const [pageNumber, setPageNumber] = useState(1)
-  const [currentActors, setCurrentActors] = useState<ActorComponentDto[]>(initialActors)
-  const [activeSortingOption, setActiveSortingOption] = useState<ComponentSortingOption>(NewestPostsSortingOption)
+  const [currentActors, setCurrentActors] = useState<ActorCardDto[]>(initialActors)
+  // const [activeSortingOption, setActiveSortingOption] = useState<ComponentSortingOption>(NewestPostsSortingOption)
   const [actorsNumber, setActorsNumber] = useState<number>(initialActorsNumber)
   const firstRender = useFirstRender()
 
   const apiService = new ActorsApiService()
-
-  const fetchActors = async (): Promise<GetActorsApplicationResponseDto> => {
-    return apiService.getActors(
-      pageNumber,
-      defaultPerPage,
-      activeSortingOption.criteria,
-      activeSortingOption.option,
-      filters
-    )
-  }
-
-  const updatePosts = async () => {
-    const actors = await fetchActors()
-
-    setCurrentActors(actors.actors.map((actor) => {
-      return ActorComponentDtoTranslator.fromApplicationDto(actor)
-    }))
-    setActorsNumber(actors.actorsNumber)
-    setPagesNumber(PaginationHelper.calculatePagesNumber(actors.actorsNumber, defaultPerPage))
-  }
-
-  useEffect(() => {
-    if (pageNumber === 1 && !firstRender) {
-      updatePosts()
-    }
-
-    setPageNumber(1)
-  }, [filters])
-
-  useEffect(() => {
-    if (!firstRender) {
-      updatePosts()
-    }
-  }, [pageNumber])
 
   return (
     <div className={ styles.paginatedActorCardGallery__container }>
@@ -92,8 +52,8 @@ export const PaginatedActorCardGallery: FC<Props> = ({
 
       </div>
 
-      <ActorCardList
-        actors={ currentActors }
+      <ActorCardGallery
+        actors={ initialActors }
       />
     </div>
   )

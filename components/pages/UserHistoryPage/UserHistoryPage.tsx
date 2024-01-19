@@ -8,21 +8,23 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
 import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
-import {
-  PostCardGalleryHeader
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
+import { GalleryHeader } from '~/components/GalleryHeader/GalleryHeader'
 import { useTranslation } from 'next-i18next'
 import styles from './UserHistoryPage.module.scss'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useSession } from 'next-auth/react'
+import {
+  fromOrderTypeToComponentSortingOption,
+  PaginationSortingType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 
 interface PaginationState {
   page: number
@@ -38,7 +40,7 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentD
   const [postsNumber, setPostsNumber] = useState<number>(0)
 
   const [paginationState, setPaginationState] = useState<PaginationState>({
-    order: PostsPaginationSortingType.NEWEST_VIEWED,
+    order: PaginationSortingType.NEWEST_VIEWED,
     page: 1,
   })
 
@@ -68,21 +70,21 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentD
   ]
 
   const sortingOptions: PostsPaginationSortingType[] = [
-    PostsPaginationSortingType.NEWEST_VIEWED,
-    PostsPaginationSortingType.OLDEST_VIEWED,
+    PaginationSortingType.NEWEST_VIEWED,
+    PaginationSortingType.OLDEST_VIEWED,
   ]
 
-  const onChangeOption = async (newOrder: PostsPaginationSortingType) => {
+  const onChangeOption = async (newOrder: PaginationSortingType) => {
     setLoading(true)
-    setPaginationState({ ...paginationState, order: newOrder, page: 1 })
+    setPaginationState({ ...paginationState, order: newOrder as PostsPaginationSortingType, page: 1 })
 
-    await updatePosts(1, newOrder)
+    await updatePosts(1, newOrder as PostsPaginationSortingType)
 
     setLoading(false)
   }
 
   const updatePosts = async (page:number, order: PostsPaginationSortingType) => {
-    const componentOrder = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order)
+    const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
       const newPosts = await (new PostsApiService())
@@ -156,18 +158,25 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentD
     )
   }
 
+  const sortingMenu = (
+    <SortingMenuDropdown
+      activeOption={ paginationState.order }
+      options={ sortingOptions }
+      loading={ loading }
+      visible={ postsNumber > defaultPerPage }
+      onClickOption={ onChangeOption }
+    />
+  )
+
   return (
     <div className={ styles.userHistoryPage__container }>
       <UserProfileHeader componentDto={ userComponentDto } />
 
-      <PostCardGalleryHeader
+      <GalleryHeader
         title={ t('user_history_title') }
         subtitle={ t('posts_number_title', { postsNumber }) }
-        showSortingOptions={ postsNumber > defaultPerPage }
-        activeOption={ paginationState.order }
-        sortingOptions={ sortingOptions }
-        onClickOption={ onChangeOption }
         loading={ loading }
+        sortingMenu={ sortingMenu }
       />
 
       { content }

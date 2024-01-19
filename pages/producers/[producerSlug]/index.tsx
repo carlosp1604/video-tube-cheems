@@ -16,8 +16,8 @@ import { ProducerPage, ProducerPageProps } from '~/components/pages/ProducerPage
 import {
   ProducerPageComponentDtoTranslator
 } from '~/modules/Producers/Infrastructure/ProducerPageComponentDtoTranslator'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
   const producerSlug = context.query.producerSlug
@@ -51,11 +51,11 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     context.query,
     {
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: [
-          PostsPaginationSortingType.LATEST,
-          PostsPaginationSortingType.OLDEST,
-          PostsPaginationSortingType.MOST_VIEWED,
+          PaginationSortingType.LATEST,
+          PaginationSortingType.OLDEST,
+          PaginationSortingType.MOST_VIEWED,
         ],
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
@@ -82,7 +82,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       id: '',
       brandHexColor: '',
     },
-    initialOrder: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
+    initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     initialPage: paginationQueryParams.page ?? 1,
     initialPosts: [],
     initialPostsNumber: 0,

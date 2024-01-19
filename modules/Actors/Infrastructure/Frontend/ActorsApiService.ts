@@ -2,7 +2,6 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { GetActorsApplicationResponseDto } from '~/modules/Actors/Application/GetActors/GetActorsApplicationResponseDto'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
@@ -11,8 +10,7 @@ export class ActorsApiService {
     pageNumber: number,
     perPage: number = defaultPerPage,
     order: InfrastructureSortingCriteria,
-    orderBy: InfrastructureSortingOptions,
-    filters: FetchPostsFilter[]
+    orderBy: InfrastructureSortingOptions
   ): Promise<GetActorsApplicationResponseDto> {
     const params = new URLSearchParams()
 
@@ -21,12 +19,6 @@ export class ActorsApiService {
     params.append('orderBy', orderBy)
     params.append('order', order)
 
-    for (const filter of filters) {
-      if (filter.value !== null) {
-        params.append(filter.type, filter.value)
-      }
-    }
-
-    return ((await fetch(`/api/actors${params}`)).json())
+    return ((await fetch(`/api/actors?${params}`)).json())
   }
 }

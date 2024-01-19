@@ -6,9 +6,9 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+import { fromOrderTypeToComponentSortingOption } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export interface GetPostsInterface {
   loading: boolean
@@ -45,7 +45,7 @@ export function useGetPosts (): GetPostsInterface {
   ): Promise<GetPostsApplicationResponse | null> => {
     setLoading(true)
 
-    const componentOrder = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(order)
+    const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
       const posts = await fetchPosts(page, componentOrder.criteria, componentOrder.option, filters)

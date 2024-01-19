@@ -1,7 +1,7 @@
 .app-menu {
   &__layer {
     @apply sticky top-0 z-app-menu transition duration-500
-    backdrop-filter backdrop-blur-lg bg-opacity-80 bg-body;
+    backdrop-filter backdrop-blur-lg bg-opacity-60 bg-body;
   }
 
   &__container {

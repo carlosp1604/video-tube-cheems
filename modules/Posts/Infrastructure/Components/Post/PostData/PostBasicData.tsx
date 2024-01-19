@@ -4,7 +4,7 @@ import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCompon
 import { useTranslation } from 'next-i18next'
 import { BsChatSquareText } from 'react-icons/bs'
 import { BiDislike, BiLike } from 'react-icons/bi'
-import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { useRouter } from 'next/router'
 
 export interface Props {

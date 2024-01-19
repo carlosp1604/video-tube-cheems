@@ -4,19 +4,18 @@
       gap-y-4 mb-10;
   }
 
-  &__title {
-    @apply flex flex-col items-start flex-wrap text-xl font-normal normal-case;
+  &__header {
+    @apply flex gap-x-2 justify-between items-start;
+  }
 
-    @screen md {
-      @apply flex-row gap-x-2 text-2xl items-center;
-    }
+  &__title {
+    @apply grid text-xl font-normal normal-case items-start;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr auto;
   }
 
   &__title-tag-name {
-    @apply text-xl font-bold text-brand-300 normal-case;
-
-    @screen md {
-      @apply text-2xl;
-    }
+    @apply text-brand-300 normal-case
+    line-clamp-4 break-words text-xl font-bold;
   }
 }

@@ -38,6 +38,6 @@
   }
 
   &__name {
-    @apply text-center text-2xl font-black break-words;
+    @apply text-left text-2xl font-black break-words line-clamp-4;
   }
 }

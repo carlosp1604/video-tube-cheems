@@ -6,7 +6,7 @@ import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostC
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useRouter } from 'next/router'
 import { useGetPosts } from '~/hooks/GetPosts'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
@@ -16,16 +16,16 @@ import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import {
-  PostCardGalleryHeader
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
-import {
   PostsPaginationConfiguration,
   PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+} from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageComponentDto'
 import { useAvatarColor } from '~/hooks/AvatarColor'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { TransGalleryHeader } from '~/components/GalleryHeader/TransGalleryHeader'
+import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 
 interface TagPagePaginationState {
   page: number
@@ -63,9 +63,9 @@ export const TagPage: NextPage<TagPageProps> = ({
   const tagColor = getRandomColor(tag.name)
 
   const sortingOptions: PostsPaginationSortingType[] = [
-    PostsPaginationSortingType.LATEST,
-    PostsPaginationSortingType.OLDEST,
-    PostsPaginationSortingType.MOST_VIEWED,
+    PaginationSortingType.LATEST,
+    PaginationSortingType.OLDEST,
+    PaginationSortingType.MOST_VIEWED,
   ]
 
   const linkMode: ElementLinkMode = {
@@ -82,7 +82,7 @@ export const TagPage: NextPage<TagPageProps> = ({
         minValue: 1,
       },
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: sortingOptions,
       },
     }
@@ -166,22 +166,24 @@ export const TagPage: NextPage<TagPageProps> = ({
         rounded={ false }
       />
 
-      <PostCardGalleryHeader
-        key={ router.asPath }
-        title={ postsTagGalleryTitle }
-        subtitle={ t('tag_posts_gallery_posts_quantity', { postsNumber }) }
-        showSortingOptions={ postsNumber > defaultPerPage }
-        activeOption={ pagination.order }
-        sortingOptions={ sortingOptions }
-        linkMode= { linkMode }
-        loading={ loading }
-      />
+      <div className={ styles.producerPage__header }>
+        <TransGalleryHeader
+          title={ postsTagGalleryTitle }
+          subtitle={ t('tag_posts_gallery_posts_quantity', { postsNumber }) }
+          loading={ loading }
+        />
+        <SortingMenuDropdown
+          activeOption={ pagination.order }
+          options={ sortingOptions }
+          loading={ loading }
+          visible={ postsNumber > defaultPerPage }
+          linkMode={ linkMode }
+        />
+      </div>
 
       { content }
 
       <PaginationBar
-        availablePages={ PaginationHelper.getShowablePages(
-          pagination.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
         pageNumber={ pagination.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ { ...linkMode, scrollOnClick: false } }

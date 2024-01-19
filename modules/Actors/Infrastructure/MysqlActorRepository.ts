@@ -78,7 +78,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
         include: {
           _count: {
             select: {
-              posts: true,
+              postActors: true,
             },
           },
         },
@@ -94,7 +94,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
     const actorsWithPostsNumber: ActorWithPostsCount[] = actors.map((actor) => {
       return {
         actor: ActorModelTranslator.toDomain(actor),
-        postsNumber: actor._count.posts,
+        postsNumber: actor._count.postActors,
       }
     })
 
@@ -118,7 +118,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
 
     if (sortingOption === 'posts') {
       sortCriteria = {
-        posts: {
+        postActors: {
           _count: sortingCriteria,
         },
       }

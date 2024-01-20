@@ -15,6 +15,7 @@ import { Roboto } from '@next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
 import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
+import NextNProgress from 'nextjs-progressbar'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -120,6 +121,15 @@ function App ({
                   } }
                 />
                 <AppMenu />
+
+                <NextNProgress
+                  color={ '#a06c3f' }
+                  options={ {
+                    showSpinner: false,
+                  } }
+                  showOnShallow={ true }
+                  height={ 1.5 }
+                />
 
                 <Component { ...pageProps }/>
               </main>

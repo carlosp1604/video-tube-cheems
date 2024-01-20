@@ -1,5 +1,5 @@
 import { Login } from '~/modules/Auth/Application/Login/Login'
-import { GetActors } from '~/modules/Actors/Application/GetActors'
+import { GetActors } from '~/modules/Actors/Application/GetActors/GetActors'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
@@ -41,7 +41,7 @@ import { DeleteSavedPost } from '~/modules/Auth/Application/DeleteSavedPost/Dele
 import { GetUserSavedPosts } from '~/modules/Posts/Application/GetUserSavedPosts/GetUserSavedPosts'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { GetUserHistory } from '~/modules/Posts/Application/GetUserHistory/GetUserHistory'
-import { GetActorBySlug } from '~/modules/Actors/Application/GetPostBySlug/GetActorBySlug'
+import { GetActorBySlug } from '~/modules/Actors/Application/GetActorBySlug/GetActorBySlug'
 import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBySlug/GetProducerBySlug'
 import { MysqlPostTagRepository } from '~/modules/PostTag/Infrastructure/MysqlPostTagRepository'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
@@ -139,7 +139,7 @@ container.register('getUserById', asClass(GetUserById))
 container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getUserSavedPostsUseCase', asClass(GetUserSavedPosts))
 container.register('getUserHistoryUseCase', asClass(GetUserHistory))
-container.register('getActors', asClass(GetActors))
+container.register('getActorsUseCase', asClass(GetActors))
 container.register('getAllProducersUseCase', asClass(GetAllProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
 container.register('getPostBySlugUseCase', asClass(GetPostBySlug))

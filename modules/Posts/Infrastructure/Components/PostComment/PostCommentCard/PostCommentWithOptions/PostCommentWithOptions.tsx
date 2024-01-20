@@ -18,7 +18,7 @@ import { FiTrash } from 'react-icons/fi'
 import {
   ReactionComponentDtoTranslator
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
-import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { useRouter } from 'next/router'
 

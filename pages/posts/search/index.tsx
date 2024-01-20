@@ -4,8 +4,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import {
   PostsPaginationConfiguration,
   PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+} from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -45,11 +45,11 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
         minValue: 1,
       },
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: [
-          PostsPaginationSortingType.LATEST,
-          PostsPaginationSortingType.OLDEST,
-          PostsPaginationSortingType.MOST_VIEWED,
+          PaginationSortingType.LATEST,
+          PaginationSortingType.OLDEST,
+          PaginationSortingType.MOST_VIEWED,
         ],
       },
     }

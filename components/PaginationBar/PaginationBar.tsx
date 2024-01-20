@@ -6,9 +6,9 @@ import { TbNumber1 } from 'react-icons/tb'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
+import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 interface Props {
-  availablePages: Array<number>
   pageNumber: number
   pagesNumber: number
   onePageStateTitle: string
@@ -17,93 +17,96 @@ interface Props {
   onPageChange: (page: number) => void
 }
 
-export const PaginationBar: FC<Partial<Props>
-  & Pick<Props, 'availablePages' | 'pagesNumber' | 'pageNumber' | 'linkMode'>> = ({
-    availablePages,
-    pagesNumber,
-    pageNumber,
-    onePageStateTitle,
-    linkMode,
-    disabled = false,
-    onPageChange = undefined,
-  }) => {
-    const { t } = useTranslation('pagination_bar')
+export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pageNumber' | 'linkMode'>> = ({
+  pagesNumber,
+  pageNumber,
+  onePageStateTitle,
+  linkMode,
+  disabled = false,
+  onPageChange = undefined,
+}) => {
+  const { t } = useTranslation('pagination_bar')
 
-    const { pathname, query } = useRouter()
+  const { pathname, query } = useRouter()
 
-    const buildQuery = (page: number) => {
-      const newQuery = { ...query }
+  const buildQuery = (page: number) => {
+    const newQuery = { ...query }
 
-      if (page === 1) {
-        delete newQuery.page
-      } else {
-        newQuery.page = String(page)
-      }
-
-      return newQuery
+    if (page === 1) {
+      delete newQuery.page
+    } else {
+      newQuery.page = String(page)
     }
 
-    const pageElements = useMemo(() => {
-      return availablePages.map((availablePage) => {
-        return (
-          <li className={ `
-            ${styles.paginationBar__pageNumberItem}
-            ${availablePage === pageNumber ? styles.paginationBar__pageNumberItem_currentPage : ''}
-          ` }
-            title={ t('n_page_button_title', { pageNumber: availablePage }) }
-            key={ t('n_page_button_title', { pageNumber: availablePage }) }
-            onClick={ () => { if (onPageChange) { onPageChange(availablePage) } } }
-          >
-            <Link href={ { pathname, query: buildQuery(availablePage) } }
-              className={ `
-                ${styles.paginationBar__pageNumberLink}
-                ${availablePage === pageNumber ? styles.paginationBar__pageNumberLink_currentPage : ''}
-              ` }
-              scroll={ linkMode.scrollOnClick }
-              shallow={ linkMode.shallowNavigation }
-              replace={ linkMode.replace }
-            >
-              { availablePage }
-            </Link>
-          </li>
-        )
-      })
-    }, [pageNumber, pagesNumber, availablePages])
+    return newQuery
+  }
 
-    if (availablePages.length === 1) {
-      if (onePageStateTitle && !disabled) {
-        return (
-          <span className={ styles.paginationBar__noPaginatedState }>
-            <TbNumber1 className={ styles.paginationBar__noPaginatedStateIcon }/>
-            { onePageStateTitle }
-          </span>
-        )
-      }
+  const availablePages = useMemo(() => {
+    return PaginationHelper.getShowablePages(
+      pageNumber, pagesNumber)
+  }, [pageNumber, pagesNumber])
 
-      return null
-    }
-
-    const errorState: ReactElement = (
-      <div className={ styles.paginationBar__errorState }>
-        <BsXCircle className={ styles.paginationBar__errorIcon }/>
-        { t('error_state_description') }
-        <Link
-          href={ { pathname, query: buildQuery(1) } }
-          className={ styles.paginationBar__errorButton }
-          title={ t('error_state_button_title') }
-          shallow={ linkMode.shallowNavigation }
-          scroll={ linkMode.scrollOnClick }
-          replace={ true }
+  const pageElements = useMemo(() => {
+    return availablePages.map((availablePage) => {
+      return (
+        <li className={ `
+          ${styles.paginationBar__pageNumberItem}
+          ${availablePage === pageNumber ? styles.paginationBar__pageNumberItem_currentPage : ''}
+        ` }
+          title={ t('n_page_button_title', { pageNumber: availablePage }) }
+          key={ t('n_page_button_title', { pageNumber: availablePage }) }
+          onClick={ () => { if (onPageChange) { onPageChange(availablePage) } } }
         >
-          { t('error_state_button_title') }
-        </Link>
-      </div>
-    )
+          <Link href={ { pathname, query: buildQuery(availablePage) } }
+            className={ `
+              ${styles.paginationBar__pageNumberLink}
+              ${availablePage === pageNumber ? styles.paginationBar__pageNumberLink_currentPage : ''}
+            ` }
+            scroll={ linkMode.scrollOnClick }
+            shallow={ linkMode.shallowNavigation }
+            replace={ linkMode.replace }
+          >
+            { availablePage }
+          </Link>
+        </li>
+      )
+    })
+  }, [pageNumber, pagesNumber, availablePages])
 
-    return (
-      pageNumber > pagesNumber && !disabled
-        ? errorState
-        : <div className={ styles.paginationBar__container }>
+  if (availablePages.length === 1) {
+    if (onePageStateTitle && !disabled) {
+      return (
+        <span className={ styles.paginationBar__noPaginatedState }>
+          <TbNumber1 className={ styles.paginationBar__noPaginatedStateIcon }/>
+          { onePageStateTitle }
+        </span>
+      )
+    }
+
+    return null
+  }
+
+  const errorState: ReactElement = (
+    <div className={ styles.paginationBar__errorState }>
+      <BsXCircle className={ styles.paginationBar__errorIcon }/>
+      { t('error_state_description') }
+      <Link
+        href={ { pathname, query: buildQuery(1) } }
+        className={ styles.paginationBar__errorButton }
+        title={ t('error_state_button_title') }
+        shallow={ linkMode.shallowNavigation }
+        scroll={ linkMode.scrollOnClick }
+        replace={ true }
+      >
+        { t('error_state_button_title') }
+      </Link>
+    </div>
+  )
+
+  return (
+    pageNumber > pagesNumber && !disabled
+      ? errorState
+      : <div className={ styles.paginationBar__container }>
           <ul className={ styles.paginationBar__listContainer }>
             <li className={ `
               ${styles.paginationBar__pageNumberItem}
@@ -180,5 +183,5 @@ export const PaginationBar: FC<Partial<Props>
             </li>
           </ul>
         </div>
-    )
-  }
+  )
+}

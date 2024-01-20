@@ -66,6 +66,7 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, sea
           onChange={ (event: ChangeEvent<HTMLInputElement>) => { handleChange(event) } }
           value={ title }
           ref={ inputRef }
+          spellCheck={ false }
         />
         { title !== ''
           ? <span className={ styles.searchBar__clearButton }>

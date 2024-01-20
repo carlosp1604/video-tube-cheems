@@ -1,10 +1,7 @@
 import { NextPage } from 'next'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import styles from './SearchPage.module.scss'
-import {
-  PostCardGalleryHeader
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
-import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -16,7 +13,7 @@ import { useFirstRender } from '~/hooks/FirstRender'
 import {
   PostsPaginationConfiguration,
   PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+} from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
@@ -25,6 +22,9 @@ import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOpt
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
+import { TransGalleryHeader } from '~/components/GalleryHeader/TransGalleryHeader'
 
 interface SearchPagePaginationState {
   page: number
@@ -65,9 +65,9 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   }
 
   const sortingOptions: PostsPaginationSortingType[] = [
-    PostsPaginationSortingType.LATEST,
-    PostsPaginationSortingType.OLDEST,
-    PostsPaginationSortingType.MOST_VIEWED,
+    PaginationSortingType.LATEST,
+    PaginationSortingType.OLDEST,
+    PaginationSortingType.MOST_VIEWED,
   ]
 
   const configuration: Partial<PostsPaginationConfiguration> &
@@ -78,7 +78,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
         minValue: 1,
       },
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: sortingOptions,
       },
     }
@@ -135,13 +135,13 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   }, [query])
 
   const titleElement = (
-    <span className={ styles.searchPage__searchTermTitle }>
+    <h1 className={ styles.searchPage__searchTermTitle }>
       <Trans
         i18nKey={ t('search_result_title') }
-        components={ [<div key={ 'search_result_title' } className={ styles.searchPage__searchTermTitleTerm }/>] }
+        components={ [<small key={ 'search_result_title' } className={ styles.searchPage__searchTermTitleTerm }/>] }
         values={ { searchTerm: paginationState.searchTerm } }
       />
-    </span>
+    </h1>
   )
 
   let content: ReactElement
@@ -168,8 +168,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   if (!firstRender) {
     paginationBar = (
       <PaginationBar
-        availablePages={ PaginationHelper.getShowablePages(
-          paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
         pageNumber={ paginationState.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
@@ -180,18 +178,24 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     )
   }
 
+  const sortingMenu = (
+    <SortingMenuDropdown
+      activeOption={ paginationState.order }
+      options={ sortingOptions }
+      loading={ loading }
+      visible={ postsNumber > defaultPerPage }
+      linkMode={ linkMode }
+    />
+  )
+
   return (
     <div className={ styles.searchPage__container }>
-      <PostCardGalleryHeader
-        key={ router.asPath }
+
+      <TransGalleryHeader
         title={ titleElement }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
-        showSortingOptions={ postsNumber > defaultPerPage }
-        activeOption={ paginationState.order }
-        sortingOptions={ sortingOptions }
         loading={ loading }
-        linkMode={ linkMode }
-        onClickOption={ () => window.scrollTo({ top: 0 }) }
+        sortingMenu={ sortingMenu }
       />
 
       { content }

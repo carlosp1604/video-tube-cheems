@@ -20,3 +20,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
+
+::selection {
+  @apply bg-brand-400;
+}

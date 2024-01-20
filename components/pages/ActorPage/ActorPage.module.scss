@@ -4,24 +4,14 @@
       gap-y-4 mb-10;
   }
 
-  &__actor-posts-header {
-    @apply flex gap-x-2 flex-wrap items-center justify-between text-base-50
-      text-xl font-bold;
-
-    @screen md {
-      @apply justify-start items-center gap-x-2;
-    }
+  &__title {
+    @apply grid text-xl font-normal normal-case items-start;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr auto;
   }
 
-  &__actor-posts-quantity {
-    @apply text-sm font-normal text-brand-400 ;
-  }
-
-  &__actor-posts-header-separator-icon {
-    @apply hidden;
-
-    @screen md {
-      @apply block text-base-400 text-xs;
-    }
+  &__title-actor-name {
+    @apply text-brand-300 normal-case -mt-2
+    line-clamp-4 break-words text-xl font-bold;
   }
 }

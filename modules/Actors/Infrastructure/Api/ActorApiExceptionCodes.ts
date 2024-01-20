@@ -1,0 +1,8 @@
+export const ACTOR_VALIDATION = 'actor-validation-exception'
+export const ACTOR_SERVER_ERROR = 'actor-server-error'
+export const ACTOR_METHOD = 'actor-method-not-allowed'
+export const ACTOR_BAD_REQUEST = 'actor-bad-request'
+export const ACTOR_INVALID_SORTING_CRITERIA = 'actor-unprocessable-entity-invalid-sorting-criteria'
+export const ACTOR_INVALID_SORTING_OPTION = 'actor-unprocessable-entity-invalid-sorting-option'
+export const ACTOR_INVALID_PER_PAGE = 'actor-unprocessable-entity-invalid-per-page'
+export const ACTOR_INVALID_PAGE = 'actor-unprocessable-entity-invalid-page'

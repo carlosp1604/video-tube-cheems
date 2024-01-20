@@ -1,11 +1,11 @@
 .common-avatar {
   &__container {
-    @apply overflow-hidden text-base-100;
+    @apply overflow-hidden;
   }
 
   &__avatar-container {
-    @apply h-full w-full flex items-center justify-center text-center
-      bg-[color:var(--custom-color)] rounded-lg;
+    @apply h-full w-full flex items-center justify-center
+      text-center bg-[color:var(--custom-color)];
 
     &__rounded {
       @apply rounded-full;

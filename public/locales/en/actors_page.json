@@ -1,0 +1,6 @@
+{
+  "actors_gallery_empty_state_subtitle": "It seems that there are no post that match the criteria you have indicated\nTry changing your search parameters and try again",
+  "actors_gallery_empty_state_title": "We haven't found anything",
+  "actors_gallery_subtitle": "{{actorsNumber}} actors",
+  "actors_gallery_title": "Actors"
+}

@@ -1,31 +1,16 @@
 .search-page {
-    &__container {
-      @apply container mx-auto px-5 scroll-smooth mt-5 mb-10;
-    }
-  
-    &__title {
-      @apply flex justify-between py-5 text-base-100 text-2xl uppercase
-        items-center font-black gap-x-2; 
-    }
-  
-    &__videos-quantity {
-      @apply normal-case text-xs font-thin;
-    }
-
-
-    &__search-term-title {
-      @apply flex flex-col items-start flex-wrap text-xl font-normal normal-case;
-
-      @screen md {
-        @apply flex-row gap-x-4 text-2xl items-center;
-      }
-    }
-
-    &__search-term-title-term {
-      @apply text-xl font-normal text-brand-300 normal-case;
-
-      @screen md {
-        @apply text-2xl font-normal text-brand-300;
-      }
-    }
+  &__container {
+    @apply flex flex-col container mx-auto px-5 mt-5 mb-10 gap-y-4;
   }
+
+  &__search-term-title {
+    @apply grid text-xl font-normal normal-case items-start;
+    grid-auto-flow: column;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  &__search-term-title-term {
+    @apply text-brand-300 normal-case -mt-2
+      line-clamp-2 break-words text-xl font-bold;
+  }
+}

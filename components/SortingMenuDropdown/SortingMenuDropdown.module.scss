@@ -9,11 +9,11 @@
   }
 
   &__dropdown-button {
-    @apply flex flex-col justify-center items-end truncate
-      text-xs font-thin leading-none text-base-100;
+    @apply flex flex-col items-end truncate text-brand-300
+      text-xs font-normal leading-none;
 
     @screen md {
-      @apply font-semibold text-brand-300;
+      @apply font-semibold;
     }
   }
 

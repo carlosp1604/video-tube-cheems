@@ -42,6 +42,7 @@ export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({
       value={ comment }
       ref={ textAreaRef }
       disabled={ disabled }
+      spellCheck={ false }
     />
   )
 }

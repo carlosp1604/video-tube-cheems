@@ -7,13 +7,13 @@ import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostC
 import styles from '~/components/pages/HomePage/HomePage.module.scss'
 import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList'
 import {
-  PostCardGalleryHeader
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryHeader'
+  GalleryHeader
+} from '~/components/GalleryHeader/GalleryHeader'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
-import { NumberFormatter } from '~/modules/Posts/Infrastructure/Frontend/NumberFormatter'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { ReactElement, useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
@@ -23,11 +23,13 @@ import {
 import {
   PostsPaginationConfiguration,
   PostsPaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
+} from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { useGetPosts } from '~/hooks/GetPosts'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 
 export interface HomePagePaginationState {
   page: number
@@ -56,7 +58,7 @@ export const HomePage: NextPage<Props> = ({
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
   const { t } = useTranslation(['home_page'])
   const router = useRouter()
-  const { asPath, query } = router
+  const { query } = router
   const locale = router.locale ?? 'en'
   const { getPosts, loading } = useGetPosts()
   const firstRender = useFirstRender()
@@ -64,9 +66,9 @@ export const HomePage: NextPage<Props> = ({
   const [paginationState, setPaginationState] = useState<HomePagePaginationState>({ page, order, activeProducer })
 
   const sortingOptions: PostsPaginationSortingType[] = [
-    PostsPaginationSortingType.LATEST,
-    PostsPaginationSortingType.OLDEST,
-    PostsPaginationSortingType.MOST_VIEWED,
+    PaginationSortingType.LATEST,
+    PaginationSortingType.OLDEST,
+    PaginationSortingType.MOST_VIEWED,
   ]
 
   const linkMode: ElementLinkMode = {
@@ -84,7 +86,7 @@ export const HomePage: NextPage<Props> = ({
       },
       filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: sortingOptions,
       },
     }
@@ -180,6 +182,16 @@ export const HomePage: NextPage<Props> = ({
     )
   }
 
+  const sortingMenu = (
+    <SortingMenuDropdown
+      activeOption={ paginationState.order }
+      options={ sortingOptions }
+      loading={ loading }
+      visible={ postsNumber > defaultPerPage }
+      linkMode={ linkMode }
+    />
+  )
+
   // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
     <div className={ styles.home__container }>
@@ -188,22 +200,16 @@ export const HomePage: NextPage<Props> = ({
         activeProducer={ paginationState.activeProducer }
       />
 
-      <PostCardGalleryHeader
-        key={ asPath }
+      <GalleryHeader
         title={ galleryTitle }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
-        showSortingOptions={ postsNumber > defaultPerPage }
-        activeOption={ paginationState.order }
-        sortingOptions={ sortingOptions }
-        linkMode= { linkMode }
         loading={ loading }
+        sortingMenu={ sortingMenu }
       />
 
       { content }
 
       <PaginationBar
-        availablePages={ PaginationHelper.getShowablePages(
-          paginationState.page, PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage)) }
         pageNumber={ paginationState.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ { ...linkMode, scrollOnClick: false } }

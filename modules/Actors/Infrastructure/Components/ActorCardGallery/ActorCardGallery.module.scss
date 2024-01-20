@@ -1,0 +1,18 @@
+.actor-card-gallery {
+  &__container {
+    @apply grid gap-4;
+    grid-template-columns: repeat(2, 1fr);
+
+    @screen md {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @screen lg {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    &__loading {
+      @apply animate-pulse;
+    }
+  }
+}

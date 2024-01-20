@@ -11,11 +11,11 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
+import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
 import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/TagPageComponentDtoTranslator'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
   const tagSlug = context.query.tagSlug
@@ -49,11 +49,11 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     context.query,
     {
       sortingOptionType: {
-        defaultValue: PostsPaginationSortingType.LATEST,
+        defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: [
-          PostsPaginationSortingType.LATEST,
-          PostsPaginationSortingType.OLDEST,
-          PostsPaginationSortingType.MOST_VIEWED,
+          PaginationSortingType.LATEST,
+          PaginationSortingType.OLDEST,
+          PaginationSortingType.MOST_VIEWED,
         ],
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
       name: '',
       id: '',
     },
-    initialOrder: paginationQueryParams.sortingOptionType ?? PostsPaginationSortingType.LATEST,
+    initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     initialPage: paginationQueryParams.page ?? 1,
     initialPosts: [],
     initialPostsNumber: 0,

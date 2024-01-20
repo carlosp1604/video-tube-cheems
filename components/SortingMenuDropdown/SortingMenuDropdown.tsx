@@ -3,23 +3,24 @@ import styles from './SortingMenuDropdown.module.scss'
 import { BsSortDown } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import { IconButton } from '~/components/IconButton/IconButton'
-import { PostsPaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationQueryParams'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
+import {
+  fromOrderTypeToComponentSortingOption,
+  PaginationSortingType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 interface Props {
-  activeOption: PostsPaginationSortingType
-  options: PostsPaginationSortingType[]
+  activeOption: PaginationSortingType
+  options: PaginationSortingType[]
   loading: boolean
   visible: boolean
   linkMode: ElementLinkMode | undefined
-  onClickOption: ((option: PostsPaginationSortingType) => void) | undefined
+  onClickOption: ((option: PaginationSortingType) => void) | undefined
 }
-
 export const SortingMenuDropdown: FC<Partial<Props>
-  & Omit<Props, 'loading' | 'visible' | 'linkMode' >> = ({
+  & Omit<Props, 'loading' | 'visible' | 'linkMode' | 'onClickOption'>> = ({
     activeOption,
     options,
     loading = false,
@@ -28,12 +29,12 @@ export const SortingMenuDropdown: FC<Partial<Props>
     onClickOption = undefined,
   }) => {
     const [openMenu, setOpenMenu] = useState<boolean>(false)
-    const { t } = useTranslation('sorting_menu_dropdown')
 
+    const { t } = useTranslation('sorting_menu_dropdown')
     const { pathname, query } = useRouter()
 
     const componentActiveSortingOption = useMemo(() =>
-      PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(activeOption),
+      fromOrderTypeToComponentSortingOption(activeOption),
     [activeOption])
 
     return (
@@ -62,7 +63,7 @@ export const SortingMenuDropdown: FC<Partial<Props>
         onClick={ () => setOpenMenu(!openMenu) }
       >
         { options.map((option) => {
-          const componentOption = PostsPaginationQueryParams.fromOrderTypeToComponentSortingOption(option)
+          const componentOption = fromOrderTypeToComponentSortingOption(option)
 
           let content: ReactElement = (
             <span className={ `${styles.sortingMenuDropdown__dropdownItemLink}
@@ -77,7 +78,7 @@ export const SortingMenuDropdown: FC<Partial<Props>
             const newQuery = { ...query }
 
             delete newQuery.page
-            newQuery.order = option
+            newQuery.order = String(option)
 
             content = (
               <Link className={ `${styles.sortingMenuDropdown__dropdownItemLink}

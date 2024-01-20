@@ -7,16 +7,16 @@ import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructur
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useRouter } from 'next/router'
-import { BsDot } from 'react-icons/bs'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useGetPosts } from '~/hooks/GetPosts'
-import { PostsPaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PostsPaginationSortingType'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { TransGalleryHeader } from '~/components/GalleryHeader/TransGalleryHeader'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto
@@ -39,7 +39,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, initialPosts, initi
     try {
       const newPosts = await getPosts(
         page,
-        PostsPaginationSortingType.LATEST,
+        PaginationSortingType.LATEST,
         [{ type: PostFilterOptions.ACTOR_SLUG, value: actor.slug }]
       )
 
@@ -96,6 +96,16 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, initialPosts, initi
     )
   }
 
+  const titleElement = (
+    <h1 className={ styles.actorPage__title }>
+      <Trans
+        i18nKey={ t('actor_posts_gallery_title') }
+        components={ [<small key={ 'actor_posts_gallery_title' } className={ styles.actorPage__titleActorName }/>] }
+        values={ { actorName: actor.name } }
+      />
+    </h1>
+  )
+
   return (
     <div className={ styles.actorPage__container }>
       <ProfileHeader
@@ -106,13 +116,11 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, initialPosts, initi
         rounded={ true }
       />
 
-      <h2 className={ styles.actorPage__actorPostsHeader }>
-        { t('actor_posts_gallery_title', { actorName: actor.name }) }
-        <BsDot className={ styles.actorPage__actorPostsHeaderSeparatorIcon }/>
-        <small className={ styles.actorPage__actorPostsQuantity }>
-          { t('actor_posts_gallery_posts_quantity', { postsNumber }) }
-        </small>
-      </h2>
+      <TransGalleryHeader
+        title={ titleElement }
+        subtitle={ t('actor_posts_gallery_posts_quantity', { postsNumber }) }
+        loading={ loading }
+      />
 
       { content }
     </div>

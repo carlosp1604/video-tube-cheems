@@ -4,11 +4,11 @@
       outline-none;
 
     &:hover {
-      @apply bg-base-800 transition-colors text-base-100;
+      @apply bg-base-800/60 transition-colors text-base-100;
     }
 
     &:active {
-      @apply bg-base-700 text-brand-500 transition-colors;
+      @apply bg-base-700/60 text-brand-500 transition-colors;
     }
 
     &:disabled {

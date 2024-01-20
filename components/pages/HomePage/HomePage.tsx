@@ -58,7 +58,7 @@ export const HomePage: NextPage<Props> = ({
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
   const { t } = useTranslation(['home_page'])
   const router = useRouter()
-  const { query } = router
+  const { query, asPath } = router
   const locale = router.locale ?? 'en'
   const { getPosts, loading } = useGetPosts()
   const firstRender = useFirstRender()
@@ -210,10 +210,12 @@ export const HomePage: NextPage<Props> = ({
       { content }
 
       <PaginationBar
+        key={ asPath }
         pageNumber={ paginationState.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ { ...linkMode, scrollOnClick: false } }
         onPageChange={ () => window.scrollTo({ top: 0 }) }
+        disabled={ loading }
       />
     </div>
   )

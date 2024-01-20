@@ -157,7 +157,7 @@ export const TagPage: NextPage<TagPageProps> = ({
 
   return (
     <div className={ styles.producerPage__container }>
-      { /** TODO: Add imageAlt when tags have imageUrl **/ }
+      { /* TODO: Add imageAlt when tags have imageUrl */ }
       <ProfileHeader
         name={ tag.name }
         imageAlt={ '' }
@@ -184,10 +184,12 @@ export const TagPage: NextPage<TagPageProps> = ({
       { content }
 
       <PaginationBar
+        key={ router.asPath }
         pageNumber={ pagination.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ { ...linkMode, scrollOnClick: false } }
         onPageChange={ () => window.scrollTo({ top: 0 }) }
+        disabled={ loading }
       />
     </div>
   )

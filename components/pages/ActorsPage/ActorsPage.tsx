@@ -54,8 +54,9 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
   const sortingOptions: ActorsPaginationSortingType[] = [
     PaginationSortingType.NAME_FIRST,
     PaginationSortingType.NAME_LAST,
-    PaginationSortingType.MORE_POSTS,
-    PaginationSortingType.LESS_POSTS,
+    // TODO: Add this when is supported by prisma
+    // PaginationSortingType.MORE_POSTS,
+    // PaginationSortingType.LESS_POSTS,
   ]
 
   const linkMode: ElementLinkMode = {
@@ -137,6 +138,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
         loading={ loading }
       />
       <PaginationBar
+        key={ router.asPath }
         pageNumber={ pagination.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(actorsNumber, defaultPerPage) }
         disabled={ loading }

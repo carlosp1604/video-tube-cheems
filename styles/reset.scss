@@ -24,3 +24,7 @@ html {
 ::selection {
   @apply bg-brand-400;
 }
+
+textarea::placeholder {
+  @apply truncate;
+}

@@ -39,8 +39,8 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
         parseableOptionTypes: [
           PaginationSortingType.NAME_FIRST,
           PaginationSortingType.NAME_LAST,
-          PaginationSortingType.MORE_POSTS,
-          PaginationSortingType.LESS_POSTS,
+          // PaginationSortingType.MORE_POSTS,
+          // PaginationSortingType.LESS_POSTS,
         ],
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },

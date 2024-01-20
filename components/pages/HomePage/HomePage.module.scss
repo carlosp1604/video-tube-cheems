@@ -3,8 +3,4 @@
     @apply container grid gap-y-4 px-5 mx-auto
       mt-5 overflow-hidden;
   }
-
-  &__header {
-    @apply flex gap-x-2 justify-between items-start;
-  }
 }

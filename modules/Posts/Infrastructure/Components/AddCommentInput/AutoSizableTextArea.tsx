@@ -30,7 +30,10 @@ export const AutoSizableTextArea: FC<AutoSizableTextAreaProps> = ({
       if (scrollHeight === 0) {
         scrollHeight = 40
       }
-      textAreaRef.current.style.height = Math.min(scrollHeight, 90) + 'px'
+
+      if (comment !== '') {
+        textAreaRef.current.style.height = Math.min(scrollHeight, 90) + 'px'
+      }
     }
   }, [comment])
 

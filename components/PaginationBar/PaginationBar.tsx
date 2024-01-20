@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { PaginationBarButton } from '~/components/PaginationBar/PaginationBarButton/PaginationBarButton'
 
 interface Props {
   pageNumber: number
@@ -46,32 +47,20 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
       pageNumber, pagesNumber)
   }, [pageNumber, pagesNumber])
 
-  const pageElements = useMemo(() => {
-    return availablePages.map((availablePage) => {
-      return (
-        <li className={ `
-          ${styles.paginationBar__pageNumberItem}
-          ${availablePage === pageNumber ? styles.paginationBar__pageNumberItem_currentPage : ''}
-        ` }
-          title={ t('n_page_button_title', { pageNumber: availablePage }) }
-          key={ t('n_page_button_title', { pageNumber: availablePage }) }
-          onClick={ () => { if (onPageChange) { onPageChange(availablePage) } } }
-        >
-          <Link href={ { pathname, query: buildQuery(availablePage) } }
-            className={ `
-              ${styles.paginationBar__pageNumberLink}
-              ${availablePage === pageNumber ? styles.paginationBar__pageNumberLink_currentPage : ''}
-            ` }
-            scroll={ linkMode.scrollOnClick }
-            shallow={ linkMode.shallowNavigation }
-            replace={ linkMode.replace }
-          >
-            { availablePage }
-          </Link>
-        </li>
-      )
-    })
-  }, [pageNumber, pagesNumber, availablePages])
+  const pageElements = availablePages.map((availablePage) => {
+    return (
+      <PaginationBarButton
+        title={ t('n_page_button_title', { pageNumber: availablePage }) }
+        linkTitle={ String(availablePage) }
+        href={ { pathname, query: buildQuery(availablePage) } }
+        active={ availablePage === pageNumber }
+        linkMode={ linkMode }
+        onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(availablePage) } } }
+        key={ t('n_page_button_title', { pageNumber: availablePage }) }
+        disabled={ disabled }
+      />
+    )
+  })
 
   if (availablePages.length === 1) {
     if (onePageStateTitle && !disabled) {
@@ -86,102 +75,95 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
     return null
   }
 
-  const errorState: ReactElement = (
-    <div className={ styles.paginationBar__errorState }>
-      <BsXCircle className={ styles.paginationBar__errorIcon }/>
-      { t('error_state_description') }
-      <Link
-        href={ { pathname, query: buildQuery(1) } }
-        className={ styles.paginationBar__errorButton }
-        title={ t('error_state_button_title') }
-        shallow={ linkMode.shallowNavigation }
-        scroll={ linkMode.scrollOnClick }
-        replace={ true }
-      >
-        { t('error_state_button_title') }
-      </Link>
-    </div>
-  )
+  let content: ReactElement
 
-  return (
-    pageNumber > pagesNumber && !disabled
-      ? errorState
-      : <div className={ styles.paginationBar__container }>
-          <ul className={ styles.paginationBar__listContainer }>
-            <li className={ `
-              ${styles.paginationBar__pageNumberItem}
-              ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
-            ` }
-              title={ t('first_page_button_title') }
-              key={ t('first_page_button_title') }
-              onClick={ () => { if (onPageChange) { onPageChange(1) } } }
-            >
-              <Link href={ { pathname, query: buildQuery(1) } }
-                className={ styles.paginationBar__pageNumberLink }
-                scroll={ linkMode.scrollOnClick }
-                shallow={ linkMode.shallowNavigation }
-                replace={ linkMode.replace }
-              >
-                <BsSkipStart className={ styles.paginationBar__stepIcon }/>
-              </Link>
-            </li>
+  if (pageNumber > pagesNumber && !disabled) {
+    content = (
+      <div className={ styles.paginationBar__errorState }>
+        <BsXCircle className={ styles.paginationBar__errorIcon }/>
+        { t('error_state_description') }
+        <Link
+          href={ { pathname, query: buildQuery(1) } }
+          className={ styles.paginationBar__errorButton }
+          title={ t('error_state_button_title') }
+          shallow={ linkMode.shallowNavigation }
+          scroll={ linkMode.scrollOnClick }
+          replace={ true }
+        >
+          { t('error_state_button_title') }
+        </Link>
+      </div>
+    )
+  } else {
+    content = (
+      <div className={ styles.paginationBar__container }>
+        <ul className={ styles.paginationBar__listContainer }>
+          <PaginationBarButton
+            title={ t('first_page_button_title') }
+            linkTitle={ <BsSkipStart className={ styles.paginationBar__stepIcon }/> }
+            href={ { pathname, query: buildQuery(1) } }
+            active={ false }
+            linkMode={ linkMode }
+            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(1) } } }
+            key={ t('first_page_button_title') }
+            disabled={ disabled || pageNumber === 1 }
+            hideDirection={ 'left' }
+          />
+          <PaginationBarButton
+            title={ t('previous_page_button_title') }
+            linkTitle={ <BsCaretLeft className={ styles.paginationBar__stepIcon }/> }
+            href={ { pathname, query: buildQuery(pageNumber - 1) } }
+            active={ false }
+            linkMode={ linkMode }
+            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber - 1) } } }
+            key={ t('previous_page_button_title') }
+            disabled={ disabled || pageNumber === 1 }
+            hideDirection={ 'left' }
+          />
 
-            <li className={ `
-              ${styles.paginationBar__pageNumberItem}
-              ${disabled || (pageNumber === 1) ? styles.paginationBar__leftPageButtonHide : ''}
-            ` }
-              key={ t('previous_page_button_title') }
-              title={ t('previous_page_button_title') }
-              onClick={ () => { if (onPageChange) { onPageChange(pageNumber - 1) } } }
-            >
-              <Link href={ { pathname, query: buildQuery(pageNumber - 1) } }
-                className={ styles.paginationBar__pageNumberLink }
-                scroll={ linkMode.scrollOnClick }
-                shallow={ linkMode.shallowNavigation }
-                replace={ linkMode.replace }
-              >
-                <BsCaretLeft className={ styles.paginationBar__stepIcon }/>
-              </Link>
-            </li>
+          { pageElements }
 
-            { pageElements }
+          { !(availablePages.includes(pagesNumber))
+            ? <PaginationBarButton
+              title={ t('n_page_button_title', { pageNumber: pagesNumber }) }
+              linkTitle={ String(pagesNumber) }
+              href={ { pathname, query: buildQuery(pagesNumber) } }
+              active={ pagesNumber === pageNumber }
+              linkMode={ linkMode }
+              onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pagesNumber) } } }
+              key={ t('n_page_button_title', { pageNumber: pagesNumber }) }
+              disabled={ disabled }
+            />
+            : null
+          }
 
-            <li className={ `
-              ${styles.paginationBar__pageNumberItem}
-              ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
-            ` }
-              key={ t('next_page_button_title') }
-              title={ t('next_page_button_title') }
-              onClick={ () => { if (onPageChange) { onPageChange(pageNumber + 1) } } }
-            >
-              <Link href={ { pathname, query: buildQuery(pageNumber + 1) } }
-                className={ styles.paginationBar__pageNumberLink }
-                scroll={ linkMode.scrollOnClick }
-                shallow={ linkMode.shallowNavigation }
-                replace={ linkMode.replace }
-              >
-                <BsCaretRight className={ styles.paginationBar__stepIcon }/>
-              </Link>
-            </li>
+          <PaginationBarButton
+            title={ t('next_page_button_title') }
+            linkTitle={ <BsCaretRight className={ styles.paginationBar__stepIcon }/> }
+            href={ { pathname, query: buildQuery(pageNumber + 1) } }
+            active={ false }
+            linkMode={ linkMode }
+            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber - 1) } } }
+            key={ t('next_page_button_title') }
+            disabled={ disabled || pageNumber === pagesNumber }
+            hideDirection={ 'right' }
+          />
 
-            <li className={ `
-              ${styles.paginationBar__pageNumberItem}
-              ${disabled || (pageNumber === pagesNumber) ? styles.paginationBar__rightPageButtonHide : ''}
-            ` }
-              key={ t('last_page_button_title') }
-              title={ t('last_page_button_title') }
-              onClick={ () => { if (onPageChange) { onPageChange(pagesNumber) } } }
-            >
-              <Link href={ { pathname, query: buildQuery(pagesNumber) } }
-                className={ styles.paginationBar__pageNumberLink }
-                scroll={ linkMode.scrollOnClick }
-                shallow={ linkMode.shallowNavigation }
-                replace={ linkMode.replace }
-              >
-                <BsSkipEnd className={ styles.paginationBar__stepIcon }/>
-              </Link>
-            </li>
-          </ul>
-        </div>
-  )
+          <PaginationBarButton
+            title={ t('last_page_button_title') }
+            linkTitle={ <BsSkipEnd className={ styles.paginationBar__stepIcon }/> }
+            href={ { pathname, query: buildQuery(pageNumber + 1) } }
+            active={ false }
+            linkMode={ linkMode }
+            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber - 1) } } }
+            key={ t('last_page_button_title') }
+            disabled={ disabled || pageNumber === pagesNumber }
+            hideDirection={ 'right' }
+          />
+        </ul>
+      </div>
+    )
+  }
+
+  return (content)
 }

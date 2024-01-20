@@ -59,7 +59,7 @@ export const PostCard: FC<Props> = ({
   let producerImage: ReactElement | null = null
   let producerNameLink: ReactElement | null = null
 
-  if (post.producer !== null && showProducerImage) {
+  if (post.producer !== null) {
     const producerLink = `/producers/${post.producer.slug}`
 
     let linkDisabled = false
@@ -68,25 +68,27 @@ export const PostCard: FC<Props> = ({
       linkDisabled = true
     }
 
-    producerImage = (
-      <Link
-        className={ `
+    if (showProducerImage) {
+      producerImage = (
+        <Link
+          className={ `
           ${styles.postCard__producerActorAvatarLink}
           ${linkDisabled ? styles.postCard__producerActorAvatarLink__disabled : ''}
         ` }
-        href={ `/producers/${post.producer.slug}` }
-        title={ post.producer.name }
-      >
-        <AvatarImage
-          imageUrl={ post.producer.imageUrl }
-          imageClassName={ styles.postCard__producerActorLogo }
-          avatarName={ post.producer.name }
-          imageAlt={ post.producer.name }
-          avatarClassName={ styles.postCard__producerActorAvatarContainer }
-          color={ post.producer.brandHexColor }
-        />
-      </Link>
-    )
+          href={ `/producers/${post.producer.slug}` }
+          title={ post.producer.name }
+        >
+          <AvatarImage
+            imageUrl={ post.producer.imageUrl }
+            imageClassName={ styles.postCard__producerActorLogo }
+            avatarName={ post.producer.name }
+            imageAlt={ post.producer.name }
+            avatarClassName={ styles.postCard__producerActorAvatarContainer }
+            color={ post.producer.brandHexColor }
+          />
+        </Link>
+      )
+    }
 
     producerNameLink = (
       <Link
@@ -101,7 +103,7 @@ export const PostCard: FC<Props> = ({
     )
   }
 
-  if (post.producer === null && post.actor !== null && showProducerImage) {
+  if (post.producer === null && post.actor !== null) {
     const actorLink = `/actors/${post.actor.slug}`
 
     let linkDisabled = false
@@ -110,24 +112,26 @@ export const PostCard: FC<Props> = ({
       linkDisabled = true
     }
 
-    producerImage = (
-      <Link
-        className={ `
+    if (showProducerImage) {
+      producerImage = (
+        <Link
+          className={ `
           ${styles.postCard__producerActorAvatarLink}
           ${linkDisabled ? styles.postCard__producerActorAvatarLink__disabled : ''}
         ` }
-        href={ `/actors/${post.actor.slug}` }
-        title={ post.actor.name }
-      >
-        <AvatarImage
-          imageUrl={ post.actor.imageUrl }
-          imageClassName={ styles.postCard__producerActorLogo }
-          avatarName={ post.actor.name }
-          imageAlt={ post.actor.name }
-          avatarClassName={ styles.postCard__producerActorAvatarContainer }
-        />
-      </Link>
-    )
+          href={ `/actors/${post.actor.slug}` }
+          title={ post.actor.name }
+        >
+          <AvatarImage
+            imageUrl={ post.actor.imageUrl }
+            imageClassName={ styles.postCard__producerActorLogo }
+            avatarName={ post.actor.name }
+            imageAlt={ post.actor.name }
+            avatarClassName={ styles.postCard__producerActorAvatarContainer }
+          />
+        </Link>
+      )
+    }
 
     producerNameLink = (
       <Link
@@ -168,7 +172,7 @@ export const PostCard: FC<Props> = ({
           </Link>
           <div className={ styles.postCard__extraData }>
             { producerNameLink }
-            { (post.producer !== null || post.actor !== null) && showProducerImage ? <BsDot /> : '' }
+            { (post.producer !== null || post.actor !== null) ? <BsDot /> : '' }
             { t('post_card_post_views', { views: post.views }) }
             <BsDot className={ styles.postCard__separatorIcon }/>
             { post.date }

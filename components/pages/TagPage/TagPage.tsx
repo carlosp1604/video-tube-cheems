@@ -189,6 +189,7 @@ export const TagPage: NextPage<TagPageProps> = ({
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ { ...linkMode, scrollOnClick: false } }
         onPageChange={ () => window.scrollTo({ top: 0 }) }
+        disabled={ loading }
       />
     </div>
   )

@@ -78,7 +78,16 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
         include: {
           _count: {
             select: {
-              postActors: true,
+              postActors: {
+                where: {
+                  post: {
+                    publishedAt: {
+                      not: null,
+                      lte: new Date(),
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -116,13 +125,15 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
       }
     }
 
+    // TODO: Add this when is supported by prisma
+    /**
     if (sortingOption === 'posts') {
       sortCriteria = {
         postActors: {
           _count: sortingCriteria,
         },
       }
-    }
+    } */
 
     return sortCriteria
   }

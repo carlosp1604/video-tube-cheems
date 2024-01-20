@@ -2,8 +2,4 @@
   &__container {
     @apply flex flex-col gap-y-2 container my-5;
   }
-
-  &__header {
-    @apply flex gap-x-2 justify-between items-start;
-  }
 }

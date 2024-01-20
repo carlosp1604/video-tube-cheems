@@ -97,13 +97,13 @@ export const ActorPage: NextPage<ActorPageProps> = ({ actor, initialPosts, initi
   }
 
   const titleElement = (
-    <h1 className={ styles.actorPage__title }>
+    <h2 className={ styles.actorPage__title }>
       <Trans
         i18nKey={ t('actor_posts_gallery_title') }
         components={ [<small key={ 'actor_posts_gallery_title' } className={ styles.actorPage__titleActorName }/>] }
         values={ { actorName: actor.name } }
       />
-    </h1>
+    </h2>
   )
 
   return (

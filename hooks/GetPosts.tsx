@@ -47,10 +47,6 @@ export function useGetPosts (): GetPostsInterface {
 
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
-    await new Promise((resolve, reject) => {
-      setTimeout(resolve, 4000)
-    })
-
     try {
       const posts = await fetchPosts(page, componentOrder.criteria, componentOrder.option, filters)
 

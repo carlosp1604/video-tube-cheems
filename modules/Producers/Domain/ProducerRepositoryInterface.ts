@@ -1,8 +1,7 @@
 import { Producer } from './Producer'
-import { RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 
 export interface ProducerRepositoryInterface {
-  get(repositoryOptions: RepositoryOptions[]): Promise<Producer[]>
+  get(): Promise<Producer[]>
 
   /**
    * Find a Producer given its slug

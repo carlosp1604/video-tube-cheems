@@ -35,7 +35,7 @@ export const Actor: FC<Props> = ({
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
-  const { t } = useTranslation('actor_page')
+  const { t } = useTranslation('actors')
 
   const updatePosts = async (page:number) => {
     try {

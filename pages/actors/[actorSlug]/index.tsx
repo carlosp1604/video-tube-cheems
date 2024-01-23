@@ -40,7 +40,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
     'api_exceptions',
     'post_card_options',
     'post_card_gallery',
-    'actor_page',
+    'actors',
   ])
 
   const props: ActorPageProps = {

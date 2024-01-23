@@ -12,7 +12,7 @@ import {
   MorePostsActorsSortingOption,
   NameFirstActorsSortingOption,
   NameLastActorsSortingOption
-} from '~/modules/Actors/Infrastructure/Frontend/ActorsComponentSortingOptions'
+} from '~/modules/Shared/Infrastructure/FrontEnd/CommonComponentSortingOptions'
 
 export enum PaginationSortingType {
   MOST_VIEWED = 'most-viewed',

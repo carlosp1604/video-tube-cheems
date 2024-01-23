@@ -4,9 +4,6 @@ import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
 import { useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import {
-  ActorsPaginationConfiguration, ActorsPaginationQueryParams
-} from '~/modules/Actors/Infrastructure/Frontend/ActorPaginationQueryParams'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
@@ -21,6 +18,10 @@ import { ActorCardGallery } from '~/modules/Actors/Infrastructure/Components/Act
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { useTranslation } from 'next-i18next'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
+import {
+  PaginationConfiguration,
+  PaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 
 export interface ActorsPagePaginationState {
   page: number
@@ -47,7 +48,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
 
   const router = useRouter()
   const firstRender = useFirstRender()
-  const { t } = useTranslation('actors_page')
+  const { t } = useTranslation('actors')
 
   const sortingOptions: ActorsPaginationSortingType[] = [
     PaginationSortingType.NAME_FIRST,
@@ -63,8 +64,8 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
     scrollOnClick: true,
   }
 
-  const configuration: Partial<ActorsPaginationConfiguration> &
-    Pick<ActorsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
+  const configuration: Partial<PaginationConfiguration<ActorsPaginationSortingType>> &
+    Pick<PaginationConfiguration<ActorsPaginationSortingType>, 'page' | 'sortingOptionType'> = {
       sortingOptionType: {
         defaultValue: PaginationSortingType.NAME_FIRST,
         parseableOptionTypes: sortingOptions,
@@ -95,7 +96,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
       return
     }
 
-    const queryParams = new ActorsPaginationQueryParams(router.query, configuration)
+    const queryParams = new PaginationQueryParams(router.query, configuration)
 
     const newPage = queryParams.page ?? configuration.page.defaultValue
     const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue

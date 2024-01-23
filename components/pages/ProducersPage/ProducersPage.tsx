@@ -3,9 +3,6 @@ import styles from './ProducersPage.module.scss'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
 import { useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import {
-  ActorsPaginationConfiguration
-} from '~/modules/Actors/Infrastructure/Frontend/ActorPaginationQueryParams'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
 import {
@@ -16,15 +13,23 @@ import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCard
 import {
   ProducerCardGallery
 } from '~/modules/Producers/Infrastructure/Components/ProducerCard/ProducerCardGallery/ProducerCardGallery'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
+import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
+import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
+import {
+  ProducersPaginationSortingType
+} from '~/modules/Producers/Infrastructure/Frontend/ProducersPaginationSortingType'
+import { PaginationConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 
 export interface ProducersPagePaginationState {
   page: number
-  order: ActorsPaginationSortingType
+  order: ProducersPaginationSortingType
 }
 
 export interface ProducersPageProps {
-  // initialPage: number
-  // initialOrder: PaginationSortingType
+  initialPage: number
+  initialOrder: ProducersPaginationSortingType
   initialProducers: ProducerCardDto[]
   initialProducersNumber: number
 }
@@ -32,17 +37,17 @@ export interface ProducersPageProps {
 export const ProducersPage: NextPage<ProducersPageProps> = ({
   initialProducers,
   initialProducersNumber,
-  // initialPage,
-  // initialOrder,
+  initialPage,
+  initialOrder,
 }) => {
   const [producers, setProducers] = useState<ProducerCardDto[]>(initialProducers)
   const [producersNumber, setProducersNumber] = useState<number>(initialProducersNumber)
-  // const [pagination, setPagination] = useState<ActorsPagePaginationState>({ page: initialPage, order: initialOrder })
+  const [pagination, setPagination] = useState<ProducersPagePaginationState>({ page: initialPage, order: initialOrder })
   const [loading, setLoading] = useState<boolean>(false)
 
   const router = useRouter()
   const firstRender = useFirstRender()
-  const { t } = useTranslation('actors_page')
+  const { t } = useTranslation('producers')
 
   const sortingOptions: ActorsPaginationSortingType[] = [
     PaginationSortingType.NAME_FIRST,
@@ -58,8 +63,8 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
     scrollOnClick: true,
   }
 
-  const configuration: Partial<ActorsPaginationConfiguration> &
-    Pick<ActorsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
+  const configuration: Partial<PaginationConfiguration<ProducersPaginationSortingType>> &
+    Pick<PaginationConfiguration<ProducersPaginationSortingType>, 'page' | 'sortingOptionType'> = {
       sortingOptionType: {
         defaultValue: PaginationSortingType.NAME_FIRST,
         parseableOptionTypes: sortingOptions,
@@ -120,11 +125,37 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
   )
  */
 
+  const sortingMenu = (
+    <SortingMenuDropdown
+      activeOption={ pagination.order }
+      options={ sortingOptions }
+      loading={ loading }
+      visible={ producersNumber > defaultPerPage }
+      linkMode={ linkMode }
+    />
+  )
+
   return (
     <div className={ styles.actorsPage__container }>
-      <ProducerCardGallery
-        producers={ initialProducers }
+      <CommonGalleryHeader
+        title={ t('producers_gallery_title') }
+        subtitle={ t('producers_gallery_subtitle', { producersNumber }) }
         loading={ loading }
+        sortingMenu={ sortingMenu }
+      />
+
+      <ProducerCardGallery
+        producers={ producers }
+        loading={ loading }
+      />
+
+      <PaginationBar
+        key={ router.asPath }
+        pageNumber={ pagination.page }
+        pagesNumber={ PaginationHelper.calculatePagesNumber(producersNumber, defaultPerPage) }
+        disabled={ loading }
+        linkMode={ linkMode }
+        onPageChange={ () => window.scrollTo({ top: 0 }) }
       />
     </div>
   )

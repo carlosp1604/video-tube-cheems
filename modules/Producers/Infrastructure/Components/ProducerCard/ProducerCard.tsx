@@ -3,12 +3,15 @@ import styles from './ProducerCard.module.scss'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { CSSProperties, FC } from 'react'
 import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
+import { useTranslation } from 'next-i18next'
 
 export interface Props {
   producer: ProducerCardDto
 }
 
 export const ProducerCard: FC<Props> = ({ producer }) => {
+  const { t } = useTranslation('producers ')
+
   return (
     <div
       className={ styles.producerCard__container }
@@ -23,7 +26,7 @@ export const ProducerCard: FC<Props> = ({ producer }) => {
             avatarClassName={ styles.producerCard__producerAvatar }
             imageClassName={ styles.producerCard__producerImage }
             avatarName={ producer.name }
-            imageAlt={ 'alto' }
+            imageAlt={ t('producer_card_image_alt_title', { producerName: producer.name }) }
             rounded={ false }
             color={ producer.brandHexColor }
           />

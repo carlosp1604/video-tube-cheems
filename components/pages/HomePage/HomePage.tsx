@@ -5,10 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import styles from '~/components/pages/HomePage/HomePage.module.scss'
-import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList'
-import {
-  GalleryHeader
-} from '~/components/GalleryHeader/GalleryHeader'
+import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList/ProducerList'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -30,6 +27,7 @@ import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Componen
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 
 export interface HomePagePaginationState {
   page: number
@@ -158,29 +156,19 @@ export const HomePage: NextPage<Props> = ({
   if (!paginationState.activeProducer) {
     galleryTitle = t('post_gallery_no_producer_title')
   } else {
-    galleryTitle = paginationState.activeProducer.id === ''
-      ? t('all_producers_title', { ns: 'home_page' })
-      : paginationState.activeProducer.name
+    if (paginationState.activeProducer.id === '') {
+      galleryTitle = t('all_producers_title', { ns: 'home_page' })
+    } else {
+      galleryTitle = paginationState.activeProducer.name
+    }
   }
 
-  let content: ReactElement
-
-  if (postsNumber === 0 && !loading) {
-    content = (
-      <EmptyState
-        title={ t('post_gallery_empty_state_title') }
-        subtitle={ t('post_gallery_empty_state_subtitle') }
-      />
-    )
-  } else {
-    content = (
-      <PostCardGallery
-        posts={ posts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        loading={ loading }
-      />
-    )
-  }
+  const emptyState: ReactElement = (
+    <EmptyState
+      title={ t('post_gallery_empty_state_title') }
+      subtitle={ t('post_gallery_empty_state_subtitle') }
+    />
+  )
 
   const sortingMenu = (
     <SortingMenuDropdown
@@ -200,14 +188,20 @@ export const HomePage: NextPage<Props> = ({
         activeProducer={ paginationState.activeProducer }
       />
 
-      <GalleryHeader
+      <CommonGalleryHeader
         title={ galleryTitle }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h1' }
       />
 
-      { content }
+      <PostCardGallery
+        posts={ posts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        loading={ loading }
+        emptyState={ emptyState }
+      />
 
       <PaginationBar
         key={ asPath }

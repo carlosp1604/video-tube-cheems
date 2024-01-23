@@ -1,15 +1,14 @@
-.actor-card-skeleton {
+.producer-card-skeleton {
   &__container {
     @apply flex flex-col items-start overflow-hidden shadow-base-950
       shadow-lg rounded-md gap-y-1;
   }
 
   &__image-wrapper {
-    @apply w-full aspect-h-1 aspect-w-1 overflow-hidden
-      bg-base-800;
+    @apply w-full aspect-h-1 aspect-w-1 overflow-hidden;
   }
 
-  &__actor-image {
+  &__producer-image {
     @apply h-full w-full bg-base-800;
   }
 
@@ -17,7 +16,7 @@
     @apply flex flex-col p-2 w-full gap-y-3;
   }
 
-  &__actor-name {
+  &__producer-name {
     @apply h-3 w-full bg-base-700 rounded-md;
   }
 

@@ -5,8 +5,8 @@ import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/Number
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
-import { Trans, useTranslation } from 'next-i18next'
-import { ReactElement, useEffect, useState } from 'react'
+import { useTranslation } from 'next-i18next'
+import { useEffect, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
@@ -24,7 +24,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { TransGalleryHeader } from '~/components/GalleryHeader/TransGalleryHeader'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 
 interface SearchPagePaginationState {
   page: number
@@ -134,50 +134,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     })
   }, [query])
 
-  const titleElement = (
-    <h1 className={ styles.searchPage__searchTermTitle }>
-      <Trans
-        i18nKey={ t('search_result_title') }
-        components={ [<small key={ 'search_result_title' } className={ styles.searchPage__searchTermTitleTerm }/>] }
-        values={ { searchTerm: paginationState.searchTerm } }
-      />
-    </h1>
-  )
-
-  let content: ReactElement
-
-  if (postsNumber === 0 && !loading && !firstRender) {
-    content = (
-      <EmptyState
-        title={ t('post_gallery_empty_state_title') }
-        subtitle={ t('post_gallery_empty_state_subtitle', { searchTerm: paginationState.searchTerm }) }
-      />
-    )
-  } else {
-    content = (
-      <PostCardGallery
-        posts={ posts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        loading={ loading }
-      />
-    )
-  }
-
-  let paginationBar: ReactElement | null = null
-
-  if (!firstRender) {
-    paginationBar = (
-      <PaginationBar
-        pageNumber={ paginationState.page }
-        pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
-        disabled={ loading }
-        linkMode={ linkMode }
-        onPageChange={ () => window.scrollTo({ top: 0 }) }
-      />
-    )
-  }
-
   const sortingMenu = (
     <SortingMenuDropdown
       activeOption={ paginationState.order }
@@ -188,18 +144,40 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     />
   )
 
+  const emptyState = (
+    <EmptyState
+      title={ t('post_gallery_empty_state_title') }
+      subtitle={ t('post_gallery_empty_state_subtitle', { searchTerm: paginationState.searchTerm }) }
+    />
+  )
+
   return (
     <div className={ styles.searchPage__container }>
 
-      <TransGalleryHeader
-        title={ titleElement }
+      <CommonGalleryHeader
+        title={ t('search_result_title') }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
+        term={ { title: 'searchTerm', value: paginationState.searchTerm } }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h1' }
       />
 
-      { content }
-      { paginationBar }
+      <PostCardGallery
+        posts={ posts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        loading={ loading }
+        emptyState={ firstRender ? null : emptyState }
+      />
+
+      <PaginationBar
+        pageNumber={ paginationState.page }
+        pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        onePageStateTitle={ postsNumber > 0 ? t('one_page_state_title') : undefined }
+        disabled={ loading }
+        linkMode={ linkMode }
+        onPageChange={ () => window.scrollTo({ top: 0 }) }
+      />
     </div>
   )
 }

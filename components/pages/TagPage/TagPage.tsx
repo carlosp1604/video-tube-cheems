@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { ReactElement, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './TagPage.module.scss'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
@@ -11,7 +11,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
@@ -24,8 +24,8 @@ import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageCom
 import { useAvatarColor } from '~/hooks/AvatarColor'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { TransGalleryHeader } from '~/components/GalleryHeader/TransGalleryHeader'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 
 interface TagPagePaginationState {
   page: number
@@ -59,7 +59,6 @@ export const TagPage: NextPage<TagPageProps> = ({
   const locale = router.locale ?? 'en'
 
   const { t } = useTranslation('tag_page')
-
   const tagColor = getRandomColor(tag.name)
 
   const sortingOptions: PostsPaginationSortingType[] = [
@@ -126,33 +125,21 @@ export const TagPage: NextPage<TagPageProps> = ({
     }
   }
 
-  let content: ReactElement
+  const emptyState = (
+    <EmptyState
+      title={ t('tag_posts_empty_state_title') }
+      subtitle={ t('tag_posts_empty_state_subtitle', { tagName: tag.name }) }
+    />
+  )
 
-  if (initialPostsNumber > 0 && !loading) {
-    content = (
-      <PostCardGallery
-        posts={ posts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        loading={ loading }
-      />
-    )
-  } else {
-    content = (
-      <EmptyState
-        title={ t('tag_posts_empty_state_title') }
-        subtitle={ t('tag_posts_empty_state_subtitle', { tagName: tag.name }) }
-      />
-    )
-  }
-
-  const postsTagGalleryTitle = (
-    <span className={ styles.producerPage__title }>
-      <Trans
-        i18nKey={ t('tag_posts_gallery_title') }
-        components={ [<div key={ 'tag_posts_gallery_title' } className={ styles.producerPage__titleTagName }/>] }
-        values={ { tagName: tag.name } }
-      />
-    </span>
+  const sortingMenu = (
+    <SortingMenuDropdown
+      activeOption={ pagination.order }
+      options={ sortingOptions }
+      loading={ loading }
+      visible={ postsNumber > defaultPerPage }
+      linkMode={ linkMode }
+    />
   )
 
   return (
@@ -166,22 +153,21 @@ export const TagPage: NextPage<TagPageProps> = ({
         rounded={ false }
       />
 
-      <div className={ styles.producerPage__header }>
-        <TransGalleryHeader
-          title={ postsTagGalleryTitle }
-          subtitle={ t('tag_posts_gallery_posts_quantity', { postsNumber }) }
-          loading={ loading }
-        />
-        <SortingMenuDropdown
-          activeOption={ pagination.order }
-          options={ sortingOptions }
-          loading={ loading }
-          visible={ postsNumber > defaultPerPage }
-          linkMode={ linkMode }
-        />
-      </div>
+      <CommonGalleryHeader
+        title={ t('tag_posts_gallery_title') }
+        subtitle={ t('tag_posts_gallery_posts_quantity', { postsNumber }) }
+        term={ { title: 'tagName', value: tag.name } }
+        loading={ loading }
+        tag={ 'h2' }
+        sortingMenu={ sortingMenu }
+      />
 
-      { content }
+      <PostCardGallery
+        posts={ posts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        loading={ loading }
+        emptyState={ emptyState }
+      />
 
       <PaginationBar
         key={ router.asPath }

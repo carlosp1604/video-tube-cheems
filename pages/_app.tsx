@@ -128,7 +128,7 @@ function App ({
                     showSpinner: false,
                   } }
                   showOnShallow={ true }
-                  height={ 1.5 }
+                  height={ 2 }
                 />
 
                 <Component { ...pageProps }/>

@@ -1,0 +1,5 @@
+.actors-page {
+  &__container {
+    @apply container px-5 mx-auto flex flex-col gap-y-8 mt-5 mb-10;
+  }
+}

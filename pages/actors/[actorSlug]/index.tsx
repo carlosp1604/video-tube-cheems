@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next'
-import { ActorPage, ActorPageProps } from '~/components/pages/ActorPage/ActorPage'
 import { GetActorBySlug } from '~/modules/Actors/Application/GetActorBySlug/GetActorBySlug'
 import { ActorPageComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorPageComponentDtoTranslator'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -14,6 +13,7 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { ActorPage, ActorPageProps } from '~/components/pages/ActorPage/ActorPage'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   const actorSlug = context.query.actorSlug

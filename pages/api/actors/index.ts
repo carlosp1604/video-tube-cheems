@@ -51,8 +51,9 @@ export default async function handler (
 
     return response.status(200).json(actors)
   } catch (exception: unknown) {
-    console.error(exception)
     if (!(exception instanceof GetActorsApplicationException)) {
+      console.error(exception)
+
       return handleServerError(response)
     }
 

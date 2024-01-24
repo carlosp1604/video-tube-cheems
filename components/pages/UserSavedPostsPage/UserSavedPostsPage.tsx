@@ -28,7 +28,7 @@ import {
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { GalleryHeader } from '~/components/GalleryHeader/GalleryHeader'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 
 interface PaginationState {
   page: number
@@ -130,33 +130,16 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
     setLoading(false)
   }
 
-  let content: ReactElement
+  let emptyState: ReactElement
 
-  if (postsNumber === 0 && !loading) {
-    if (status === 'authenticated' && userComponentDto.id === data?.user.id) {
-      content = (<UserSavedPostsEmptyState />)
-    } else {
-      content = (
-        <EmptyState
-          title={ t('saved_posts_empty_title') }
-          subtitle={ t('saved_posts_empty_subtitle', { name: userComponentDto.name }) }
-        />
-      )
-    }
+  if (status === 'authenticated' && userComponentDto.id === data?.user.id) {
+    emptyState = (<UserSavedPostsEmptyState />)
   } else {
-    content = (
-      <InfiniteScroll
-        next={ onEndGalleryReach }
-        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        loader={ null }
-        dataLength={ posts.length }
-      >
-        <PostCardGallery
-          posts={ posts }
-          postCardOptions={ postCardOptions }
-          loading={ loading }
-        />
-      </InfiniteScroll>
+    emptyState = (
+      <EmptyState
+        title={ t('saved_posts_empty_title') }
+        subtitle={ t('saved_posts_empty_subtitle', { name: userComponentDto.name }) }
+      />
     )
   }
 
@@ -174,14 +157,27 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({ userComp
     <div className={ styles.userSavedPostsPage__container }>
       <UserProfileHeader componentDto={ userComponentDto } />
 
-      <GalleryHeader
+      <CommonGalleryHeader
         title={ t('user_saved_posts_title') }
         subtitle={ t('posts_number_title', { postsNumber }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h1' }
       />
 
-      { content }
+      <InfiniteScroll
+        next={ onEndGalleryReach }
+        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        loader={ null }
+        dataLength={ posts.length }
+      >
+        <PostCardGallery
+          posts={ posts }
+          postCardOptions={ postCardOptions }
+          loading={ loading }
+          emptyState={ emptyState }
+        />
+      </InfiniteScroll>
     </div>
   )
 }

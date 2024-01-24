@@ -7,6 +7,7 @@ import {
 } from '~/modules/Actors/Infrastructure/Components/Actor/Actor'
 import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import { useTranslation } from 'next-i18next'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto
@@ -16,12 +17,13 @@ export interface ActorPageProps {
 
 export const ActorPage: NextPage<ActorPageProps> = ({ actor, initialPosts, initialPostsNumber }) => {
   const { asPath } = useRouter()
+  const { t } = useTranslation('actors')
 
   return (
     <div className={ styles.actorPage__container }>
       <ProfileHeader
         name={ actor.name }
-        imageAlt={ actor.name }
+        imageAlt={ t('actor_image_alt_title', { actorName: actor.name }) }
         imageUrl={ actor.imageUrl }
         customColor={ null }
         rounded={ true }

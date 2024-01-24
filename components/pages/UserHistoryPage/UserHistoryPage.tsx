@@ -15,7 +15,6 @@ import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
 import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
-import { GalleryHeader } from '~/components/GalleryHeader/GalleryHeader'
 import { useTranslation } from 'next-i18next'
 import styles from './UserHistoryPage.module.scss'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -25,6 +24,7 @@ import {
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 
 interface PaginationState {
   page: number
@@ -123,38 +123,21 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentD
     setLoading(false)
   }
 
-  let content: ReactElement
+  let emptyState: ReactElement
 
-  if (!loading && postsNumber === 0) {
-    if (status === 'authenticated' && data && data.user.id === userComponentDto.id) {
-      content = (
-        <EmptyState
-          title={ t('own_history_empty_title') }
-          subtitle={ t('own_history_empty_subtitle') }
-        />
-      )
-    } else {
-      content = (
-        <EmptyState
-          title={ t('history_empty_title') }
-          subtitle={ t('history_empty_subtitle', { name: userComponentDto.name }) }
-        />
-      )
-    }
+  if (status === 'authenticated' && data && data.user.id === userComponentDto.id) {
+    emptyState = (
+      <EmptyState
+        title={ t('own_history_empty_title') }
+        subtitle={ t('own_history_empty_subtitle') }
+      />
+    )
   } else {
-    content = (
-      <InfiniteScroll
-        next={ onEndGalleryReach }
-        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        loader={ null }
-        dataLength={ posts.length }
-      >
-        <PostCardGallery
-          posts={ posts }
-          postCardOptions={ postCardOptions }
-          loading={ loading }
-        />
-      </InfiniteScroll>
+    emptyState = (
+      <EmptyState
+        title={ t('history_empty_title') }
+        subtitle={ t('history_empty_subtitle', { name: userComponentDto.name }) }
+      />
     )
   }
 
@@ -172,14 +155,27 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentD
     <div className={ styles.userHistoryPage__container }>
       <UserProfileHeader componentDto={ userComponentDto } />
 
-      <GalleryHeader
+      <CommonGalleryHeader
         title={ t('user_history_title') }
         subtitle={ t('posts_number_title', { postsNumber }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h1' }
       />
 
-      { content }
+      <InfiniteScroll
+        next={ onEndGalleryReach }
+        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
+        loader={ null }
+        dataLength={ posts.length }
+      >
+        <PostCardGallery
+          posts={ posts }
+          postCardOptions={ postCardOptions }
+          loading={ loading }
+          emptyState={ emptyState }
+        />
+      </InfiniteScroll>
     </div>
   )
 }

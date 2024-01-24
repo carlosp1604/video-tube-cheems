@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './ProducerCardGallery.module.scss'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
@@ -10,9 +10,14 @@ import {
 interface Props {
   producers: ProducerCardDto[]
   loading: boolean
+  emptyState: ReactElement | null
 }
 
-export const ProducerCardGallery: FC<Props> = ({ producers, loading }) => {
+export const ProducerCardGallery: FC<Partial<Props> & Pick<Props, 'producers'>> = ({
+  producers,
+  loading = false,
+  emptyState = null,
+}) => {
   let producersSkeletonNumber
 
   if (producers.length <= defaultPerPage) {
@@ -35,7 +40,7 @@ export const ProducerCardGallery: FC<Props> = ({ producers, loading }) => {
     )
   })
 
-  return (
+  let content: ReactElement | null = (
     <div className={ `
       ${styles.producerCardGallery__container}
       ${loading ? styles.producerCardGallery__container__loading : ''}
@@ -45,4 +50,10 @@ export const ProducerCardGallery: FC<Props> = ({ producers, loading }) => {
       { loading ? skeletonProducers : null }
     </div>
   )
+
+  if (!loading && producers.length === 0) {
+    content = emptyState
+  }
+
+  return content
 }

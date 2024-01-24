@@ -21,6 +21,7 @@ import {
   ProducersPaginationSortingType
 } from '~/modules/Producers/Infrastructure/Frontend/ProducersPaginationSortingType'
 import { PaginationConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
+import { EmptyState } from '~/components/EmptyState/EmptyState'
 
 export interface ProducersPagePaginationState {
   page: number
@@ -135,6 +136,13 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
     />
   )
 
+  const emptyState = (
+    <EmptyState
+      title={ t('producers_gallery_empty_state_title') }
+      subtitle={ t('producers_gallery_empty_state_subtitle') }
+    />
+  )
+
   return (
     <div className={ styles.actorsPage__container }>
       <CommonGalleryHeader
@@ -147,6 +155,7 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
       <ProducerCardGallery
         producers={ producers }
         loading={ loading }
+        emptyState={ emptyState }
       />
 
       <PaginationBar

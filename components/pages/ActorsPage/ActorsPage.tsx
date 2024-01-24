@@ -22,6 +22,7 @@ import {
   PaginationConfiguration,
   PaginationQueryParams
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
+import { EmptyState } from '~/components/EmptyState/EmptyState'
 
 export interface ActorsPagePaginationState {
   page: number
@@ -124,6 +125,13 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
     />
   )
 
+  const emptyState = (
+    <EmptyState
+      title={ t('actors_gallery_empty_state_title') }
+      subtitle={ t('actors_gallery_empty_state_subtitle') }
+    />
+  )
+
   return (
     <div className={ styles.actorsPage__container }>
       <CommonGalleryHeader
@@ -136,6 +144,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
       <ActorCardGallery
         actors={ actors }
         loading={ loading }
+        emptyState={ emptyState }
       />
 
       <PaginationBar

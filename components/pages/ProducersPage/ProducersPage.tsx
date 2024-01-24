@@ -1,11 +1,12 @@
 import { NextPage } from 'next'
 import styles from './ProducersPage.module.scss'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
 import {
+  fromOrderTypeToComponentSortingOption,
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { useTranslation } from 'next-i18next'
@@ -20,8 +21,13 @@ import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import {
   ProducersPaginationSortingType
 } from '~/modules/Producers/Infrastructure/Frontend/ProducersPaginationSortingType'
-import { PaginationConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
+import {
+  PaginationConfiguration,
+  PaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import { ProducersApiService } from '~/modules/Producers/Infrastructure/Frontend/ProducersApiService'
+import { ProducerCardDtoTranslator } from '~/modules/Producers/Infrastructure/ProducerCardDtoTranslator'
 
 export interface ProducersPagePaginationState {
   page: number
@@ -73,21 +79,20 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
     }
 
-  /**
-  const updateActors = async (page:number, order: ActorsPaginationSortingType) => {
+  const updateProducers = async (page:number, order: ProducersPaginationSortingType) => {
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
-    const newActors = await (new ActorsApiService()).getActors(
+    const newProducers = await (new ProducersApiService()).getProducers(
       page,
       defaultPerPage,
       componentOrder.criteria,
       componentOrder.option
     )
 
-    if (newActors) {
-      setActorsNumber(newActors.actorsNumber)
-      setActors(newActors.actors.map((actor) => {
-        return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber)
+    if (newProducers) {
+      setProducersNumber(newProducers.producersNumber)
+      setProducers(newProducers.producers.map((producer) => {
+        return ProducerCardDtoTranslator.fromApplicationDto(producer.producer, producer.postsNumber)
       }))
     }
   }
@@ -97,7 +102,7 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
       return
     }
 
-    const queryParams = new ActorsPaginationQueryParams(router.query, configuration)
+    const queryParams = new PaginationQueryParams(router.query, configuration)
 
     const newPage = queryParams.page ?? configuration.page.defaultValue
     const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue
@@ -109,22 +114,11 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
     setPagination({ page: newPage, order: newOrder })
 
     setLoading(true)
-    updateActors(newPage, newOrder)
+    updateProducers(newPage, newOrder)
       .then(() => {
         setLoading(false)
       })
   }, [router.query])
-
-  const sortingMenu = (
-    <SortingMenuDropdown
-      activeOption={ pagination.order }
-      options={ sortingOptions }
-      loading={ loading }
-      visible={ actorsNumber > defaultPerPage }
-      linkMode={ linkMode }
-    />
-  )
- */
 
   const sortingMenu = (
     <SortingMenuDropdown

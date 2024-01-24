@@ -56,7 +56,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
-  const { t } = useTranslation('producer_page')
+  const { t } = useTranslation('producers')
 
   const sortingOptions: PostsPaginationSortingType[] = [
     PaginationSortingType.LATEST,

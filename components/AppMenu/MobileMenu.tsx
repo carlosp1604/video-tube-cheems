@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar, BsTv } from 'react-icons/bs'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useUserContext } from '~/hooks/UserContext'
@@ -113,12 +113,6 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   picture: <BsHouse />,
                   onClick: undefined,
                 },
-                buildAuthenticationAction(
-                  `/users/${user ? user.username : ''}/saved-posts`,
-                  <BsBookmarks />,
-                  asPath === `/users/${user ? user.username : ''}/saved-posts`,
-                  t('menu_saved_button_title')
-                ),
                 {
                   title: t('menu_stars_button_title'),
                   isActive: pathname === '/actors',
@@ -130,6 +124,16 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   onClick: undefined,
                 },
                 {
+                  title: t('menu_producers_button_title'),
+                  isActive: pathname === '/producers',
+                  action: {
+                    url: '/producers',
+                    blank: false,
+                  },
+                  picture: <BsTv />,
+                  onClick: undefined,
+                },
+                {
                   title: t('menu_reacted_button_title'),
                   isActive: false,
                   action: undefined,
@@ -138,6 +142,12 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                     toast.success(t('user_menu_option_not_available_message'))
                   },
                 },
+                buildAuthenticationAction(
+                  `/users/${user ? user.username : ''}/saved-posts`,
+                  <BsBookmarks />,
+                  asPath === `/users/${user ? user.username : ''}/saved-posts`,
+                  t('menu_saved_button_title')
+                ),
                 buildAuthenticationAction(
                   `/users/${user ? user.username : ''}/history`,
                   <BsClock />,

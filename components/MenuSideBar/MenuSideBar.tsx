@@ -3,7 +3,7 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsArrowLeft, BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar } from 'react-icons/bs'
+import { BsArrowLeft, BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar, BsTv } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
@@ -141,12 +141,6 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       onClick: undefined,
     },
      **/
-    buildAuthenticationAction(
-      `/users/${user ? user.username : ''}/saved-posts`,
-      <BsBookmarks />,
-      asPath === `/users/${user ? user.username : ''}/saved-posts`,
-      t('menu_saved_button_title')
-    ),
     {
       title: t('menu_stars_button_title'),
       isActive: pathname === '/actors',
@@ -158,6 +152,16 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       onClick: undefined,
     },
     {
+      title: t('menu_producers_button_title'),
+      isActive: pathname === '/producers',
+      action: {
+        url: '/producers',
+        blank: false,
+      },
+      picture: <BsTv />,
+      onClick: undefined,
+    },
+    {
       title: t('menu_reacted_button_title'),
       isActive: false,
       action: undefined,
@@ -166,6 +170,12 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
         toast.success(t('user_menu_option_not_available_message'))
       },
     },
+    buildAuthenticationAction(
+      `/users/${user ? user.username : ''}/saved-posts`,
+      <BsBookmarks />,
+      asPath === `/users/${user ? user.username : ''}/saved-posts`,
+      t('menu_saved_button_title')
+    ),
     buildAuthenticationAction(
       `/users/${user ? user.username : ''}/history`,
       <BsClock />,

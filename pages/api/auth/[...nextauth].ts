@@ -23,12 +23,15 @@ export const authOptions: NextAuthOptions = {
             password,
           })
 
-          return {
+          const user = {
             id: userApplicationDto.id,
             email: userApplicationDto.email,
             name: userApplicationDto.name,
             image: userApplicationDto.imageUrl,
+            username: userApplicationDto.username,
           }
+
+          return user
         } catch (exception: unknown) {
           console.error(exception)
 
@@ -46,6 +49,9 @@ export const authOptions: NextAuthOptions = {
     async session ({ session, token }) {
       if (session.user) {
         session.user.id = token.userId
+        session.user.username = token.username
+        session.user.email = token.email
+        session.user.image = token.picture
       }
 
       return Promise.resolve(session)
@@ -53,6 +59,18 @@ export const authOptions: NextAuthOptions = {
     async jwt ({ token, user }) {
       if (user?.id) {
         token.userId = user.id
+      }
+
+      if (user?.username) {
+        token.username = user.username
+      }
+
+      if (user?.image !== undefined) {
+        token.picture = user.image
+      }
+
+      if (user?.email) {
+        token.email = user.email
       }
 
       return Promise.resolve(token)

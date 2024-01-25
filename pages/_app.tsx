@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 import styles from '~/styles/pages/_app.module.scss'
 import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
-import UserProvider from '~/modules/Auth/Infrastructure/Components/UserProvider'
 import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
@@ -79,64 +78,62 @@ function App ({
 
   return (
     <SessionProvider session={ session }>
-      <UserProvider>
-        <UsingRouterProvider >
-          <LoginProvider>
-            <div className={ styles.app__layout }>
-              <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) } />
+      <UsingRouterProvider >
+        <LoginProvider>
+          <div className={ styles.app__layout }>
+            <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) } />
 
-              <MenuSideBar setOpenLanguageMenu={ setOpenLanguageMenu } />
+            <MenuSideBar setOpenLanguageMenu={ setOpenLanguageMenu } />
 
-              <MobileMenu
-                setOpenLanguageMenu={ setOpenLanguageMenu }
-                openMenu={ openMenu }
-                setOpenMenu={ setOpenMenu }
-              />
-              <FloatingActionAppMenu
-                openMenu={ openMenu }
-                setOpenMenu={ setOpenMenu }
-              />
-              <main className={ `
-                ${styles.app__container}
-                ${roboto.variable}
-              ` } >
-                <Toaster
-                  position={ 'top-center' }
-                  containerStyle={ {
-                    marginTop: '40px',
-                  } }
-                  toastOptions={ {
-                    className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
+            <MobileMenu
+              setOpenLanguageMenu={ setOpenLanguageMenu }
+              openMenu={ openMenu }
+              setOpenMenu={ setOpenMenu }
+            />
+            <FloatingActionAppMenu
+              openMenu={ openMenu }
+              setOpenMenu={ setOpenMenu }
+            />
+            <main className={ `
+              ${styles.app__container}
+              ${roboto.variable}
+            ` } >
+              <Toaster
+                position={ 'top-center' }
+                containerStyle={ {
+                  marginTop: '40px',
+                } }
+                toastOptions={ {
+                  className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
+                  iconTheme: {
+                    secondary: '#FAFAF9',
+                    primary: '#b88b5c',
+                  },
+                  error: {
+                    className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
                     iconTheme: {
-                      secondary: '#FAFAF9',
-                      primary: '#b88b5c',
+                      secondary: '#DC143C',
+                      primary: '#FFA07A',
                     },
-                    error: {
-                      className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
-                      iconTheme: {
-                        secondary: '#DC143C',
-                        primary: '#FFA07A',
-                      },
-                    },
-                  } }
-                />
-                <AppMenu />
+                  },
+                } }
+              />
+              <AppMenu />
 
-                <NextNProgress
-                  color={ '#a06c3f' }
-                  options={ {
-                    showSpinner: false,
-                  } }
-                  showOnShallow={ true }
-                  height={ 2 }
-                />
+              <NextNProgress
+                color={ '#a06c3f' }
+                options={ {
+                  showSpinner: false,
+                } }
+                showOnShallow={ true }
+                height={ 2 }
+              />
 
-                <Component { ...pageProps }/>
-              </main>
-            </div>
-          </LoginProvider>
-        </UsingRouterProvider>
-      </UserProvider>
+              <Component { ...pageProps }/>
+            </main>
+          </div>
+        </LoginProvider>
+      </UsingRouterProvider>
     </SessionProvider>
   )
 }

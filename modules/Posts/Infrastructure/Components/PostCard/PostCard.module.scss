@@ -38,7 +38,7 @@
   }
 
   &__producer-actor-logo {
-    @apply rounded-full h-full w-full object-cover transition-transform;
+    @apply rounded-full h-full w-full object-cover object-center transition-transform;
 
     &:hover {
       @apply scale-110 transition-transform;
@@ -54,6 +54,10 @@
     }
 
     @screen md {
+      @apply h-7 w-7;
+    }
+
+    @screen lg {
       @apply h-9 w-9;
     }
   }

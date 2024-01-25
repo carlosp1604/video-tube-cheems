@@ -19,6 +19,9 @@ import {
 import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -68,6 +71,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     }
   }
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
   const props: Props = {
     order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,
@@ -76,6 +81,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     initialPostsNumber: 0,
     ...i18nSSRConfig,
     activeProducer: null,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
 
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')

@@ -57,15 +57,8 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentD
       .then(() => { setLoading(false) })
   }, [])
 
-  const onDeleteSavedPost = (postId: string) => {
-    const newPosts = posts.filter((post) => post.id !== postId)
-
-    setPosts(newPosts)
-    setPostsNumber(postsNumber - 1)
-  }
-
   const postCardOptions: PostCardOptionConfiguration[] = [
-    { type: 'deleteSavedPost', onDelete: onDeleteSavedPost, ownerId: userComponentDto.id },
+    { type: 'savePost' },
     { type: 'react' },
   ]
 

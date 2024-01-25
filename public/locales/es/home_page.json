@@ -1,5 +1,7 @@
 {
   "all_producers_title": "Todos los posts",
+  "home_page_description": "Video tube implementado con Next.js, React, PrismaOrm, NextAuth y Postgresql. Creado para aprender sobre frontend y backend. Desplegado en vercel",
+  "home_page_title": "Cheems: otro video tube",
   "post_gallery_empty_state_subtitle": "Parece que no hay ningún post que coincida con los criterios que has indicado\nPrueba a cambiar los parámetros de búsqueda e inténtalo nuevamente",
   "post_gallery_empty_state_title": "No hemos encontrado nada",
   "post_gallery_no_producer_title": "Productora no encontrada",

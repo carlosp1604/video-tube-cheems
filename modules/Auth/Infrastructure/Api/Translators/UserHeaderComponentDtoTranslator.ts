@@ -5,8 +5,8 @@ import {
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
 
 export class UserHeaderComponentDtoTranslator {
-  public static fromApplication (applicationDto: UserApplicationDto): UserProfileHeaderComponentDto {
-    const createdAt = DateTime.fromISO(applicationDto.createdAt)
+  public static fromApplication (applicationDto: UserApplicationDto, locale: string): UserProfileHeaderComponentDto {
+    const createdAt = DateTime.fromISO(applicationDto.createdAt).setLocale(locale)
       .toLocaleString({ month: 'long', year: 'numeric' })
 
     return {

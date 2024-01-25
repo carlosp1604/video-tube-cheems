@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps<UserSavedPostsPageProps> = a
   try {
     const userApplicationDto = await getUser.get(username)
 
-    props.userComponentDto = UserHeaderComponentDtoTranslator.fromApplication(userApplicationDto)
+    props.userComponentDto = UserHeaderComponentDtoTranslator.fromApplication(userApplicationDto, locale)
   } catch (exception: unknown) {
     console.error(exception)
 

@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, ReactElement, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import styles from './PostCardGallery.module.scss'
 import { useTranslation } from 'next-i18next'
@@ -18,12 +18,14 @@ interface Props {
   posts: PostCardComponentDto[]
   postCardOptions: PostCardOptionConfiguration[]
   loading: boolean
+  emptyState: ReactElement | null
 }
 
 export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCardOptions'>> = ({
   posts,
   postCardOptions,
   loading = false,
+  emptyState = null,
 }) => {
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostCard, setSelectedPostCard] = useState<PostCardComponentDto | null>(null)
@@ -66,31 +68,41 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
         key={ index }
         showProducerImage={ true }
         loading={ loading }
-      />))
+      />
+    ))
 
-  return (
+  const postCardWithOptions = posts.map((post) => {
+    return (
+      <PostCardWithOptions
+        post={ post }
+        onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
+        showOptionsButton={ !!onClickOptions }
+        key={ post.id }
+        showProducerImage={ true }
+      />
+    )
+  })
+
+  let content: ReactElement | null = (
     <div className={ `
       ${styles.postCardGallery__container}
       ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
-    ` }>
+    ` }
+    >
       <PostCardGalleryOptions
         options={ postCardGalleryOptions }
         isOpen={ postCardOptionsMenuOpen }
         onClose={ () => setPostCardOptionsMenuOpen(false) }
         selectedPostCard={ selectedPostCard as PostCardComponentDto }
       />
-      { posts.map((post) => {
-        return (
-          <PostCardWithOptions
-            post={ post }
-            onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
-            showOptionsButton={ !!onClickOptions }
-            key={ post.id }
-            showProducerImage={ true }
-          />
-        )
-      }) }
+      { postCardWithOptions }
       { loading ? skeletonPosts : null }
     </div>
   )
+
+  if (posts.length === 0 && !loading) {
+    content = emptyState
+  }
+
+  return content
 }

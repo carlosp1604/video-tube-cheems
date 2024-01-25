@@ -3,19 +3,4 @@
     @apply container px-5 mx-auto flex flex-col
       gap-y-4 mb-10;
   }
-
-  &__header {
-    @apply flex gap-x-2 justify-between items-start;
-  }
-
-  &__title {
-    @apply grid text-xl font-normal normal-case items-start;
-    grid-auto-flow: column;
-    grid-template-rows: 1fr auto;
-  }
-
-  &__title-tag-name {
-    @apply text-brand-300 normal-case -mt-2
-    line-clamp-4 break-words text-xl font-bold;
-  }
 }

@@ -2,37 +2,39 @@ import { ParsedUrlQuery } from 'querystring'
 import {
   ComponentSortingOption
 } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
-import { fromOrderTypeToComponentSortingOption } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import {
+  fromOrderTypeToComponentSortingOption,
+  PaginationSortingType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
-export interface ActorsPaginationNumericParameterConfiguration {
+export interface PaginationNumericParameterConfiguration {
   defaultValue: number
   maxValue: number
   minValue: number
 }
 
-export interface ActorsPaginationSortingOptionParameterConfiguration {
-  defaultValue: ActorsPaginationSortingType
-  parseableOptionTypes: ActorsPaginationSortingType[]
+export interface PaginationSortingOptionParameterConfiguration<T extends PaginationSortingType> {
+  defaultValue: T
+  parseableOptionTypes: T[]
 }
 
-export interface ActorsPaginationConfiguration {
-  page: ActorsPaginationNumericParameterConfiguration
-  perPage: ActorsPaginationNumericParameterConfiguration
-  sortingOptionType: ActorsPaginationSortingOptionParameterConfiguration
+export interface PaginationConfiguration<T extends PaginationSortingType> {
+  page: PaginationNumericParameterConfiguration
+  perPage: PaginationNumericParameterConfiguration
+  sortingOptionType: PaginationSortingOptionParameterConfiguration<T>
 }
 
 // TODO: Consider to extract common methods or make some of them generic
-export class ActorsPaginationQueryParams {
-  private configuration: Partial<ActorsPaginationConfiguration>
+export class PaginationQueryParams<T extends PaginationSortingType> {
+  private configuration: Partial<PaginationConfiguration<T>>
   public readonly page: number | null
   public readonly perPage: number | null
-  public readonly sortingOptionType: ActorsPaginationSortingType | null
+  public readonly sortingOptionType: T | null
   private _parseFailed = false
 
   constructor (
     query: ParsedUrlQuery,
-    configuration: Partial<ActorsPaginationConfiguration>
+    configuration: Partial<PaginationConfiguration<T>>
   ) {
     this.configuration = configuration
     this.page = this.parsePage(query)
@@ -117,7 +119,7 @@ export class ActorsPaginationQueryParams {
     return parsedPerPage
   }
 
-  private parseSortingOption (query: ParsedUrlQuery): ActorsPaginationSortingType | null {
+  private parseSortingOption (query: ParsedUrlQuery): T | null {
     if (!this.configuration.sortingOptionType) {
       this._parseFailed = true
 
@@ -146,7 +148,7 @@ export class ActorsPaginationQueryParams {
       (optionToParse) => optionToParse === parseOrderBy)
 
     if (validOptionMatch) {
-      return parseOrderBy as ActorsPaginationSortingType
+      return parseOrderBy as T
     }
 
     this._parseFailed = true

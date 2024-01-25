@@ -6,7 +6,7 @@ import { SortingCriteriaValidator } from '~/modules/Shared/Domain/SortingCriteri
 import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActors/GetActorsApplicationException'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
+import { GetActorsSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 import { GetActorsSortingOptionValidator } from '~/modules/Actors/Domain/Validators/GetActorsSortingOptionValidator'
 import {
   GetActorsApplicationResponseDtoTranslator
@@ -43,7 +43,7 @@ export class GetActors {
     }
   }
 
-  private static validateSortingOption (sortingOption: string): ActorSortingOption {
+  private static validateSortingOption (sortingOption: string): GetActorsSortingOption {
     try {
       return new GetActorsSortingOptionValidator().validate(sortingOption)
     } catch (exception: unknown) {

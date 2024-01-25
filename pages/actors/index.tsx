@@ -8,9 +8,9 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import { ActorsPaginationQueryParams } from '~/modules/Actors/Infrastructure/Frontend/ActorPaginationQueryParams'
 import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { PaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -28,10 +28,10 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     'user_retrieve_password',
     'pagination_bar',
     'common',
-    'actors_page',
+    'actors',
   ])
 
-  const paginationQueryParams = new ActorsPaginationQueryParams(
+  const paginationQueryParams = new PaginationQueryParams(
     context.query,
     {
       sortingOptionType: {

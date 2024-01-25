@@ -4,17 +4,11 @@ import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
 import { useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import {
-  ActorsPaginationConfiguration, ActorsPaginationQueryParams
-} from '~/modules/Actors/Infrastructure/Frontend/ActorPaginationQueryParams'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
-import {
-  GalleryHeader
-} from '~/components/GalleryHeader/GalleryHeader'
 import {
   fromOrderTypeToComponentSortingOption,
   PaginationSortingType
@@ -23,6 +17,12 @@ import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMen
 import { ActorCardGallery } from '~/modules/Actors/Infrastructure/Components/ActorCardGallery/ActorCardGallery'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { useTranslation } from 'next-i18next'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
+import {
+  PaginationConfiguration,
+  PaginationQueryParams
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
+import { EmptyState } from '~/components/EmptyState/EmptyState'
 
 export interface ActorsPagePaginationState {
   page: number
@@ -49,7 +49,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
 
   const router = useRouter()
   const firstRender = useFirstRender()
-  const { t } = useTranslation('actors_page')
+  const { t } = useTranslation('actors')
 
   const sortingOptions: ActorsPaginationSortingType[] = [
     PaginationSortingType.NAME_FIRST,
@@ -65,8 +65,8 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
     scrollOnClick: true,
   }
 
-  const configuration: Partial<ActorsPaginationConfiguration> &
-    Pick<ActorsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
+  const configuration: Partial<PaginationConfiguration<ActorsPaginationSortingType>> &
+    Pick<PaginationConfiguration<ActorsPaginationSortingType>, 'page' | 'sortingOptionType'> = {
       sortingOptionType: {
         defaultValue: PaginationSortingType.NAME_FIRST,
         parseableOptionTypes: sortingOptions,
@@ -97,7 +97,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
       return
     }
 
-    const queryParams = new ActorsPaginationQueryParams(router.query, configuration)
+    const queryParams = new PaginationQueryParams(router.query, configuration)
 
     const newPage = queryParams.page ?? configuration.page.defaultValue
     const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue
@@ -125,18 +125,28 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
     />
   )
 
+  const emptyState = (
+    <EmptyState
+      title={ t('actors_gallery_empty_state_title') }
+      subtitle={ t('actors_gallery_empty_state_subtitle') }
+    />
+  )
+
   return (
     <div className={ styles.actorsPage__container }>
-      <GalleryHeader
+      <CommonGalleryHeader
         title={ t('actors_gallery_title') }
         subtitle={ t('actors_gallery_subtitle', { actorsNumber }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
       />
+
       <ActorCardGallery
         actors={ actors }
         loading={ loading }
+        emptyState={ emptyState }
       />
+
       <PaginationBar
         key={ router.asPath }
         pageNumber={ pagination.page }

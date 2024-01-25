@@ -41,7 +41,8 @@
 
     @screen md {
       @apply top-0 left-0 -translate-x-full translate-y-0 w-auto
-        rounded-none border-r border-base-700;
+        rounded-none border-r border-base-700 backdrop-blur-2xl
+        bg-opacity-80;
       grid-template-areas:
         "logo"
         "menu"
@@ -85,7 +86,7 @@
   }
 
   &__logo-container {
-    @apply border-b border-gray-600 border-opacity-30 px-8 py-1.5 hidden;
+    @apply px-8 py-1.5 hidden;
     grid-area: logo;
 
     @screen md {
@@ -117,11 +118,12 @@
   }
 
   &__copyright-container {
-    @apply border-base-700 border-t text-base-500 font-light text-sm
-      px-8 py-4;
+    @apply border-base-700 border-t text-base-500 font-light text-xs
+      px-8 py-4 cursor-default;
 
     @screen md {
-      @apply whitespace-pre-line;
+      @apply border-none rounded-md text-base-400 font-normal text-sm
+      px-4 py-2 m-2 bg-base-900/70 whitespace-pre-line;
     }
     grid-area: copyright;
   }

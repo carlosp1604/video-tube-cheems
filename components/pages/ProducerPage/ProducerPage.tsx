@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { ReactElement, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './ProducerPage.module.scss'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
@@ -12,7 +12,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { ProducerPageComponentDto } from '~/modules/Producers/Infrastructure/ProducerPageComponentDto'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -24,7 +24,7 @@ import {
 import { useFirstRender } from '~/hooks/FirstRender'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { TransGalleryHeader } from '~/components/GalleryHeader/TransGalleryHeader'
+import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 
 export interface ProducerPagePaginationState {
   page: number
@@ -56,7 +56,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
-  const { t } = useTranslation('producer_page')
+  const { t } = useTranslation('producers')
 
   const sortingOptions: PostsPaginationSortingType[] = [
     PaginationSortingType.LATEST,
@@ -122,35 +122,11 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
     }
   }
 
-  let content: ReactElement
-
-  if (initialPostsNumber > 0 && !loading) {
-    content = (
-      <PostCardGallery
-        posts={ posts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        loading={ loading }
-      />
-    )
-  } else {
-    content = (
-      <EmptyState
-        title={ t('producer_posts_empty_state_title') }
-        subtitle={ t('producer_posts_empty_state_subtitle', { producerName: producer.name }) }
-      />
-    )
-  }
-
-  const postsTagGalleryTitle = (
-    <h2 className={ styles.producerPage__title }>
-      <Trans
-        i18nKey={ t('producer_posts_gallery_title') }
-        components={ [
-          <span key={ 'producer_posts_gallery_title' } className={ styles.producerPage__titleProducerName }/>,
-        ] }
-        values={ { producerName: producer.name } }
-      />
-    </h2>
+  const emptyState = (
+    <EmptyState
+      title={ t('producer_posts_empty_state_title') }
+      subtitle={ t('producer_posts_empty_state_subtitle', { producerName: producer.name }) }
+    />
   )
 
   const sortingMenu = (
@@ -173,14 +149,21 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
         rounded={ true }
       />
 
-      <TransGalleryHeader
-        title={ postsTagGalleryTitle }
+      <CommonGalleryHeader
+        title={ t('producer_posts_gallery_title') }
         subtitle={ t('producer_posts_gallery_posts_quantity', { postsNumber }) }
+        term={ { title: 'producerName', value: producer.name } }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h2' }
       />
 
-      { content }
+      <PostCardGallery
+        posts={ posts }
+        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        loading={ loading }
+        emptyState={ emptyState }
+      />
 
       <PaginationBar
         key={ router.asPath }

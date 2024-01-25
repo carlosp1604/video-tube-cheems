@@ -2,13 +2,12 @@ import { Dispatch, FC, ReactElement, ReactNode, SetStateAction, useState } from 
 import styles from './PostCommentOptions.module.scss'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
-import { useUserContext } from '~/hooks/UserContext'
 import { FiTrash } from 'react-icons/fi'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 interface Props {
@@ -33,7 +32,7 @@ export const PostCommentOptions: FC<Props> = ({
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
   const { t } = useTranslation(['post_comments', 'api_exceptions'])
-  const { user } = useUserContext()
+  const { data } = useSession()
 
   const onClickDelete = async () => {
     if (loading) {
@@ -76,7 +75,7 @@ export const PostCommentOptions: FC<Props> = ({
     />
   )
 
-  if (ownerId === user?.id) {
+  if (ownerId === data?.user.id) {
     content = (
       <MenuDropdown
         buttonIcon={ menuDropdownIcon }

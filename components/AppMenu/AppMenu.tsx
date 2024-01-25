@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
 import { FC, ReactElement, useState } from 'react'
 import { useTranslation } from 'next-i18next'
-import { useUserContext } from '~/hooks/UserContext'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'
@@ -25,10 +24,9 @@ export const AppMenu: FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
   const [openSearchBar, setOpenSearchBar] = useState<boolean>(false)
 
-  const { user } = useUserContext()
   const { t } = useTranslation('app_menu')
   const router = useRouter()
-  const { status } = useSession()
+  const { status, data } = useSession()
 
   let userAvatar: ReactElement | null = (
     <IconButton
@@ -49,30 +47,27 @@ export const AppMenu: FC = () => {
     )
   }
 
-  let userMenu = null
+  const userMenu = (
+    <UserMenu
+      setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
+      isOpen={ userMenuOpen }
+    />
+  )
 
-  if (status === 'authenticated' && user) {
+  if (status === 'authenticated' && data) {
     userAvatar = (
       <button
         className={ styles.appMenu__userAvatarButton }
         onClick={ () => setUserMenuOpen(true) }
       >
         <AvatarImage
-          imageUrl={ user.image }
+          imageUrl={ data.user.image }
           avatarClassName={ styles.appMenu__userAvatar }
           imageClassName={ styles.appMenu__userAvatarImage }
-          avatarName={ user.name }
-          imageAlt={ user.username }
+          avatarName={ data.user.name }
+          imageAlt={ data.user.username }
         />
       </button>
-    )
-
-    userMenu = (
-      <UserMenu
-        user={ user }
-        setIsOpen={ (isOpen: boolean) => setUserMenuOpen(isOpen) }
-        isOpen={ userMenuOpen }
-      />
     )
   }
 

@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './ActorCardGallery.module.scss'
 import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { ActorCard } from '~/modules/Actors/Infrastructure/Components/ActorCard/ActorCard'
@@ -10,9 +10,14 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 interface Props {
   actors: ActorCardDto[]
   loading: boolean
+  emptyState: ReactElement | null
 }
 
-export const ActorCardGallery: FC<Props> = ({ actors, loading }) => {
+export const ActorCardGallery: FC<Partial<Props> & Pick<Props, 'actors'>> = ({
+  actors,
+  loading = false,
+  emptyState = null,
+}) => {
   let actorsSkeletonNumber
 
   if (actors.length <= defaultPerPage) {
@@ -35,7 +40,7 @@ export const ActorCardGallery: FC<Props> = ({ actors, loading }) => {
     )
   })
 
-  return (
+  let content: ReactElement | null = (
     <div className={ `
       ${styles.actorCardGallery__container}
       ${loading ? styles.actorCardGallery__container__loading : ''}
@@ -45,4 +50,10 @@ export const ActorCardGallery: FC<Props> = ({ actors, loading }) => {
       { loading ? skeletonActors : null }
     </div>
   )
+
+  if (!loading && actors.length === 0) {
+    content = emptyState
+  }
+
+  return content
 }

@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     'api_exceptions',
     'post_card_options',
     'post_card_gallery',
-    'producer_page',
+    'producers',
   ])
 
   const paginationQueryParams = new PostsPaginationQueryParams(

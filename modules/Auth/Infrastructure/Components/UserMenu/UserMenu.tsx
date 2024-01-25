@@ -1,26 +1,30 @@
 import styles from './UserMenu.module.scss'
 import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
 import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
-import { UserProviderUserDto } from '~/modules/Auth/Infrastructure/Dtos/UserProviderUserDto'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { usePathname } from 'next/navigation'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 interface Props {
-  user: UserProviderUserDto
   setIsOpen: (isOpen: boolean) => void
   isOpen: boolean
 }
 
-export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
+export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
   const { setLoginModalOpen, setMode } = useLoginContext()
 
   const pathname = usePathname()
+
+  const { status, data } = useSession()
+
+  if (status !== 'authenticated' || !data) {
+    return null
+  }
 
   const menuOptions: MenuOptionComponentInterface[] = [{
     title: t('user_menu_change_password_button'),
@@ -34,12 +38,12 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
     },
   }]
 
-  if (pathname !== `/users/${user.username}`) {
+  if (pathname !== `/users/${data.user.username}`) {
     menuOptions.unshift({
       title: t('user_menu_profile_button'),
       isActive: false,
       action: {
-        url: `/users/${user.username}`,
+        url: `/users/${data.user.username}`,
         blank: false,
       },
       picture: <CiUser />,
@@ -55,16 +59,16 @@ export const UserMenu: FC<Props> = ({ user, setIsOpen, isOpen }) => {
       <div className={ styles.userMenu__container }>
         <div className={ styles.userMenu__userData }>
           <AvatarImage
-            imageUrl={ user.image }
+            imageUrl={ data.user.image }
             avatarClassName={ styles.userMenu__userAvatar }
             imageClassName={ styles.userMenu__userImage }
-            avatarName={ user.name }
-            imageAlt={ user.username }
+            avatarName={ data.user.name }
+            imageAlt={ data.user.username }
           />
           <span className={ styles.userMenu__userDataText }>
-            { user.name }
+            { data.user.name }
             <small className={ styles.userMenu__userEmail }>
-              { user.email }
+              { data.user.email }
             </small>
           </span>
         </div>

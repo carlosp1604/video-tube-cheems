@@ -3,13 +3,13 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsArrowLeft, BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar } from 'react-icons/bs'
+import { BsArrowLeft, BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar, BsTv } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
-import { useUserContext } from '~/hooks/UserContext'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { TfiWorld } from 'react-icons/tfi'
+import { useSession } from 'next-auth/react'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionComponentInterface
@@ -75,7 +75,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
   const { pathname, asPath } = useRouter()
   const { t } = useTranslation('menu')
 
-  const { status, user } = useUserContext()
+  const { status, data } = useSession()
   const { setLoginModalOpen } = useLoginContext()
 
   const buildAuthenticationAction = (
@@ -92,7 +92,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       title,
     }
 
-    if (status !== 'SIGNED_IN' || !user) {
+    if (status !== 'authenticated' || !data) {
       option.onClick = () => {
         toast.error(t('user_must_be_authenticated_error_message'))
 
@@ -141,12 +141,6 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       onClick: undefined,
     },
      **/
-    buildAuthenticationAction(
-      `/users/${user ? user.username : ''}/saved-posts`,
-      <BsBookmarks />,
-      asPath === `/users/${user ? user.username : ''}/saved-posts`,
-      t('menu_saved_button_title')
-    ),
     {
       title: t('menu_stars_button_title'),
       isActive: pathname === '/actors',
@@ -155,6 +149,16 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
         blank: false,
       },
       picture: <BsStar />,
+      onClick: undefined,
+    },
+    {
+      title: t('menu_producers_button_title'),
+      isActive: pathname === '/producers',
+      action: {
+        url: '/producers',
+        blank: false,
+      },
+      picture: <BsTv />,
       onClick: undefined,
     },
     {
@@ -167,9 +171,15 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
       },
     },
     buildAuthenticationAction(
-      `/users/${user ? user.username : ''}/history`,
+      `/users/${data ? data.user.username : ''}/saved-posts`,
+      <BsBookmarks />,
+      asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
+      t('menu_saved_button_title')
+    ),
+    buildAuthenticationAction(
+      `/users/${data ? data.user.username : ''}/history`,
       <BsClock />,
-      asPath === `/users/${user ? user.username : ''}/history`,
+      asPath === `/users/${data ? data.user.username : ''}/history`,
       t('menu_user_history_button_title')
     ),
     {

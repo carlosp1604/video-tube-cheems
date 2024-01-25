@@ -3,13 +3,13 @@ import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar, BsTv } from 'react-icons/bs'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
-import { useUserContext } from '~/hooks/UserContext'
 import { useRouter } from 'next/router'
 import { TfiWorld } from 'react-icons/tfi'
 import Image from 'next/image'
+import { useSession } from 'next-auth/react'
 
 interface Props {
   openMenu: boolean
@@ -20,8 +20,8 @@ interface Props {
 export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMenu }) => {
   const { t } = useTranslation('menu')
   const { setLoginModalOpen } = useLoginContext()
-  const { status, user } = useUserContext()
   const { pathname, asPath } = useRouter()
+  const { status, data } = useSession()
 
   const buildAuthenticationAction = (
     url: string,
@@ -37,7 +37,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
       title,
     }
 
-    if (status !== 'SIGNED_IN' || !user) {
+    if (status !== 'authenticated' || !data) {
       option.onClick = () => {
         toast.error(t('user_must_be_authenticated_error_message'))
 
@@ -113,12 +113,6 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   picture: <BsHouse />,
                   onClick: undefined,
                 },
-                buildAuthenticationAction(
-                  `/users/${user ? user.username : ''}/saved-posts`,
-                  <BsBookmarks />,
-                  asPath === `/users/${user ? user.username : ''}/saved-posts`,
-                  t('menu_saved_button_title')
-                ),
                 {
                   title: t('menu_stars_button_title'),
                   isActive: pathname === '/actors',
@@ -127,6 +121,16 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                     blank: false,
                   },
                   picture: <BsStar />,
+                  onClick: undefined,
+                },
+                {
+                  title: t('menu_producers_button_title'),
+                  isActive: pathname === '/producers',
+                  action: {
+                    url: '/producers',
+                    blank: false,
+                  },
+                  picture: <BsTv />,
                   onClick: undefined,
                 },
                 {
@@ -139,9 +143,15 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   },
                 },
                 buildAuthenticationAction(
-                  `/users/${user ? user.username : ''}/history`,
+                  `/users/${data ? data.user.username : ''}/saved-posts`,
+                  <BsBookmarks />,
+                  asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
+                  t('menu_saved_button_title')
+                ),
+                buildAuthenticationAction(
+                  `/users/${data ? data.user.username : ''}/history`,
                   <BsClock />,
-                  asPath === `/users/${user ? user.username : ''}/history`,
+                  asPath === `/users/${data ? data.user.username : ''}/history`,
                   t('menu_user_history_button_title')
                 ),
                 {

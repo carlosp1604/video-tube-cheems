@@ -20,9 +20,9 @@ export interface ActorRepositoryInterface {
 
   /**
    * Find Actors based on sorting criteria
-   * @param offset Actor offset
-   * @param limit
-   * @param sortingOption Actor sorting option
+   * @param offset Records offset
+   * @param limit Records limit
+   * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
    * @return ActorsWithPostsCountWithTotalCount
    */

@@ -8,6 +8,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'home_page',
     'app_menu',
+    'footer',
     'menu',
     'user_menu',
     'user_signup',

@@ -5,13 +5,12 @@
     @apply hidden;
 
     @screen lg {
-      @apply flex flex-col sticky top-0
-        h-screen bg-body w-[74px] text-base-500 duration-1000;
+      @apply flex flex-col fixed top-14 pb-14 overflow-y-scroll scrollbar-hide
+        h-screen bg-body w-[74px] text-base-500;
 
       &_open {
-        @apply w-auto bg-body;
+        @apply block w-40 bg-body;
       }
-
     }
   }
 
@@ -26,7 +25,7 @@
 
   &__menu-container {
     @apply flex flex-grow flex-shrink-0 flex-col gap-y-0.5
-      px-0.5 w-full pt-0.5;
+      px-0.5 w-full;
 
     &_open {
       @apply gap-y-0.5;
@@ -52,7 +51,7 @@
 
     &:hover, &:focus {
       @apply bg-sidebar-item transition-colors text-base-100
-        cursor-pointer rounded-lg;
+        cursor-pointer rounded-md;
 
       #{$parentBlock}__menu-item-icon {
         @apply scale-110 transition-transform;
@@ -69,23 +68,6 @@
 
     &_open {
       @apply text-sm;
-    }
-  }
-
-  &__copyright-container {
-    @apply hidden bg-transparent;
-
-    &_open {
-      @apply block;
-    }
-  }
-
-  &__copyright-container-text {
-    @apply hidden whitespace-pre-line p-3 m-2 cursor-default
-      rounded-lg bg-sidebar-active/40 text-xs text-base-400 font-light;
-
-    &_open {
-      @apply block;
     }
   }
 }

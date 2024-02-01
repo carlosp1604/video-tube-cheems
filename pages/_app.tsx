@@ -16,7 +16,6 @@ import dynamic from 'next/dynamic'
 import NextNProgress from 'nextjs-progressbar'
 import { useRouter } from 'next/router'
 import { Footer } from '~/components/Footer/Footer'
-import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -66,7 +65,7 @@ function App ({
     ...pageProps
   },
 }: AppProps) {
-  const [openMenu, setOpenMenu] = useState<boolean>(false)
+  const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
 
   const { i18n } = useTranslation()
@@ -92,60 +91,64 @@ function App ({
     <SessionProvider session={ session }>
       <UsingRouterProvider >
         <LoginProvider>
-          <div className={ styles.app__layout }>
-            <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) } />
+          <>
+            <Toaster
+              position={ 'top-center' }
+              containerStyle={ {
+                marginTop: '40px',
+              } }
+              toastOptions={ {
+                className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
+                iconTheme: {
+                  secondary: '#FAFAF9',
+                  primary: '#b88b5c',
+                },
+                error: {
+                  className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
+                  iconTheme: {
+                    secondary: '#DC143C',
+                    primary: '#FFA07A',
+                  },
+                },
+              } }
+            />
 
-            <MenuSideBar setOpenLanguageMenu={ setOpenLanguageMenu } />
+            <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) }/>
 
             <MobileMenu
               setOpenLanguageMenu={ setOpenLanguageMenu }
-              openMenu={ openMenu }
-              setOpenMenu={ setOpenMenu }
+              openMenu={ menuOpen }
+              setOpenMenu={ setMenuOpen }
             />
-            <FloatingActionAppMenu
-              openMenu={ openMenu }
-              setOpenMenu={ setOpenMenu }
+
+            <NextNProgress
+              color={ '#a06c3f' }
+              options={ {
+                showSpinner: false,
+              } }
+              showOnShallow={ true }
+              height={ 2 }
             />
-            <main className={ `
-              ${styles.app__container}
+
+            <AppMenu onClickMenuButton={ () => setMenuOpen(!menuOpen) }/>
+
+            <MenuSideBar
+              menuOpen={ menuOpen }
+              setOpenLanguageMenu={ setOpenLanguageMenu }
+            />
+
+            { /** Workaround to work with the sidebar fixed **/ }
+            <div className={ `
+              ${styles.app__layout}
+              ${menuOpen ? styles.app__layout__open : ''}
               ${roboto.variable}
-            ` } >
-              <Toaster
-                position={ 'top-center' }
-                containerStyle={ {
-                  marginTop: '40px',
-                } }
-                toastOptions={ {
-                  className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
-                  iconTheme: {
-                    secondary: '#FAFAF9',
-                    primary: '#b88b5c',
-                  },
-                  error: {
-                    className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
-                    iconTheme: {
-                      secondary: '#DC143C',
-                      primary: '#FFA07A',
-                    },
-                  },
-                } }
-              />
-              <AppMenu />
-
-              <NextNProgress
-                color={ '#a06c3f' }
-                options={ {
-                  showSpinner: false,
-                } }
-                showOnShallow={ true }
-                height={ 2 }
-              />
-
-              <Component { ...pageProps }/>
-
-              <Footer />
-            </main>
-          </div>
+            ` }>
+              <main className={ styles.app__container }>
+                <Component { ...pageProps }/>
+              </main>
+              <Footer/>
+            </div>
+          </>
         </LoginProvider>
       </UsingRouterProvider>
     </SessionProvider>

@@ -21,8 +21,12 @@
       grid-template-columns: repeat(3, 1fr);
     }
 
-    @screen 2xl {
+    @screen xl {
       grid-template-columns: repeat(4, 1fr);
+    }
+
+    @screen 2xl {
+      grid-template-columns: repeat(6, 1fr);
     }
   }
 }

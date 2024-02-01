@@ -53,6 +53,7 @@ export const getServerSideProps: GetServerSideProps<UserSavedPostsPageProps> = a
         'user_menu',
         'user_profile',
         'app_menu',
+        'footer',
         'menu',
         'user_menu',
         'user_signup',

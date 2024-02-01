@@ -1,12 +1,12 @@
 .app-menu {
   &__layer {
-    @apply sticky top-0 z-app-menu transition duration-500
+    @apply fixed top-0 z-app-menu transition duration-500 w-full
     backdrop-filter backdrop-blur-lg bg-opacity-60 bg-body;
   }
 
   &__container {
-    @apply flex justify-between items-center mx-auto px-5 container
-    py-0.5 z-50 overflow-hidden;
+    @apply flex justify-between items-center mx-auto px-5
+    py-0.5 z-50 overflow-hidden gap-x-4;
 
     @screen md {
       @apply gap-x-10 justify-between;
@@ -14,7 +14,7 @@
   }
 
   &__logo-image {
-    @apply object-contain w-24 h-auto transition-all;
+    @apply object-contain max-h-8 w-auto h-full transition-all;
 
     @screen md {
       @apply w-32 transition-all;
@@ -29,18 +29,16 @@
     }
   }
 
-
-  &__right-container {
-    @apply flex flex-row flex-auto gap-x-4 items-center
-    justify-end;
-
-    @screen md {
-      @apply flex-grow-0;
-    }
+  &__left-container {
+    @apply flex flex-row items-center gap-x-1 -ml-2;
   }
 
   &__right-container {
-    @apply flex flex-row gap-x-2;
+    @apply flex flex-row gap-x-0 items-center;
+
+    @screen tb {
+      @apply gap-x-2;
+    }
   }
 
   &__mobile-search-button {

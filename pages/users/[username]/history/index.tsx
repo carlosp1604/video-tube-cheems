@@ -54,6 +54,7 @@ export const getServerSideProps: GetServerSideProps<UserHistoryPageProps> = asyn
         'user_menu',
         'user_profile',
         'app_menu',
+        'footer',
         'menu',
         'user_menu',
         'user_signup',

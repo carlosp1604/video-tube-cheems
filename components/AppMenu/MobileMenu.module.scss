@@ -27,6 +27,10 @@
     &-exit-done {
       @apply hidden;
     }
+
+    @screen lg {
+      @apply hidden;
+    }
   }
 
   &__slide-out {
@@ -116,16 +120,4 @@
   &__footer-item {
     @apply text-base-500 uppercase text-sm;
   }
-
-  &__copyright-container {
-    @apply border-base-700 border-t text-base-500 font-light text-xs
-      px-8 py-4 cursor-default;
-
-    @screen md {
-      @apply border-none rounded-md text-base-400 font-normal text-sm
-      px-4 py-2 m-2 bg-base-900/70 whitespace-pre-line;
-    }
-    grid-area: copyright;
-  }
-
 }

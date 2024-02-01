@@ -57,6 +57,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
           [
             'user_menu',
             'app_menu',
+            'footer',
             'menu',
             'post_comments',
             'post_page',

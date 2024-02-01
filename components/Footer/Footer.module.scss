@@ -1,19 +1,19 @@
 .footer {
   &__layout {
     @apply p-0 pt-0.5 bg-gradient-to-r border-none
-      from-body via-brand-600 to-body;
+      from-body via-brand-600 to-body container;
   }
 
   &__container {
-    @apply grid place-items-center px-5 py-10
-      justify-items-center bg-base-900;
+    @apply grid place-items-start px-5 pt-10 pb-8
+      justify-between bg-base-900;
 
     grid-template-areas:
-      "copyright  app-logo    social-networks"
-      "copyright  app-logo    social-networks"
-      "copyright  languages   social-networks";
-    grid-auto-columns: auto auto auto;
-    grid-column-gap: 40px;
+      "social-networks    social-networks   app-logo"
+      "social-networks    social-networks   languages"
+      "copyright          copyright         copyright";
+    grid-auto-columns: auto auto;
+    grid-column-gap: 10px;
 
     @screen lg {
       @apply bg-base-950 bg-gradient-to-r
@@ -43,26 +43,35 @@
 
   &__copyright {
     @apply flex flex-row font-thin items-center gap-x-1
-      text-xs;
+      text-xs mt-4 text-base-500 ;
     grid-area: copyright;
+
+    @screen md {
+      @apply text-base font-light;
+    }
+  }
+
+  &__copyright-brand-name {
+    @apply text-xs font-black uppercase text-base-50;
 
     @screen md {
       @apply text-base;
     }
   }
 
-  &__copyright-brand-name {
-    @apply font-bold uppercase;
-  }
-
   &__social-networks {
     @apply flex flex-row flex-wrap gap-x-4 gap-y-2 text-base-400
-      text-xl uppercase items-center justify-center;
+      text-xl uppercase items-center justify-center mt-1;
     grid-area: social-networks;
+
+    @screen md {
+      @apply text-2xl;
+    }
+
   }
 
   &__languages {
-    @apply flex flex-wrap gap-3 mt-2
+    @apply flex flex-wrap gap-x-3 gap-y-1.5 mt-2 ml-1
       items-center justify-center;
     grid-area: languages;
   }
@@ -75,7 +84,7 @@
     }
 
     @screen md {
-      @apply text-base;
+      @apply text-sm;
     }
   }
 }

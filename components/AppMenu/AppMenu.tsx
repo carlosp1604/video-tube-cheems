@@ -16,8 +16,13 @@ import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import Image from 'next/image'
 import { BsArrowUpShort } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
+import { HiBars3 } from 'react-icons/hi2'
 
-export const AppMenu: FC = () => {
+export interface Props {
+  onClickMenuButton : () => void
+}
+
+export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
   const [title, setTitle] = useState<string>('')
   const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
   const { blocked } = useUsingRouterContext()
@@ -88,7 +93,7 @@ export const AppMenu: FC = () => {
 
     if (
       !search ||
-        (search && search !== title.trim())
+      (search && search !== title.trim())
     ) {
       await router.push({
         pathname: '/posts/search/',
@@ -109,16 +114,23 @@ export const AppMenu: FC = () => {
       <LoginModal />
       <nav className={ styles.appMenu__layer }>
         <div className={ styles.appMenu__container }>
-          <Link href='/' shallow={ true }>
-            <Image
-              alt={ t('app_menu_logo_url_alt') }
-              className={ styles.appMenu__logoImage }
-              src={ '/img/cheems-logo-text.png' }
-              width={ 0 }
-              height={ 0 }
-              sizes={ '100vw' }
+          <div className={ styles.appMenu__leftContainer }>
+            <IconButton
+              onClick={ onClickMenuButton }
+              icon={ <HiBars3 /> }
+              title={ 'Menu' }
             />
-          </Link>
+            <Link href='/' shallow={ true }>
+              <Image
+                alt={ t('app_menu_logo_url_alt') }
+                className={ styles.appMenu__logoImage }
+                src={ '/img/cheems-logo-text.png' }
+                width={ 0 }
+                height={ 0 }
+                sizes={ '100vw' }
+              />
+            </Link>
+          </div>
 
           <div className={ `
             ${styles.appMenu__searchContainer}

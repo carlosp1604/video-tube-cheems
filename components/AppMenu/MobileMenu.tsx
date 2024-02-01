@@ -207,9 +207,6 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                  </div>
                  */
               }
-              <div className={ styles.mobileMenu__copyrightContainer }>
-                { t('copyright_section_title') }
-              </div>
             </div>
           </CSSTransition>
         </div>

@@ -1,13 +1,18 @@
 .app {
   &__layout {
+    @apply grid font-roboto;
+
     @screen lg {
-      @apply grid font-roboto;
-      grid-template-columns: auto 1fr;
+      @apply  ml-16;
+
+      &__open {
+        @apply ml-40;
+      }
     }
   }
 
   &__container {
-    @apply min-h-screen font-roboto;
+    @apply min-h-screen mt-14;
   }
 
   &__embed-container {

@@ -1,10 +1,9 @@
-import { Dispatch, FC, ReactElement, SetStateAction, useState } from 'react'
+import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsArrowLeft, BsBookmarks, BsClock, BsHeart, BsHouse, BsList, BsStar, BsTv } from 'react-icons/bs'
-import { IconButton } from '~/components/IconButton/IconButton'
+import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar, BsTv } from 'react-icons/bs'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
@@ -69,9 +68,10 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
 
 export interface Props {
   setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
+  menuOpen: boolean
 }
 
-export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
+export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
   const { pathname, asPath } = useRouter()
   const { t } = useTranslation('menu')
 
@@ -202,23 +202,11 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
      */
   ]
 
-  const [menuOpen, setMenuOpen] = useState<boolean>(false)
-
   return (
     <aside className={ `
       ${styles.menuSideBar__asideSlideOut}
       ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
     ` }>
-      <div className={ `
-        ${styles.menuSideBar__menuIconContainer}
-        ${menuOpen ? styles.menuSideBar__menuIconContainer_open : ''}
-      ` }>
-        <IconButton
-          onClick={ () => setMenuOpen(!menuOpen) }
-          icon={ menuOpen ? <BsArrowLeft /> : <BsList /> }
-          title={ menuOpen ? t('menu_close_button_title') : t('menu_button_title') }
-        />
-      </div>
 
       <div className={ styles.menuSideBar__menuSectionContainer }>
         <div className={ styles.menuSideBar__menuContainer }>
@@ -231,18 +219,6 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu }) => {
               />
             )
           }) }
-        </div>
-
-        <div className={ `
-          ${styles.menuSideBar__copyrightContainer}
-          ${menuOpen ? styles.menuSideBar__copyrightContainer_open : ''}
-        ` }>
-            <div className={ `
-            ${styles.menuSideBar__copyrightContainerText}
-            ${menuOpen ? styles.menuSideBar__copyrightContainerText_open : ''}
-          ` }>
-            { t('copyright_section_title') }
-          </div>
         </div>
       </div>
     </aside>

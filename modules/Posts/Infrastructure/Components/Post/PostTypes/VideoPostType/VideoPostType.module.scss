@@ -1,6 +1,7 @@
 .video-post-type {
   &__video-container {
-    @apply -mx-5 aspect-h-9.7 aspect-w-16;
+    @apply -mx-5 aspect-h-9.7 aspect-w-16 rounded-xl
+      overflow-hidden bg-black;
 
     @screen tb {
       @apply mx-0 aspect-h-9 aspect-w-16;

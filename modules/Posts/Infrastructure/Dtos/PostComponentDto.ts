@@ -24,10 +24,14 @@ export interface PostComponentDtoProducerDto {
 
 export interface PostComponentDto {
   readonly id: string
+  readonly slug: string
   readonly title: string
+  readonly thumb: string
+  readonly duration: string
   readonly type: string
   readonly video: VideoComponentDto
-  readonly date: string
+  readonly formattedPublishedAt: string
+  readonly publishedAt: string
   readonly description: string
   readonly actors: PostComponentDtoActorDto[]
   readonly tags: PostComponentDtoTagDto[]

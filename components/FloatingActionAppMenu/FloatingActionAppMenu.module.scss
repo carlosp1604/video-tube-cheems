@@ -4,7 +4,7 @@
   &__container {
     @apply fixed z-floating-action-app-menu bottom-10 right-6 rounded-full
       transition-colors bg-brand-700 backdrop-filter backdrop-blur-sm
-      bg-opacity-70 shadow shadow-md shadow-base-800;
+      bg-opacity-70 shadow-md shadow-base-800;
 
     @screen lg {
       @apply hidden;
@@ -19,7 +19,7 @@
     @apply bg-opacity-90 ring-brand-500 transition-colors;
 
     #{$parentBlock}__icon {
-      @apply transition-colors text-base-800 transition-colors;
+      @apply transition-colors text-base-800;
     }
   }
 

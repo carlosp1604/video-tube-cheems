@@ -129,7 +129,6 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
         width={ '100%' }
         height={ '100%' }
         onLoad={ onReady }
-        onTouchMove={ handleIframeEvents }
         allowFullScreen={ true }
       />
     )
@@ -150,7 +149,10 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   }
 
   return (
-    <div className={ styles.videoPostPlayer__container }>
+    <div
+      className={ styles.videoPostPlayer__container }
+      onClick={ () => handleIframeEvents() }
+    >
       { sourcesMenu }
       { !videoReady ? <VideoLoadingState /> : null }
       { playerElement }

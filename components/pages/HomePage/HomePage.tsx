@@ -8,8 +8,9 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { Home } from '~/components/Home/Home'
 import {
+  HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService
-} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService'
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 
 export interface Props {
@@ -25,10 +26,33 @@ export interface Props {
 export const HomePage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation(['home_page'])
 
+  const structuredData = {
+    '@context': 'http://schema.org',
+    '@type': 'WebSite',
+    name: t('home_page_title'),
+    url: props.htmlPageMetaContextProps.url,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${props.htmlPageMetaContextProps.url}/posts/search?search={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
   const htmlPageMetaUrlProps = (
-    new HtmlPageMetaResourceService(t('home_page_title'), t('home_page_description'))
+    new HtmlPageMetaResourceService(
+      t('home_page_title'),
+      t('home_page_description'),
+      HtmlPageMetaContextResourceType.WEBSITE
+    )
   ).getProperties()
-  const htmlPageMetaProps = { ...props.htmlPageMetaContextProps, ...htmlPageMetaUrlProps }
+  const htmlPageMetaProps = {
+    ...props.htmlPageMetaContextProps,
+    resourceProps: htmlPageMetaUrlProps,
+    structuredData: JSON.stringify(structuredData),
+  }
 
   return (
     <>

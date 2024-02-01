@@ -1,0 +1,81 @@
+.footer {
+  &__layout {
+    @apply p-0 pt-0.5 bg-gradient-to-r border-none
+      from-body via-brand-600 to-body;
+  }
+
+  &__container {
+    @apply grid place-items-center px-5 py-10
+      justify-items-center bg-base-900;
+
+    grid-template-areas:
+      "copyright  app-logo    social-networks"
+      "copyright  app-logo    social-networks"
+      "copyright  languages   social-networks";
+    grid-auto-columns: auto auto auto;
+    grid-column-gap: 40px;
+
+    @screen lg {
+      @apply bg-base-950 bg-gradient-to-r
+        from-body via-base-950 to-body;
+    }
+  }
+
+  &__logo-image-link {
+    grid-area: app-logo;
+  }
+
+  &__logo-image {
+    @apply object-contain w-24 h-auto transition-all;
+
+    @screen md {
+      @apply w-32 transition-all;
+    }
+
+    @screen lg {
+      @apply w-40 transition-all;
+    }
+
+    &:hover {
+      @apply invert transition-all;
+    }
+  }
+
+  &__copyright {
+    @apply flex flex-row font-thin items-center gap-x-1
+      text-xs;
+    grid-area: copyright;
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__copyright-brand-name {
+    @apply font-bold uppercase;
+  }
+
+  &__social-networks {
+    @apply flex flex-row flex-wrap gap-x-4 gap-y-2 text-base-400
+      text-xl uppercase items-center justify-center;
+    grid-area: social-networks;
+  }
+
+  &__languages {
+    @apply flex flex-wrap gap-3 mt-2
+      items-center justify-center;
+    grid-area: languages;
+  }
+
+  &__language-item {
+    @apply text-base-400 font-normal uppercase text-xs;
+
+    &__active {
+      @apply text-base-100 font-black;
+    }
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+}

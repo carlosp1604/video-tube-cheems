@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 import styles from '~/styles/pages/_app.module.scss'
 import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
-import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
@@ -15,6 +14,9 @@ import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/Usin
 import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
 import NextNProgress from 'nextjs-progressbar'
+import { useRouter } from 'next/router'
+import { Footer } from '~/components/Footer/Footer'
+import { FloatingActionAppMenu } from '~/components/FloatingActionAppMenu/FloatingActionAppMenu'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -68,6 +70,7 @@ function App ({
   const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
 
   const { i18n } = useTranslation()
+  const { pathname } = useRouter()
 
   Settings.defaultLocale = i18n.language || 'en'
 
@@ -75,6 +78,15 @@ function App ({
   Settings.defaultZone = 'Europe/Madrid'
 
   applyMixins(Post, [ReactionableModel, TranslatableModel])
+
+  /** Post video embed page **/
+  if (pathname.startsWith('/posts/videos/embed')) {
+    return (
+      <main className={ styles.app__embedContainer }>
+        <Component { ...pageProps }/>
+      </main>
+    )
+  }
 
   return (
     <SessionProvider session={ session }>
@@ -130,6 +142,8 @@ function App ({
               />
 
               <Component { ...pageProps }/>
+
+              <Footer />
             </main>
           </div>
         </LoginProvider>

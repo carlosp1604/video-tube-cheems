@@ -1,4 +1,9 @@
 import { HtmlPageMetaContextProps } from './HtmlPageMetaContextProps'
-import { HtmlPageMetaResourceProps } from './HtmlPageMetaResourceProps'
+import {
+  HtmlPageMetaResourceProps
+} from './HtmlPageMetaResourceService/HtmlPageMetaResourceProps'
 
-export type HtmlPageMetaProps = HtmlPageMetaContextProps & HtmlPageMetaResourceProps
+export interface HtmlPageMetaProps extends HtmlPageMetaContextProps {
+  resourceProps: HtmlPageMetaResourceProps
+  structuredData?: string
+}

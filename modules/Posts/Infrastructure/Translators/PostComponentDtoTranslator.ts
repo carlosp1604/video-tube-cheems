@@ -67,7 +67,7 @@ export class PostComponentDtoTranslator {
 
     const video = VideoComponentDtoTranslator.fromApplicationDto(applicationDto)
 
-    const date = (new DateService()).formatDateToDateMedFromIso(applicationDto.publishedAt, locale)
+    const formattedPublishedAt = (new DateService()).formatDateToDateMedFromIso(applicationDto.publishedAt, locale)
 
     const languageHasTranslations = applicationDto.translations.find((translation) => translation.language === locale)
 
@@ -89,6 +89,14 @@ export class PostComponentDtoTranslator {
       }
     }
 
+    const thumb = applicationDto.meta.find((meta) => {
+      return meta.type === 'thumb'
+    })
+
+    const duration = applicationDto.meta.find((meta) => {
+      return meta.type === 'duration'
+    })
+
     const postMediaVideoType: PostMediaComponentDto[] = applicationDto.postMedia
       .filter((postMedia) => postMedia.type === 'Video')
       .map((postMedia) => {
@@ -109,14 +117,18 @@ export class PostComponentDtoTranslator {
 
     return {
       id: applicationDto.id,
+      slug: applicationDto.slug,
       actors,
       video,
       tags,
       producer,
       description: descriptionTranslation,
-      date,
+      formattedPublishedAt,
+      publishedAt: applicationDto.publishedAt,
       title: titleTranslation,
       type: applicationDto.type,
+      thumb: thumb ? thumb.value : '',
+      duration: duration ? duration.value : '0',
       actor,
       postMediaVideoType,
       postMediaImageType,

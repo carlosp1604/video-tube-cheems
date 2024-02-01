@@ -1,31 +1,44 @@
 import { GetServerSideProps } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
-import { PostPage, VideoPageProps } from '~/components/pages/PostPage/PostPage'
+import { PostPage, PostPageProps } from '~/components/pages/PostPage/PostPage'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
-export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (context) => {
+export const getServerSideProps: GetServerSideProps<PostPageProps> = async (context) => {
   if (!context.query.slug) {
     return {
       notFound: true,
     }
   }
 
+  const { env } = process
   const slug = String(context.query.slug)
   const locale = context.locale ?? 'en'
 
   const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')
   const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPostsUseCase')
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   try {
     const postWithCount = await useCase.get({ slug })
 
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
+
+    let postEmbedUrl = ''
+
+    if (!env.BASE_URL) {
+      console.error('Missing env var: BASE_URL. Required to build post page embed URL')
+    } else {
+      postEmbedUrl = `${env.BASE_URL}/${locale}/posts/videos/embed/${slug}`
+    }
 
     return {
       props: {
@@ -37,6 +50,8 @@ export const getServerSideProps: GetServerSideProps<VideoPageProps> = async (con
         postLikes: postWithCount.reactions.like,
         postDislikes: postWithCount.reactions.dislike,
         postCommentsNumber: postWithCount.comments,
+        postEmbedUrl,
+        htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
         ...await serverSideTranslations(
           locale,
           [

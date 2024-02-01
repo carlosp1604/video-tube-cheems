@@ -2,17 +2,16 @@
   $parentBlock: &;
 
   &__container {
-    @apply h-auto w-full rounded-lg
-      overflow-hidden;
-
-    &:hover {
-      #{$parentBlock}__switcher-button {
-        @apply translate-x-0 transition-transform duration-500 delay-0;
-      }
-    }
+    @apply h-full w-full overflow-hidden relative;
 
     @screen md {
       @apply w-full h-full;
+
+      &:hover {
+        #{$parentBlock}__switcher-button {
+          @apply translate-x-0 transition-transform duration-500 delay-0;
+        }
+      }
     }
   }
 
@@ -42,13 +41,9 @@
   }
 
   &__switcher-button {
-    @apply flex absolute top-2 right-2 items-center bg-brand-400 rounded-full
+    @apply translate-x-12 flex absolute top-2 right-2 items-center bg-brand-400 rounded-full
       p-2 text-base-100 h-9 w-9 delay-1000 duration-1000 transition-all
       transform z-video-player-options-button;
-
-    @screen md {
-      @apply translate-x-12;
-    }
 
     &:hover {
       @apply text-base-100 bg-brand-700 transition-colors;

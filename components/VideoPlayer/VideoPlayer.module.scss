@@ -1,10 +1,5 @@
 .video-player {
   &__container {
-    @apply rounded-xl overflow-hidden w-full h-full
-      z-video-player;
-
-    @screen md {
-      @apply w-full h-full;
-    }
+    @apply grid h-full w-full z-video-player content-center;
   }
 }

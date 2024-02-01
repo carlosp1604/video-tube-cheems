@@ -1,0 +1,5 @@
+.video-embed-page {
+  &__container {
+    @apply h-full w-full bg-base-950 overflow-hidden;
+  }
+}

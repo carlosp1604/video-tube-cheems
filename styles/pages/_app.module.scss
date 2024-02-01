@@ -9,4 +9,8 @@
   &__container {
     @apply min-h-screen font-roboto;
   }
+
+  &__embed-container {
+    @apply grid min-h-screen bg-black;
+  }
 }

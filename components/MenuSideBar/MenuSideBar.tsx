@@ -19,7 +19,6 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
   if (menuOption.action) {
     return (
       <Link
-        scroll={ false }
         href={ menuOption.action.url }
         className={ `
         ${styles.menuSideBar__menuItemContent}

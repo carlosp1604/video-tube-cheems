@@ -80,7 +80,7 @@
     @apply text-base-400 font-normal uppercase text-xs;
 
     &__active {
-      @apply text-base-100 font-black;
+      @apply text-base-100 font-black pointer-events-none;
     }
 
     @screen md {

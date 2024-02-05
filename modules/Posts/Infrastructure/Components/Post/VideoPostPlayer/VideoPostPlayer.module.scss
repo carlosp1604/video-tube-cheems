@@ -16,9 +16,8 @@
   }
 
   &__no-sources-state {
-    @apply flex flex-col items-center bg-black w-full h-full
-      whitespace-pre-line gap-y-4 text-base-400 px-5 py-10 text-xs rounded-lg
-      overflow-y-scroll scrollbar-hide;
+    @apply flex flex-col items-center justify-center bg-black w-full h-full
+      whitespace-pre-line gap-y-4 text-base-400 px-5 py-10 text-xs rounded-lg;
 
     @screen md {
       @apply text-base;
@@ -30,7 +29,11 @@
   }
 
   &__no-sources-state-icon {
-    @apply flex-shrink-0 h-14 w-14 text-brand-400;
+    @apply flex-shrink-0 h-10 w-10 text-brand-400;
+
+    @screen tb {
+      @apply h-14 w-14;
+    }
 
     @screen md {
       @apply h-20 w-20;

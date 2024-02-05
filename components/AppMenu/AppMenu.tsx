@@ -96,7 +96,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
       (search && search !== title.trim())
     ) {
       await router.push({
-        pathname: '/posts/search/',
+        pathname: '/posts/search/[search]',
         query: {
           search: title.trim(),
         },
@@ -118,7 +118,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
             <IconButton
               onClick={ onClickMenuButton }
               icon={ <HiBars3 /> }
-              title={ 'Menu' }
+              title={ t('app_menu_menu_button') }
             />
             <Link href='/' shallow={ true }>
               <Image

@@ -30,7 +30,8 @@
   }
 
   &__user-avatar {
-    @apply flex-shrink-0 h-8 w-8 font-semibold;
+    @apply flex-shrink-0 h-8 w-8 font-semibold rounded-full
+      object-cover;
 
     @screen md {
       @apply h-10 w-10;

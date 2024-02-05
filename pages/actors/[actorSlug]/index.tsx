@@ -14,6 +14,9 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { ActorPage, ActorPageProps } from '~/components/pages/ActorPage/ActorPage'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   const actorSlug = context.query.actorSlug
@@ -44,6 +47,17 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
     'actors',
   ])
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
+  const { env } = process
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    console.error('Missing env var: BASE_URL. Required in the actor page')
+  } else {
+    baseUrl = env.BASE_URL
+  }
+
   const props: ActorPageProps = {
     actor: {
       description: null,
@@ -54,6 +68,8 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
     },
     initialPosts: [],
     initialPostsNumber: 0,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
+    baseUrl,
     ...i18nSSRConfig,
   }
 

@@ -9,6 +9,9 @@
   "result_posts_empty_state_subtitle": "No pudimos encontrar ningún resultado para el término: {{searchTerm}}. Prueba con otros términos de búsqueda",
   "result_posts_empty_state_title": "Ningún resultado encontrado",
   "save_post_post_card_gallery_action_title": "Guardar",
+  "search_page_breadcrumb_title": "Buscar",
+  "search_page_subtitle": "Explora los posts de {{searchTerm}} que encontramos",
+  "search_page_title": "{{searchTerm}} posts",
   "search_result_title": "Resultados para <0>{{searchTerm}}</0>",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión"
 }

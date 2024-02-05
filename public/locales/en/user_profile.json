@@ -9,10 +9,14 @@
   "saved_posts_empty_title": "How empty it is!",
   "see_all_button_title": "See all",
   "that_is_all_message_title": "This is all",
+  "user_history_page_description": "Explore {{userName}} history",
+  "user_history_page_title": "{{userName}} history",
   "user_history_selector_button_title": "History",
   "user_history_title": "Posts History",
   "user_joined_at_label_title": "Since",
   "user_profile_image_alt_title": "{{username}} profile picture",
+  "user_profile_page_description": "Look at {{userName}} profile. Explore {{userName}} saved videos, content and activity",
+  "user_profile_page_title": "{{userName}} profile",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action",
   "user_my_profile_button": "Edit profile",
   "user_name_label_title": "Name",
@@ -26,5 +30,7 @@
   "user_saved_posts_empty_state_second_option_first_step": "In the post options, you will have to click on the 'Save' button",
   "user_saved_posts_empty_state_second_option_title": "2. From the post page",
   "user_saved_posts_empty_state_subtitle": "You don't have any saved posts yet. Here we tell you how to save a post",
-  "user_saved_posts_empty_state_title": "Here you will find all your saved posts so you don't lose track of them"
+  "user_saved_posts_empty_state_title": "Here you will find all your saved posts so you don't lose track of them",
+  "user_saved_posts_page_description": "Explore {{userName}} saved posts",
+  "user_saved_posts_page_title": "{{userName}} saved posts"
 }

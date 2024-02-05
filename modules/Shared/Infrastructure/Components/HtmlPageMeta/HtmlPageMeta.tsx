@@ -15,17 +15,16 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     const videoProps = props.resourceProps as HtmlPageMetaVideoProps
 
     videoMeta = [
-      <meta property="og:video" content={ videoProps.videoUrl } key="og:video" />,
+      <meta property="og:video:url" content={ videoProps.videoUrl } key="og:video" />,
       <meta property="og:video:type" content='text/html' key="og:video:type" />,
       <meta property="og:video:duration" content={ videoProps.duration } key="og:video:duration" />,
+      <meta property="video:duration" content={ videoProps.duration } key="video:duration" />,
       /** Twitter card properties **/
       <meta name="twitter:card" content="player" key="twitter:card" />,
       <meta name="twitter:title" content={ videoProps.title } key="twitter:title" />,
       <meta name="twitter:description" content={ videoProps.description } key="twitter:description" />,
       <meta name="twitter:url" content={ props.url } key="twitter:url" />,
       <meta name="twitter:image" content={ props.resourceProps.image } key="twitter:image" />,
-      /** TODO: Set up domain and embed URL when is implemented **/
-      // <meta name="twitter:domain" content="cheems.com" key="twitter:domain" />,
       <meta name="twitter:player" content={ videoProps.videoUrl } key="twitter:player" />,
       <meta name="twitter:player:width" content={ videoProps.width } key="twitter:player:width" />,
       <meta name="twitter:player:height" content={ videoProps.height } key="twitter:player:height" />,
@@ -34,10 +33,13 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
 
   let websiteMeta: ReactElement[] | null = null
 
-  if (props.resourceProps.resourceType === HtmlPageMetaContextResourceType.WEBSITE) {
+  if (
+    props.resourceProps.resourceType === HtmlPageMetaContextResourceType.WEBSITE ||
+    props.resourceProps.resourceType === HtmlPageMetaContextResourceType.ARTICLE
+  ) {
     websiteMeta = [
       /** Twitter card properties **/
-      <meta name="twitter:card" content="summary_large_image" key="twitter:card" />,
+      <meta name="twitter:card" content="summary" key="twitter:card" />,
       <meta name="twitter:title" content={ props.resourceProps.title } key="twitter:title" />,
       <meta name="twitter:description" content={ props.resourceProps.description } key="twitter:description" />,
       <meta name="twitter:image" content={ props.resourceProps.image } key="twitter:image" />,

@@ -9,10 +9,14 @@
   "saved_posts_empty_title": "¡Qué vacío está!",
   "see_all_button_title": "Ver todo",
   "that_is_all_message_title": "Esto es todo",
+  "user_history_page_description": "Explora el historial del usuario {{userName}}",
+  "user_history_page_title": "Historial de {{userName}}",
   "user_history_selector_button_title": "Historial",
   "user_history_title": "Historial",
   "user_joined_at_label_title": "Desde",
   "user_profile_image_alt_title": "Imagen de perfil de {{username}}",
+  "user_profile_page_description": "Mira el perfil de {{userName}}. Explora sus videos guardados, el contenido y la actividad de {{userName}}",
+  "user_profile_page_title": "Perfil de {{userName}}",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
   "user_my_profile_button": "Editar perfil",
   "user_name_label_title": "Nombre",
@@ -26,5 +30,7 @@
   "user_saved_posts_empty_state_second_option_first_step": "En las opciones del post, tendrás que seleccionar el botón 'Guardar'",
   "user_saved_posts_empty_state_second_option_title": "2. Desde la página del post",
   "user_saved_posts_empty_state_subtitle": "Aún no tienes ningún post guardado. A continuación te indicamos como guardar un post",
-  "user_saved_posts_empty_state_title": "Aquí encontrarás todos tus posts guardados para que no les pierdas el rastro"
+  "user_saved_posts_empty_state_title": "Aquí encontrarás todos tus posts guardados para que no les pierdas el rastro",
+  "user_saved_posts_page_description": "Explora los posts guardados del usuario {{userName}}",
+  "user_saved_posts_page_title": "Posts guardados de {{userName}}"
 }

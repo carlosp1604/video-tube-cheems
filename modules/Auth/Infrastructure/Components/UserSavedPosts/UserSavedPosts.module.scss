@@ -1,0 +1,5 @@
+.user-saved-posts {
+  &__container {
+    @apply container flex flex-col gap-y-4 my-5 px-5 mb-10;
+  }
+}

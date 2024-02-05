@@ -6,7 +6,7 @@ import {
 
 export class UserHeaderComponentDtoTranslator {
   public static fromApplication (applicationDto: UserApplicationDto, locale: string): UserProfileHeaderComponentDto {
-    const createdAt = DateTime.fromISO(applicationDto.createdAt).setLocale(locale)
+    const formattedCreatedAt = DateTime.fromISO(applicationDto.createdAt).setLocale(locale)
       .toLocaleString({ month: 'long', year: 'numeric' })
 
     return {
@@ -14,7 +14,9 @@ export class UserHeaderComponentDtoTranslator {
       id: applicationDto.id,
       email: applicationDto.email,
       imageUrl: applicationDto.imageUrl,
-      createdAt,
+      formattedCreatedAt,
+      createdAt: applicationDto.createdAt,
+      updatedAt: applicationDto.updatedAt,
       username: applicationDto.username,
     }
   }

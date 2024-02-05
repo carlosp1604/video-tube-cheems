@@ -5,6 +5,7 @@ import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOpti
 import { useTranslation } from 'next-i18next'
 import { BsTools } from 'react-icons/bs'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 
 export interface PostCardGalleryOption {
   title: string
@@ -38,17 +39,11 @@ export const PostCardGalleryOptions: FC<Props> = ({ isOpen, onClose, options, se
       onClose={ () => onClose() }
     >
       <div className={ styles.postCardGalleryOptions__container }>
-        <div className={ styles.postCardGalleryOptions__titleSection }>
-          <span className={ styles.postCardGalleryOptions__iconWrapper }>
-            <BsTools className={ styles.postCardGalleryOptions__icon }/>
-          </span>
-          <span className={ styles.postCardGalleryOptions__title }>
-            { t('post_card_gallery_options_title') }
-            <small className={ styles.postCardGalleryOptions__subtitle }>
-              { t('post_card_gallery_options_description') }
-            </small>
-          </span>
-        </div>
+        <ModalMenuHeader
+          title={ t('post_card_gallery_options_title') }
+          subtitle={ t('post_card_gallery_options_description') }
+          icon={ <BsTools /> }
+        />
         <MenuOptions menuOptions={ buildOptions } />
       </div>
     </Modal>

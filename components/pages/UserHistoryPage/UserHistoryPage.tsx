@@ -1,174 +1,48 @@
 import { NextPage } from 'next'
-import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { useRouter } from 'next/router'
-import { ReactElement, useEffect, useState } from 'react'
-import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
-import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import {
-  PostCardComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
-import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
-import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
 import { useTranslation } from 'next-i18next'
-import styles from './UserHistoryPage.module.scss'
-import { EmptyState } from '~/components/EmptyState/EmptyState'
-import { useSession } from 'next-auth/react'
+import { UserHistory } from '~/modules/Auth/Infrastructure/Components/UserHistory/UserHistory'
 import {
-  fromOrderTypeToComponentSortingOption,
-  PaginationSortingType
-} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
-
-interface PaginationState {
-  page: number
-  order:PostsPaginationSortingType
-}
+  HtmlPageMetaContextResourceType,
+  HtmlPageMetaResourceService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
+import {
+  HtmlPageMetaContextProps
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
+import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 
 export interface UserHistoryPageProps {
   userComponentDto: UserProfileHeaderComponentDto
+  htmlPageMetaContextProps: HtmlPageMetaContextProps
 }
 
-export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({ userComponentDto }) => {
-  const [posts, setPosts] = useState<PostCardComponentDto[]>([])
-  const [postsNumber, setPostsNumber] = useState<number>(0)
-
-  const [paginationState, setPaginationState] = useState<PaginationState>({
-    order: PaginationSortingType.NEWEST_VIEWED,
-    page: 1,
-  })
-
+export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({
+  userComponentDto,
+  htmlPageMetaContextProps,
+}) => {
   const { t } = useTranslation('user_profile')
-  const { status, data } = useSession()
 
-  const [loading, setLoading] = useState(false)
-
-  const locale = useRouter().locale ?? 'en'
-
-  useEffect(() => {
-    setLoading(true)
-    updatePosts(paginationState.page, paginationState.order)
-      .then(() => { setLoading(false) })
-  }, [])
-
-  const postCardOptions: PostCardOptionConfiguration[] = [
-    { type: 'savePost' },
-    { type: 'react' },
-  ]
-
-  const sortingOptions: PostsPaginationSortingType[] = [
-    PaginationSortingType.NEWEST_VIEWED,
-    PaginationSortingType.OLDEST_VIEWED,
-  ]
-
-  const onChangeOption = async (newOrder: PaginationSortingType) => {
-    setLoading(true)
-    setPaginationState({ ...paginationState, order: newOrder as PostsPaginationSortingType, page: 1 })
-
-    await updatePosts(1, newOrder as PostsPaginationSortingType)
-
-    setLoading(false)
-  }
-
-  const updatePosts = async (page:number, order: PostsPaginationSortingType) => {
-    const componentOrder = fromOrderTypeToComponentSortingOption(order)
-
-    try {
-      const newPosts = await (new PostsApiService())
-        .getUserHistory(
-          userComponentDto.id,
-          page,
-          defaultPerPage,
-          componentOrder.criteria,
-          componentOrder.option,
-          []
-        )
-
-      if (page === 1) {
-        setPosts(newPosts.posts.map((post) => {
-          return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-        }))
-      } else {
-        setPosts([
-          ...posts,
-          ...newPosts.posts.map((post) => {
-            return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-          }),
-        ])
-      }
-
-      setPostsNumber(newPosts.postsNumber)
-    } catch (exception: unknown) {
-      console.error(exception)
-    }
-  }
-
-  const onEndGalleryReach = async () => {
-    setLoading(true)
-    setPaginationState({ ...paginationState, page: paginationState.page + 1 })
-    await updatePosts(paginationState.page + 1, paginationState.order)
-    setLoading(false)
-  }
-
-  let emptyState: ReactElement
-
-  if (status === 'authenticated' && data && data.user.id === userComponentDto.id) {
-    emptyState = (
-      <EmptyState
-        title={ t('own_history_empty_title') }
-        subtitle={ t('own_history_empty_subtitle') }
-      />
+  const htmlPageMetaUrlProps = (
+    new HtmlPageMetaResourceService(
+      t('user_history_page_title', { userName: userComponentDto.name }),
+      t('user_history_page_description', { userName: userComponentDto.name }),
+      HtmlPageMetaContextResourceType.ARTICLE,
+      userComponentDto.imageUrl ?? undefined
     )
-  } else {
-    emptyState = (
-      <EmptyState
-        title={ t('history_empty_title') }
-        subtitle={ t('history_empty_subtitle', { name: userComponentDto.name }) }
-      />
-    )
-  }
+  ).getProperties()
 
-  const sortingMenu = (
-    <SortingMenuDropdown
-      activeOption={ paginationState.order }
-      options={ sortingOptions }
-      loading={ loading }
-      visible={ postsNumber > defaultPerPage }
-      onClickOption={ onChangeOption }
-    />
-  )
+  const htmlPageMetaProps = {
+    ...htmlPageMetaContextProps,
+    resourceProps: htmlPageMetaUrlProps,
+  }
 
   return (
-    <div className={ styles.userHistoryPage__container }>
-      <UserProfileHeader componentDto={ userComponentDto } />
+    <>
+      <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CommonGalleryHeader
-        title={ t('user_history_title') }
-        subtitle={ t('posts_number_title', { postsNumber }) }
-        loading={ loading }
-        sortingMenu={ sortingMenu }
-        tag={ 'h1' }
-      />
-
-      <InfiniteScroll
-        next={ onEndGalleryReach }
-        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        loader={ null }
-        dataLength={ posts.length }
-      >
-        <PostCardGallery
-          posts={ posts }
-          postCardOptions={ postCardOptions }
-          loading={ loading }
-          emptyState={ emptyState }
-        />
-      </InfiniteScroll>
-    </div>
+      <UserHistory userComponentDto={ userComponentDto } />
+    </>
   )
 }

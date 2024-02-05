@@ -16,8 +16,9 @@
   }
 
   &__no-sources-state {
-    @apply flex flex-col justify-center items-center bg-black w-full h-full
-      whitespace-pre-line gap-y-4 text-base-400 p-5 text-xs rounded-lg;
+    @apply flex flex-col items-center bg-black w-full h-full
+      whitespace-pre-line gap-y-4 text-base-400 px-5 py-10 text-xs rounded-lg
+      overflow-y-scroll scrollbar-hide;
 
     @screen md {
       @apply text-base;
@@ -29,7 +30,7 @@
   }
 
   &__no-sources-state-icon {
-    @apply h-14 w-14 text-brand-400;
+    @apply flex-shrink-0 h-14 w-14 text-brand-400;
 
     @screen md {
       @apply h-20 w-20;
@@ -46,7 +47,7 @@
       transform z-video-player-options-button;
 
     &:hover {
-      @apply text-base-100 bg-brand-700 transition-colors;
+      @apply translate-x-0 text-base-100 bg-brand-700 transition-colors;
     }
 
     &:active {

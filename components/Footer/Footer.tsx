@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'next-i18next'
 
 export const Footer: FC = () => {
-  const { pathname, locale } = useRouter()
+  const { asPath, locale } = useRouter()
   const { t } = useTranslation('footer')
 
   const transCopyright = (
@@ -46,7 +46,7 @@ export const Footer: FC = () => {
             ${styles.footer__languageItem}
             ${locale === 'es' ? styles.footer__languageItem__active : ''}
           ` }
-            href={ pathname }
+            href={ asPath }
             locale={ 'es' }
           >
             { t('spanish_language_title') }
@@ -57,7 +57,7 @@ export const Footer: FC = () => {
             ${styles.footer__languageItem}
             ${locale === 'en' ? styles.footer__languageItem__active : ''}
           ` }
-            href={ pathname }
+            href={ asPath }
             locale={ 'en' }
           >
             { t('english_language_title') }

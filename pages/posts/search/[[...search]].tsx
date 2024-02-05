@@ -6,6 +6,9 @@ import {
   PostsPaginationQueryParams
 } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -68,11 +71,24 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  const { env } = process
+
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    console.error('Missing env var: BASE_URL. Required in the search page')
+  } else {
+    baseUrl = env.BASE_URL
+  }
+
   return {
     props: {
       initialSearchTerm: search.toLocaleString(),
       initialSortingOption: paginationQueryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
       initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
+      htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
+      baseUrl,
       ...i18nSSRConfig,
     },
   }

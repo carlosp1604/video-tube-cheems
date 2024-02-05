@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import { BsDownload } from 'react-icons/bs'
 import Image from 'next/image'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
+import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 
 interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -44,17 +45,11 @@ export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen }) => {
       onClose={ () => setIsOpen(false) }
     >
       <div className={ styles.downloadMenu__container }>
-        <div className={ styles.downloadMenu__titleSection }>
-          <span className={ styles.downloadMenu__iconWrapper }>
-            <BsDownload className={ styles.downloadMenu__icon }/>
-          </span>
-          <span className={ styles.downloadMenu__title }>
-            { t('post_download_section_title') }
-            <small className={ styles.downloadMenu__subtitle }>
-              { t('post_download_section_description') }
-            </small>
-          </span>
-        </div>
+        <ModalMenuHeader
+          title={ t('post_download_section_title') }
+          subtitle={ t('post_download_section_description') }
+          icon={ <BsDownload /> }
+        />
         <div className={ styles.downloadMenu__menuOptionsContainer }>
           <MenuOptions menuOptions={ menuOptions } />
         </div>

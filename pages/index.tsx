@@ -73,6 +73,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  const { env } = process
+
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    console.error('Missing env var: BASE_URL. Required in the home page')
+  } else {
+    baseUrl = env.BASE_URL
+  }
 
   const props: Props = {
     order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
@@ -82,6 +91,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     initialPostsNumber: 0,
     ...i18nSSRConfig,
     activeProducer: null,
+    baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
 

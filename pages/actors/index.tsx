@@ -11,6 +11,9 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { PaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -59,11 +62,14 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     }
   }
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
   const props: ActorsPageProps = {
     initialActors: [],
     initialActorsNumber: 0,
     initialPage: 1,
     initialOrder: PaginationSortingType.NAME_FIRST,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     ...i18nSSRConfig,
   }
 

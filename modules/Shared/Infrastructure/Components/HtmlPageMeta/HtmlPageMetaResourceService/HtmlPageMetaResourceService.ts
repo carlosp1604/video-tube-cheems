@@ -4,6 +4,7 @@ import { HtmlPageMetaResourceProps } from './HtmlPageMetaResourceProps'
 export enum HtmlPageMetaContextResourceType {
   WEBSITE = 'website',
   VIDEO_MOVIE = 'video.movie',
+  ARTICLE = 'article'
 }
 
 /**
@@ -21,7 +22,7 @@ export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceI
     description: string,
     resourceType: HtmlPageMetaContextResourceType,
     // TODO: Set a default image here
-    image = ''
+    image = 'https://cdn.cponton.com/cheems-site-image.jpg'
   ) {
     this.title = title
     this.resourceType = resourceType

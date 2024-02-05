@@ -8,7 +8,7 @@
   }
 
   &__user-logo {
-    @apply h-6 w-6 self-start rounded-full;
+    @apply h-6 w-6 self-start rounded-full object-cover;
     grid-area: user-logo;
   }
 

@@ -8,6 +8,7 @@ import { IoLanguageOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router'
 import toast from 'react-hot-toast'
 import * as uuid from 'uuid'
+import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 
 export interface Props {
   isOpen: boolean
@@ -27,17 +28,11 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
       onClose={ onClose }
     >
       <div className={ styles.languageMenu__container }>
-        <div className={ styles.languageMenu__titleSection }>
-          <span className={ styles.languageMenu__iconWrapper }>
-            <IoLanguageOutline className={ styles.languageMenu__icon }/>
-          </span>
-          <span className={ styles.languageMenu__title }>
-            { t('language_menu_title') }
-            <small className={ styles.languageMenu__subtitle }>
-              { t('language_menu_subtitle') }
-            </small>
-          </span>
-        </div>
+        <ModalMenuHeader
+          title={ t('language_menu_title') }
+          subtitle={ t('language_menu_subtitle') }
+          icon={ <IoLanguageOutline /> }
+        />
         <div className={ styles.languageMenu__menuOptionsContainer }>
           <MenuOptions menuOptions={ [{
             title: t('language_menu_spanish_option_title'),

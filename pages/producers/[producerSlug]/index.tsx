@@ -18,6 +18,9 @@ import {
 } from '~/modules/Producers/Infrastructure/ProducerPageComponentDtoTranslator'
 import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
   const producerSlug = context.query.producerSlug
@@ -74,6 +77,17 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     }
   }
 
+  const { env } = process
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    console.error('Missing env var: BASE_URL. Required in the producer page')
+  } else {
+    baseUrl = env.BASE_URL
+  }
+
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
   const props: ProducerPageProps = {
     producer: {
       description: '',
@@ -87,6 +101,8 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     initialPage: paginationQueryParams.page ?? 1,
     initialPosts: [],
     initialPostsNumber: 0,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
+    baseUrl,
     ...i18nSSRConfig,
   }
 

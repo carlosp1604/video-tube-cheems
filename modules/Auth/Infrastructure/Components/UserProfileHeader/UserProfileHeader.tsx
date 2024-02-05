@@ -61,7 +61,7 @@ export const UserProfileHeader: FC<Props> = ({ componentDto }) => {
             { t('user_joined_at_label_title') }
           </span>
             <span className={ styles.userProfileHeader__userInfoItemContent }>
-            { componentDto.createdAt }
+            { componentDto.formattedCreatedAt }
           </span>
           </div>
           <div className={ styles.userProfileHeader__userInfoItem }>

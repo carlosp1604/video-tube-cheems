@@ -21,6 +21,7 @@ export interface Props {
   producers: ProducerComponentDto[]
   activeProducer: ProducerComponentDto | null
   htmlPageMetaContextProps: HtmlPageMetaContextProps
+  baseUrl: string
 }
 
 export const HomePage: NextPage<Props> = (props: Props) => {
@@ -35,7 +36,7 @@ export const HomePage: NextPage<Props> = (props: Props) => {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${props.htmlPageMetaContextProps.url}/posts/search?search={search_term_string}`,
+        urlTemplate: `${props.baseUrl}/posts/search?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -48,6 +49,7 @@ export const HomePage: NextPage<Props> = (props: Props) => {
       HtmlPageMetaContextResourceType.WEBSITE
     )
   ).getProperties()
+
   const htmlPageMetaProps = {
     ...props.htmlPageMetaContextProps,
     resourceProps: htmlPageMetaUrlProps,

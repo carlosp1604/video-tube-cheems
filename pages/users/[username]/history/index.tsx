@@ -8,6 +8,9 @@ import {
   UserHeaderComponentDtoTranslator
 } from '~/modules/Auth/Infrastructure/Api/Translators/UserHeaderComponentDtoTranslator'
 import { UserHistoryPage, UserHistoryPageProps } from '~/components/pages/UserHistoryPage/UserHistoryPage'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<UserHistoryPageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
@@ -22,6 +25,8 @@ export const getServerSideProps: GetServerSideProps<UserHistoryPageProps> = asyn
 
   username = username.toString()
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
   const props: UserSavedPostsPageProps = {
     userComponentDto: {
       createdAt: '',
@@ -30,7 +35,10 @@ export const getServerSideProps: GetServerSideProps<UserHistoryPageProps> = asyn
       name: '',
       imageUrl: '',
       username: '',
+      formattedCreatedAt: '',
+      updatedAt: '',
     },
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
 
   const getUser = container.resolve<GetUserByUsername>('getUserByUsername')

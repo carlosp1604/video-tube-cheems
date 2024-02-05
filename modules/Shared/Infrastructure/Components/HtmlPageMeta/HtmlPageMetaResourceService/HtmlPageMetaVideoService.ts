@@ -9,8 +9,8 @@ import {
 export class HtmlPageMetaVideoService extends HtmlPageMetaResourceService {
   public readonly videoUrl: string
   public readonly duration: string
-  public readonly width = '600'
-  public readonly height = '400'
+  public readonly width = '640'
+  public readonly height = '360'
 
   public constructor (
     title: string,

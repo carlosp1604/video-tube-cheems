@@ -37,7 +37,7 @@
   }
 
   &__user-avatar {
-    @apply h-12 w-12 font-semibold text-2xl;
+    @apply h-12 w-12 font-semibold text-2xl overflow-visible;
 
     @screen md {
       @apply h-14 w-14;

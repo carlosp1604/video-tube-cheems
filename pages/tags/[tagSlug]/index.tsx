@@ -16,6 +16,9 @@ import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagB
 import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
 import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/TagPageComponentDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
   const tagSlug = context.query.tagSlug
@@ -72,6 +75,8 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     }
   }
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
   const props: TagPageProps = {
     tag: {
       slug: '',
@@ -82,6 +87,7 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     initialPage: paginationQueryParams.page ?? 1,
     initialPosts: [],
     initialPostsNumber: 0,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     ...i18nSSRConfig,
   }
 

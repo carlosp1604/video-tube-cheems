@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { BsPlay } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
+import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 
 export interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -23,17 +24,11 @@ export const VideoSourcesMenu: FC<Props> = ({ mediaUrls, selectedUrl, onClickOpt
     ` }
       onClick={ () => onClickMenu() }
     >
-      <div className={ styles.videoSourcesMenu__titleSection }>
-        <span className={ styles.videoSourcesMenu__iconWrapper }>
-          <BsPlay className={ styles.videoSourcesMenu__icon }/>
-        </span>
-        <span className={ styles.videoSourcesMenu__title }>
-          { t('post_video_player_sources_menu_title') }
-          <small className={ styles.videoSourcesMenu__subtitle }>
-            { t('post_video_player_sources_menu_subtitle') }
-          </small>
-        </span>
-      </div>
+      <ModalMenuHeader
+        title={ t('post_video_player_sources_menu_title') }
+        subtitle={ t('post_video_player_sources_menu_subtitle') }
+        icon={ <BsPlay /> }
+      />
 
       <div className={ styles.videoSourcesMenu__optionsList }>
         { mediaUrls.map((mediaUrl) => {

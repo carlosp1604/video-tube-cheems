@@ -4,6 +4,7 @@
   }
 
   &__right-container {
-    @apply flex flex-col gap-y-4 overflow-x-scroll whitespace-nowrap scrollbar-hide;
+    @apply flex flex-col gap-y-4 overflow-x-scroll whitespace-nowrap
+      scrollbar-hide;
   }
 }

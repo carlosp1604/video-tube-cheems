@@ -5,4 +5,6 @@ export interface UserProfileHeaderComponentDto {
   username: string
   email: string
   createdAt: string
+  formattedCreatedAt: string
+  updatedAt: string
 }

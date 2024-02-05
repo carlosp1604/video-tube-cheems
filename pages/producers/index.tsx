@@ -11,6 +11,9 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { PaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 
 export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -59,11 +62,14 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
     }
   }
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+
   const props: ProducersPageProps = {
     initialProducers: [],
     initialProducersNumber: 0,
     initialPage: 1,
     initialOrder: PaginationSortingType.NAME_FIRST,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     ...i18nSSRConfig,
   }
 

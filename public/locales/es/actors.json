@@ -1,12 +1,17 @@
 {
   "actor_card_image_alt_title": "Imagen de perfil de {{actorName}}",
   "actor_image_alt_title": "Imagen de perfil de {{actorName}}",
+  "actor_page_description": "Explora todos los posts producidos o en los que ha participado el actor {{actorName}}",
+  "actor_page_title": "Posts de {{actorName}}",
   "actor_posts_empty_state_subtitle": "Todavía no hay publicaciones de {{actorName}}\nVuelve en otro momento",
   "actor_posts_empty_state_title": "Nada que ver por aquí",
   "actor_posts_gallery_posts_quantity": "{{postsNumber}} posts",
   "actor_posts_gallery_title": "Posts de <0>{{actorName}}</0>",
+  "actors_breadcrumb_list_title": "Actores",
   "actors_gallery_empty_state_subtitle": "Parece que no hay ningún actor que coincida con los criterios que has indicado\nPrueba a cambiar los parámetros de búsqueda e inténtalo nuevamente",
   "actors_gallery_empty_state_title": "No hemos encontrado nada",
   "actors_gallery_subtitle": "{{actorsNumber}} actores",
-  "actors_gallery_title": "Actores"
+  "actors_gallery_title": "Actores",
+  "actors_page_description": "Explora a todos los actores que producen o participan en los videos",
+  "actors_page_title": "Actores",
 }

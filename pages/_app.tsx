@@ -91,20 +91,20 @@ function App ({
     <SessionProvider session={ session }>
       <UsingRouterProvider >
         <LoginProvider>
-          <>
+          <div className={ `${styles.app__layout} ${roboto.variable}` }>
             <Toaster
               position={ 'top-center' }
               containerStyle={ {
                 marginTop: '40px',
               } }
               toastOptions={ {
-                className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body',
+                className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body font-roboto',
                 iconTheme: {
                   secondary: '#FAFAF9',
                   primary: '#b88b5c',
                 },
                 error: {
-                  className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body',
+                  className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body font-roboto',
                   iconTheme: {
                     secondary: '#DC143C',
                     primary: '#FFA07A',
@@ -139,8 +139,8 @@ function App ({
 
             { /** Workaround to work with the sidebar fixed **/ }
             <div className={ `
-              ${styles.app__layout}
-              ${menuOpen ? styles.app__layout__open : ''}
+              ${styles.app__mainLayout}
+              ${menuOpen ? styles.app__mainLayout__open : ''}
               ${roboto.variable}
             ` }>
               <main className={ styles.app__container }>
@@ -148,7 +148,7 @@ function App ({
               </main>
               <Footer/>
             </div>
-          </>
+          </div>
         </LoginProvider>
       </UsingRouterProvider>
     </SessionProvider>

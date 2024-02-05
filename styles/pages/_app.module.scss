@@ -1,9 +1,13 @@
 .app {
   &__layout {
-    @apply grid font-roboto;
+    @apply font-roboto;
+  }
+
+  &__main-layout {
+    @apply font-roboto;
 
     @screen lg {
-      @apply  ml-16;
+      @apply ml-16;
 
       &__open {
         @apply ml-40;

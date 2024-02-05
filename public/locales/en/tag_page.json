@@ -1,7 +1,9 @@
 {
   "tag_image_alt_title": "{{tagName}} profile image",
+  "tag_page_description": "Explore all posts tagged by {{producerName}}",
+  "tag_page_title": "Posts tagged by {{tagName}}",
   "tag_posts_empty_state_subtitle": "There is still no post tagged by {{tagName}}\nCome back another time",
   "tag_posts_empty_state_title": "Nothing to see here",
   "tag_posts_gallery_posts_quantity": "{{postsNumber}} posts",
-  "tag_posts_gallery_title": "Posts tagged by <0>{{tagName}}</0>"
+  "tag_posts_gallery_title": "Posts tagged by <0>{{tagName}}</0>",
 }

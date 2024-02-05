@@ -102,7 +102,6 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     )
   }
 
-  // TODO: Fix this on mobile
   const handleIframeEvents = async () => {
     setShowVideoOptions(true)
     await new Promise(resolve => setTimeout(resolve, 1500))

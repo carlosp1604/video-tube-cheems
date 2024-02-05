@@ -1,6 +1,6 @@
 import { FC, ReactElement } from 'react'
 import styles from './PostCard.module.scss'
-import { BsDot } from 'react-icons/bs'
+import { BsDot, BsLink45Deg } from 'react-icons/bs'
 import Link from 'next/link'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useTranslation } from 'next-i18next'
@@ -31,6 +31,7 @@ export const PostCard: FC<Props> = ({
       width={ 0 }
       height={ 0 }
       sizes={ '100vw' }
+      priority={ true }
     />
   )
 
@@ -85,6 +86,7 @@ export const PostCard: FC<Props> = ({
             imageAlt={ post.producer.name }
             avatarClassName={ styles.postCard__producerActorAvatarContainer }
             color={ post.producer.brandHexColor }
+            priority={ true }
           />
         </Link>
       )
@@ -146,17 +148,38 @@ export const PostCard: FC<Props> = ({
     )
   }
 
+  let postCardLink = `/posts/videos/${post.slug}`
+  let externalLinkIcon: ReactElement | null = null
+
+  if (post.externalLink !== null) {
+    postCardLink = post.externalLink
+
+    externalLinkIcon = (
+      <span
+        className={ styles.postCard__externalIcon }
+        title={ 'Link externo' }
+      >
+        <BsLink45Deg />
+      </span>
+    )
+  }
+
   return (
     <div className={ styles.postCard__container }>
-      <div className={ styles.postCard__videoContainer }>
+      <div className={ `${styles.postCard__videoContainer} 
+        ${post.externalLink !== null ? styles.postCard__videoContainer__external : ''}
+      ` }>
         <Link
-          href={ `/posts/videos/${post.slug}` }
+          href={ postCardLink }
           className={ styles.postCard__videoLink }
+          title={ post.title }
+          rel={ post.externalLink !== null ? 'nofollow' : 'follow' }
         >
           { media }
           <span className={ styles.postCard__videoTime } >
             { post.duration }
           </span>
+          { externalLinkIcon }
         </Link>
       </div>
 
@@ -164,9 +187,10 @@ export const PostCard: FC<Props> = ({
         { producerImage }
         <div className={ styles.postCard__postData }>
           <Link
-            href={ `/posts/videos/${post.slug}` }
+            href={ postCardLink }
             className={ styles.postCard__videoTitleLink }
             title={ post.title }
+            rel={ post.externalLink !== null ? 'nofollow' : 'follow' }
           >
             { post.title }
           </Link>

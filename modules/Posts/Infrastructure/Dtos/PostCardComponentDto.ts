@@ -26,4 +26,5 @@ export interface PostCardComponentDto {
   readonly producer: ProducerPostCardComponentDto | null
   readonly actor: ActorPostCardComponentDto | null
   readonly duration: string
+  readonly externalLink: string | null
 }

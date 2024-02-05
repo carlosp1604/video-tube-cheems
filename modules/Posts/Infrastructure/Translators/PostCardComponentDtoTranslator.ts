@@ -31,6 +31,10 @@ export class PostCardComponentDtoTranslator {
       return meta.type === 'duration'
     })
 
+    const externalLink = applicationDto.meta.find((meta) => {
+      return meta.type === 'external-link'
+    })
+
     let formattedDuration = ''
 
     if (duration) {
@@ -83,6 +87,7 @@ export class PostCardComponentDtoTranslator {
       duration: formattedDuration,
       slug: applicationDto.slug,
       actor,
+      externalLink: externalLink ? externalLink.value : null,
     }
   }
 }

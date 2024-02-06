@@ -35,6 +35,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'app_menu',
+    'app_banner',
     'footer',
     'menu',
     'sorting_menu_dropdown',

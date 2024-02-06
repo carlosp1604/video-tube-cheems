@@ -1,0 +1,30 @@
+.app-banner {
+  &__container {
+    @apply p-5 border-t-2 border-brand-400/20 m-4;
+  }
+
+  &__title {
+    @apply text-base-400 text-base font-black text-center mb-2;
+
+    @screen md {
+      @apply text-lg;
+    }
+
+    @screen lg {
+      @apply text-xl;
+    }
+  }
+
+  &__description {
+    @apply text-center text-base-500 text-xs leading-tight
+      whitespace-pre-line;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+  }
+}

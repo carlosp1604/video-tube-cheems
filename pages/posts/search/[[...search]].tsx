@@ -24,6 +24,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'home_page',
     'app_menu',
+    'app_banner',
     'footer',
     'menu',
     'sorting_menu_dropdown',

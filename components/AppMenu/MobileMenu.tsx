@@ -64,152 +64,152 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
   }
 
   return (
-      <CSSTransition
-        classNames={ {
-          enter: styles.mobileMenu__backdropEnter,
-          enterActive: styles.mobileMenu__backdropEnterActive,
-          enterDone: styles.mobileMenu__backdropEnterDone,
-          exit: styles.mobileMenu__backdropExit,
-          exitActive: styles.mobileMenu__backdropExitActive,
-          exitDone: styles.mobileMenu__backdropExitDone,
-        } }
-        in={ openMenu }
-        timeout={ parseInt('500') }
+    <CSSTransition
+      classNames={ {
+        enter: styles.mobileMenu__backdropEnter,
+        enterActive: styles.mobileMenu__backdropEnterActive,
+        enterDone: styles.mobileMenu__backdropEnterDone,
+        exit: styles.mobileMenu__backdropExit,
+        exitActive: styles.mobileMenu__backdropExitActive,
+        exitDone: styles.mobileMenu__backdropExitDone,
+      } }
+      in={ openMenu }
+      timeout={ parseInt('500') }
+    >
+      <div
+        className={ styles.mobileMenu__backdrop }
+        onClick={ () => setOpenMenu(false) }
       >
-        <div
-          className={ styles.mobileMenu__backdrop }
-          onClick={ () => setOpenMenu(false) }
+        <CSSTransition
+          classNames={ {
+            enterActive: styles.mobileMenu__slideOutEnterActive,
+            enterDone: styles.mobileMenu__slideOutEnterDone,
+            exit: styles.mobileMenu__slideOutExit,
+            exitActive: styles.mobileMenu__slideOutExitActive,
+          } }
+          in={ openMenu }
+          timeout={ parseInt('500') }
         >
-          <CSSTransition
-            classNames={ {
-              enterActive: styles.mobileMenu__slideOutEnterActive,
-              enterDone: styles.mobileMenu__slideOutEnterDone,
-              exit: styles.mobileMenu__slideOutExit,
-              exitActive: styles.mobileMenu__slideOutExitActive,
-            } }
-            in={ openMenu }
-            timeout={ parseInt('500') }
-          >
-            <div className={ styles.mobileMenu__slideOut }>
-              <div className={ styles.mobileMenu__logoContainer } >
-                <Image
-                  alt={ t('menu_logo_alt_title') }
-                  className={ styles.mobileMenu__logo }
-                  src={ '/img/cheems-logo-text.png' }
-                  width={ 0 }
-                  height={ 0 }
-                  sizes={ '100vw' }
-                />
-              </div>
-
-              <MenuOptions menuOptions={ [
-                {
-                  title: t('menu_home_button_title'),
-                  isActive: pathname === '/',
-                  action: {
-                    url: '/',
-                    blank: false,
-                  },
-                  picture: <BsHouse />,
-                  onClick: undefined,
-                },
-                {
-                  title: t('menu_stars_button_title'),
-                  isActive: pathname === '/actors',
-                  action: {
-                    url: '/actors',
-                    blank: false,
-                  },
-                  picture: <BsStar />,
-                  onClick: undefined,
-                },
-                {
-                  title: t('menu_producers_button_title'),
-                  isActive: pathname === '/producers',
-                  action: {
-                    url: '/producers',
-                    blank: false,
-                  },
-                  picture: <BsTv />,
-                  onClick: undefined,
-                },
-                {
-                  title: t('menu_reacted_button_title'),
-                  isActive: false,
-                  action: undefined,
-                  picture: <BsHeart />,
-                  onClick: () => {
-                    toast.success(t('user_menu_option_not_available_message'))
-                  },
-                },
-                buildAuthenticationAction(
-                  `/users/${data ? data.user.username : ''}/saved-posts`,
-                  <BsBookmarks />,
-                  asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
-                  t('menu_saved_button_title')
-                ),
-                buildAuthenticationAction(
-                  `/users/${data ? data.user.username : ''}/history`,
-                  <BsClock />,
-                  asPath === `/users/${data ? data.user.username : ''}/history`,
-                  t('menu_user_history_button_title')
-                ),
-                {
-                  title: t('menu_language_button_title'),
-                  isActive: false,
-                  action: undefined,
-                  picture: <TfiWorld />,
-                  onClick: () => {
-                    setOpenLanguageMenu(true)
-                  },
-                },
-                /**
-                {
-                  title: t('menu_live_cams_button_title'),
-                  isActive: false,
-                  action: undefined,
-                  picture: <BsCameraVideo />,
-                  onClick: undefined,
-                },
-                 */
-              ] } />
-
-              {
-                /**
-                 <div className={ styles.mobileMenu__footerContainer }>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 <span className={ styles.mobileMenu__footerItem }>
-                 Home
-                 </span>
-                 </div>
-                 */
-              }
+          <div className={ styles.mobileMenu__slideOut }>
+            <div className={ styles.mobileMenu__logoContainer } >
+              <Image
+                alt={ t('menu_logo_alt_title') }
+                className={ styles.mobileMenu__logo }
+                src={ '/img/cheems-logo-text.png' }
+                width={ 0 }
+                height={ 0 }
+                sizes={ '100vw' }
+              />
             </div>
-          </CSSTransition>
-        </div>
-      </CSSTransition>
+
+            <MenuOptions menuOptions={ [
+              {
+                title: t('menu_home_button_title'),
+                isActive: pathname === '/',
+                action: {
+                  url: '/',
+                  blank: false,
+                },
+                picture: <BsHouse />,
+                onClick: undefined,
+              },
+              {
+                title: t('menu_stars_button_title'),
+                isActive: pathname === '/actors',
+                action: {
+                  url: '/actors',
+                  blank: false,
+                },
+                picture: <BsStar />,
+                onClick: undefined,
+              },
+              {
+                title: t('menu_producers_button_title'),
+                isActive: pathname === '/producers',
+                action: {
+                  url: '/producers',
+                  blank: false,
+                },
+                picture: <BsTv />,
+                onClick: undefined,
+              },
+              {
+                title: t('menu_reacted_button_title'),
+                isActive: false,
+                action: undefined,
+                picture: <BsHeart />,
+                onClick: () => {
+                  toast.success(t('user_menu_option_not_available_message'))
+                },
+              },
+              buildAuthenticationAction(
+                `/users/${data ? data.user.username : ''}/saved-posts`,
+                <BsBookmarks />,
+                asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
+                t('menu_saved_button_title')
+              ),
+              buildAuthenticationAction(
+                `/users/${data ? data.user.username : ''}/history`,
+                <BsClock />,
+                asPath === `/users/${data ? data.user.username : ''}/history`,
+                t('menu_user_history_button_title')
+              ),
+              {
+                title: t('menu_language_button_title'),
+                isActive: false,
+                action: undefined,
+                picture: <TfiWorld />,
+                onClick: () => {
+                  setOpenLanguageMenu(true)
+                },
+              },
+              /**
+              {
+                title: t('menu_live_cams_button_title'),
+                isActive: false,
+                action: undefined,
+                picture: <BsCameraVideo />,
+                onClick: undefined,
+              },
+               */
+            ] } />
+
+            {
+              /**
+               <div className={ styles.mobileMenu__footerContainer }>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               <span className={ styles.mobileMenu__footerItem }>
+               Home
+               </span>
+               </div>
+               */
+            }
+          </div>
+        </CSSTransition>
+      </div>
+    </CSSTransition>
   )
 }

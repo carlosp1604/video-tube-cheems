@@ -61,6 +61,7 @@ export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = asyn
         'user_menu',
         'user_profile',
         'app_menu',
+        'app_banner',
         'footer',
         'menu',
         'user_menu',

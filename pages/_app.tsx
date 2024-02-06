@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic'
 import NextNProgress from 'nextjs-progressbar'
 import { useRouter } from 'next/router'
 import { Footer } from '~/components/Footer/Footer'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -145,6 +146,7 @@ function App ({
             ` }>
               <main className={ styles.app__container }>
                 <Component { ...pageProps }/>
+                <AppBanner />
               </main>
               <Footer/>
             </div>

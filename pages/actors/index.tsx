@@ -21,6 +21,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'all_producers',
     'app_menu',
+    'app_banner',
     'footer',
     'menu',
     'sorting_menu_dropdown',

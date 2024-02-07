@@ -26,7 +26,6 @@ export const VideoPostType: FC<Props> = ({
           videoPostMedia={ post.postMediaVideoType.length > 0 ? post.postMediaVideoType[0] : null }
         />
       </div>
-
       { postBasicDataElement }
       { postOptionsElement }
     </>

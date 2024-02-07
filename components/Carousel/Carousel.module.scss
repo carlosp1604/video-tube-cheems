@@ -1,7 +1,6 @@
 .carousel {
   &__container {
     @apply relative overflow-hidden -mx-5;
-
     @screen lg {
       @apply mx-0 pl-0;
     }
@@ -17,7 +16,8 @@
   }
 
   &__slider-item {
-    @apply flex-initial flex-shrink-0 basis-60 h-full w-full;
+    @apply flex-initial flex-shrink-0 basis-60 h-full w-full
+    p-0.5;
 
     @screen md {
       @apply basis-1/3;

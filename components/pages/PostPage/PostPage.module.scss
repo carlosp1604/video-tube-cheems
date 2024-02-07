@@ -1,10 +1,6 @@
 .post-page {
-  &__container {
-    @apply flex flex-col container px-5 gap-y-2 mb-10;
-  }
-
   &__related-videos-title {
-    @apply uppercase text-base font-black;
+    @apply flex flex-col gap-y-2 text-base font-black p-5;
 
     @screen md {
       @apply text-xl;

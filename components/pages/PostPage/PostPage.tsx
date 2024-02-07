@@ -87,7 +87,7 @@ export const PostPage: NextPage<PostPageProps> = ({
   }
 
   return (
-    <div className={ styles.postPage__container }>
+    <>
 
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
@@ -100,14 +100,13 @@ export const PostPage: NextPage<PostPageProps> = ({
         postViewsNumber={ postViewsNumber }
       />
 
-      <span className={ styles.postPage__relatedVideosTitle }>
+      <div className={ styles.postPage__relatedVideosTitle }>
         { t('video_related_videos_title') }
-      </span>
-
-      <PostCardCarousel
-        posts={ relatedPosts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-      />
-    </div>
+        <PostCardCarousel
+          posts={ relatedPosts }
+          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        />
+      </div>
+    </>
   )
 }

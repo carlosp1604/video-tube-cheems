@@ -15,15 +15,12 @@ import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
 import NextNProgress from 'nextjs-progressbar'
 import { useRouter } from 'next/router'
-import { Footer } from '~/components/Footer/Footer'
+import { AppFooter } from '~/components/AppFooter/AppFooter'
+import { AppToast } from '~/components/AppToast/AppToast'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
-)
-
-const Toaster = dynamic(() => import('react-hot-toast')
-  .then((module) => module.Toaster)
 )
 
 const MobileMenu = dynamic(() => import('~/components/AppMenu/MobileMenu')
@@ -93,26 +90,16 @@ function App ({
       <UsingRouterProvider >
         <LoginProvider>
           <div className={ `${styles.app__layout} ${roboto.variable}` }>
-            <Toaster
-              position={ 'top-center' }
-              containerStyle={ {
-                marginTop: '40px',
-              } }
-              toastOptions={ {
-                className: 'rounded-lg bg-brand-700 text-base-100 px-2 py-1 shadow-lg shadow-body font-roboto',
-                iconTheme: {
-                  secondary: '#FAFAF9',
-                  primary: '#b88b5c',
-                },
-                error: {
-                  className: 'rounded-lg bg-[#DC143C] text-white px-2 py-1 shadow-lg shadow-body font-roboto',
-                  iconTheme: {
-                    secondary: '#DC143C',
-                    primary: '#FFA07A',
-                  },
-                },
-              } }
-            />
+            { /** Pop-up script code
+               <Head>
+                <script
+                  src={ 'https://bobabillydirect.org/v3/a/pop/js/227717' }
+                  async={ true }
+                />
+              </Head>
+            **/ }
+
+            <AppToast />
 
             <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) }/>
 
@@ -124,9 +111,7 @@ function App ({
 
             <NextNProgress
               color={ '#a06c3f' }
-              options={ {
-                showSpinner: false,
-              } }
+              options={ { showSpinner: false } }
               showOnShallow={ true }
               height={ 2 }
             />
@@ -146,9 +131,11 @@ function App ({
             ` }>
               <main className={ styles.app__container }>
                 <Component { ...pageProps }/>
+                { /** <Banner /> **/ }
                 <AppBanner />
+
               </main>
-              <Footer/>
+              <AppFooter/>
             </div>
           </div>
         </LoginProvider>

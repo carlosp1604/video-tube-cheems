@@ -1,5 +1,6 @@
 {
   "action_cannot_be_performed_error_message": "No puedes hacer esto ahora, espera a que termine la operación actual",
+  "advertising_section_title": "Publicidad",
   "post_comments_button_title": "Comentarios",
   "post_download_button_title": "Descargar {{sourcesNumber}}",
   "post_download_no_downloads_error_message": "No hay opciones de descarga para este video",

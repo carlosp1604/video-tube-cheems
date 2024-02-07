@@ -77,7 +77,7 @@ export const PostOptions: FC<Props> = ({
           reactionsNumber={ likesNumber }
           disabled={ loading || optionsDisabled }
         />
-        <RxDividerVertical />
+        <RxDividerVertical className={ styles.postOptions__likeDislikeSeparator }/>
         <DislikeButton
           disliked={ userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE }
           onDislike={ () => onClickLikeDislike(ReactionType.DISLIKE) }

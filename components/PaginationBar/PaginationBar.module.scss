@@ -1,6 +1,6 @@
 .pagination-bar {
   &__container {
-    @apply -mx-5 pb-10 border-t pt-2 border-base-800
+    @apply -mx-5 border-t pt-2 border-base-800
       overflow-x-scroll overflow-y-hidden scrollbar-hide;
 
     @screen md {

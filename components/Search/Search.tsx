@@ -156,7 +156,7 @@ export const Search: FC<Props> = ({
         title={ t('search_result_title') }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         term={ { title: 'searchTerm', value: paginationState.searchTerm } }
-        loading={ loading }
+        loading={ firstRender || loading }
         sortingMenu={ sortingMenu }
         tag={ 'h1' }
       />

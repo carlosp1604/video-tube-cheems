@@ -1,5 +1,6 @@
 {
   "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
+  "advertising_section_title": "Advertising",
   "post_comments_button_title": "Comments",
   "post_download_button_title": "Download {{sourcesNumber}}",
   "post_download_no_downloads_error_message": "There are no download options for this video",

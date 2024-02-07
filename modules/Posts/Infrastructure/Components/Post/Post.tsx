@@ -225,45 +225,58 @@ export const Post: FC<Props> = ({
 
   return (
     <div className={ styles.post__container }>
-      { PostTypeResolver.resolve(
-        post,
-        mediaUrls,
-        <PostBasicData
-          post={ post }
-          postViewsNumber={ viewsNumber }
-          postLikes={ likesNumber }
-          postDislikes={ dislikesNumber }
-          postCommentsNumber={ commentsNumber }
-        />,
-        <PostOptions
-          userReaction={ userReaction }
-          savedPost={ savedPost }
-          onClickReactButton={ async (type) => await onClickReactButton(type) }
-          onClickCommentsButton={ onClickCommentsButton }
-          onClickSaveButton={ async () => await onClickSavePostButton() }
-          onClickDownloadButton={ onClickDownloadButton }
-          likesNumber={ likesNumber }
-          downloadUrlNumber={ downloadUrls.length }
-          optionsDisabled={ optionsDisabled }
-        />
-      ) }
+      <section className={ styles.post__postWithAds }>
+        <div className={ styles.post__leftContainer }>
+          { PostTypeResolver.resolve(
+            post,
+            mediaUrls,
+            <PostBasicData
+              post={ post }
+              postViewsNumber={ viewsNumber }
+              postLikes={ likesNumber }
+              postDislikes={ dislikesNumber }
+              postCommentsNumber={ commentsNumber }
+            />,
+            <PostOptions
+              userReaction={ userReaction }
+              savedPost={ savedPost }
+              onClickReactButton={ async (type) => await onClickReactButton(type) }
+              onClickCommentsButton={ onClickCommentsButton }
+              onClickSaveButton={ async () => await onClickSavePostButton() }
+              onClickDownloadButton={ onClickDownloadButton }
+              likesNumber={ likesNumber }
+              downloadUrlNumber={ downloadUrls.length }
+              optionsDisabled={ optionsDisabled }
+            />
+          ) }
 
-      <DownloadMenu
-        mediaUrls={ downloadUrls }
-        setIsOpen={ setDownloadMenuOpen }
-        isOpen={ downloadMenuOpen }
-      />
+          <DownloadMenu
+            mediaUrls={ downloadUrls }
+            setIsOpen={ setDownloadMenuOpen }
+            isOpen={ downloadMenuOpen }
+          />
 
-      <PostProducerActor
-        producer={ post.producer }
-        actor={ post.actor }
-      />
+          <PostProducerActor
+            producer={ post.producer }
+            actor={ post.actor }
+          />
 
-      <PostExtraData
-        postActors={ post.actors }
-        postTags={ post.tags }
-        postDescription={ post.description }
-      />
+          <PostExtraData
+            postActors={ post.actors }
+            postTags={ post.tags }
+            postDescription={ post.description }
+          />
+        </div>
+
+        { /** TODO: Set max-width or max-height
+        <div className={ styles.post__rightContainer }>
+          <span className={ styles.post__adverstisingTitle }>
+            { t('advertising_section_title') }
+          </span>
+          Add here
+        </div>
+        **/ }
+      </section>
 
       <div ref={ commentsRef }>
         { commentsComponent }

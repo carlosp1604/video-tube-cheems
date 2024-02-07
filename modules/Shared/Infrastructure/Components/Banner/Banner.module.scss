@@ -1,0 +1,11 @@
+.banner {
+  &__container {
+    @apply flex flex-col items-center justify-center
+    min-h-[255px] w-auto relative gap-y-1
+    text-base-500 text-sm font-semibold;
+  }
+
+  &__banner-container {
+    @apply h-[265px] min-w-[310px] p-1.5 border border-base-800;
+  }
+}

@@ -45,12 +45,22 @@
   }
 
   &__switcher-button {
-    @apply translate-x-12 flex absolute top-2 right-2 items-center bg-brand-400 rounded-full
-      p-2 text-base-100 h-9 w-9 delay-1000 duration-1000 transition-all
-      transform z-video-player-options-button;
+    @apply translate-x-0 flex absolute top-2 right-2 items-center rounded-full
+      p-2 text-base-100 h-9 w-9 z-video-player-options-button
+      backdrop-blur-lg bg-transparent transition-colors;
 
     &:hover {
-      @apply translate-x-0 text-base-100 bg-brand-700 transition-colors;
+      @apply bg-brand-400 transition-colors;
+    }
+
+    @screen md {
+      @apply translate-x-12 bg-brand-400 delay-1000 duration-1000
+      transition-all;
+
+      &:hover {
+        @apply backdrop-blur-none text-base-100 bg-brand-700
+        transition-all;
+      }
     }
 
     &:active {

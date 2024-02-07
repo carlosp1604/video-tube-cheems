@@ -757,6 +757,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     const posts = await prisma.post.findMany({
       where: {
+        id: {
+          not: {
+            equals: post.id,
+          },
+        },
         deletedAt: null,
         publishedAt: {
           not: null,
@@ -767,9 +772,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           { actors: whereActors },
           { actorId: whereActorId },
         ],
-        id: {
-          not: post.id,
-        },
       },
       include: {
         _count: {
@@ -783,7 +785,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         translations: true,
       },
       // TODO: Fix this hardcoded number
-      take: 50,
+      take: 20,
     })
 
     return posts.map((post) => {

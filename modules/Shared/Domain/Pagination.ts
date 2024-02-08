@@ -1,2 +1,2 @@
-export const minPerPage = 10
+export const minPerPage = 2
 export const maxPerPage = 256

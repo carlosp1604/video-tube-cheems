@@ -173,9 +173,9 @@ model PostComment {
 
 model Actor {
   id          String      @id
-  slug             String
+  slug        String
   name        String
-  description String
+  description String?
   imageUrl    String?     @map("image_url")
   createdAt   DateTime    @map("created_at")
   updatedAt   DateTime    @map("updated_at")

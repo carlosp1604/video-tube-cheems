@@ -68,8 +68,8 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   const props: ActorsPageProps = {
     initialActors: [],
     initialActorsNumber: 0,
-    initialPage: 1,
-    initialOrder: PaginationSortingType.NAME_FIRST,
+    initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.NAME_FIRST,
+    initialPage: paginationQueryParams.page ?? 1,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     ...i18nSSRConfig,
   }

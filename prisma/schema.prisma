@@ -15,7 +15,7 @@ model Producer {
   id               String     @id
   slug             String
   name             String
-  description      String
+  description      String?
   parentProducer   Producer?  @relation("parentProducer", fields: [parentProducerId], references: [id])
   parentProducerId String?    @map("parent_producer_id")
   imageUrl         String?    @map("image_url")

@@ -132,9 +132,8 @@ function App ({
               <main className={ styles.app__container }>
                 <Component { ...pageProps }/>
                 { /** <Banner /> **/ }
-                <AppBanner />
-
               </main>
+              <AppBanner />
               <AppFooter/>
             </div>
           </div>

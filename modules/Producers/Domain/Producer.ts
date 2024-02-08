@@ -5,7 +5,7 @@ export class Producer {
   public readonly id: string
   public readonly slug: string
   public readonly name: string
-  public readonly description: string
+  public readonly description: string | null
   public readonly imageUrl: string | null
   public readonly parentProducerId: string | null
   public readonly createdAt: DateTime
@@ -21,7 +21,7 @@ export class Producer {
     id: string,
     slug: string,
     name: string,
-    description: string,
+    description: string | null,
     imageUrl: string | null,
     parentProducerId: string | null,
     brandHexColor: string,

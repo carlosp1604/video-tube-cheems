@@ -2,7 +2,7 @@ export interface ProducerApplicationDto {
   readonly id: string
   readonly slug: string
   readonly name: string
-  readonly description: string
+  readonly description: string | null
   readonly imageUrl: string | null
   readonly parentProducerId: string | null
   readonly brandHexColor: string

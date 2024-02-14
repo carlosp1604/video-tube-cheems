@@ -4,6 +4,8 @@ import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { FC } from 'react'
 import { useTranslation } from 'next-i18next'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import { useRouter } from 'next/router'
 
 export interface Props {
   actor: ActorCardDto
@@ -11,6 +13,8 @@ export interface Props {
 
 export const ActorCard: FC<Props> = ({ actor }) => {
   const { t } = useTranslation('actors')
+
+  const locale = useRouter().locale ?? 'en'
 
   return (
     <div className={ styles.actorCard__container }>
@@ -33,9 +37,13 @@ export const ActorCard: FC<Props> = ({ actor }) => {
         >
           { actor.name }
         </Link>
-        <span className={ styles.actorCard__postsNumber }>
-          { `${actor.postsNumber} posts` }
-        </span>
+        <div className={ styles.actorCard__countSection }>
+          { t('actor_card_posts_count_title', { postsNumber: actor.postsNumber }) }
+          <span className={ styles.actorCard__viewsTitle }>
+            { t('actor_card_views_count_title',
+              { viewsNumber: NumberFormatter.compatFormat(actor.actorViews, locale) }) }
+          </span>
+        </div>
       </div>
     </div>
 

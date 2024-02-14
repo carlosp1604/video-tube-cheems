@@ -15,7 +15,7 @@ export const AppFooter: FC = () => {
     <Trans
       i18nKey={ t('copyright_title') }
       components={ [
-        <small key={ t('copyright_title') } className={ styles.footer__copyrightBrandName }/>,
+        <small key={ t('copyright_title') } className={ styles.appFooter__copyrightBrandName }/>,
       ] }
     />
   )

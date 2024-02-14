@@ -10,7 +10,6 @@ import { Producer } from '~/modules/Producers/Domain/Producer'
 import { Actor } from '~/modules/Actors/Domain/Actor'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
-import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 import { PostCommentDomainException } from '~/modules/Posts/Domain/PostComments/PostCommentDomainException'
 import { Translation } from '~/modules/Translations/Domain/Translation'
@@ -18,6 +17,8 @@ import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
 import { applyMixins } from '~/helpers/Domain/Mixins'
 import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
+import { ViewableModel } from '~/modules/Views/Domain/ViewableModel'
+import { View } from '~/modules/Views/Domain/View'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -45,7 +46,6 @@ export class Post {
   private _tags: Collection<PostTag, PostTag['id']>
   private _actors: Collection<Actor, Actor['id']>
   private _comments: Collection<PostComment, PostComment['id']>
-  private _views: Collection<PostView, PostView['id']>
   private _producer: Relationship<Producer | null>
   private _actor: Relationship<Actor | null>
   private _postMedia: Collection<PostMedia, PostMedia['id']>
@@ -67,7 +67,7 @@ export class Post {
     actors: Collection<Actor, Actor['id']> = Collection.notLoaded(),
     comments: Collection<PostComment, PostComment['id']> = Collection.notLoaded(),
     reactions: Collection<Reaction, Reaction['userId']> = Collection.notLoaded(),
-    views: Collection<PostView, PostView['id']> = Collection.notLoaded(),
+    views: Collection<View, View['id']> = Collection.notLoaded(),
     producer: Relationship<Producer | null> = Relationship.notLoaded(),
     translations: Collection<Translation, Translation['language'] & Translation['field']> = Collection.notLoaded(),
     actor: Relationship<Actor | null> = Relationship.notLoaded(),
@@ -88,12 +88,12 @@ export class Post {
     this._tags = tags
     this._actors = actors
     this._comments = comments
-    this._views = views
     this._producer = producer
     this._actor = actor
     this._postMedia = postMedia
     this.modelReactions = reactions
     this.modelTranslations = translations
+    this.modelViews = views
   }
 
   public addMeta (postMeta: PostMeta): void {
@@ -292,6 +292,6 @@ export class Post {
   }
 }
 
-export interface Post extends ReactionableModel, TranslatableModel {}
+export interface Post extends ReactionableModel, TranslatableModel, ViewableModel {}
 
-applyMixins(Post, [ReactionableModel, TranslatableModel])
+applyMixins(Post, [ReactionableModel, TranslatableModel, ViewableModel])

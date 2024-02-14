@@ -1,11 +1,18 @@
 import { createRef, FC, useEffect } from 'react'
 import styles from './Banner.module.scss'
+import { useTranslation } from 'next-i18next'
 
-export const Banner: FC = () => {
+export interface Props {
+  adKey: string
+  domain: string
+}
+
+export const Banner: FC<Props> = ({ domain, adKey }) => {
+  const { t } = useTranslation('common')
   const bannerRef = createRef<HTMLDivElement>()
 
   const atOptions = {
-    key: '843c7af46a532f41e64e1628e2513235',
+    key: adKey,
     format: 'iframe',
     height: 250,
     width: 300,
@@ -18,7 +25,7 @@ export const Banner: FC = () => {
       const script = document.createElement('script')
 
       script.type = 'text/javascript'
-      script.src = `//contentmentfairnesspesky.com/${atOptions.key}/invoke.js`
+      script.src = `//${domain}/${atOptions.key}/invoke.js`
       conf.innerHTML = `atOptions = ${JSON.stringify(atOptions)}`
 
       bannerRef.current.append(conf)
@@ -29,7 +36,7 @@ export const Banner: FC = () => {
   return (
     <section className={ styles.banner__container }>
       <div ref={ bannerRef } className={ styles.banner__bannerContainer } />
-      Publicidad
+      { t('banner_ad_title') }
     </section>
   )
 }

@@ -1,5 +1,7 @@
 {
   "producer_card_image_alt_title": "{{producerName}} profile image",
+  "producer_card_posts_count_title": "{{postsNumber}} posts",
+  "producer_card_views_count_title": "{{viewsNumber}} views",
   "producer_image_alt_title": "{{producerName}} profile image",
   "producer_page_description": "Explore all posts produced by {{producerName}}",
   "producer_page_title": "{{producerName}} posts",

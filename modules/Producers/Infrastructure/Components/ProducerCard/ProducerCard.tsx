@@ -4,13 +4,17 @@ import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { CSSProperties, FC } from 'react'
 import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
 import { useTranslation } from 'next-i18next'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import { useRouter } from 'next/router'
 
 export interface Props {
   producer: ProducerCardDto
 }
 
 export const ProducerCard: FC<Props> = ({ producer }) => {
-  const { t } = useTranslation('producers ')
+  const { t } = useTranslation('producers')
+
+  const locale = useRouter().locale ?? 'en'
 
   return (
     <div
@@ -37,13 +41,16 @@ export const ProducerCard: FC<Props> = ({ producer }) => {
           className={ styles.producerCard__producerName }
           href={ `/producers/${producer.slug}` }
         >
-            { producer.name }
+          { producer.name }
         </Link>
-        <span className={ styles.producerCard__postsNumber }>
-          { `${producer.postsNumber} posts` }
-        </span>
+        <div className={ styles.producerCard__countSection }>
+          { t('producer_card_posts_count_title', { postsNumber: producer.postsNumber }) }
+          <span className={ styles.producerCard__viewsTitle }>
+            { t('producer_card_views_count_title',
+              { viewsNumber: NumberFormatter.compatFormat(producer.producerViews, locale) }) }
+          </span>
+        </div>
       </div>
     </div>
-
   )
 }

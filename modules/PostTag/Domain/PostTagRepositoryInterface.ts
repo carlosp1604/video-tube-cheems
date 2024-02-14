@@ -1,6 +1,11 @@
 import { PostTag } from '~/modules/PostTag/Domain/PostTag'
 
 export interface PostTagRepositoryInterface {
+  /**
+   * Insert a Tag in the persistence layer
+   * @param tag Tag to persist
+   */
+  save (tag: PostTag): Promise<void>
 
   /**
    * Find a Tag given its slug

@@ -1,6 +1,9 @@
 import { DateTime } from 'luxon'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { View } from '~/modules/Views/Domain/View'
+import { ViewableModel } from '~/modules/Views/Domain/ViewableModel'
 
-export class Actor {
+export class Actor extends ViewableModel {
   public readonly id: string
   public readonly slug: string
   public readonly name: string
@@ -18,8 +21,10 @@ export class Actor {
     imageUrl: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
-    deletedAt: DateTime | null
+    deletedAt: DateTime | null,
+    views: Collection<View, View['id']> = Collection.notLoaded()
   ) {
+    super()
     this.id = id
     this.slug = slug
     this.name = name
@@ -28,5 +33,6 @@ export class Actor {
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
+    this.modelViews = views
   }
 }

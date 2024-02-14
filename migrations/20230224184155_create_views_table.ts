@@ -2,12 +2,10 @@ import { Knex } from 'knex'
 
 export async function up (knex: Knex): Promise<void> {
   return knex.schema
-    .createTable('post_views', (table) => {
+    .createTable('views', (table) => {
       table.string('id', 36).primary().notNullable()
-      table.string('post_id', 36)
-        .references('id')
-        .inTable('posts')
-        .notNullable()
+      table.string('viewable_id', 36).notNullable()
+      table.string('viewable_type', 36).notNullable()
       table.string('user_id', 36)
         .references('id')
         .inTable('users')
@@ -17,5 +15,5 @@ export async function up (knex: Knex): Promise<void> {
 }
 
 export async function down (knex: Knex): Promise<void> {
-  return knex.schema.dropTable('post_views')
+  return knex.schema.dropTable('views')
 }

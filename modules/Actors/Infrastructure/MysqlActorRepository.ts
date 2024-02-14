@@ -5,13 +5,36 @@ import { Actor } from '~/modules/Actors/Domain/Actor'
 import { prisma } from '~/persistence/prisma'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import {
-  ActorsWithPostsCountWithTotalCount,
-  ActorWithPostsCount
+  ActorsWithPostsCountViewsCountWithTotalCount,
+  ActorWithPostsWithViewsCount
 } from '~/modules/Actors/Domain/ActorWithCountInterface'
 import ActorOrderByWithRelationInput = Prisma.ActorOrderByWithRelationInput
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
+import { View } from '~/modules/Views/Domain/View'
+import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
+  /**
+   * Insert an Actor in the persistence layer
+   * @param actor Actor to persist
+   */
+  public async save (actor: Actor): Promise<void> {
+    const actorModel = ActorModelTranslator.toDatabase(actor)
+
+    await prisma.actor.create({
+      data: {
+        slug: actorModel.slug,
+        updatedAt: actorModel.updatedAt,
+        deletedAt: actorModel.deletedAt,
+        createdAt: actorModel.createdAt,
+        name: actorModel.name,
+        id: actorModel.id,
+        description: actorModel.description,
+        imageUrl: actorModel.imageUrl,
+      },
+    })
+  }
+
   /**
    * Find an Actor given its ID
    * @param actorId Actor ID
@@ -58,14 +81,14 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
-   * @return ActorsWithPostsCountWithTotalCount
+   * @return ActorsWithPostsCountViewsCountWithTotalCount
    */
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: ActorSortingOption,
     sortingCriteria: SortingCriteria
-  ): Promise<ActorsWithPostsCountWithTotalCount> {
+  ): Promise<ActorsWithPostsCountViewsCountWithTotalCount> {
     const whereClause: Prisma.ActorWhereInput | undefined = {
       deletedAt: null,
     }
@@ -88,6 +111,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
                   },
                 },
               },
+              views: true,
             },
           },
         },
@@ -100,10 +124,11 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
       }),
     ])
 
-    const actorsWithPostsNumber: ActorWithPostsCount[] = actors.map((actor) => {
+    const actorsWithPostsNumber: ActorWithPostsWithViewsCount[] = actors.map((actor) => {
       return {
         actor: ActorModelTranslator.toDomain(actor),
         postsNumber: actor._count.postActors,
+        actorViews: actor._count.views,
       }
     })
 
@@ -111,6 +136,31 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
       actors: actorsWithPostsNumber,
       actorsNumber,
     }
+  }
+
+  /**
+   * Create a new actor view for an actor given its ID
+   * @param actorId Actor ID
+   * @param view Actor View
+   */
+  public async createActorView (actorId: Actor['id'], view: View): Promise<void> {
+    const prismaPostView = ViewModelTranslator.toDatabase(view)
+
+    await prisma.actor.update({
+      where: {
+        id: actorId,
+      },
+      data: {
+        views: {
+          create: {
+            id: prismaPostView.id,
+            viewableType: prismaPostView.viewableType,
+            userId: prismaPostView.userId,
+            createdAt: prismaPostView.createdAt,
+          },
+        },
+      },
+    })
   }
 
   private static buildOrder (
@@ -134,6 +184,14 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
         },
       }
     } */
+
+    if (sortingOption === 'views') {
+      sortCriteria = {
+        views: {
+          _count: sortingCriteria,
+        },
+      }
+    }
 
     return sortCriteria
   }

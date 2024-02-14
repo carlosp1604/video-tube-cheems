@@ -21,6 +21,8 @@ import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { getSession } from 'next-auth/react'
+import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
   const producerSlug = context.query.producerSlug
@@ -109,6 +111,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
   const getProducer = container.resolve<GetProducerBySlug>('getProducerBySlugUseCase')
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
+  const addProducerView = container.resolve<AddProducerView>('addProducerViewUseCase')
 
   try {
     const producer = await getProducer.get(producerSlug.toString())
@@ -143,6 +146,16 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       sortOption,
       postsPerPage: defaultPerPage,
     })
+
+    // TODO: Maybe we need to move this to an endpoint so its called from client side
+    const session = await getSession()
+    let userId: string | null = null
+
+    if (session) {
+      userId = session.user.id
+    }
+
+    await addProducerView.add({ producerSlug: String(producerSlug), userId })
 
     props.initialPosts = producerPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)

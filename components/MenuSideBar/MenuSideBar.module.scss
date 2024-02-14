@@ -7,10 +7,10 @@
     @screen lg {
       @apply flex flex-col fixed top-14 pb-14 overflow-y-scroll
         scrollbar-hide h-screen w-[74px] text-base-500
-        backdrop-blur-lg bg-opacity-60 bg-body;
+        backdrop-blur-xl bg-transparent;
 
       &_open {
-        @apply block w-40 bg-body;
+        @apply block w-40;
       }
     }
   }

@@ -13,6 +13,7 @@ import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
 import { Duration } from 'luxon'
+import { ReactElement } from 'react'
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -86,9 +87,22 @@ export const PostPage: NextPage<PostPageProps> = ({
     structuredData: JSON.stringify(structuredData),
   }
 
+  let relatedPostsSection: ReactElement | null = null
+
+  if (relatedPosts.length > 0) {
+    relatedPostsSection = (
+      <div className={ styles.postPage__relatedVideosTitle }>
+        { t('video_related_videos_title') }
+        <PostCardCarousel
+          posts={ relatedPosts }
+          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        />
+      </div>
+    )
+  }
+
   return (
     <>
-
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <Post
@@ -100,13 +114,7 @@ export const PostPage: NextPage<PostPageProps> = ({
         postViewsNumber={ postViewsNumber }
       />
 
-      <div className={ styles.postPage__relatedVideosTitle }>
-        { t('video_related_videos_title') }
-        <PostCardCarousel
-          posts={ relatedPosts }
-          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        />
-      </div>
+      { relatedPostsSection }
     </>
   )
 }

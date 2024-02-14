@@ -46,6 +46,8 @@ import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBy
 import { MysqlPostTagRepository } from '~/modules/PostTag/Infrastructure/MysqlPostTagRepository'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
+import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActorView'
+import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
 
 /**
  * We create a container to register our classes dependencies
@@ -145,6 +147,8 @@ container.register('getAllProducersUseCase', asClass(GetAllProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
 container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostViewUseCase', asClass(AddPostView))
+container.register('addActorViewUseCase', asClass(AddActorView))
+container.register('addProducerViewUseCase', asClass(AddProducerView))
 container.register('createPostReactionUseCase', asClass(CreatePostReaction))
 container.register('getPostUserInteractionUseCase', asClass(GetPostUserInteraction))
 container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))

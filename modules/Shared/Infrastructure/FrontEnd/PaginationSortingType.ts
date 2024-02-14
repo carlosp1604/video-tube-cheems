@@ -5,7 +5,7 @@ import {
   NewestSavedPostsSortingOption,
   NewestViewedSortingOption,
   OldestPostsSortingOption,
-  OldestSavedPostsSortingOption, OldestViewedSortingOption
+  OldestSavedPostsSortingOption, OldestViewedSortingOption, PopularitySortingOption
 } from '~/modules/Posts/Infrastructure/Frontend/PostsComponentSortingOptions'
 import {
   LessPostsActorsSortingOption,
@@ -16,6 +16,7 @@ import {
 
 export enum PaginationSortingType {
   MOST_VIEWED = 'most-viewed',
+  POPULARITY = 'popularity',
   LATEST = 'latest',
   OLDEST = 'oldest',
   NEWEST_SAVED = 'newest-saved',
@@ -25,7 +26,7 @@ export enum PaginationSortingType {
   NAME_FIRST = 'name-first',
   NAME_LAST = 'name-last',
   MORE_POSTS = 'more-posts',
-  LESS_POSTS = 'less-posts'
+  LESS_POSTS = 'less-posts',
 }
 
 export const fromOrderTypeToComponentSortingOption = (type: PaginationSortingType): ComponentSortingOption => {
@@ -34,6 +35,8 @@ export const fromOrderTypeToComponentSortingOption = (type: PaginationSortingTyp
       return NewestPostsSortingOption
     case PaginationSortingType.MOST_VIEWED:
       return MoreViewsPostsSortingOption
+    case PaginationSortingType.POPULARITY:
+      return PopularitySortingOption
     case PaginationSortingType.OLDEST:
       return OldestPostsSortingOption
     case PaginationSortingType.NEWEST_SAVED:

@@ -1,0 +1,127 @@
+.post-data {
+  &__container {
+    @apply flex flex-col gap-2 justify-between;
+
+    @screen md {
+      @apply justify-stretch gap-x-10;
+    }
+  }
+
+  &__producer-section {
+    @apply inline-flex;
+  }
+
+  &__producer-link {
+    @apply flex flex-wrap gap-2 items-center text-xs;
+
+    @screen md {
+      @apply flex flex-row gap-x-4 font-normal text-sm;
+    }
+  }
+
+  &__producer-actor-logo {
+    @apply rounded-full w-12 h-12 object-cover;
+
+    &:hover {
+      @apply scale-110 transition-transform;
+    }
+  }
+
+  &__producer-actor-avatar {
+    @apply h-10 w-10 transition-transform font-semibold;
+
+    &:hover {
+      @apply text-base-50 scale-110 transition-transform;
+    }
+  }
+
+  &__show-info-section {
+    @apply relative;
+  }
+
+  &__show-info-button {
+    @apply absolute left-1/2 -top-5 bg-brand-400 px-4 py-1
+    rounded-lg text-sm transition-colors;
+    transform: translate(-50%);
+
+    &:hover {
+      @apply bg-brand-600 transition-colors;
+    }
+  }
+
+  &__post-extra-data {
+    @apply flex h-16 flex-col gap-y-4 overflow-hidden
+    max-h-16 transition-max-height bg-base-800 rounded-lg
+    duration-1000;
+
+    &__open {
+      @apply flex max-h-full duration-1000 h-auto
+      transition-max-height bg-base-800;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
+  }
+
+  &__data-item {
+    @apply flex flex-col gap-y-2 font-semibold
+      text-xs text-base-400 pt-2 border-t-2 border-body
+      px-3;
+
+    &:first-of-type {
+      @apply border-t-0;
+    }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__actors-container {
+    @apply grid gap-2;
+    grid-template-columns: repeat(2, 1fr);
+
+    @screen md {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @screen lg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__actor-logo {
+    @apply rounded-full w-8 h-8 object-cover transition-transform;
+
+    &:hover {
+      @apply scale-110 transition-transform;
+    }
+  }
+
+  &__actor-avatar {
+    @apply flex-shrink-0 w-8 h-8 transition-transform font-semibold;
+
+    &:hover {
+      @apply scale-110 text-base-100 transition-transform;
+    }
+  }
+
+  &__actors-item-link {
+    @apply flex items-center rounded-lg p-1 font-normal
+    overflow-hidden gap-2 text-base-100 break-words transition-colors;
+
+    &:hover, &:focus {
+      @apply bg-base-900 transition-colors;
+    }
+  }
+
+  &__post-description {
+    @apply text-base-200 font-normal whitespace-pre-wrap
+    overflow-y-scroll scrollbar-hide pb-6;
+  }
+}

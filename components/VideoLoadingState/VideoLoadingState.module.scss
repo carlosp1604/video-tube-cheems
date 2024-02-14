@@ -1,10 +1,10 @@
 .video-loading-state {
   &__container {
     @apply flex items-center justify-center
-      w-full h-full bg-black;
+      w-full h-full bg-body/40 transition-colors;
   }
 
   &__loading-icon {
-    @apply h-12 w-12 animate-spin;
+    @apply h-14 w-14 animate-spin text-brand-400;
   }
 }

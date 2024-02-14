@@ -40,10 +40,11 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     context.query,
     {
       sortingOptionType: {
-        defaultValue: PaginationSortingType.NAME_FIRST,
+        defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: [
           PaginationSortingType.NAME_FIRST,
           PaginationSortingType.NAME_LAST,
+          PaginationSortingType.POPULARITY,
           // PaginationSortingType.MORE_POSTS,
           // PaginationSortingType.LESS_POSTS,
         ],
@@ -99,7 +100,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
 
     props.initialActorsNumber = actors.actorsNumber
     props.initialActors = actors.actors.map((actor) => {
-      return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber)
+      return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
     })
 
     return {

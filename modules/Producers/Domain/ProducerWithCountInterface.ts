@@ -1,11 +1,12 @@
 import { Producer } from '~/modules/Producers/Domain/Producer'
 
-export interface ProducerWithPostsCount {
+export interface ProducerWithPostsWithViewsCount {
   producer: Producer
   postsNumber: number
+  producerViews: number
 }
 
-export interface ProducersWithPostsCountWithTotalCount {
-  producers: ProducerWithPostsCount[]
+export interface ProducersWithPostsCountViewsCountWithTotalCount {
+  producers: ProducerWithPostsWithViewsCount[]
   producersNumber: number
 }

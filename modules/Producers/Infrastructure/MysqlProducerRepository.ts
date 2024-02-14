@@ -2,17 +2,41 @@ import { ProducerModelTranslator } from './ProducerModelTranslator'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 import { ProducerRepositoryInterface } from '~/modules/Producers/Domain/ProducerRepositoryInterface'
 import { prisma } from '~/persistence/prisma'
-import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import {
-  ProducersWithPostsCountWithTotalCount,
-  ProducerWithPostsCount
+  ProducersWithPostsCountViewsCountWithTotalCount,
+  ProducerWithPostsWithViewsCount
 } from '~/modules/Producers/Domain/ProducerWithCountInterface'
 import { Prisma } from '@prisma/client'
 import ProducerOrderByWithRelationInput = Prisma.ProducerOrderByWithRelationInput
 import { ProducerSortingOption } from '~/modules/Producers/Domain/ProducerSorting'
+import { View } from '~/modules/Views/Domain/View'
+import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
 
 export class MysqlProducerRepository implements ProducerRepositoryInterface {
+  /**
+   * Insert a Producer in the persistence layer
+   * @param producer Producer to persist
+   */
+  public async save (producer: Producer): Promise<void> {
+    const producerModel = ProducerModelTranslator.toDatabase(producer)
+
+    await prisma.producer.create({
+      data: {
+        slug: producerModel.slug,
+        updatedAt: producerModel.updatedAt,
+        deletedAt: producerModel.deletedAt,
+        createdAt: producerModel.createdAt,
+        name: producerModel.name,
+        id: producerModel.id,
+        description: producerModel.description,
+        parentProducerId: producerModel.parentProducerId,
+        imageUrl: producerModel.imageUrl,
+        brandHexColor: producerModel.brandHexColor,
+      },
+    })
+  }
+
   // TODO: Paginate this when producers number increase
   public async get (): Promise<Producer[]> {
     const producers = await prisma.producer.findMany()
@@ -48,14 +72,14 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
-   * @return ProducersWithPostsCountWithTotalCount
+   * @return ProducersWithPostsCountViewsCountWithTotalCount
    */
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
-    sortingOption: ActorSortingOption,
+    sortingOption: ProducerSortingOption,
     sortingCriteria: SortingCriteria
-  ): Promise<ProducersWithPostsCountWithTotalCount> {
+  ): Promise<ProducersWithPostsCountViewsCountWithTotalCount> {
     const whereClause: Prisma.ProducerWhereInput | undefined = {
       deletedAt: null,
     }
@@ -76,6 +100,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
                   },
                 },
               },
+              views: true,
             },
           },
         },
@@ -88,10 +113,11 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
       }),
     ])
 
-    const producersWithPostsNumber: ProducerWithPostsCount[] = producers.map((producer) => {
+    const producersWithPostsNumber: ProducerWithPostsWithViewsCount[] = producers.map((producer) => {
       return {
         producer: ProducerModelTranslator.toDomain(producer),
         postsNumber: producer._count.posts,
+        producerViews: producer._count.views,
       }
     })
 
@@ -99,6 +125,31 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
       producers: producersWithPostsNumber,
       producersNumber,
     }
+  }
+
+  /**
+   * Create a new producer view for a producer given its ID
+   * @param producerId Producer ID
+   * @param view Producer View
+   */
+  public async createProducerView (producerId: Producer['id'], view: View): Promise<void> {
+    const prismaPostView = ViewModelTranslator.toDatabase(view)
+
+    await prisma.producer.update({
+      where: {
+        id: producerId,
+      },
+      data: {
+        views: {
+          create: {
+            id: prismaPostView.id,
+            viewableType: prismaPostView.viewableType,
+            userId: prismaPostView.userId,
+            createdAt: prismaPostView.createdAt,
+          },
+        },
+      },
+    })
   }
 
   private static buildOrder (
@@ -122,6 +173,14 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
         },
       }
     } */
+
+    if (sortingOption === 'views') {
+      sortCriteria = {
+        views: {
+          _count: sortingCriteria,
+        },
+      }
+    }
 
     return sortCriteria
   }

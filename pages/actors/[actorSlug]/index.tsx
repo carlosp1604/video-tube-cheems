@@ -17,6 +17,8 @@ import { ActorPage, ActorPageProps } from '~/components/pages/ActorPage/ActorPag
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActorView'
+import { getSession } from 'next-auth/react'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   const actorSlug = context.query.actorSlug
@@ -76,6 +78,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
 
   const getActor = container.resolve<GetActorBySlug>('getActorBySlugUseCase')
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
+  const addActorView = container.resolve<AddActorView>('addActorViewUseCase')
 
   try {
     const actor = await getActor.get(actorSlug.toString())
@@ -97,6 +100,16 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
       sortOption: InfrastructureSortingOptions.DATE,
       postsPerPage: defaultPerPage,
     })
+
+    // TODO: Maybe we need to move this to an endpoint so its called from client side
+    const session = await getSession()
+    let userId: string | null = null
+
+    if (session) {
+      userId = session.user.id
+    }
+
+    await addActorView.add({ actorSlug: String(actorSlug), userId })
 
     props.initialPosts = actorPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)

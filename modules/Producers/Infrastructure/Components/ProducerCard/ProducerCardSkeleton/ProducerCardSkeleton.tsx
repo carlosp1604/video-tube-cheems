@@ -9,7 +9,10 @@ export const ProducerCardSkeleton: FC = () => {
       </div>
       <div className={ styles.producerCardSkeleton__dataContainer }>
         <span className={ styles.producerCardSkeleton__producerName } />
-        <span className={ styles.producerCardSkeleton__postsNumber } />
+        <div className={ styles.producerCardSkeleton__countSection }>
+          <span className={ styles.producerCardSkeleton__countItem } />
+          <span className={ styles.producerCardSkeleton__countItem } />
+        </div>
       </div>
     </div>
 

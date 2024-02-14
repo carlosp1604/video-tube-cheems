@@ -4,11 +4,11 @@
   }
 
   &__tag-container {
-    @apply p-2 rounded-lg border border-base-700
-      transition-all font-normal;
+    @apply p-2 rounded-lg bg-base-900
+      transition-all font-normal text-base-100;
 
     &:hover {
-      @apply bg-base-700 transition-all;
+      @apply bg-base-950 transition-all;
     }
   }
 }

@@ -1,7 +1,10 @@
 import { DateTime } from 'luxon'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
+import { ViewableModel } from '~/modules/Views/Domain/ViewableModel'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { View } from '~/modules/Views/Domain/View'
 
-export class Producer {
+export class Producer extends ViewableModel {
   public readonly id: string
   public readonly slug: string
   public readonly name: string
@@ -28,8 +31,10 @@ export class Producer {
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null,
-    parentProducer: Relationship<Producer | null> = Relationship.notLoaded()
+    parentProducer: Relationship<Producer | null> = Relationship.notLoaded(),
+    views: Collection<View, View['id']> = Collection.notLoaded()
   ) {
+    super()
     this.id = id
     this.slug = slug
     this.name = name
@@ -41,6 +46,7 @@ export class Producer {
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt
     this._parentProducer = parentProducer
+    this.modelViews = views
   }
 
   get parentProducer (): Producer | null {

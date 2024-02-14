@@ -15,7 +15,13 @@
     "db:seed": "TS_NODE_COMPILER_OPTIONS='{ \"isolatedModules\": false, \"module\": \"commonjs\" }' knex seed:run",
     "db:down": "docker compose down",
     "db:destroy": "yarn db:down && sudo rm -rf ./docker/db",
-    "db:reset": "yarn db:destroy && yarn db:up && sleep 10 && yarn db:migrate && yarn db:seed"
+    "db:reset": "yarn db:destroy && yarn db:up && sleep 10 && yarn db:migrate && yarn db:seed",
+    "db:import-posts": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-videos.ts",
+    "db:import-tags": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-tags.ts",
+    "db:import-actors": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-actors.ts",
+    "db:import-producers": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-producers.ts",
+    "db:import-providers": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-providers.ts",
+    "db:init": "yarn db:up && sleep 10 && yarn db:migrate && yarn db:import-producers && yarn db:import-actors && yarn db:import-tags && yarn db:import-providers && yarn db:import-posts"
   },
   "dependencies": {
     "@next/font": "13.1.1",
@@ -48,6 +54,7 @@
     "react": "18.2.0",
     "react-avatar": "^5.0.3",
     "react-dom": "18.2.0",
+    "react-ga4": "^2.1.0",
     "react-hot-toast": "^2.4.1",
     "react-hover-video-player": "^10.0.1",
     "react-i18next": "^12.1.4",
@@ -62,6 +69,7 @@
     "sharp": "^0.32.6",
     "tailwind-scrollbar-hide": "^1.1.7",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "*",
     "uuid": "^9.0.1",
     "video.js": "^7.21.1",

@@ -5,4 +5,5 @@ export interface ProducerCardDto {
   readonly slug: string
   readonly brandHexColor: string
   readonly postsNumber: number
+  readonly producerViews: number
 }

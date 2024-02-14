@@ -17,7 +17,7 @@ import { AddPostViewApiRequest } from '~/modules/Posts/Infrastructure/Api/Reques
 import {
   POST_BAD_REQUEST, POST_METHOD,
   POST_POST_NOT_FOUND,
-  POST_SERVER_ERROR, POST_VALIDATION
+  POST_SERVER_ERROR, POST_USER_NOT_FOUND, POST_VALIDATION
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 
 export default async function handler (
@@ -64,7 +64,10 @@ export default async function handler (
 
     switch (exception.id) {
       case AddPostViewApplicationException.postNotFoundId:
-        return handleNotFound(response, exception)
+        return handleNotFound(response, POST_POST_NOT_FOUND, exception)
+
+      case AddPostViewApplicationException.userNotFoundId:
+        return handleNotFound(response, POST_USER_NOT_FOUND, exception)
 
       default: {
         console.error(exception)
@@ -107,11 +110,12 @@ function handleBadRequest (response: NextApiResponse) {
 
 function handleNotFound (
   response: NextApiResponse,
+  code: string,
   exception: GetPostsApplicationException
 ) {
   return response.status(404)
     .json({
-      code: POST_POST_NOT_FOUND,
+      code,
       message: exception.message,
     })
 }

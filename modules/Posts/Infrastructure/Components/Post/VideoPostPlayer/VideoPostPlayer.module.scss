@@ -77,7 +77,11 @@
   }
 
   &__iframe {
-    @apply z-video-player w-full h-full rounded-lg;
+    @apply z-video-player w-full h-full;
+
+    @screen tb {
+      @apply rounded-lg;
+    }
 
     @screen md {
       @apply w-full h-full;

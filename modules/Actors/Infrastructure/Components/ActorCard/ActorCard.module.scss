@@ -37,11 +37,16 @@
     }
   }
 
-  &__posts-number {
-    @apply text-xs font-normal text-brand-300;
+  &__count-section {
+    @apply flex flex-row items-start gap-x-1 text-xs justify-between
+    font-normal text-brand-300;
 
     @screen md {
       @apply text-sm;
     }
+  }
+
+  &__views-title {
+    @apply text-base-400;
   }
 }

@@ -12,15 +12,14 @@ import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { Promise } from 'es6-promise'
-import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
 import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
 import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
-import { PostProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/PostProducerActor/PostProducerActor'
 import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { useSavePost } from '~/hooks/SavePosts'
 import { useReactPost } from '~/hooks/ReactPost'
+import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
 
 export interface Props {
   post: PostComponentDto
@@ -256,16 +255,14 @@ export const Post: FC<Props> = ({
             isOpen={ downloadMenuOpen }
           />
 
-          <PostProducerActor
+          <PostData
             producer={ post.producer }
             actor={ post.actor }
-          />
-
-          <PostExtraData
             postActors={ post.actors }
             postTags={ post.tags }
             postDescription={ post.description }
           />
+
         </div>
 
         { /** TODO: Set max-width or max-height

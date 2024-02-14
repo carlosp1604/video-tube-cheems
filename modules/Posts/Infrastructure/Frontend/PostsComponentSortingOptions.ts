@@ -22,6 +22,12 @@ export const MoreViewsPostsSortingOption: ComponentSortingOption = {
   criteria: InfrastructureSortingCriteria.DESC,
 }
 
+export const PopularitySortingOption: ComponentSortingOption = {
+  translationKey: 'popularity_entries_option',
+  option: InfrastructureSortingOptions.VIEWS,
+  criteria: InfrastructureSortingCriteria.DESC,
+}
+
 export const NewestSavedPostsSortingOption: ComponentSortingOption = {
   translationKey: 'newest_saved_posts_option',
   option: InfrastructureSortingOptions.SAVED_DATE,

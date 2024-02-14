@@ -1,7 +1,6 @@
 import { AddPostViewApplicationRequest } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationRequest'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { User } from '~/modules/Auth/Domain/User'
-import { PostView } from '~/modules/Posts/Domain/PostView'
 import { randomUUID } from 'crypto'
 import { DateTime } from 'luxon'
 import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
@@ -9,6 +8,7 @@ import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryIn
 import {
   AddPostViewApplicationException
 } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
+import { View } from '~/modules/Views/Domain/View'
 
 export class AddPostView {
   // eslint-disable-next-line no-useless-constructor
@@ -25,10 +25,11 @@ export class AddPostView {
     }
 
     try {
-      const postView = new PostView(
+      const postView = new View(
         randomUUID(),
-        request.userId,
         post.id,
+        'Post',
+        request.userId,
         DateTime.now()
       )
 

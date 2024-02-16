@@ -6,7 +6,7 @@ import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPost
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
-import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
+import { GetPopularProducers } from '~/modules/Producers/Application/GetPopularProducers'
 import { MailerSendUserEmailSender } from '~/modules/Auth/Infrastructure/MailerSendUserEmailSender'
 import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
@@ -143,7 +143,7 @@ container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getUserSavedPostsUseCase', asClass(GetUserSavedPosts))
 container.register('getUserHistoryUseCase', asClass(GetUserHistory))
 container.register('getActorsUseCase', asClass(GetActors))
-container.register('getAllProducersUseCase', asClass(GetAllProducers))
+container.register('getPopularProducersUseCase', asClass(GetPopularProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
 container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostViewUseCase', asClass(AddPostView))

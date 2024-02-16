@@ -1,6 +1,6 @@
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { container } from '~/awilix.container'
-import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
+import { GetPopularProducers } from '~/modules/Producers/Application/GetPopularProducers'
 import { HomePage, Props } from '~/components/pages/HomePage/HomePage'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { GetServerSideProps } from 'next'
@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   }
 
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
-  const getProducers = container.resolve<GetAllProducers>('getAllProducersUseCase')
+  const getProducers = container.resolve<GetPopularProducers>('getPopularProducersUseCase')
 
   try {
     let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC

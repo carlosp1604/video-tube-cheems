@@ -11,7 +11,12 @@ export interface ProducerRepositoryInterface {
    */
   save(producer: Producer): Promise<void>
 
-  get(): Promise<Producer[]>
+  /**
+   * TODO: Pagination for this use-case
+   * Get first 20 most popular Producers
+   * @return Array of Producer
+   */
+  getPopular(): Promise<Producer[]>
 
   /**
    * Find a Producer given its slug

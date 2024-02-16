@@ -37,9 +37,20 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
     })
   }
 
-  // TODO: Paginate this when producers number increase
-  public async get (): Promise<Producer[]> {
-    const producers = await prisma.producer.findMany()
+  /**
+   * TODO: Pagination for this use-case
+   * Get first 20 most popular Producers
+   * @return Array of Producer
+   */
+  public async getPopular (): Promise<Producer[]> {
+    const producers = await prisma.producer.findMany({
+      take: 20,
+      orderBy: {
+        views: {
+          _count: 'desc',
+        },
+      },
+    })
 
     return producers.map(
       (producer) => ProducerModelTranslator.toDomain(producer)

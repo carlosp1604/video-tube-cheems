@@ -6,18 +6,18 @@
   }
 
   &__add-comment-button {
-    @apply rounded-full bg-brand-500 text-base-100 transition-colors;
+    @apply rounded-full bg-brand-primary-dark text-base-100 transition-colors;
 
     &:disabled {
       @apply bg-body;
     }
 
     &:hover, &:focus {
-      @apply bg-brand-700 transition-colors;
+      @apply bg-brand-secondary-bg transition-colors;
     }
 
     &:active {
-      @apply bg-brand-800 text-brand-300 transition-colors;
+      @apply bg-brand-secondary-dark text-brand-primary-light transition-colors;
     }
   }
 
@@ -48,11 +48,11 @@
   }
 
   &__login-button {
-    @apply ml-2 border border-brand-400 p-2 rounded-lg bg-base-800
+    @apply ml-2 border border-brand-primary-bg p-2 rounded-lg bg-base-800
       text-base-300 transition-colors;
 
     &:hover, &:focus {
-      @apply bg-brand-400 transition-colors;
+      @apply bg-brand-primary-bg transition-colors;
     }
   }
 

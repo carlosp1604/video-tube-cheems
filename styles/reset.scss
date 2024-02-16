@@ -5,11 +5,11 @@ body {
 
 a {
   &:hover {
-    @apply text-brand-300 transition-colors;
+    @apply text-brand-primary-light transition-colors;
   }
 
   &:active {
-    @apply text-brand-500 transition-colors;
+    @apply text-brand-primary-dark transition-colors;
   }
 }
 
@@ -22,7 +22,7 @@ html {
 }
 
 ::selection {
-  @apply bg-brand-400;
+  @apply bg-brand-primary-bg;
 }
 
 textarea::placeholder {

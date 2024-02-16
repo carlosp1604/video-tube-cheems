@@ -19,8 +19,8 @@ import { AppToast } from '~/components/AppToast/AppToast'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import ReactGA from 'react-ga4'
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
-import Head from 'next/head'
 import { AppProgressBar } from '~/AppProgressBar/AppProgressBar'
+import Script from 'next/script'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -80,7 +80,7 @@ function App ({
   applyMixins(Post, [ReactionableModel, TranslatableModel])
 
   // Environment var make sense only for production
-  if (process.env.NEXT_PUBLIC_ANALYTICS_TRACKING_ID) {
+  if (process.env.NEXT_PUBLIC_NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ANALYTICS_TRACKING_ID) {
     ReactGA.initialize(process.env.NEXT_PUBLIC_ANALYTICS_TRACKING_ID)
   }
 
@@ -98,12 +98,10 @@ function App ({
 
   if (process.env.NEXT_PUBLIC_CLICKAINE_POPUNDER_URL) {
     clickainePopunder = (
-      <Head>
-        <script
-          src={ process.env.NEXT_PUBLIC_CLICKAINE_POPUNDER_URL }
-          async={ true }
-        />
-      </Head>
+      <Script
+        src={ process.env.NEXT_PUBLIC_CLICKAINE_POPUNDER_URL }
+        async={ true }
+      />
     )
   }
 

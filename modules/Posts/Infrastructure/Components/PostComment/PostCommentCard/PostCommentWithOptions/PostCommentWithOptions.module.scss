@@ -12,11 +12,11 @@
     @apply text-base-500 rounded-full transition-colors;
 
     &:hover, &:focus {
-      @apply text-base-100 bg-brand-500 transition-colors;
+      @apply text-base-100 bg-brand-primary-dark transition-colors;
     }
 
     &_open {
-      @apply text-base-100 bg-brand-500 transition-colors;
+      @apply text-base-100 bg-brand-primary-dark transition-colors;
     }
 
     &:disabled {
@@ -33,13 +33,13 @@
   }
 
   &__replies-button {
-    @apply text-xs font-medium text-brand-300 cursor-auto
+    @apply text-xs font-medium text-brand-primary-light cursor-auto
       transition-colors;
 
     &_actionable {
       @apply cursor-pointer;
       &:hover, &:focus {
-        @apply text-brand-900 transition;
+        @apply text-brand-secondary-dark transition;
       }
 
       &:disabled {

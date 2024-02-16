@@ -16,6 +16,7 @@ import {
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
+import { useAvatarColor } from '~/hooks/AvatarColor'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto
@@ -34,6 +35,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
 }) => {
   const { asPath } = useRouter()
   const { t } = useTranslation('actors')
+  const getRandomColor = useAvatarColor()
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -67,6 +69,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
   }
 
   return (
+
     <div className={ styles.actorPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 

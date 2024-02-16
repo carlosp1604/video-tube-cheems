@@ -14,7 +14,7 @@
     }
 
     &:hover, &:focus {
-      @apply text-brand-400 transition-colors;
+      @apply text-brand-primary-bg transition-colors;
     }
 
     &:disabled {
@@ -22,7 +22,7 @@
     }
 
     &_active {
-      @apply text-brand-400 bg-base-900 transition-colors;
+      @apply text-brand-primary-bg bg-base-900 transition-colors;
     }
   }
 

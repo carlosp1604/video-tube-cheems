@@ -1,4 +1,3 @@
-
 function classNamesToZIndex (classNames) {
   return classNames.reduce((zIndexes, className, index) => {
     zIndexes[className] = index + 1
@@ -45,10 +44,13 @@ module.exports = {
       animation: {
         'bounce-short': 'bounce 0.3s ease-in-out 2',
       },
+      boxShadow: {
+        all: '0px 0px 10px 2px rgba(0, 0, 0, 0.3)',
+      },
       colors: {
         sidebar: {
-          item: '#007880',
-          active: '#007880',
+          item: process.env.SIDEBAR_ITEM_BACKGROUND ?? '',
+          active: process.env.SIDEBAR_ITEM_ACTIVE ?? '',
         },
         body: '#1d1d1d',
         base: {
@@ -66,48 +68,22 @@ module.exports = {
         },
         brand: {
           primary: {
-            light: '#b88b5c',
-            dark: '#8e582c',
-            bg: '#a06c3f',
+            light: process.env.BRAND_PRIMARY_LIGHT ?? '', // 600
+            bg: process.env.BRAND_PRIMARY_COLOR ?? '', // 700
+            dark: process.env.BRAND_PRIMARY_DARK ?? '', // 800
           },
           secondary: {
-            light: '#834f23',
-            dark: '#6d3c11',
-            bg: '#78451a',
+            light: process.env.BRAND_SECONDARY_LIGHT ?? '', // 300
+            bg: process.env.BRAND_SECONDARY_COLOR ?? '', // 400
+            dark: process.env.BRAND_SECONDARY_DARK ?? '', // 500
           },
-          900: '#623307',
-          800: '#6d3c11',
-          700: '#78451a',
-          600: '#834f23',
-          500: '#8e582c',
-          400: '#a06c3f',
-          300: '#b88b5c',
-          200: '#d0ab7a',
         },
-        brand2: {
-          900: '#164E63',
-          800: '#155E75',
-          700: '#0E7490',
-          600: '#0891B2',
-          500: '#06B6D4',
-          400: '#22D3EE',
-          300: '#67E8F9',
-          200: '#A5F3FC',
-          100: '#CFFAFE',
-          50: '#ECFEFF',
-        },
-        tooltip: '#6d3c11',
+        tooltip: process.env.TOOLTIP_BACKGROUND ?? '',
         toast: {
-          error: {
-            background: '#DC143C',
-            primary: '#FFA07A',
-            secondary: '#DC143C',
-          },
-          background: '#78451a',
-          primary: '#b88b5c',
-          secondary: '#FAFAF9',
+          error: process.env.TOAST_ERROR_BACKGROUND ?? '',
+          background: process.env.TOAST_BACKGROUND ?? '',
         },
-        'progress-bar': '#a06c3f',
+        'progress-bar': process.env.NEXT_PUBLIC_PROGRESS_BAR_BACKGROUND ?? '',
         red: '#FF0000',
         blue: '#00BFFF',
         green: '#008000',

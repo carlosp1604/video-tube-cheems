@@ -7,10 +7,10 @@
 
   &__video-container {
     @apply aspect-w-16 aspect-h-9 rounded-lg
-      overflow-hidden z-post-card-video;
+    overflow-hidden z-post-card-video;
 
     &__external {
-      @apply ring-2 ring-brand-400;
+      @apply shadow-all shadow-brand-primary-light;
     }
 
     &:hover {
@@ -42,7 +42,8 @@
   }
 
   &__producer-actor-logo {
-    @apply rounded-full h-full w-full object-cover object-center transition-transform;
+    @apply rounded-full h-full w-full object-cover object-center
+    transition-transform;
 
     &:hover {
       @apply scale-110 transition-transform;
@@ -85,7 +86,7 @@
 
   &__extra-data {
     @apply flex items-center font-normal text-gray-400 text-xs gap-x-0.5
-      line-clamp-none truncate;
+    line-clamp-none truncate;
   }
 
   &__producer-name {
@@ -98,17 +99,19 @@
 
   &__video-time {
     @apply absolute top-1 right-1 text-sm font-normal
-      text-base-400 py-0.5 px-1 rounded-lg bg-body
-      z-post-card-video-time cursor-default;
+    text-base-400 py-0.5 px-1 rounded-lg bg-body
+    z-post-card-video-time cursor-default;
   }
 
   &__external-icon {
     @apply absolute top-8 right-1 text-xl font-normal
-    text-base-100 py-0.5 px-1 rounded-lg bg-brand-400
-    z-post-card-video-time cursor-default transition-colors;
+    text-base-100 py-0.5 px-1 rounded-lg bg-brand-primary-bg
+    z-post-card-video-time cursor-default transition-colors
+    shadow-all shadow-brand-primary-bg;
 
     &:hover {
-      @apply text-brand-200 bg-brand-900 transition-colors;
+      @apply bg-brand-secondary-bg
+      shadow-brand-secondary-bg transition-colors;
     }
   }
 }

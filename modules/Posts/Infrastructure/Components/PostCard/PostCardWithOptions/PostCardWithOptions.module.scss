@@ -13,11 +13,11 @@
     }
 
     &:hover {
-      @apply bg-brand-400 transition-colors;
+      @apply bg-brand-primary-bg transition-colors;
     }
 
     &:active {
-      @apply bg-brand-500 transition-colors;
+      @apply bg-brand-primary-dark transition-colors;
     }
   }
 

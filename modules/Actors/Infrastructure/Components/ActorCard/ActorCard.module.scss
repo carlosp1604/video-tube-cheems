@@ -39,7 +39,7 @@
 
   &__count-section {
     @apply flex flex-row items-start gap-x-1 text-xs justify-between
-    font-normal text-brand-300;
+    font-normal text-brand-primary-light;
 
     @screen md {
       @apply text-sm;

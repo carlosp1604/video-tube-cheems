@@ -38,7 +38,7 @@
 
   &__scroll-button {
     @apply hidden absolute m-auto h-9 w-9 rounded-full
-      bg-brand-400 p-2 text-base-300 cursor-pointer z-carousel-button;
+      bg-brand-primary-bg p-2 text-base-300 cursor-pointer z-carousel-button;
 
     @screen md {
       @apply block opacity-100 transition-all duration-200;

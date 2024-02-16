@@ -8,7 +8,7 @@
     }
 
     &:active {
-      @apply bg-base-700/60 text-brand-500 transition-colors;
+      @apply bg-base-700/60 text-brand-primary-dark transition-colors;
     }
 
     &:disabled {

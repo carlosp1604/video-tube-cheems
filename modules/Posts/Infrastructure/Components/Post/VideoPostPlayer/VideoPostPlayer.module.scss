@@ -29,7 +29,7 @@
   }
 
   &__no-sources-state-icon {
-    @apply flex-shrink-0 h-10 w-10 text-brand-400;
+    @apply flex-shrink-0 h-10 w-10 text-brand-primary-bg;
 
     @screen tb {
       @apply h-14 w-14;
@@ -50,21 +50,21 @@
       backdrop-blur-lg bg-transparent transition-colors;
 
     &:hover {
-      @apply bg-brand-400 transition-colors;
+      @apply bg-brand-primary-bg transition-colors;
     }
 
     @screen md {
-      @apply translate-x-12 bg-brand-400 delay-1000 duration-1000
+      @apply translate-x-12 bg-brand-primary-bg delay-1000 duration-1000
       transition-all;
 
       &:hover {
-        @apply backdrop-blur-none text-base-100 bg-brand-700
+        @apply backdrop-blur-none text-base-100 bg-brand-secondary-bg
         transition-all;
       }
     }
 
     &:active {
-      @apply bg-brand-900 text-brand-200 transition-colors duration-75;
+      @apply bg-brand-secondary-bg text-brand-primary-light transition-colors duration-75;
     }
 
     &_visible {

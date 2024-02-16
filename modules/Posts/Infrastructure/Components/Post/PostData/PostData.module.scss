@@ -40,12 +40,12 @@
   }
 
   &__show-info-button {
-    @apply absolute left-1/2 -top-5 bg-brand-400 px-4 py-1
+    @apply absolute left-1/2 -top-5 bg-brand-primary-bg px-4 py-1
     rounded-lg text-sm transition-colors;
     transform: translate(-50%);
 
     &:hover {
-      @apply bg-brand-600 transition-colors;
+      @apply bg-brand-secondary-light transition-colors;
     }
   }
 

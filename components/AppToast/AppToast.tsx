@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { Toaster } from 'react-hot-toast'
-import TailwindConfig from '~/tailwind.config'
 
 export const AppToast: FC = () => {
   return (
@@ -12,14 +11,14 @@ export const AppToast: FC = () => {
       toastOptions={ {
         className: 'rounded-lg bg-toast-background text-white px-2 py-1 shadow-lg shadow-body',
         iconTheme: {
-          secondary: TailwindConfig.theme.extend.colors.toast.secondary,
-          primary: TailwindConfig.theme.extend.colors.toast.primary,
+          secondary: process.env.NEXT_PUBLIC_TOAST_SECONDARY ?? '',
+          primary: process.env.NEXT_PUBLIC_TOAST_PRIMARY ?? '',
         },
         error: {
-          className: 'rounded-lg bg-toast-error-background text-white px-2 py-1 shadow-lg shadow-body',
+          className: 'rounded-lg bg-toast-error text-white px-2 py-1 shadow-lg shadow-body',
           iconTheme: {
-            secondary: TailwindConfig.theme.extend.colors.toast.error.secondary,
-            primary: TailwindConfig.theme.extend.colors.toast.error.primary,
+            secondary: process.env.NEXT_PUBLIC_TOAST_ERROR_SECONDARY ?? '',
+            primary: process.env.NEXT_PUBLIC_TOAST_ERROR_PRIMARY ?? '',
           },
         },
       } }

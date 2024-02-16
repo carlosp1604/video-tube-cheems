@@ -18,7 +18,7 @@
     transition-colors;
 
     &:hover {
-      @apply text-base-100 border-brand-400 bg-base-900
+      @apply text-base-100 border-brand-primary-bg bg-base-900
       transition-colors;
     }
 
@@ -28,7 +28,7 @@
 
     &_current-page {
       @apply text-base-100 pointer-events-none font-black
-      border-brand-400 bg-base-900 transition-colors;
+      border-brand-primary-bg bg-base-900 transition-colors;
     }
 
     &__disabled {

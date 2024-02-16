@@ -14,12 +14,12 @@
 
   &__search-input {
     @apply text-base-100 placeholder-base-400 bg-body
-      caret-brand-400 outline-0 pr-12 w-full
+      caret-brand-primary-bg outline-0 pr-12 w-full
       border border-base-700 px-4 h-10 rounded-md rounded-r-none
       border-r-0 shadow-lg shadow-base-950 transition-all;
 
     &:hover, &:focus {
-      @apply bg-base-950 transition-colors border-brand-400
+      @apply bg-base-950 transition-colors border-brand-primary-bg
         outline-none;
       box-shadow: 2px 0 5px -2px #0c0a09;
     }
@@ -31,12 +31,12 @@
   }
 
   &__search-button {
-    @apply bg-brand-400 rounded-md rounded-l-none border
-      border-brand-400 h-10 w-14 flex items-center justify-center
+    @apply bg-brand-primary-bg rounded-md rounded-l-none border
+      border-brand-primary-bg h-10 w-14 flex items-center justify-center
       text-2xl text-body outline-0 transition-colors;
 
     &:hover, :focus {
-      @apply bg-brand-600 border-brand-600 transition-colors;
+      @apply bg-brand-secondary-light border-brand-secondary-light transition-colors;
     }
 
     &:active {

@@ -1,6 +1,7 @@
 import { CSSProperties, FC } from 'react'
 import styles from './ProfileHeader.module.scss'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
+import TailwindConfig from '~/tailwind.config'
 
 export interface Props {
   name: string
@@ -16,7 +17,7 @@ export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor
         <div
           className={ styles.profileHeader__background }
           style={ {
-            '--custom-color': customColor ?? '#834f23',
+            '--custom-color': customColor ?? TailwindConfig.theme.extend.colors.brand.primary.bg,
           } as CSSProperties }
         />
         { /**

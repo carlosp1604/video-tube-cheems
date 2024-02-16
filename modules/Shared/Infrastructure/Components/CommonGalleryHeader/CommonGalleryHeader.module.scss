@@ -18,12 +18,12 @@
   }
 
   &__title-term {
-    @apply text-brand-300 normal-case line-clamp-6 break-words
+    @apply text-brand-primary-light normal-case line-clamp-6 break-words
     text-2xl font-bold leading-none;
   }
 
   &__quantity {
-    @apply normal-case text-xs text-brand-300
+    @apply normal-case text-xs text-brand-primary-light
     font-normal;
     grid-area: subtitle;
 

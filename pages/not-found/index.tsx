@@ -12,10 +12,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     'footer',
     'menu',
     'user_menu',
-    'user_signup',
+    'user_signu p',
     'user_login',
     'user_retrieve_password',
     'error',
+    'common',
   ])
 
   return {

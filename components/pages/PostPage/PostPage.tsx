@@ -2,7 +2,6 @@ import { NextPage } from 'next'
 import styles from './PostPage.module.scss'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
 import { useTranslation } from 'next-i18next'
 import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
 import {
@@ -14,6 +13,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
 import { Duration } from 'luxon'
 import { ReactElement } from 'react'
+import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -93,7 +93,7 @@ export const PostPage: NextPage<PostPageProps> = ({
     relatedPostsSection = (
       <div className={ styles.postPage__relatedVideosTitle }>
         { t('video_related_videos_title') }
-        <PostCardCarousel
+        <PostCardGallery
           posts={ relatedPosts }
           postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         />

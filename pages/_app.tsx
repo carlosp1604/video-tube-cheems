@@ -19,7 +19,7 @@ import { AppToast } from '~/components/AppToast/AppToast'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import ReactGA from 'react-ga4'
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
-import { AppProgressBar } from '~/AppProgressBar/AppProgressBar'
+import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import Script from 'next/script'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')

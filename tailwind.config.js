@@ -1,3 +1,4 @@
+
 function classNamesToZIndex (classNames) {
   return classNames.reduce((zIndexes, className, index) => {
     zIndexes[className] = index + 1
@@ -6,7 +7,6 @@ function classNamesToZIndex (classNames) {
   }, {})
 }
 
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -45,9 +45,6 @@ module.exports = {
       animation: {
         'bounce-short': 'bounce 0.3s ease-in-out 2',
       },
-      aspectRatio: {
-        9.7: '9.7',
-      },
       colors: {
         sidebar: {
           item: '#007880',
@@ -68,6 +65,16 @@ module.exports = {
           50: '#FAFAF9',
         },
         brand: {
+          primary: {
+            light: '#b88b5c',
+            dark: '#8e582c',
+            bg: '#a06c3f',
+          },
+          secondary: {
+            light: '#834f23',
+            dark: '#6d3c11',
+            bg: '#78451a',
+          },
           900: '#623307',
           800: '#6d3c11',
           700: '#78451a',
@@ -76,8 +83,6 @@ module.exports = {
           400: '#a06c3f',
           300: '#b88b5c',
           200: '#d0ab7a',
-          100: '#e8cb92',
-          50: '#ffedba',
         },
         brand2: {
           900: '#164E63',
@@ -91,6 +96,18 @@ module.exports = {
           100: '#CFFAFE',
           50: '#ECFEFF',
         },
+        tooltip: '#6d3c11',
+        toast: {
+          error: {
+            background: '#DC143C',
+            primary: '#FFA07A',
+            secondary: '#DC143C',
+          },
+          background: '#78451a',
+          primary: '#b88b5c',
+          secondary: '#FAFAF9',
+        },
+        'progress-bar': '#a06c3f',
         red: '#FF0000',
         blue: '#00BFFF',
         green: '#008000',

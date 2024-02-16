@@ -13,7 +13,6 @@ import { Roboto } from '@next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
 import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
-import NextNProgress from 'nextjs-progressbar'
 import { useRouter } from 'next/router'
 import { AppFooter } from '~/components/AppFooter/AppFooter'
 import { AppToast } from '~/components/AppToast/AppToast'
@@ -21,6 +20,7 @@ import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/
 import ReactGA from 'react-ga4'
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
 import Head from 'next/head'
+import { AppProgressBar } from '~/AppProgressBar/AppProgressBar'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -123,6 +123,8 @@ function App ({
           <div className={ `${styles.app__layout} ${roboto.variable}` }>
             { clickainePopunder }
 
+            <AppProgressBar />
+
             <AppToast />
 
             <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) }/>
@@ -133,13 +135,6 @@ function App ({
               setOpenMenu={ setMenuOpen }
             />
 
-            <NextNProgress
-              color={ '#a06c3f' }
-              options={ { showSpinner: false } }
-              showOnShallow={ true }
-              height={ 2 }
-            />
-
             <AppMenu onClickMenuButton={ () => setMenuOpen(!menuOpen) }/>
 
             <MenuSideBar
@@ -148,16 +143,17 @@ function App ({
             />
 
             { /** Workaround to work with the sidebar fixed **/ }
-            <div className={ `
-              ${styles.app__mainLayout}
-              ${menuOpen ? styles.app__mainLayout__open : ''}
-              ${roboto.variable}
-            ` }>
+            <div className={
+              `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
+            >
               <main className={ styles.app__container }>
                 <Component { ...pageProps }/>
+
                 { adsTerraBanner }
               </main>
+
               <AppBanner />
+
               <AppFooter/>
             </div>
           </div>

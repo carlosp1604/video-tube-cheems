@@ -1229,6 +1229,13 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.1.tgz#20f18294f797f2209b5f65c8e3b5c8e8261d127c"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
+"@types/tailwindcss@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@types/tailwindcss/-/tailwindcss-3.1.0.tgz#1185e4b3437c6e0f19d6cc8cd42738a94fd7b64f"
+  integrity sha512-JxPzrm609hzvF4nmOI3StLjbBEP3WWQxDDJESqR1nh94h7gyyy3XSl0hn5RBMJ9mPudlLjtaXs5YEBtLw7CnPA==
+  dependencies:
+    tailwindcss "*"
+
 "@types/tough-cookie@*":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/tough-cookie/-/tough-cookie-4.0.2.tgz#6286b4c7228d58ab7866d19716f3696e03a09397"
@@ -2926,6 +2933,17 @@ fast-glob@^3.2.11, fast-glob@^3.2.12, fast-glob@^3.2.9:
     merge2 "^1.3.0"
     micromatch "^4.0.4"
 
+fast-glob@^3.3.0:
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.3.2.tgz#a904501e57cfdd2ffcded45e99a54fef55e46129"
+  integrity sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==
+  dependencies:
+    "@nodelib/fs.stat" "^2.0.2"
+    "@nodelib/fs.walk" "^1.2.3"
+    glob-parent "^5.1.2"
+    merge2 "^1.3.0"
+    micromatch "^4.0.4"
+
 fast-json-parse@^1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/fast-json-parse/-/fast-json-parse-1.0.3.tgz"
@@ -4137,6 +4155,11 @@ jiti@^1.18.2:
   version "1.18.2"
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.18.2.tgz#80c3ef3d486ebf2450d9335122b32d121f2a83cd"
   integrity sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==
+
+jiti@^1.19.1:
+  version "1.21.0"
+  resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.0.tgz#7c97f8fe045724e136a397f7340475244156105d"
+  integrity sha512-gFqAIbuKyyso/3G2qhiO2OM6shY6EPP/R0+mkDbyspxKazh8BXDC5FiFsUjlczgdNz/vfra0da2y+aHrusLG/Q==
 
 jose@^4.11.4, jose@^4.14.1:
   version "4.14.4"
@@ -6063,6 +6086,34 @@ tailwind-scrollbar-hide@^1.1.7:
   version "1.1.7"
   resolved "https://registry.npmjs.org/tailwind-scrollbar-hide/-/tailwind-scrollbar-hide-1.1.7.tgz"
   integrity sha512-X324n9OtpTmOMqEgDUEA/RgLrNfBF/jwJdctaPZDzB3mppxJk7TLIDmOreEDm1Bq4R9LSPu4Epf8VSdovNU+iA==
+
+tailwindcss@*:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.1.tgz#f512ca5d1dd4c9503c7d3d28a968f1ad8f5c839d"
+  integrity sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==
+  dependencies:
+    "@alloc/quick-lru" "^5.2.0"
+    arg "^5.0.2"
+    chokidar "^3.5.3"
+    didyoumean "^1.2.2"
+    dlv "^1.1.3"
+    fast-glob "^3.3.0"
+    glob-parent "^6.0.2"
+    is-glob "^4.0.3"
+    jiti "^1.19.1"
+    lilconfig "^2.1.0"
+    micromatch "^4.0.5"
+    normalize-path "^3.0.0"
+    object-hash "^3.0.0"
+    picocolors "^1.0.0"
+    postcss "^8.4.23"
+    postcss-import "^15.1.0"
+    postcss-js "^4.0.1"
+    postcss-load-config "^4.0.1"
+    postcss-nested "^6.0.1"
+    postcss-selector-parser "^6.0.11"
+    resolve "^1.22.2"
+    sucrase "^3.32.0"
 
 tailwindcss@^3.0.23:
   version "3.3.2"

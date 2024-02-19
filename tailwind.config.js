@@ -49,8 +49,8 @@ module.exports = {
       },
       colors: {
         sidebar: {
-          item: process.env.SIDEBAR_ITEM_BACKGROUND ?? '',
-          active: process.env.SIDEBAR_ITEM_ACTIVE ?? '',
+          item: '#007880',
+          active: '#007880',
         },
         body: '#1d1d1d',
         base: {
@@ -68,22 +68,26 @@ module.exports = {
         },
         brand: {
           primary: {
-            light: process.env.BRAND_PRIMARY_LIGHT ?? '', // 600
-            bg: process.env.BRAND_PRIMARY_COLOR ?? '', // 700
-            dark: process.env.BRAND_PRIMARY_DARK ?? '', // 800
+            light: '#b88b5c', // 600
+            bg: '#a06c3f', // 700
+            dark: '#8e582c', // 800
           },
           secondary: {
-            light: process.env.BRAND_SECONDARY_LIGHT ?? '', // 300
-            bg: process.env.BRAND_SECONDARY_COLOR ?? '', // 400
-            dark: process.env.BRAND_SECONDARY_DARK ?? '', // 500
+            light: '#834f23', // 300
+            bg: '#78451a', // 400
+            dark: '#6d3c11', // 500
           },
         },
-        tooltip: process.env.TOOLTIP_BACKGROUND ?? '',
+        tooltip: '#6d3c11',
         toast: {
-          error: process.env.TOAST_ERROR_BACKGROUND ?? '',
-          background: process.env.TOAST_BACKGROUND ?? '',
+          error: {
+            bg: '#DC143C',
+            icon: '#FFA07A',
+          },
+          bg: '#78451a',
+          icon: '#b88b5c',
         },
-        'progress-bar': process.env.NEXT_PUBLIC_PROGRESS_BAR_BACKGROUND ?? '',
+        'progress-bar': '#a06c3f',
         red: '#FF0000',
         blue: '#00BFFF',
         green: '#008000',

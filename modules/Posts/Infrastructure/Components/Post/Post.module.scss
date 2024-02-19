@@ -6,6 +6,7 @@
 
   &__post-with-ads {
     @apply flex flex-col gap-y-4;
+
     @screen lg {
       @apply flex flex-row gap-x-4 justify-between;
     }

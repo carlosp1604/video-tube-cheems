@@ -1,5 +1,5 @@
 import styles from './PostOptions.module.scss'
-import { FC, useState } from 'react'
+import { FC, ReactElement, useState } from 'react'
 import { BsBookmarks, BsChatSquareText, BsDownload, BsMegaphone } from 'react-icons/bs'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { RxDividerVertical } from 'react-icons/rx'
@@ -9,6 +9,8 @@ import toast from 'react-hot-toast'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
 import { AiOutlineLoading } from 'react-icons/ai'
+import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
+import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 
 export interface Props {
   userReaction: ReactionComponentDto | null
@@ -16,10 +18,10 @@ export interface Props {
   onClickReactButton: (type: ReactionType) => Promise<void>
   onClickCommentsButton: () => void
   onClickSaveButton: () => Promise<void>
-  onClickDownloadButton: () => void
   likesNumber: number
-  downloadUrlNumber: number
   optionsDisabled: boolean
+  downloadUrls: MediaUrlComponentDto[]
+  enableDownloads: boolean
 }
 
 export const PostOptions: FC<Props> = ({
@@ -28,13 +30,14 @@ export const PostOptions: FC<Props> = ({
   onClickReactButton,
   onClickCommentsButton,
   onClickSaveButton,
-  onClickDownloadButton,
   likesNumber,
-  downloadUrlNumber,
   optionsDisabled,
+  downloadUrls,
+  enableDownloads,
 }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false)
+  const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
 
   const { t } = useTranslation('post')
 
@@ -64,8 +67,42 @@ export const PostOptions: FC<Props> = ({
     setLoadingSaveButton(false)
   }
 
+  const onClickDownloadButton = () => {
+    if (downloadUrls.length > 0) {
+      setDownloadMenuOpen(!downloadMenuOpen)
+
+      return
+    }
+    toast.error(t('post_download_no_downloads_error_message'))
+  }
+
+  let downloadMenu: ReactElement | null = null
+  let downloadButton: ReactElement | null = null
+
+  if (enableDownloads) {
+    downloadMenu = (
+      <DownloadMenu
+        mediaUrls={ downloadUrls }
+        setIsOpen={ setDownloadMenuOpen }
+        isOpen={ downloadMenuOpen }
+      />
+    )
+
+    downloadButton = (
+      <span
+        className={ styles.postOptions__optionItem }
+        onClick={ () => onClickDownloadButton() }
+      >
+        <BsDownload />
+        { t('post_download_button_title', { sourcesNumber: downloadUrls.length }) }
+      </span>
+    )
+  }
+
   return (
     <div className={ styles.postOptions__container }>
+      { downloadMenu }
+
       <span className={ `
         ${styles.postOptions__likeDislikeSection}
         ${loading || optionsDisabled ? styles.postOptions__likeDislikeSection_disabled : ''}
@@ -102,13 +139,7 @@ export const PostOptions: FC<Props> = ({
         { loadingSaveButton ? <AiOutlineLoading className={ styles.postOptions__loadingIcon } /> : <BsBookmarks /> }
         { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </button>
-      <span
-        className={ styles.postOptions__optionItem }
-        onClick={ () => onClickDownloadButton() }
-      >
-        <BsDownload />
-        { t('post_download_button_title', { sourcesNumber: downloadUrlNumber }) }
-      </span>
+      { downloadButton }
       <span
         className={ styles.postOptions__optionItem }
         onClick={ () => { toast.success(t('post_option_feature_not_available_message')) } }

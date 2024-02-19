@@ -9,6 +9,7 @@ import {
   PostWithRelationsApplicationDto
 } from '~/modules/Posts/Application/Dtos/PostWithRelationsApplicationDto'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import { MetaApplicationDto } from '~/modules/Posts/Application/Dtos/MetaApplicationDto'
 
 export class PostCardComponentDtoTranslator {
   public static fromApplication (
@@ -20,20 +21,11 @@ export class PostCardComponentDtoTranslator {
 
     // FIXME: This should be resolved with the dependencies container
     const dateService = new DateService()
-    const date = dateService
-      .formatAgoLike(applicationDto.publishedAt, locale)
+    const date = dateService.formatAgoLike(applicationDto.publishedAt, locale)
 
-    const thumb = applicationDto.meta.find((meta) => {
-      return meta.type === 'thumb'
-    })
-
-    const duration = applicationDto.meta.find((meta) => {
-      return meta.type === 'duration'
-    })
-
-    const externalLink = applicationDto.meta.find((meta) => {
-      return meta.type === 'external-link'
-    })
+    const thumb = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'thumb')
+    const duration = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'duration')
+    const externalLink = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'external-link')
 
     let formattedDuration = ''
 
@@ -89,5 +81,11 @@ export class PostCardComponentDtoTranslator {
       actor,
       externalLink: externalLink ? externalLink.value : null,
     }
+  }
+
+  private static getMeta (postMeta: MetaApplicationDto[], type: string): MetaApplicationDto | undefined {
+    return postMeta.find((meta) => {
+      return meta.type === type
+    })
   }
 }

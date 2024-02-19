@@ -45,12 +45,12 @@
   }
 
   &__switcher-button {
-    @apply translate-x-0 flex absolute top-2 right-2 items-center rounded-full
+    @apply translate-x-0 flex absolute top-2 right-1 items-center rounded-full
       p-2 text-base-100 h-9 w-9 z-video-player-options-button
-      backdrop-blur-lg bg-transparent transition-colors;
+      backdrop-blur-lg bg-brand-primary-bg bg-opacity-10 transition-all;
 
     &:hover {
-      @apply bg-brand-primary-bg transition-colors;
+      @apply bg-brand-primary-bg transition-all;
     }
 
     @screen md {
@@ -65,10 +65,6 @@
 
     &:active {
       @apply bg-brand-secondary-bg text-brand-primary-light transition-colors duration-75;
-    }
-
-    &_visible {
-      @apply translate-x-0 transition-all duration-500 delay-0 transform;
     }
   }
 

@@ -24,7 +24,6 @@ export interface Props {
 export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPostMedia }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [videoReady, setVideoReady] = useState<boolean>(false)
-  const [showVideoOptions, setShowVideoOptions] = useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
 
@@ -63,10 +62,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   if (selectableUrls.length > 1) {
     sourceSelectorButton = (
       <button
-        className={ `
-          ${styles.videoPostPlayer__switcherButton}
-          ${showVideoOptions ? styles.videoPostPlayer__switcherButton_visible : ''}
-         ` }
+        className={ styles.videoPostPlayer__switcherButton }
         onClick={ () => setMenuOpen(!menuOpen) }
         title={ t('post_video_player_selector_button_title') }
         data-tooltip-id={ tooltipId }
@@ -100,12 +96,6 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
         place={ 'left' }
       />
     )
-  }
-
-  const handleIframeEvents = async () => {
-    setShowVideoOptions(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setShowVideoOptions(false)
   }
 
   const onReady = () => {
@@ -148,10 +138,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   }
 
   return (
-    <div
-      className={ styles.videoPostPlayer__container }
-      onClick={ () => handleIframeEvents() }
-    >
+    <div className={ styles.videoPostPlayer__container }>
       { sourcesMenu }
       { !videoReady ? <VideoLoadingState /> : null }
       { playerElement }

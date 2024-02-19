@@ -1,14 +1,12 @@
+import styles from '~/components/pages/ActorPage/ActorPage.module.scss'
+import { Actor } from '~/modules/Actors/Infrastructure/Components/Actor/Actor'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import styles from '~/components/pages/ActorPage/ActorPage.module.scss'
-import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import {
-  Actor
-} from '~/modules/Actors/Infrastructure/Components/Actor/Actor'
-import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
-import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { useTranslation } from 'next-i18next'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
+import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
+import { useTranslation } from 'next-i18next'
+import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
 import {
   HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService
@@ -69,7 +67,6 @@ export const ActorPage: NextPage<ActorPageProps> = ({
   }
 
   return (
-
     <div className={ styles.actorPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
@@ -77,7 +74,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         name={ actor.name }
         imageAlt={ t('actor_image_alt_title', { actorName: actor.name }) }
         imageUrl={ actor.imageUrl }
-        customColor={ null }
+        customColor={ getRandomColor(actor.name) }
         rounded={ true }
       />
 

@@ -1,5 +1,5 @@
 import styles from './PostData.module.scss'
-import { CSSProperties, FC, ReactElement, useState } from 'react'
+import { FC, ReactElement, useState } from 'react'
 import Link from 'next/link'
 import {
   PostComponentDtoActorDto,
@@ -36,9 +36,6 @@ export const PostData: FC<Props> = ({
         <Link
           href={ `/producers/${producer.slug}` }
           title={ producer.name }
-          style={ {
-            '--producer-color': producer.brandHexColor,
-          } as CSSProperties }
           className={ styles.postData__producerLink }
         >
           <AvatarImage

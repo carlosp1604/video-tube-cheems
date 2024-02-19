@@ -41,7 +41,7 @@
 
   &__count-section {
     @apply flex flex-row items-start gap-x-1 text-xs justify-between
-    font-normal text-brand-primary-light;
+    font-normal text-[color:var(--producer-color)];
 
     @screen md {
       @apply text-sm;

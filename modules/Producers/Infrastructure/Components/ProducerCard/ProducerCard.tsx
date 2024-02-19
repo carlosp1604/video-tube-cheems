@@ -17,12 +17,7 @@ export const ProducerCard: FC<Props> = ({ producer }) => {
   const locale = useRouter().locale ?? 'en'
 
   return (
-    <div
-      className={ styles.producerCard__container }
-      style={ {
-        '--producer-color': producer.brandHexColor,
-      } as CSSProperties }
-    >
+    <div className={ styles.producerCard__container }>
       <div className={ styles.producerCard__imageWrapper }>
         <Link href={ `/producers/${producer.slug}` }>
           <AvatarImage
@@ -43,7 +38,12 @@ export const ProducerCard: FC<Props> = ({ producer }) => {
         >
           { producer.name }
         </Link>
-        <div className={ styles.producerCard__countSection }>
+        <div
+          className={ styles.producerCard__countSection }
+          style={ {
+            '--producer-color': producer.brandHexColor,
+          } as CSSProperties }
+        >
           { t('producer_card_posts_count_title', { postsNumber: producer.postsNumber }) }
           <span className={ styles.producerCard__viewsTitle }>
             { t('producer_card_views_count_title',

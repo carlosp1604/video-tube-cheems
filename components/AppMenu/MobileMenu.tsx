@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar, BsTv } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHouse, BsStar, BsTv } from 'react-icons/bs'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useRouter } from 'next/router'
@@ -133,6 +133,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                 picture: <BsTv />,
                 onClick: undefined,
               },
+              /**
               {
                 title: t('menu_reacted_button_title'),
                 isActive: false,
@@ -142,6 +143,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   toast.success(t('user_menu_option_not_available_message'))
                 },
               },
+              */
               buildAuthenticationAction(
                 `/users/${data ? data.user.username : ''}/saved-posts`,
                 <BsBookmarks />,
@@ -173,40 +175,6 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
               },
                */
             ] } />
-
-            {
-              /**
-               <div className={ styles.mobileMenu__footerContainer }>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               <span className={ styles.mobileMenu__footerItem }>
-               Home
-               </span>
-               </div>
-               */
-            }
           </div>
         </CSSTransition>
       </div>

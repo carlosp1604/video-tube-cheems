@@ -3,12 +3,13 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { BsBookmarks, BsClock, BsHeart, BsHouse, BsStar, BsTv } from 'react-icons/bs'
+import { BsBookmarks, BsCameraVideo, BsCardImage, BsClock, BsController, BsHouse, BsStar, BsTv } from 'react-icons/bs'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
-import { TfiWorld } from 'react-icons/tfi'
 import { useSession } from 'next-auth/react'
+import { SiTinder } from 'react-icons/si'
+import { TfiWorld } from 'react-icons/tfi'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionComponentInterface
@@ -160,15 +161,17 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       picture: <BsTv />,
       onClick: undefined,
     },
+    /**
     {
       title: t('menu_reacted_button_title'),
       isActive: false,
       action: undefined,
-      picture: <BsHeart />,
+      picture: <BsHeart/>,
       onClick: () => {
         toast.success(t('user_menu_option_not_available_message'))
       },
     },
+    */
     buildAuthenticationAction(
       `/users/${data ? data.user.username : ''}/saved-posts`,
       <BsBookmarks />,
@@ -181,15 +184,6 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       asPath === `/users/${data ? data.user.username : ''}/history`,
       t('menu_user_history_button_title')
     ),
-    {
-      title: t('menu_language_button_title'),
-      isActive: false,
-      action: undefined,
-      picture: <TfiWorld />,
-      onClick: () => {
-        setOpenLanguageMenu(true)
-      },
-    },
     /**
     {
       title: t('menu_live_cams_button_title'),
@@ -200,6 +194,68 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
     },
      */
   ]
+
+  if (process.env.NEXT_PUBLIC_CAMS_AD_URL) {
+    menuOptions.push({
+      title: t('live_cams_advertising_title'),
+      isActive: false,
+      picture: <BsCameraVideo />,
+      action: {
+        url: process.env.NEXT_PUBLIC_CAMS_AD_URL,
+        blank: true,
+      },
+      onClick: undefined,
+    })
+  }
+
+  if (process.env.NEXT_PUBLIC_GAMES_AD_URL) {
+    menuOptions.push({
+      title: t('games_advertising_title'),
+      isActive: false,
+      picture: <BsController />,
+      action: {
+        url: process.env.NEXT_PUBLIC_GAMES_AD_URL,
+        blank: true,
+      },
+      onClick: undefined,
+    })
+  }
+
+  if (process.env.NEXT_PUBLIC_DATING_AD_URL) {
+    menuOptions.push({
+      title: t('dating_advertising_title'),
+      isActive: false,
+      picture: <SiTinder />,
+      action: {
+        url: process.env.NEXT_PUBLIC_DATING_AD_URL,
+        blank: true,
+      },
+      onClick: undefined,
+    })
+  }
+
+  if (process.env.NEXT_PUBLIC_IA_AD_URL) {
+    menuOptions.push({
+      title: t('ia_advertising_title'),
+      isActive: false,
+      picture: <BsCardImage />,
+      action: {
+        url: process.env.NEXT_PUBLIC_IA_AD_URL,
+        blank: true,
+      },
+      onClick: undefined,
+    })
+  }
+
+  menuOptions.push({
+    title: t('menu_language_button_title'),
+    isActive: false,
+    action: undefined,
+    picture: <TfiWorld />,
+    onClick: () => {
+      setOpenLanguageMenu(true)
+    },
+  })
 
   return (
     <aside className={ `

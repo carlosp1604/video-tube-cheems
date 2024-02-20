@@ -1,0 +1,23 @@
+.top-mobile-menu {
+  &__container {
+    @apply flex items-center justify-around border-t border-b
+    border-base-800 px-5 py-2 my-4;
+
+    @screen lg {
+      @apply hidden;
+    }
+  }
+
+  &__offer-container {
+    @apply text-center text-xs leading-none text-base-400 w-full
+    border-l border-base-800 py-2 -my-1 break-words line-clamp-2;
+
+    &:first-child {
+      @apply -ml-1 border-none;
+    }
+
+    &:last-child {
+      @apply -mr-1;
+    }
+  }
+}

@@ -21,6 +21,8 @@ import ReactGA from 'react-ga4'
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import Script from 'next/script'
+import Head from 'next/head'
+import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -119,6 +121,10 @@ function App ({
       <UsingRouterProvider >
         <LoginProvider>
           <div className={ `${styles.app__layout} ${roboto.variable}` }>
+            <Head>
+              <link rel="icon" href="/favicon.ico" />
+            </Head>
+
             { clickainePopunder }
 
             <AppProgressBar />
@@ -145,6 +151,8 @@ function App ({
               `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
             >
               <main className={ styles.app__container }>
+                <TopMobileMenu />
+
                 <Component { ...pageProps }/>
 
                 { adsTerraBanner }

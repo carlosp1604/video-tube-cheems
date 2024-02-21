@@ -24,7 +24,6 @@
     "db:init": "yarn db:up && sleep 10 && yarn db:migrate && yarn db:import-producers && yarn db:import-actors && yarn db:import-tags && yarn db:import-providers && yarn db:import-posts"
   },
   "dependencies": {
-    "@next/font": "13.1.1",
     "@prisma/client": "^5.3.1",
     "@types/bcrypt": "^5.0.0",
     "@types/knex": "^0.16.1",
@@ -45,7 +44,7 @@
     "luxon": "^3.1.1",
     "mailersend": "^2.1.2",
     "mysql2": "^2.3.3",
-    "next": "13.0.6",
+    "next": "13.4.20-canary.13",
     "next-auth": "^4.6.1",
     "next-i18next": "^10.5.0",
     "nextjs-progressbar": "^0.0.16",

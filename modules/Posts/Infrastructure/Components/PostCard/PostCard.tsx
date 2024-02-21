@@ -193,6 +193,7 @@ export const PostCard: FC<Props> = ({
             className={ styles.postCard__videoTitleLink }
             title={ post.title }
             rel={ post.externalLink !== null ? 'nofollow' : 'follow' }
+            target={ post.externalLink !== null ? '_blank' : '_self' }
           >
             { post.title }
           </Link>

@@ -144,12 +144,22 @@ export const PostData: FC<Props> = ({
   }
 
   if (postDescription !== '') {
+    const descriptionFragments = postDescription.split(/\\n/)
+
+    const descriptionParagraphs: ReactElement[] = []
+
+    for (const fragment of descriptionFragments) {
+      descriptionParagraphs.push(
+        <div className={ styles.postData__postDescription } key={ fragment }>
+          { fragment }
+        </div>
+      )
+    }
+
     descriptionSection = (
       <div className={ styles.postData__dataItem }>
         { t('post_extra_data_description_title') }
-        <div className={ styles.postData__postDescription }>
-          { postDescription }
-        </div>
+        { descriptionParagraphs }
       </div>
     )
   }

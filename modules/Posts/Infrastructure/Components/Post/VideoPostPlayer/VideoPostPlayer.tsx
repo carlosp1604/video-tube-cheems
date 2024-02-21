@@ -109,6 +109,8 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     embedPostMedia &&
     embedPostMedia.urls.includes(selectedUrl)
   ) {
+    const sandbox = VideoPostPlayerHelper.shouldBeSanboxed(selectedUrl.provider.id)
+
     playerElement = (
       <iframe
         key={ selectedUrl.url }
@@ -119,6 +121,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
         height={ '100%' }
         onLoad={ onReady }
         allowFullScreen={ true }
+        sandbox={ sandbox ? 'allow-same-origin allow-scripts' : undefined }
       />
     )
   }

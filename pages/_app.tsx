@@ -9,7 +9,7 @@ import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvide
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
 import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
-import { Roboto } from '@next/font/google'
+import { Roboto } from 'next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
 import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'

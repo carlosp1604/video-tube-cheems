@@ -1,5 +1,6 @@
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
+import { sanboxableProviders } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/SanboxableProviders'
 
 export class VideoPostPlayerHelper {
   public static getSelectableUrls (
@@ -25,5 +26,13 @@ export class VideoPostPlayerHelper {
     }
 
     return mediaUrls[0]
+  }
+
+  public static shouldBeSanboxed (providerId: string): boolean {
+    if (sanboxableProviders.includes(providerId)) {
+      return true
+    }
+
+    return false
   }
 }

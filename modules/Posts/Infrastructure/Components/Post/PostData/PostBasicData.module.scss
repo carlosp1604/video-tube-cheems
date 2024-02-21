@@ -20,7 +20,8 @@
   }
 
   &__post-info-item {
-    @apply flex flex-row items-center font-light text-base-400 gap-x-1 text-xs;
+    @apply flex flex-row flex-wrap items-center font-light text-base-400
+      gap-x-1 text-xs justify-center text-center;
 
     @screen md {
       @apply text-sm;

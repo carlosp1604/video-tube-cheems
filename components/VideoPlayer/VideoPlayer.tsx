@@ -21,14 +21,18 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
 }) => {
   const [videoReady, setVideoReady] = useState<boolean>(false)
 
-  const advertising = {
-    client: 'vast',
-    schedule: {
-      myAds: {
-        offset: 'pre',
-        tag: 'https://syndication.realsrv.com/splash.php?idzone=4829926',
+  let advertising = null
+
+  if (process.env.NEXT_PUBLIC_VIDEO_PRE_ROLL_AD_URL) {
+    advertising = {
+      client: 'vast',
+      schedule: {
+        myAds: {
+          offset: 'pre',
+          tag: process.env.NEXT_PUBLIC_VIDEO_PRE_ROLL_AD_URL,
+        },
       },
-    },
+    }
   }
 
   const sources = videoPostMedia.urls.map((mediaUrl) => {
@@ -38,6 +42,12 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
       label: mediaUrl.title,
     }
   })
+
+  let customProps: { sources: any; advertising?: any } = { sources }
+
+  if (advertising) {
+    customProps = { sources, advertising }
+  }
 
   const onReady = () => {
     setVideoReady(true)
@@ -50,7 +60,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
       <ReactJWPlayer
         file={ selectedMediaUrl.url }
         playerScript={ 'https://cdn.jwplayer.com/libraries/cDnha7c4.js' }
-        customProps={ { sources } }
+        customProps={ customProps }
         // FIXME: Set a default thumbnailUrl if not exists
         image={ videoPostMedia.thumbnailUrl ?? '' }
         aspectRatio={ '16:9' }

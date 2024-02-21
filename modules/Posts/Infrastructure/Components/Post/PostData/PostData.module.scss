@@ -122,6 +122,10 @@
 
   &__post-description {
     @apply text-base-200 font-normal whitespace-pre-wrap
-    overflow-y-scroll scrollbar-hide pb-6;
+    overflow-y-scroll scrollbar-hide pb-2;
+
+    &:last-child {
+      @apply pb-6;
+    }
   }
 }

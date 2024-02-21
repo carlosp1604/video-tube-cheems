@@ -5,13 +5,12 @@
   }
 
   &__container {
-    @apply grid place-items-start px-5 pt-10 pb-8
+    @apply grid place-items-start items-center px-5 pt-10 pb-8
       justify-between bg-base-900;
 
     grid-template-areas:
       "social-networks    social-networks   app-logo"
-      "social-networks    social-networks   languages"
-      "copyright          copyright         copyright";
+      "copyright          copyright         languages";
     grid-auto-columns: auto auto;
     grid-column-gap: 10px;
 

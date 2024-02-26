@@ -1,0 +1,35 @@
+.live-cams {
+  &__container {
+    @apply container px-5 flex flex-col gap-y-1 mb-10;
+  }
+
+  &__live-cams-title {
+    @apply flex flex-row flex-wrap gap-x-2 justify-between items-center
+    text-lg font-semibold cursor-default;
+
+    @screen md {
+      @apply text-xl;
+    }
+  }
+
+  &__live-cams-count {
+    @apply text-brand-primary-light ml-2 text-sm;
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__live-cams-link {
+    @apply font-normal text-sm p-1 px-2 rounded-full bg-base-800;
+
+    @screen md {
+      @apply text-base;
+    }
+  }
+
+  &__warning-message {
+    @apply text-xs border-t mt-2 pt-1 border-brand-primary-bg
+    text-base-400 leading-none;
+  }
+}

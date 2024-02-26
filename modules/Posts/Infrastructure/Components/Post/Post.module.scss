@@ -1,7 +1,7 @@
 .post {
   &__container {
     @apply container flex flex-col gap-y-4 mx-auto transition
-      pt-10 px-5 w-full overflow-hidden;
+      pt-5 px-5 w-full overflow-hidden;
   }
 
   &__post-with-ads {
@@ -17,11 +17,23 @@
   }
 
   &__right-container {
-    @apply relative flex flex-col gap-y-4 border border-base-800
-    rounded-lg min-h-[300px] p-10;
+    @apply relative flex flex-row gap-x-1 gap-y-0.5
+    min-h-[300px] flex-wrap justify-center m-1;
 
     @screen lg {
-      @apply max-w-[300px] max-h-max w-full;
+      @apply flex-col max-w-[300px] max-h-max w-full m-0;
+    }
+  }
+
+  &__right-container-item {
+    @apply flex items-center self-center;
+  }
+
+  &__right-container-item-hidden-mobile {
+    @apply hidden;
+
+    @screen md {
+      @apply flex flex-auto;
     }
   }
 

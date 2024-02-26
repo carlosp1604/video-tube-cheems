@@ -15,6 +15,7 @@ export const TopMobileMenu: FC = () => {
         href={ process.env.NEXT_PUBLIC_CAMS_AD_URL }
         title={ t('live_cams_advertising_title') }
         key={ t('live_cams_advertising_title') }
+        target={ '_blank' }
       >
         { t('live_cams_advertising_title') }
       </Link>
@@ -27,7 +28,9 @@ export const TopMobileMenu: FC = () => {
         className={ styles.topMobileMenu__offerContainer }
         href={ process.env.NEXT_PUBLIC_DATING_AD_URL }
         title={ t('dating_advertising_title') }
-        key={ t('dating_advertising_title') }>
+        key={ t('dating_advertising_title') }
+        target={ '_blank' }
+      >
         { t('dating_advertising_title') }
       </Link>
     )
@@ -40,6 +43,7 @@ export const TopMobileMenu: FC = () => {
         href={ process.env.NEXT_PUBLIC_GAMES_AD_URL }
         title={ t('games_advertising_title') }
         key={ t('games_advertising_title') }
+        target={ '_blank' }
       >
         { t('games_advertising_title') }
       </Link>
@@ -53,6 +57,7 @@ export const TopMobileMenu: FC = () => {
         href={ process.env.NEXT_PUBLIC_IA_AD_URL }
         title={ t('ia_advertising_title') }
         key={ t('ia_advertising_title') }
+        target={ '_blank' }
       >
         { t('ia_advertising_title') }
       </Link>

@@ -1,7 +1,7 @@
 .top-mobile-menu {
   &__container {
     @apply flex items-center justify-around border-t border-b
-    border-base-800 px-5 py-2 my-4;
+    border-base-800 px-5 py-2 my-4 backdrop-blur-lg;
 
     @screen lg {
       @apply hidden;
@@ -9,8 +9,8 @@
   }
 
   &__offer-container {
-    @apply text-center text-xs leading-none text-base-400 w-full
-    border-l border-base-800 py-2 -my-1 break-words line-clamp-2;
+    @apply text-center text-xs leading-none font-semibold text-base-400
+    w-full border-l border-base-800 py-2 -my-1 break-words line-clamp-2;
 
     &:first-child {
       @apply -ml-1 border-none;

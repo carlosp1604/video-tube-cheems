@@ -13,6 +13,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { Producers } from '~/modules/Producers/Infrastructure/Components/Producers/Producers'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 
 export interface ProducersPageProps {
   initialPage: number
@@ -47,6 +48,8 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
   return (
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <MobileBanner />
 
       <Producers
         initialPage={ initialPage }

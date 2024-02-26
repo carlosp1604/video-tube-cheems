@@ -54,17 +54,17 @@
     max-h-16 transition-max-height bg-base-800 rounded-lg
     duration-1000;
 
-    &__open {
-      @apply flex max-h-full duration-1000 h-auto
-      transition-max-height bg-base-800;
-    }
-
     @screen md {
       @apply text-sm;
     }
 
     @screen lg {
-      @apply text-base;
+      @apply h-32 max-h-32 text-base;
+    }
+
+    &__open {
+      @apply flex max-h-full duration-1000 h-auto
+      transition-max-height bg-base-800;
     }
   }
 

@@ -1,6 +1,12 @@
 {
   "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
   "banner_ad_title": "Advertising",
+  "cam_card_live_title": "Live",
+  "cam_card_play_button": "Tap here to play the show",
+  "cam_card_title": "Watch <0>{{camUsername}}</0> show",
+  "cams_carousel_title": "Live cams <0>{{camCount}}</0>",
+  "cams_carousel_warning_message": "Video not playing? Click on the room you want to see live",
+  "cams_carousel_link_title": "See all",
   "clear_search_button_title": "Clear search bar",
   "dislike_reaction_active_title_button": "Remove reaction",
   "dislike_reaction_title_button": "Don't like",

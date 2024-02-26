@@ -1,6 +1,12 @@
 {
   "action_cannot_be_performed_error_message": "No puedes hacer esto ahora, espera a que termine la operación actual",
   "banner_ad_title": "Publicidad",
+  "cam_card_live_title": "En vivo",
+  "cam_card_play_button": "Toca aquí para reproducir el show",
+  "cam_card_title": "Mira el show de <0>{{camUsername}}</0>",
+  "cams_carousel_title": "Cámaras en vivo <0>{{camCount}}</0>",
+  "cams_carousel_link_title": "Ver todas",
+  "cams_carousel_warning_message": "¿El show no se reproduce? Haz click sobre tu modelo favorito para entrar a su sala",
   "clear_search_button_title": "Limpiar búsqueda",
   "dislike_reaction_active_title_button": "Eliminar reacción",
   "dislike_reaction_title_button": "No me gusta",

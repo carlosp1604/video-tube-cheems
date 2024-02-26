@@ -166,6 +166,7 @@ export const Search: FC<Props> = ({
         postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         loading={ loading }
         emptyState={ firstRender ? null : emptyState }
+        showAds={ true }
       />
 
       <PaginationBar

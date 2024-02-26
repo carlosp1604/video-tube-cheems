@@ -1,0 +1,14 @@
+.desktop-banner {
+  &__container {
+    @apply flex items-center justify-center w-full h-fit my-2;
+  }
+
+  &__banner-wrapper {
+    @apply relative p-0.5 h-[256px] min-w-[306px] border border-base-800;
+  }
+
+  &__banner-ad {
+    @apply absolute bottom-1 right-1 text-base-100 bg-body
+    text-xl rounded-sm;
+  }
+}

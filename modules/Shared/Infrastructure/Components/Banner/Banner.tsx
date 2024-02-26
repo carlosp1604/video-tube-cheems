@@ -2,17 +2,12 @@ import { createRef, FC, useEffect } from 'react'
 import styles from './Banner.module.scss'
 import { useTranslation } from 'next-i18next'
 
-export interface Props {
-  adKey: string
-  domain: string
-}
-
-export const Banner: FC<Props> = ({ domain, adKey }) => {
+export const Banner: FC = () => {
   const { t } = useTranslation('common')
   const bannerRef = createRef<HTMLDivElement>()
 
   const atOptions = {
-    key: adKey,
+    key: '',
     format: 'iframe',
     height: 250,
     width: 300,
@@ -20,18 +15,28 @@ export const Banner: FC<Props> = ({ domain, adKey }) => {
   }
 
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_FOOTER_ADSTERRA_BANNER_KEY || !process.env.NEXT_PUBLIC_FOOTER_ADSTERRA_BANNER_DOMAIN) {
+      return
+    }
+
     if (bannerRef.current && !bannerRef.current.firstChild) {
       const conf = document.createElement('script')
       const script = document.createElement('script')
 
       script.type = 'text/javascript'
-      script.src = `//${domain}/${atOptions.key}/invoke.js`
+      script.src = `//${process.env.NEXT_PUBLIC_FOOTER_ADSTERRA_BANNER_DOMAIN}/${atOptions.key}/invoke.js`
       conf.innerHTML = `atOptions = ${JSON.stringify(atOptions)}`
 
       bannerRef.current.append(conf)
       bannerRef.current.append(script)
     }
   }, [bannerRef])
+
+  if (process.env.NEXT_PUBLIC_FOOTER_ADSTERRA_BANNER_KEY && process.env.NEXT_PUBLIC_FOOTER_ADSTERRA_BANNER_DOMAIN) {
+    atOptions.key = process.env.NEXT_PUBLIC_FOOTER_ADSTERRA_BANNER_KEY
+  } else {
+    return null
+  }
 
   return (
     <section className={ styles.banner__container }>

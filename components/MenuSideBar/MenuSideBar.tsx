@@ -22,10 +22,11 @@ const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen })
       <Link
         href={ menuOption.action.url }
         className={ `
-        ${styles.menuSideBar__menuItemContent}
-        ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
-        ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
-      ` }
+          ${styles.menuSideBar__menuItemContent}
+          ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
+          ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
+        ` }
+        target={ menuOption.action.blank ? '_blank' : '_self' }
       >
       <span className={ styles.menuSideBar__menuItemIcon }>
         { menuOption.picture }

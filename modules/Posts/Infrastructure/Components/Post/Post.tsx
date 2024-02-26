@@ -15,6 +15,9 @@ import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/Po
 import { useSavePost } from '~/hooks/SavePosts'
 import { useReactPost } from '~/hooks/ReactPost'
 import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
+import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
+import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
+import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/OutstreamBanner'
 
 export interface Props {
   post: PostComponentDto
@@ -212,16 +215,18 @@ export const Post: FC<Props> = ({
           />
         </div>
 
-        { /** TODO: Set max-width or max-height
         <div className={ styles.post__rightContainer }>
-          <span className={ styles.post__adverstisingTitle }>
-            { t('advertising_section_title') }
+          <span className={ styles.post__rightContainerItem }>
+            <Banner />
           </span>
-          Add here
+          <span className={ styles.post__rightContainerItem }>
+            <OutstreamBanner />
+          </span>
+          <span className={ styles.post__rightContainerItemHiddenMobile }>
+            <DesktopBanner />
+          </span>
         </div>
-        **/ }
       </section>
-
       <div ref={ commentsRef }>
         { commentsComponent }
       </div>

@@ -14,6 +14,7 @@ import {
 import { Duration } from 'luxon'
 import { ReactElement } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -104,6 +105,8 @@ export const PostPage: NextPage<PostPageProps> = ({
   return (
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <MobileBanner />
 
       <Post
         post={ post }

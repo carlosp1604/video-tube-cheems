@@ -1,0 +1,60 @@
+.cam-card {
+  &__container {
+    @apply relative overflow-hidden;
+  }
+
+  &__media-wrapper {
+    @apply aspect-w-16 aspect-h-9 rounded-md
+    overflow-hidden bg-base-950 mb-1;
+  }
+
+  &__image {
+    @apply h-full w-full object-center object-cover;
+  }
+
+  &__live-section {
+    @apply absolute top-1 left-2 text-xs font-bold cursor-default;
+  }
+
+  &__live-users-viewers {
+    @apply flex gap-x-1 -mt-0.5 items-center cursor-default;
+  }
+
+  &__live-icon {
+    @apply p-0.5 rounded-full text-lg cursor-default;
+  }
+
+  &__live-time {
+    @apply hidden;
+
+    &__visible {
+      @apply block absolute top-9 left-2 text-xs font-bold bg-red h-fit w-fit
+      p-0.5 rounded-lg cursor-default;
+    }
+  }
+
+  &__play-button {
+    @apply absolute top-2 right-2 h-fit w-fit p-2 rounded-full
+    backdrop-blur bg-brand-primary-bg/50 text-base-50;
+
+    &__hidden {
+      @apply hidden;
+    }
+
+    @screen md {
+      @apply hidden;
+    }
+  }
+
+  &__title {
+    @apply flex flex-col text-sm font-normal cursor-default;
+  }
+
+  &__username {
+    @apply font-black text-brand-primary-bg;
+  }
+
+  &__description {
+    @apply text-xs text-base-300 line-clamp-2;
+  }
+}

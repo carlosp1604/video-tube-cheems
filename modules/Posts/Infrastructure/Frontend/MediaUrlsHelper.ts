@@ -71,7 +71,7 @@ export class MediaUrlsHelper {
       return null
     }
 
-    return mediaUrls[0]
+    return filteredMediaUrls[0]
   }
 
   public static shouldBeSanboxed (providerId: string): boolean {

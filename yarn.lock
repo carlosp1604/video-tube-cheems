@@ -833,6 +833,13 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@jwplayer/jwplayer-react@^1.1.1", "@jwplayer/jwplayer-react@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@jwplayer/jwplayer-react/-/jwplayer-react-1.1.3.tgz#aecccb7861c450aa6874b07502670c9c7c10b0ea"
+  integrity sha512-t5W2zEe0cu9e6tByEaTB1Z2PMdckHlwpAChXUe2nbPN9f1lbvc/5OhlUlZX8wqIykjEZXlO8XR7loYSyRQfdlw==
+  dependencies:
+    "@jwplayer/jwplayer-react" "^1.1.1"
+
 "@mapbox/node-pre-gyp@^1.0.10":
   version "1.0.10"
   resolved "https://registry.npmjs.org/@mapbox/node-pre-gyp/-/node-pre-gyp-1.0.10.tgz"
@@ -1020,6 +1027,12 @@
   version "1.0.3"
   resolved "https://registry.npmjs.org/@tsconfig/node16/-/node16-1.0.3.tgz"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
+
+"@types/@jwplayer/jwplayer-react":
+  version "1.1.3"
+  resolved "https://codeload.github.com/jwplayer/jwplayer-react/tar.gz/b80271e803c63ec56f8b41c5589caf7e5a2767e8"
+  dependencies:
+    "@jwplayer/jwplayer-react" "^1.1.1"
 
 "@types/babel__core@^7.1.14":
   version "7.20.1"

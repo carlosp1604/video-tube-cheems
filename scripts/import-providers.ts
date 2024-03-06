@@ -66,7 +66,7 @@ async function run () {
 
   for (const provider of providersToImport) {
     await findOrCreateProvider(provider)
-    console.log(`  - Provider with ID: ${provider.slug} [${index}/${providersToImport.length}] processed\n`)
+    console.log(`  - Provider with ID: ${provider.id} [${index}/${providersToImport.length}] processed\n`)
     index++
   }
 

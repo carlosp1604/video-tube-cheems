@@ -10,10 +10,9 @@ import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingSt
 import {
   VideoSourcesMenu
 } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoSourcesMenu/VideoSourcesMenu'
-import {
-  VideoPostPlayerHelper
-} from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoPostPlayerHelper'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
+import { useSession } from 'next-auth/react'
+import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 
 export interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -27,15 +26,33 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
 
+  const { status, data } = useSession()
+
   const selectedMediaUrl = useMemo(
-    () => VideoPostPlayerHelper.getFirstMediaUrl(mediaUrls),
-    [embedPostMedia, videoPostMedia])
+    () => {
+      let userId: string | null = null
+
+      if (status === 'authenticated' && data) {
+        userId = data.user.id
+      }
+
+      return MediaUrlsHelper.getFirstMediaUrl(mediaUrls, userId)
+    },
+    [mediaUrls, status])
 
   const [selectedUrl, setSelectedUrl] = useState<MediaUrlComponentDto | null>(selectedMediaUrl)
 
   const selectableUrls = useMemo(
-    () => VideoPostPlayerHelper.getSelectableUrls(embedPostMedia, videoPostMedia),
-    [embedPostMedia, videoPostMedia])
+    () => {
+      let userId: string | null = null
+
+      if (status === 'authenticated' && data) {
+        userId = data.user.id
+      }
+
+      return MediaUrlsHelper.getSelectableUrls(mediaUrls, userId)
+    },
+    [mediaUrls, status])
 
   const { t } = useTranslation('post')
 
@@ -109,7 +126,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     embedPostMedia &&
     embedPostMedia.urls.includes(selectedUrl)
   ) {
-    const sandbox = VideoPostPlayerHelper.shouldBeSanboxed(selectedUrl.provider.id)
+    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedUrl.provider.id)
 
     playerElement = (
       <iframe
@@ -122,6 +139,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
         onLoad={ onReady }
         allowFullScreen={ true }
         sandbox={ sandbox ? 'allow-same-origin allow-scripts' : undefined }
+        style={ { overflow: 'hidden' } }
       />
     )
   }

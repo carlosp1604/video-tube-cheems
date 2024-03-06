@@ -1,6 +1,7 @@
 .post-page {
   &__related-videos-title {
-    @apply flex flex-col gap-y-2 text-base font-black p-5;
+    @apply flex flex-col gap-y-2 text-base font-black
+    p-5 container;
 
     @screen md {
       @apply text-xl;

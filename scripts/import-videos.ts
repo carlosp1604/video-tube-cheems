@@ -350,28 +350,43 @@ async function run (
       if (value !== null) {
         console.log(`\t- Building mediaUrls for provider ${key} for post with slug ${video.slug}`)
 
-        const downloadUrl = new MediaUrl(
-          `Download ${value.title}`,
-          value.id,
-          postMediaUuid,
-          value.downloadUrl,
-          MediaUrlType.DOWNLOAD_URL,
-          nowDate,
-          nowDate
-        )
+        let providerId = ''
 
-        const embedUrl = new MediaUrl(
-          `${value.title}`,
-          value.id,
-          postMediaUuid,
-          value.embed,
-          MediaUrlType.ACCESS_URL,
-          nowDate,
-          nowDate
-        )
+        if (value.id) {
+          providerId = value.id
+        }
 
-        mediaUrlsCollection.addItem(downloadUrl, downloadUrl.url)
-        mediaUrlsCollection.addItem(embedUrl, embedUrl.url)
+        if (value.providerData) {
+          providerId = value.providerData.id
+        }
+
+        if (value.downloadUrl && value.downloadUrl !== '') {
+          const downloadUrl = new MediaUrl(
+            `${value.title}`,
+            providerId,
+            postMediaUuid,
+            value.downloadUrl,
+            MediaUrlType.DOWNLOAD_URL,
+            nowDate,
+            nowDate
+          )
+
+          mediaUrlsCollection.addItem(downloadUrl, downloadUrl.url)
+        }
+
+        if (value.embed && value.embed !== '') {
+          const embedUrl = new MediaUrl(
+            `${value.title}`,
+            providerId,
+            postMediaUuid,
+            value.embed,
+            MediaUrlType.ACCESS_URL,
+            nowDate,
+            nowDate
+          )
+
+          mediaUrlsCollection.addItem(embedUrl, embedUrl.url)
+        }
 
         console.log('\t- Done')
       }
@@ -389,6 +404,54 @@ async function run (
     )
 
     postMediaCollection.addItem(postMedia, postMedia.id)
+
+    /** TODO: Finish this code **/
+    if (video.direct) {
+      console.log(`\t- Building mediaUrls for provider ${video.direct.title} for post with slug ${video.slug}`)
+      const mediaUrlsCollection : Collection<MediaUrl, MediaUrl['url'] & string> = Collection.initializeCollection()
+
+      const directPostMediaUuid = randomUUID()
+
+      const directPostMedia = new PostMedia(
+        directPostMediaUuid,
+        PostMediaType.VIDEO,
+        '',
+        postUuid,
+        video.thumb,
+        nowDate,
+        nowDate,
+        mediaUrlsCollection
+      )
+
+      /**
+       * Not included for the moment
+       *
+      const downloadUrl = new MediaUrl(
+        `${video.direct.title}`,
+        video.direct.id,
+        postMediaUuid,
+        video.direct.downloadUrl,
+        MediaUrlType.DOWNLOAD_URL,
+        nowDate,
+        nowDate
+      )
+
+      mediaUrlsCollection.addItem(downloadUrl, downloadUrl.url) */
+
+      const embedUrl = new MediaUrl(
+        `${video.direct.title}`,
+        video.direct.providerData.id,
+        postMediaUuid,
+        video.direct.embed,
+        MediaUrlType.ACCESS_URL,
+        nowDate,
+        nowDate
+      )
+
+      mediaUrlsCollection.addItem(embedUrl, embedUrl.url)
+
+      postMediaCollection.addItem(directPostMedia, directPostMedia.id)
+    }
 
     console.log(`  - Post media for post with slug: ${video.slug} built`)
 

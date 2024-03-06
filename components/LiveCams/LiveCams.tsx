@@ -26,21 +26,25 @@ export const LiveCams: FC = () => {
   const { t } = useTranslation('common')
 
   const getData = async () => {
-    const response = await fetch('https://api.ipify.org/?format=json')
+    try {
+      const response = await fetch('https://api.ipify.org/?format=json')
 
-    if (!response.ok) {
-      setLoading(false)
+      if (!response.ok) {
+        setLoading(false)
+
+        const responseData = await response.json()
+
+        console.error(responseData)
+
+        return
+      }
 
       const responseData = await response.json()
 
-      console.error(responseData)
-
-      return
+      setIp(responseData.ip)
+    } catch (exception: unknown) {
+      console.error(exception)
     }
-
-    const responseData = await response.json()
-
-    setIp(responseData.ip)
   }
 
   const getActiveCams = async () => {

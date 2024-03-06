@@ -20,6 +20,7 @@ export const AppBanner: FC = () => {
                 key={ t('rta_description_title') }
                 className={ styles.appBanner__rtaBlockAccessLink }
                 href={ 'https://www.rtalabel.org/index.html?content=parents' }
+                target={ '_blank' }
               />,
             ] }
           />

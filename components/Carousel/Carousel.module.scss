@@ -7,8 +7,8 @@
   }
 
   &__slider {
-    @apply flex flex-row flex-nowrap items-start gap-x-2.5 overflow-x-scroll
-    scrollbar-hide px-5 scroll-smooth;
+    @apply flex flex-row flex-nowrap items-start gap-x-2.5
+    overflow-x-scroll scrollbar-hide px-5 scroll-smooth;
 
     @screen lg {
       @apply mx-0 pl-0;
@@ -16,8 +16,12 @@
   }
 
   &__slider-item {
-    @apply flex-initial flex-shrink-0 basis-60 h-full w-full
+    @apply flex-initial flex-shrink-0 basis-5/6 h-full w-full
     p-0.5;
+
+    @screen tb {
+      @apply basis-6/12;
+    }
 
     @screen md {
       @apply basis-1/3;

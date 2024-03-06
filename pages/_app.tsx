@@ -100,9 +100,11 @@ function App ({
   /** Post video embed page **/
   if (pathname.startsWith('/posts/videos/embed')) {
     return (
-      <main className={ styles.app__embedContainer }>
-        <Component { ...pageProps }/>
-      </main>
+      <SessionProvider session={ session }>
+        <main className={ styles.app__embedContainer }>
+          <Component { ...pageProps }/>
+        </main>
+      </SessionProvider>
     )
   }
 

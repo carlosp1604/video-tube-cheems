@@ -5,7 +5,7 @@
 
   &__live-cams-title {
     @apply flex flex-row flex-wrap gap-x-2 justify-between items-center
-    text-lg font-semibold cursor-default;
+    text-lg font-semibold cursor-default pb-1;
 
     @screen md {
       @apply text-xl;
@@ -21,7 +21,7 @@
   }
 
   &__live-cams-link {
-    @apply font-normal text-sm p-1 px-2 rounded-full bg-base-800;
+    @apply font-normal text-sm p-1 px-3 rounded-full bg-base-800;
 
     @screen md {
       @apply text-base;

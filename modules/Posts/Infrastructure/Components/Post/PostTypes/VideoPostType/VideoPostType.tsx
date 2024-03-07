@@ -30,14 +30,12 @@ export const VideoPostType: FC<Props> = ({
   likesNumber,
   optionsDisabled,
 }) => {
-  const mediaUrls = MediaUrlsHelper.getVideoAccessUrl(post.postMediaVideoType, post.postMediaEmbedType)
   const downloadUrls = MediaUrlsHelper.getVideoDownloadUrl(post.postMediaVideoType, post.postMediaEmbedType)
 
   return (
     <>
       <div className={ styles.videoPostType__videoContainer } >
         <VideoPostPlayer
-          mediaUrls={ mediaUrls }
           embedPostMedia={ post.postMediaEmbedType.length > 0 ? post.postMediaEmbedType[0] : null }
           videoPostMedia={ post.postMediaVideoType.length > 0 ? post.postMediaVideoType[0] : null }
         />

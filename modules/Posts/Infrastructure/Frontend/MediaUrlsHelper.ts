@@ -39,39 +39,25 @@ export class MediaUrlsHelper {
   }
 
   public static getSelectableUrls (
-    mediaUrls: MediaUrlComponentDto[],
+    embedPostMedia: PostMediaComponentDto | null,
+    videoPostMedia: PostMediaComponentDto | null,
     userId: string | null
   ):MediaUrlComponentDto[] {
-    const selectableUrls : MediaUrlComponentDto[] = []
+    const mediaUrls: MediaUrlComponentDto[] = []
 
-    for (const mediaUrl of mediaUrls) {
-      if (mediaUrl.type === 'Video') {
-        const videoUrl = selectableUrls.find((mediaUrl) => {
-          return mediaUrl.type === 'Video'
-        })
+    if (videoPostMedia !== null) {
+      if (videoPostMedia.urls.length > 0) {
+        mediaUrls.push(videoPostMedia.urls[0])
+      }
+    }
 
-        if (videoUrl) {
-          continue
-        }
-      } else {
-        selectableUrls.push(mediaUrl)
+    if (embedPostMedia !== null) {
+      for (const embedPostMediaUrl of embedPostMedia.urls) {
+        mediaUrls.push(embedPostMediaUrl)
       }
     }
 
     return MediaUrlsHelper.sortMediaUrl(MediaUrlsHelper.filterProviders(mediaUrls, userId))
-  }
-
-  public static getFirstMediaUrl (
-    mediaUrls: MediaUrlComponentDto[],
-    userId: string | null
-  ): MediaUrlComponentDto | null {
-    const filteredMediaUrls = MediaUrlsHelper.filterProviders(mediaUrls, userId)
-
-    if (filteredMediaUrls.length === 0) {
-      return null
-    }
-
-    return filteredMediaUrls[0]
   }
 
   public static shouldBeSanboxed (providerId: string): boolean {
@@ -82,7 +68,6 @@ export class MediaUrlsHelper {
     return false
   }
 
-  /** TODO: Set the Admin Uuid and the Direct provider correctly */
   private static filterProviders (mediaUrls: MediaUrlComponentDto[], userId: string | null): MediaUrlComponentDto[] {
     if (!userId || (userId && userId !== '00000000-0000-0000-0000-000000000000')) {
       return mediaUrls.filter((mediaUrl) => {
@@ -123,8 +108,6 @@ export class MediaUrlsHelper {
         currentPointer++
       }
     }
-
-    console.log(mediaUrls)
 
     return mediaUrls
   }

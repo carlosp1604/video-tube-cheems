@@ -117,6 +117,7 @@ module.exports = {
         'video-player',
         'video-player-options',
         'video-player-options-button',
+        'advertising',
         'video-comments',
         'comment-options',
         'comment-to-reply',

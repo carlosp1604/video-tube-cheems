@@ -9,7 +9,6 @@ import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsAp
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
 import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
-import { Promise } from 'es6-promise'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
 import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
 import { useSavePost } from '~/hooks/SavePosts'

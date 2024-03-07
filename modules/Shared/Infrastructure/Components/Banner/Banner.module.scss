@@ -1,11 +1,16 @@
 .banner {
   &__container {
     @apply flex flex-col items-center justify-center
-    min-h-[250px] w-auto relative gap-y-1
+    min-h-[250px] w-auto gap-y-1 z-advertising
     text-base-500 text-sm font-semibold overflow-hidden;
   }
 
   &__banner-container {
-    @apply h-[250px] w-[300px];
+    @apply relative h-[250px] w-[300px];
+  }
+
+  &__banner-ad {
+    @apply absolute bottom-1 right-1 text-base-100 bg-body
+    text-xl rounded-sm;
   }
 }

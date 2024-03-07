@@ -6,7 +6,6 @@ import {
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { VideoPostPlayer } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoPostPlayer'
 import { FC } from 'react'
-import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 import {
   HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService
@@ -21,8 +20,6 @@ export const VideoEmbedPage: FC<VideoEmbedPageProps> = ({
   post,
   htmlPageMetaContextProps,
 }) => {
-  const mediaUrls = MediaUrlsHelper.getVideoAccessUrl(post.postMediaVideoType, post.postMediaEmbedType)
-
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       post.title,
@@ -39,7 +36,6 @@ export const VideoEmbedPage: FC<VideoEmbedPageProps> = ({
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <VideoPostPlayer
-        mediaUrls={ mediaUrls }
         embedPostMedia={ post.postMediaEmbedType.length > 0 ? post.postMediaEmbedType[0] : null }
         videoPostMedia={ post.postMediaVideoType.length > 0 ? post.postMediaVideoType[0] : null }
       />

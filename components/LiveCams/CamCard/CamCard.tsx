@@ -93,9 +93,7 @@ export const CamCard: FC<Props> = ({
     >
       <Trans
         i18nKey={ t('cam_card_title') }
-        components={ [
-          <span key={ t('cam_card_title') } className={ styles.camCard__username }/>,
-        ] }
+        components={ [<span key={ t('cam_card_title') } className={ styles.camCard__username }/>] }
         values={ { camUsername: username } }
       />
     </Link>

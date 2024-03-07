@@ -1,7 +1,7 @@
 .mobile-banner {
   &__container {
     @apply flex items-center justify-center w-full h-fit my-2
-    overflow-hidden;
+    overflow-hidden z-advertising;
   }
 
   &__banner-wrapper {

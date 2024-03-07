@@ -1,6 +1,7 @@
 import { createRef, FC, useEffect } from 'react'
 import styles from './Banner.module.scss'
 import { useTranslation } from 'next-i18next'
+import { RiAdvertisementFill } from 'react-icons/ri'
 
 export const Banner: FC = () => {
   const { t } = useTranslation('common')
@@ -40,7 +41,9 @@ export const Banner: FC = () => {
 
   return (
     <section className={ styles.banner__container }>
-      <div ref={ bannerRef } className={ styles.banner__bannerContainer } />
+      <div ref={ bannerRef } className={ styles.banner__bannerContainer }>
+        <RiAdvertisementFill className={ styles.banner__bannerAd }/>
+      </div>
       { t('banner_ad_title') }
     </section>
   )

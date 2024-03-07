@@ -4,7 +4,6 @@ import { BsFileEarmarkBreak, BsThreeDotsVertical } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import * as uuid from 'uuid'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
-import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 import {
@@ -13,34 +12,20 @@ import {
 import { Tooltip } from '~/components/Tooltip/Tooltip'
 import { useSession } from 'next-auth/react'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
+import { FluidVideoPlayer } from '~/components/VideoPlayer/FluidVideoPlayer'
 
 export interface Props {
-  mediaUrls: MediaUrlComponentDto[]
   embedPostMedia: PostMediaComponentDto | null
   videoPostMedia: PostMediaComponentDto | null
 }
 
-export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPostMedia }) => {
+export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [videoReady, setVideoReady] = useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
 
   const { status, data } = useSession()
-
-  const selectedMediaUrl = useMemo(
-    () => {
-      let userId: string | null = null
-
-      if (status === 'authenticated' && data) {
-        userId = data.user.id
-      }
-
-      return MediaUrlsHelper.getFirstMediaUrl(mediaUrls, userId)
-    },
-    [mediaUrls, status])
-
-  const [selectedUrl, setSelectedUrl] = useState<MediaUrlComponentDto | null>(selectedMediaUrl)
 
   const selectableUrls = useMemo(
     () => {
@@ -50,9 +35,22 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
         userId = data.user.id
       }
 
-      return MediaUrlsHelper.getSelectableUrls(mediaUrls, userId)
+      return MediaUrlsHelper.getSelectableUrls(embedPostMedia, videoPostMedia, userId)
     },
-    [mediaUrls, status])
+    [embedPostMedia, videoPostMedia, status])
+
+  const selectedMediaUrl = useMemo(
+    () => {
+      if (selectableUrls.length > 0) {
+        return selectableUrls[0]
+      }
+
+      return null
+    },
+    [selectableUrls, status])
+
+  const [selectedUrl, setSelectedUrl] =
+    useState<MediaUrlComponentDto | null>(selectedMediaUrl)
 
   const { t } = useTranslation('post')
 
@@ -63,7 +61,11 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     setTooltipId(uuid.v4())
   }, [])
 
-  if (mediaUrls.length === 0) {
+  useEffect(() => {
+    setSelectedUrl(selectedMediaUrl)
+  }, [status])
+
+  if (selectableUrls.length === 0) {
     return (
       <div className={ styles.videoPostPlayer__noSourcesState }>
         <BsFileEarmarkBreak className={ styles.videoPostPlayer__noSourcesStateIcon }/>
@@ -150,7 +152,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     videoPostMedia.urls.includes(selectedUrl)
   ) {
     playerElement = (
-      <VideoPlayer
+      <FluidVideoPlayer
         videoPostMedia={ videoPostMedia }
         selectedMediaUrl={ selectedUrl }
         onPlayerReady={ onReady }

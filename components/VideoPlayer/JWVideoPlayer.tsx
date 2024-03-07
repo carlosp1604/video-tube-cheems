@@ -1,11 +1,7 @@
-import { FC, useState } from 'react'
-import 'video.js/dist/video-js.css'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import { FC } from 'react'
 import styles from './VideoPlayer.module.scss'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
-import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import JWPlayer from '@jwplayer/jwplayer-react'
@@ -16,27 +12,24 @@ interface VideoPlayerProps {
   selectedMediaUrl: MediaUrlComponentDto
 }
 
-export const VideoPlayer: FC<VideoPlayerProps> = ({
+export const JWVideoPlayer: FC<VideoPlayerProps> = ({
   videoPostMedia,
   onPlayerReady,
-  selectedMediaUrl,
 }) => {
-  const [videoReady, setVideoReady] = useState<boolean>(false)
-
+  // FIXME: advertising is not working
   let advertising = null
 
   if (process.env.NEXT_PUBLIC_VIDEO_PRE_ROLL_AD_URL) {
     advertising = {
       client: 'vast',
-      schedule: {
-        myAds: {
-          offset: 'pre',
-          tag: process.env.NEXT_PUBLIC_VIDEO_PRE_ROLL_AD_URL,
-        },
-      },
+      schedule: [{
+        offset: 'pre',
+        tag: process.env.NEXT_PUBLIC_VIDEO_PRE_ROLL_AD_URL,
+      }],
     }
   }
 
+  // FIXME: Maybe we need to change this to support more video types
   const sources = videoPostMedia.urls.map((mediaUrl) => {
     return {
       file: mediaUrl.url,
@@ -45,26 +38,25 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
     }
   })
 
-  let customProps: { sources: any; advertising?: any } = { sources }
-
-  if (advertising) {
-    customProps = { sources, advertising }
-  }
+  const playlist = [{
+    image: videoPostMedia.thumbnailUrl,
+    sources,
+  }]
 
   const onReady = () => {
-    setVideoReady(true)
     onPlayerReady()
   }
 
   return (
     <div className={ styles.videoPlayer__container }>
-      { videoReady ? null : <VideoLoadingState /> }
       <JWPlayer
         library={ 'https://cdn.jwplayer.com/libraries/cDnha7c4.js' }
-        image={ videoPostMedia.thumbnailUrl ?? '' }
         aspectRatio={ '16:9' }
-        playerId={ videoPostMedia.postId }
+        playlist={ playlist }
         onReady={ onReady }
+        stretching={ 'fill' }
+        horizontalVolumeSlider={ true }
+        advertising={ advertising }
       />
     </div>
   )

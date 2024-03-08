@@ -26,6 +26,7 @@
   "post_video_player_selector_button_title": "Change video source",
   "post_video_player_sources_menu_subtitle": "Select an option to play the video",
   "post_video_player_sources_menu_title": "Player selection",
+  "post_video_player_sources_option_button_title": "Players",
   "post_views_title": "{{views}} views",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action"
 }

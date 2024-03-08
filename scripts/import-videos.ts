@@ -249,7 +249,7 @@ async function run (
      **/
     const metaDuration = buildMeta('duration', String(video.duration), postUuid)
     const metaThumb = buildMeta('thumb', String(video.thumb), postUuid)
-    const metaTrailer = buildMeta('trailer', `https://cdn.cheemsporn.com/${String(video.trailer)}`, postUuid)
+    const metaTrailer = buildMeta('trailer', String(video.trailer), postUuid)
 
     const metaCollection: Collection<PostMeta, PostMeta['type']> = Collection.initializeCollection()
 

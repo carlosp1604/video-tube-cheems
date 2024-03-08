@@ -26,6 +26,7 @@
   "post_video_player_selector_button_title": "Cambiar fuente del vídeo",
   "post_video_player_sources_menu_subtitle": "Selecciona una opción para reproducir el vídeo",
   "post_video_player_sources_menu_title": "Seleccionar reproductor",
+  "post_video_player_sources_option_button_title": "Reproductores",
   "post_views_title": "{{views}} vistas",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión"
 }

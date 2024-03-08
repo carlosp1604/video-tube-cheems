@@ -87,7 +87,7 @@ export const AppFooter: FC = () => {
           <Image
             alt={ t('app_logo_alt_title') }
             className={ styles.appFooter__logoImage }
-            src={ '/img/cheems-logo-text.png' }
+            src={ '/img/app-logo-text.png' }
             width={ 0 }
             height={ 0 }
             sizes={ '100vw' }

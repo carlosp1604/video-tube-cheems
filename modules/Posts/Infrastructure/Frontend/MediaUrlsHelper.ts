@@ -80,7 +80,7 @@ export class MediaUrlsHelper {
 
   // TODO: This should change when user can decide its own order
   // TODO: For the moment: sync this method with the providers.json file
-  private static sortMediaUrl (mediaUrls: MediaUrlComponentDto[]): MediaUrlComponentDto[] {
+  public static sortMediaUrl (mediaUrls: MediaUrlComponentDto[]): MediaUrlComponentDto[] {
     const providersOrder = [
       { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' },
       { id: '2fef1a77-a1f8-42a3-9293-437a6f4fc5cc' },

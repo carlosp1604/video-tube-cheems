@@ -18,7 +18,7 @@ export const FluidVideoPlayer: FC<FluidVideoPlayerProps> = ({
 }) => {
   const playerRef = useRef(null)
 
-  let player: any = null
+  let player: FluidPlayerInstance | null = null
 
   let vasOptions: Partial<VastOptions>
 

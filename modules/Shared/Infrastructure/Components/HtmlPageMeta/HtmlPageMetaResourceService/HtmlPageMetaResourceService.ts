@@ -11,7 +11,7 @@ export enum HtmlPageMetaContextResourceType {
  * Service to extract metadata properties which are dependent on a specific resource.
  */
 export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceInterface {
-  public readonly siteName = 'Cheems'
+  public readonly siteName = process.env.NEXT_PUBLIC_WEBSITE_NAME ?? ''
   private readonly title: string
   public readonly description: string
   public readonly resourceType: HtmlPageMetaContextResourceType
@@ -21,8 +21,7 @@ export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceI
     title: string,
     description: string,
     resourceType: HtmlPageMetaContextResourceType,
-    // TODO: Set a default image here
-    image = 'https://cdn.cponton.com/cheems-site-image.jpg'
+    image = process.env.NEXT_PUBLIC_WEBSITE_IMAGE_URL ?? ''
   ) {
     this.title = title
     this.resourceType = resourceType

@@ -11,6 +11,7 @@ import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
+import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 
 export interface Props {
   userReaction: ReactionComponentDto | null
@@ -82,7 +83,7 @@ export const PostOptions: FC<Props> = ({
   if (enableDownloads) {
     downloadMenu = (
       <DownloadMenu
-        mediaUrls={ downloadUrls }
+        mediaUrls={ MediaUrlsHelper.sortMediaUrl(downloadUrls) }
         setIsOpen={ setDownloadMenuOpen }
         isOpen={ downloadMenuOpen }
       />
@@ -93,7 +94,7 @@ export const PostOptions: FC<Props> = ({
         className={ styles.postOptions__optionItem }
         onClick={ () => onClickDownloadButton() }
       >
-        <BsDownload />
+        <BsDownload className={ styles.postOptions__optionItemIcon }/>
         { t('post_download_button_title', { sourcesNumber: downloadUrls.length }) }
       </span>
     )
@@ -126,7 +127,7 @@ export const PostOptions: FC<Props> = ({
         className={ styles.postOptions__optionItem }
         onClick={ onClickCommentsButton }
       >
-        <BsChatSquareText/>
+        <BsChatSquareText className={ styles.postOptions__optionItemIcon }/>
         { t('post_comments_button_title') }
       </span>
       <button className={ `
@@ -136,7 +137,9 @@ export const PostOptions: FC<Props> = ({
         onClick={ onClickSave }
         disabled={ loading || optionsDisabled }
       >
-        { loadingSaveButton ? <AiOutlineLoading className={ styles.postOptions__loadingIcon } /> : <BsBookmarks /> }
+        { loadingSaveButton
+          ? <AiOutlineLoading className={ styles.postOptions__loadingIcon } />
+          : <BsBookmarks className={ styles.postOptions__optionItemIcon } /> }
         { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </button>
       { downloadButton }
@@ -144,7 +147,7 @@ export const PostOptions: FC<Props> = ({
         className={ styles.postOptions__optionItem }
         onClick={ () => { toast.success(t('post_option_feature_not_available_message')) } }
       >
-        <BsMegaphone />
+        <BsMegaphone className={ styles.postOptions__optionItemIcon }/>
         { t('post_report_button_title') }
       </span>
     </div>

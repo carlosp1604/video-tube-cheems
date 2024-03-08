@@ -95,7 +95,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
               <Image
                 alt={ t('menu_logo_alt_title') }
                 className={ styles.mobileMenu__logo }
-                src={ '/img/cheems-logo-text.png' }
+                src={ '/img/app-logo-text.png' }
                 width={ 0 }
                 height={ 0 }
                 sizes={ '100vw' }

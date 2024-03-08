@@ -45,9 +45,10 @@
   }
 
   &__switcher-button {
-    @apply translate-x-0 flex absolute top-2 right-1 items-center rounded-full
+    @apply translate-x-0 flex absolute top-1/2 right-1 items-center rounded-full
       p-2 text-base-100 h-9 w-9 z-video-player-options-button
       backdrop-blur-lg bg-brand-primary-bg bg-opacity-10 transition-all;
+    transform: translate(0, -50%);
 
     &:hover {
       @apply bg-brand-primary-bg transition-all;

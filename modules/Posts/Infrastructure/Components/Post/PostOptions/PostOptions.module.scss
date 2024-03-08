@@ -28,7 +28,7 @@
 
   &__like-dislike-section {
     @apply flex flex-row flex-shrink-0 items-center gap-x-2 cursor-default
-    rounded-full bg-base-800 py-2 text-xs px-3 transition-colors;
+    rounded-full bg-base-800 py-2 text-base px-3 transition-colors;
 
     &_disabled {
       @apply bg-base-900 transition-colors;
@@ -41,5 +41,9 @@
 
   &__loading-icon {
     @apply animate-spin;
+  }
+
+  &__option-item-icon {
+    @apply text-base;
   }
 }

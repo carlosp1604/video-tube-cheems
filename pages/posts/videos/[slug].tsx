@@ -1,9 +1,9 @@
-import { GetServerSideProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
-import { PostPage, PostPageProps } from '~/components/pages/PostPage/PostPage'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
+import { GetServerSideProps } from 'next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { PostPage, PostPageProps } from '~/components/pages/PostPage/PostPage'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
 import {
   PostCardComponentDtoTranslator
@@ -57,6 +57,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
           [
             'user_menu',
             'app_menu',
+            'app_banner',
             'footer',
             'menu',
             'post_comments',

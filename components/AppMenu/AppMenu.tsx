@@ -124,7 +124,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
               <Image
                 alt={ t('app_menu_logo_url_alt') }
                 className={ styles.appMenu__logoImage }
-                src={ '/img/cheems-logo-text.png' }
+                src={ '/img/app-logo-text.png' }
                 width={ 0 }
                 height={ 0 }
                 sizes={ '100vw' }

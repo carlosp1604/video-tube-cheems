@@ -4,9 +4,8 @@ import {
 } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
 import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
-import { DateTime } from 'luxon'
 import { PostMetaModelTranslator } from './ModelTranslators/PostMetaModelTranslator'
-import { Prisma } from '@prisma/client'
+import { Prisma, Post as PostPrimaModel } from '@prisma/client'
 import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCommentModelTranslator'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { prisma } from '~/persistence/prisma'
@@ -18,8 +17,6 @@ import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
 import { Reaction, ReactionableType, ReactionType } from '~/modules/Reactions/Domain/Reaction'
 import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
-import { PostView } from '~/modules/Posts/Domain/PostView'
-import { PostViewModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostViewModelTranslator'
 import { User } from '~/modules/Auth/Domain/User'
 import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
 import { DefaultArgs } from '@prisma/client/runtime/library'
@@ -27,6 +24,12 @@ import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput
+import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
+import { PostMediaModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
+import { MediaUrlModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/MediaUrlModelTranslator'
+import { DateTime } from 'luxon'
+import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
+import { View } from '~/modules/Views/Domain/View'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -35,92 +38,137 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    */
   public async save (post: Post): Promise<void> {
     const prismaPostModel = PostModelTranslator.toDatabase(post)
-    const comments = post.comments.map((comment) => PostCommentModelTranslator.toDatabase(comment))
     const meta = post.meta.map((meta) => PostMetaModelTranslator.toDatabase(meta))
-    const reactions = post.reactions.map((reaction) => ReactionModelTranslator.toDatabase(reaction))
+    const translations = Array.from(post.translations.values()).flat()
+      .map((translation) => { return TranslationModelTranslator.toDatabase(translation) })
 
-    await prisma.post.create({
-      data: {
-        ...prismaPostModel,
-        comments: {
-          connectOrCreate: comments.map((comment) => {
-            return {
-              where: {
-                id: comment.id,
-              },
-              create: {
-                ...comment,
-              },
-            }
-          }),
-        },
-        tags: {
-          connectOrCreate: post.tags.map((tag) => {
-            return {
-              where: {
-                postId_postTagId: {
-                  postId: post.id,
+    const postMediaModels = post.postMedia.map((postMedia) => {
+      return PostMediaModelTranslator.toDatabase(postMedia)
+    })
+
+    const mediaUrls = post.postMedia.map((postMedia) => {
+      return postMedia.mediaUrls
+    }).flat().map((mediaUrl) => {
+      return MediaUrlModelTranslator.toDatabase(mediaUrl)
+    })
+
+    return prisma.$transaction(async (transaction) => {
+      await transaction.post.create({
+        data: {
+          ...prismaPostModel,
+          tags: {
+            connectOrCreate: post.tags.map((tag) => {
+              return {
+                where: {
+                  postId_postTagId: {
+                    postId: post.id,
+                    postTagId: tag.id,
+                  },
+                },
+                create: {
+                  createdAt: DateTime.now().toJSDate(),
+                  updatedAt: DateTime.now().toJSDate(),
                   postTagId: tag.id,
                 },
-              },
-              create: {
-                createdAt: DateTime.now().toJSDate(),
-                updatedAt: DateTime.now().toJSDate(),
-                postTagId: tag.id,
-              },
-            }
-          }),
-        },
-        actors: {
-          connectOrCreate: post.actors.map((actor) => {
-            return {
-              where: {
-                postId_actorId: {
-                  postId: post.id,
+              }
+            }),
+          },
+          actors: {
+            connectOrCreate: post.actors.map((actor) => {
+              return {
+                where: {
+                  postId_actorId: {
+                    postId: post.id,
+                    actorId: actor.id,
+                  },
+                },
+                create: {
+                  createdAt: DateTime.now().toJSDate(),
+                  updatedAt: DateTime.now().toJSDate(),
                   actorId: actor.id,
                 },
-              },
-              create: {
-                createdAt: DateTime.now().toJSDate(),
-                updatedAt: DateTime.now().toJSDate(),
-                actorId: actor.id,
-              },
-            }
-          }),
-        },
-        meta: {
-          connectOrCreate: meta.map((meta) => {
-            return {
-              where: {
-                type_postId: {
-                  postId: post.id,
+              }
+            }),
+          },
+          meta: {
+            connectOrCreate: meta.map((meta) => {
+              return {
+                where: {
+                  type_postId: {
+                    postId: post.id,
+                    type: meta.type,
+                  },
+                },
+                create: {
+                  createdAt: meta.createdAt,
+                  updatedAt: meta.updatedAt,
+                  deletedAt: meta.deletedAt,
                   type: meta.type,
+                  value: meta.value,
                 },
-              },
-              create: {
-                ...meta,
-              },
-            }
-          }),
-        },
-        reactions: {
-          connectOrCreate: reactions.map((reaction) => {
-            return {
-              where: {
-                reactionableType_reactionableId_userId: {
-                  reactionableId: post.id,
-                  reactionableType: ReactionableType.POST,
-                  userId: reaction.userId,
+              }
+            }),
+          },
+          translations: {
+            connectOrCreate: translations.map((translation) => {
+              return {
+                where: {
+                  translatableId_field_translatableType_language: {
+                    language: translation.language,
+                    translatableType: translation.translatableType,
+                    field: translation.field,
+                    translatableId: translation.translatableId,
+                  },
                 },
-              },
-              create: {
-                ...reaction,
-              },
-            }
-          }),
+                create: {
+                  createdAt: translation.createdAt,
+                  updatedAt: translation.updatedAt,
+                  language: translation.language,
+                  translatableType: translation.translatableType,
+                  field: translation.field,
+                  value: translation.value,
+                },
+              }
+            }),
+          },
         },
-      },
-    })
+      })
+
+      for (const postMedia of post.postMedia) {
+        const postMediaModel = PostMediaModelTranslator.toDatabase(postMedia)
+        const mediaUrls = postMedia.mediaUrls.map((mediaUrl) => {
+          return MediaUrlModelTranslator.toDatabase(mediaUrl)
+        })
+
+        await transaction.postMedia.create({
+          data: {
+            postId: postMediaModel.postId,
+            updatedAt: postMediaModel.updatedAt,
+            createdAt: postMediaModel.createdAt,
+            type: postMediaModel.type,
+            title: postMediaModel.title,
+            thumbnailUrl: postMediaModel.thumbnailUrl,
+            id: postMediaModel.id,
+            mediaUrls: {
+              create: mediaUrls.map((mediaUrl) => {
+                return {
+                  createdAt: mediaUrl.createdAt,
+                  updatedAt: mediaUrl.updatedAt,
+                  type: mediaUrl.type,
+                  title: mediaUrl.title,
+                  url: mediaUrl.url,
+                  provider: {
+                    connect: {
+                      id: mediaUrl.mediaProviderId,
+                    },
+                  },
+                }
+              }),
+            },
+          },
+        })
+      }
+    }, { timeout: 100000 })
   }
 
   /**
@@ -482,7 +530,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     const postsWhereFilters = MysqlPostRepository.buildFilters(filters)
     const postsSortCriteria = MysqlPostRepository.buildOrder(sortingOption, sortingCriteria)
     let sortCriteria:
-      Prisma.PostViewOrderByWithRelationInput | Prisma.PostViewOrderByWithRelationInput[] | undefined = {
+      Prisma.ViewOrderByWithRelationInput | Prisma.ViewOrderByWithRelationInput[] | undefined = {
         post: postsSortCriteria,
       }
 
@@ -494,7 +542,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     }
 
     const [viewedPosts, posts] = await prisma.$transaction([
-      prisma.postView.findMany({
+      prisma.view.findMany({
         where: {
           OR: [
             { userId },
@@ -518,13 +566,13 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             },
           },
         },
-        distinct: ['postId'],
+        distinct: ['viewableId'],
         take: limit,
         skip: offset,
         orderBy: sortCriteria,
       }),
       // Prisma doest not support distinct on count :/. Workaround
-      prisma.postView.findMany({
+      prisma.view.findMany({
         where: {
           OR: [
             { userId },
@@ -536,15 +584,17 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           ],
           post: postsWhereFilters,
         },
-        distinct: 'postId',
+        distinct: 'viewableId',
       }),
     ])
 
+    // We make a cast due to we are sure about the viewable type
     return {
       posts: viewedPosts.map((viewedPost) => {
         return {
-          post: PostModelTranslator.toDomain(viewedPost.post, ['meta', 'producer', 'actor', 'translations']),
-          postViews: viewedPost.post._count.views,
+          post: PostModelTranslator.toDomain(
+            viewedPost.post as PostPrimaModel, ['meta', 'producer', 'actor', 'translations']),
+          postViews: viewedPost.post?._count.views ?? 0,
         }
       }),
       count: posts.length,
@@ -757,6 +807,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     const posts = await prisma.post.findMany({
       where: {
+        id: {
+          not: {
+            equals: post.id,
+          },
+        },
         deletedAt: null,
         publishedAt: {
           not: null,
@@ -767,9 +822,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           { actors: whereActors },
           { actorId: whereActorId },
         ],
-        id: {
-          not: post.id,
-        },
       },
       include: {
         _count: {
@@ -783,7 +835,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         translations: true,
       },
       // TODO: Fix this hardcoded number
-      take: 50,
+      take: 20,
     })
 
     return posts.map((post) => {
@@ -802,10 +854,10 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   /**
    * Create a new post view for a post given its ID
    * @param postId Post ID
-   * @param postView Post View
+   * @param view Post View
    */
-  public async createPostView (postId: Post['id'], postView: PostView): Promise<void> {
-    const prismaPostView = PostViewModelTranslator.toDatabase(postView)
+  public async createPostView (postId: Post['id'], view: View): Promise<void> {
+    const prismaPostView = ViewModelTranslator.toDatabase(view)
 
     await prisma.post.update({
       where: {
@@ -815,6 +867,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         views: {
           create: {
             id: prismaPostView.id,
+            viewableType: prismaPostView.viewableType,
             userId: prismaPostView.userId,
             createdAt: prismaPostView.createdAt,
           },

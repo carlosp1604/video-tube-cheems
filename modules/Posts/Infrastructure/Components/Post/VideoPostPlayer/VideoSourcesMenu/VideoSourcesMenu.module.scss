@@ -48,10 +48,10 @@
     }
 
     &__selected {
-      @apply bg-brand-400 transition-colors;
+      @apply bg-brand-primary-bg transition-colors;
 
       &:hover {
-        @apply bg-brand-400 cursor-default;
+        @apply bg-brand-primary-bg cursor-default;
       }
     }
   }

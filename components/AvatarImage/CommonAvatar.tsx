@@ -24,7 +24,7 @@ export const CommonAvatar: FC<Partial<Props> & Omit<Props, 'color' | 'rounded'>>
         ${styles.commonAvatar__container}
       ` }
       style={ {
-        '--custom-color': color ?? getRandomColor(avatarName),
+        '--custom-color': color && color !== '' ? color : getRandomColor(avatarName),
       } as CSSProperties }>
       <Avatar
         className={ `

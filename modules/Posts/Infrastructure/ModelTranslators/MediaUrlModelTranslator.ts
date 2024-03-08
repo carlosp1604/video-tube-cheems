@@ -26,4 +26,16 @@ export class MediaUrlModelTranslator {
       domainMediaProviderRelation
     )
   }
+
+  public static toDatabase (mediaUrl: MediaUrl): PrismaMediaUrlModel {
+    return {
+      url: mediaUrl.url,
+      title: mediaUrl.title,
+      createdAt: mediaUrl.createdAt.toJSDate(),
+      type: mediaUrl.type,
+      postMediaId: mediaUrl.postMediaId,
+      updatedAt: mediaUrl.updatedAt.toJSDate(),
+      mediaProviderId: mediaUrl.providerId,
+    }
+  }
 }

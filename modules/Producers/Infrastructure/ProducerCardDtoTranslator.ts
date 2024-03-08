@@ -4,7 +4,8 @@ import { ProducerApplicationDto } from '~/modules/Producers/Application/Producer
 export class ProducerCardDtoTranslator {
   public static fromApplicationDto (
     applicationDto: ProducerApplicationDto,
-    postsNumber: number
+    postsNumber: number,
+    producerViews: number
   ): ProducerCardDto {
     return {
       id: applicationDto.id,
@@ -13,6 +14,7 @@ export class ProducerCardDtoTranslator {
       slug: applicationDto.slug,
       brandHexColor: applicationDto.brandHexColor,
       postsNumber,
+      producerViews,
     }
   }
 }

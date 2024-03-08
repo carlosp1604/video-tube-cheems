@@ -15,7 +15,7 @@ model Producer {
   id               String     @id
   slug             String
   name             String
-  description      String
+  description      String?
   parentProducer   Producer?  @relation("parentProducer", fields: [parentProducerId], references: [id])
   parentProducerId String?    @map("parent_producer_id")
   imageUrl         String?    @map("image_url")
@@ -25,6 +25,7 @@ model Producer {
   deletedAt        DateTime?  @map("deleted_at")
   childProducers   Producer[] @relation("parentProducer")
   posts            Post[]
+  views            View[]     @relation("ProducerView")
 
   @@map("producers")
 }
@@ -48,7 +49,7 @@ model Post {
   actors       PostActor[]
   comments     PostComment[]
   reactions    Reaction[]      @relation("Reaction")
-  views        PostView[]
+  views        View[]          @relation("PostView")
   translations Translatation[] @relation("PostTranslation")
   savedPosts   SavedPost[]
   postMedia    PostMedia[]
@@ -58,7 +59,7 @@ model Post {
 
 model PostTag {
   id           String          @id
-  slug             String
+  slug         String
   name         String
   description  String?
   imageUrl     String?         @map("image_url")
@@ -111,7 +112,7 @@ model User {
   emailVerified     DateTime?          @map("email_verified")
   reactions         Reaction[]
   comments          PostComment[]
-  views             PostView[]
+  views             View[]
   verificationToken VerificationToken?
   savedPosts        SavedPost[]
 
@@ -173,15 +174,16 @@ model PostComment {
 
 model Actor {
   id          String      @id
-  slug             String
+  slug        String
   name        String
-  description String
+  description String?
   imageUrl    String?     @map("image_url")
   createdAt   DateTime    @map("created_at")
   updatedAt   DateTime    @map("updated_at")
   deletedAt   DateTime?   @map("deleted_at")
   postActors  PostActor[]
   posts       Post[]
+  views       View[]      @relation("ActorView")
 
   @@map("actors")
 }
@@ -199,15 +201,26 @@ model PostActor {
   @@map("post_actors")
 }
 
-model PostView {
-  id        String   @id
-  postId    String   @map("post_id")
-  post      Post     @relation(fields: [postId], references: [id])
-  userId    String?  @map("user_id")
-  user      User?    @relation(fields: [userId], references: [id])
-  createdAt DateTime @map("created_at")
+enum ViewableType {
+  Post
+  Actor
+  Producer
+}
 
-  @@map("post_views")
+model View {
+  id         String   @id
+  viewableId String   @map("viewable_id")
+  userId     String?  @map("user_id")
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @map("created_at")
+
+  post     Post?     @relation("PostView", fields: [viewableId], references: [id], map: "post_view")
+  actor    Actor?    @relation("ActorView", fields: [viewableId], references: [id], map: "actor_view")
+  producer Producer? @relation("ProducerView", fields: [viewableId], references: [id], map: "producer_view")
+
+  viewableType ViewableType @map("viewable_type")
+
+  @@map("views")
 }
 
 enum TranslatableType {

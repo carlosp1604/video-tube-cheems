@@ -105,19 +105,4 @@
   &__menu-container {
     grid-area: menu;
   }
-
-
-  &__footer-container {
-    @apply relative flex flex-row overflow-x-scroll gap-x-2 items-center justify-between
-      px-8 py-3 scrollbar-hide;
-    grid-area: footer;
-
-    @screen md {
-      @apply flex-wrap overflow-x-hidden justify-center border-t border-base-700;
-    }
-  }
-
-  &__footer-item {
-    @apply text-base-500 uppercase text-sm;
-  }
 }

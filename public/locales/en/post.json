@@ -1,5 +1,6 @@
 {
   "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
+  "advertising_section_title": "Advertising",
   "post_comments_button_title": "Comments",
   "post_download_button_title": "Download {{sourcesNumber}}",
   "post_download_no_downloads_error_message": "There are no download options for this video",
@@ -7,10 +8,12 @@
   "post_download_section_description": "Select a sever to download the file",
   "post_download_section_title": "Download servers",
   "post_extra_data_actors_title": "Stars",
+  "post_extra_data_collaborator_section": "Collaborator",
   "post_extra_data_description_title": "Description",
-  "post_extra_data_section_hide": "Hide",
+  "post_extra_data_section_show_less": "Show less",
   "post_extra_data_section_show_more": "Show more",
   "post_extra_data_tags_title": "Tags",
+  "post_info_button_title": "More info",
   "post_option_feature_not_available_message": "This feature will be available soon. Stay tuned!",
   "post_reaction_added_correctly_message": "Thanks for your reaction!",
   "post_reaction_deleted_correctly_message": "Reaction was removed successfully",
@@ -23,6 +26,7 @@
   "post_video_player_selector_button_title": "Change video source",
   "post_video_player_sources_menu_subtitle": "Select an option to play the video",
   "post_video_player_sources_menu_title": "Player selection",
+  "post_video_player_sources_option_button_title": "Players",
   "post_views_title": "{{views}} views",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action"
 }

@@ -3,6 +3,7 @@ import { ActorApplicationDto } from '~/modules/Actors/Application/ActorApplicati
 export interface GetActorsActorWithPostsCountDto {
   actor: ActorApplicationDto
   postsNumber: number
+  actorViews: number
 }
 export interface GetActorsApplicationResponseDto {
   actors: GetActorsActorWithPostsCountDto[]

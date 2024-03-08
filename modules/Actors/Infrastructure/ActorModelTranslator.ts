@@ -21,4 +21,17 @@ export class ActorModelTranslator {
       deletedAt
     )
   }
+
+  public static toDatabase (actor: Actor): PrismaActorModel {
+    return {
+      id: actor.id,
+      slug: actor.slug,
+      description: actor.description,
+      createdAt: actor.createdAt.toJSDate(),
+      deletedAt: actor.deletedAt?.toJSDate() ?? null,
+      updatedAt: actor.updatedAt.toJSDate(),
+      imageUrl: actor.imageUrl,
+      name: actor.name,
+    }
+  }
 }

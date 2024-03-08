@@ -4,6 +4,7 @@ import { MediaProviderApplicationDto } from '~/modules/Posts/Application/Dtos/Po
 export abstract class MediaProviderComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: MediaProviderApplicationDto): MediaProviderComponentDto {
     return {
+      id: applicationDto.id,
       logoUrl: applicationDto.logoUrl,
       name: applicationDto.name,
     }

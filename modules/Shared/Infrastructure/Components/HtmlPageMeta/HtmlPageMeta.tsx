@@ -10,6 +10,7 @@ import {
 
 export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
   let videoMeta: ReactElement[] | null = null
+  let rtaLabel: ReactElement| null = null
 
   if (props.resourceProps.resourceType === HtmlPageMetaContextResourceType.VIDEO_MOVIE) {
     const videoProps = props.resourceProps as HtmlPageMetaVideoProps
@@ -57,8 +58,15 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     )
   }
 
+  if (process.env.NEXT_PUBLIC_RTA_LABEL) {
+    rtaLabel = (
+      <meta name="RATING" content={ process.env.NEXT_PUBLIC_RTA_LABEL } key="RATING"/>
+    )
+  }
+
   return (
     <Head>
+      { rtaLabel }
       <title>{ props.resourceProps.title }</title>
       <meta name="description" content={ props.resourceProps.description } key="description" />
       <meta property="og:title" content={ props.resourceProps.title } key="og:title" />

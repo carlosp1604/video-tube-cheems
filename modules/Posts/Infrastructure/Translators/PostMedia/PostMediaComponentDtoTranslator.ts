@@ -1,4 +1,3 @@
-
 import { PostMediaApplicationDto } from '~/modules/Posts/Application/Dtos/PostMedia/PostMediaApplicationDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import {
@@ -7,23 +6,26 @@ import {
 
 export abstract class PostMediaComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: PostMediaApplicationDto): PostMediaComponentDto {
+    const urls = applicationDto.mediaUrls
+      .filter((mediaUrl) => mediaUrl.type === 'access-url')
+
+    const downloadUrls = applicationDto.mediaUrls
+      .filter((mediaUrl) => mediaUrl.type === 'download-url')
+
     return {
       id: applicationDto.id,
       postId: applicationDto.postId,
       type: applicationDto.type,
       title: applicationDto.title,
       thumbnailUrl: applicationDto.thumbnailUrl,
-      urls: applicationDto.mediaUrls
-        .filter((mediaUrl) => mediaUrl.type === 'access-url')
+      urls: urls
         .map((mediaUrl) => {
           return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
         }),
-      downloadUrls:
-        applicationDto.mediaUrls
-          .filter((mediaUrl) => mediaUrl.type === 'download-url')
-          .map((mediaUrl) => {
-            return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
-          }),
+      downloadUrls: downloadUrls
+        .map((mediaUrl) => {
+          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
+        }),
     }
   }
 }

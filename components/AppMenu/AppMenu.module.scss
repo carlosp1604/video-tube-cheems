@@ -70,15 +70,7 @@
   }
 
   &__user-avatar-button {
-    @apply h-12 w-12 transition-transform;
-
-    &:hover, &:focus {
-      @apply scale-110 transition-transform;
-    }
-  }
-
-  &__user-avatar-image {
-    @apply p-2 w-full h-full object-cover self-center rounded-full;
+    @apply h-12 w-12 p-2 transition-transform;
 
     &:hover, &:focus {
       @apply scale-110 transition-transform;
@@ -93,8 +85,12 @@
     }
   }
 
+  &__user-avatar-image {
+    @apply w-full h-full object-cover self-center rounded-full;
+  }
+
   &__user-avatar {
-    @apply h-full w-full p-2 text-lg font-semibold;
+    @apply h-full w-full text-lg font-semibold;
   }
 
   &__util-links-container {

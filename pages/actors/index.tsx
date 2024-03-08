@@ -21,6 +21,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'all_producers',
     'app_menu',
+    'app_banner',
     'footer',
     'menu',
     'sorting_menu_dropdown',
@@ -39,10 +40,11 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     context.query,
     {
       sortingOptionType: {
-        defaultValue: PaginationSortingType.NAME_FIRST,
+        defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: [
           PaginationSortingType.NAME_FIRST,
           PaginationSortingType.NAME_LAST,
+          PaginationSortingType.POPULARITY,
           // PaginationSortingType.MORE_POSTS,
           // PaginationSortingType.LESS_POSTS,
         ],
@@ -67,8 +69,8 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   const props: ActorsPageProps = {
     initialActors: [],
     initialActorsNumber: 0,
-    initialPage: 1,
-    initialOrder: PaginationSortingType.NAME_FIRST,
+    initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.NAME_FIRST,
+    initialPage: paginationQueryParams.page ?? 1,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     ...i18nSSRConfig,
   }
@@ -98,7 +100,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
 
     props.initialActorsNumber = actors.actorsNumber
     props.initialActors = actors.actors.map((actor) => {
-      return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber)
+      return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
     })
 
     return {

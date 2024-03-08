@@ -1,10 +1,22 @@
 import { Producer } from './Producer'
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import { ProducersWithPostsCountWithTotalCount } from '~/modules/Producers/Domain/ProducerWithCountInterface'
+import { ProducersWithPostsCountViewsCountWithTotalCount } from '~/modules/Producers/Domain/ProducerWithCountInterface'
+import { View } from '~/modules/Views/Domain/View'
 
 export interface ProducerRepositoryInterface {
-  get(): Promise<Producer[]>
+  /**
+   * Insert a Producer in the persistence layer
+   * @param producer Producer to persist
+   */
+  save(producer: Producer): Promise<void>
+
+  /**
+   * TODO: Pagination for this use-case
+   * Get first 20 most popular Producers
+   * @return Array of Producer
+   */
+  getPopular(): Promise<Producer[]>
 
   /**
    * Find a Producer given its slug
@@ -19,12 +31,19 @@ export interface ProducerRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
-   * @return ProducersWithPostsCountWithTotalCount
+   * @return ProducersWithPostsCountViewsCountWithTotalCount
    */
   findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: ActorSortingOption,
     sortingCriteria: SortingCriteria
-  ): Promise<ProducersWithPostsCountWithTotalCount>
+  ): Promise<ProducersWithPostsCountViewsCountWithTotalCount>
+
+  /**
+   * Create a new producer view for a producer given its ID
+   * @param producerId Producer ID
+   * @param view Producer View
+   */
+  createProducerView (producerId: Producer['id'], view: View): Promise<void>
 }

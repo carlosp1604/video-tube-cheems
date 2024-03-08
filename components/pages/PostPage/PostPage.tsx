@@ -2,7 +2,6 @@ import { NextPage } from 'next'
 import styles from './PostPage.module.scss'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
 import { useTranslation } from 'next-i18next'
 import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
 import {
@@ -13,6 +12,9 @@ import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
 import { Duration } from 'luxon'
+import { ReactElement } from 'react'
+import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -86,10 +88,27 @@ export const PostPage: NextPage<PostPageProps> = ({
     structuredData: JSON.stringify(structuredData),
   }
 
-  return (
-    <div className={ styles.postPage__container }>
+  let relatedPostsSection: ReactElement | null = null
 
+  if (relatedPosts.length > 0) {
+    relatedPostsSection = (
+      <div className={ styles.postPage__relatedVideos }>
+        <span className={ styles.postPage__relatedVideosTitle }>
+          { t('video_related_videos_title') }
+        </span>
+        <PostCardGallery
+          posts={ relatedPosts }
+          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+        />
+      </div>
+    )
+  }
+
+  return (
+    <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <MobileBanner />
 
       <Post
         post={ post }
@@ -100,14 +119,7 @@ export const PostPage: NextPage<PostPageProps> = ({
         postViewsNumber={ postViewsNumber }
       />
 
-      <span className={ styles.postPage__relatedVideosTitle }>
-        { t('video_related_videos_title') }
-      </span>
-
-      <PostCardCarousel
-        posts={ relatedPosts }
-        postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-      />
-    </div>
+      { relatedPostsSection }
+    </>
   )
 }

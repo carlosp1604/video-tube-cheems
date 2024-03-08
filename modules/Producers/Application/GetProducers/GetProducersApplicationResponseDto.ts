@@ -3,6 +3,7 @@ import { ProducerApplicationDto } from '~/modules/Producers/Application/Producer
 export interface GetProducersProducerWithPostsCountDto {
   producer: ProducerApplicationDto
   postsNumber: number
+  producerViews: number
 }
 export interface GetProducersApplicationResponseDto {
   producers: GetProducersProducerWithPostsCountDto[]

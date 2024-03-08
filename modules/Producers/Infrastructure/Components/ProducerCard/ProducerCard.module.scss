@@ -1,7 +1,7 @@
 .producer-card {
   &__container {
-    @apply relative shadow-base-950 shadow-lg rounded-md overflow-hidden
-    transition-colors;
+    @apply flex flex-col shadow-base-950 shadow-lg rounded-md
+    overflow-hidden;
   }
 
   &__image-wrapper {
@@ -27,7 +27,8 @@
   }
 
   &__data-container {
-    @apply p-2 cursor-default;
+    @apply flex flex-col flex-grow justify-between p-2
+    cursor-default;
   }
 
   &__producer-name {
@@ -39,11 +40,16 @@
     }
   }
 
-  &__posts-number {
-    @apply text-xs font-normal text-[color:var(--producer-color)];
+  &__count-section {
+    @apply flex flex-row items-start gap-x-1 text-xs justify-between
+    font-normal text-[color:var(--producer-color)];
 
     @screen md {
       @apply text-sm;
     }
+  }
+
+  &__views-title {
+    @apply text-base-400;
   }
 }

@@ -32,4 +32,16 @@ export class PostMediaModelTranslator {
       mediaUrlsCollection
     )
   }
+
+  public static toDatabase (postMedia: PostMedia): PrismaPostMediaModel {
+    return {
+      postId: postMedia.postId,
+      updatedAt: postMedia.updatedAt.toJSDate(),
+      type: postMedia.type,
+      createdAt: postMedia.createdAt.toJSDate(),
+      id: postMedia.id,
+      thumbnailUrl: postMedia.thumbnailUrl,
+      title: postMedia.title,
+    }
+  }
 }

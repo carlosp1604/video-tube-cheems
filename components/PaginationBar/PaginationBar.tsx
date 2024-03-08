@@ -152,7 +152,7 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
           <PaginationBarButton
             title={ t('last_page_button_title') }
             linkTitle={ <BsSkipEnd className={ styles.paginationBar__stepIcon }/> }
-            href={ { pathname, query: buildQuery(pageNumber + 1) } }
+            href={ { pathname, query: buildQuery(pagesNumber) } }
             active={ false }
             linkMode={ linkMode }
             onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber - 1) } } }

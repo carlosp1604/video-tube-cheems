@@ -200,6 +200,7 @@ export const Home: FC<Props> = ({
         postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         loading={ loading }
         emptyState={ emptyState }
+        showAds={ true }
       />
 
       <PaginationBar

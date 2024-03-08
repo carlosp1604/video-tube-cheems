@@ -1,7 +1,7 @@
 .pagination-bar {
   &__container {
-    @apply -mx-5 pb-10 border-t pt-2 border-base-800
-      overflow-x-scroll overflow-y-hidden scrollbar-hide;
+    @apply grid px-5 -mx-5 border-t pt-2 border-base-800
+      overflow-x-scroll scrollbar-hide;
 
     @screen md {
       @apply mx-0;
@@ -28,7 +28,7 @@
       transition;
 
     &:hover {
-      @apply text-base-100 transition-colors border-brand-400
+      @apply text-base-100 transition-colors border-brand-primary-bg
         bg-base-900;
     }
 
@@ -38,7 +38,7 @@
 
     &_current-page {
       @apply text-base-100 pointer-events-none font-black
-        border-brand-400 bg-base-900;
+        border-brand-primary-bg bg-base-900;
     }
   }
 
@@ -69,11 +69,11 @@
   }
 
   &__error-button {
-    @apply border border-brand-400 p-2 text-base-100 rounded-lg
+    @apply border border-brand-primary-bg p-2 text-base-100 rounded-lg
       transition-colors text-sm;
 
     &:hover {
-      @apply text-base-100 bg-brand-400 transition-colors;
+      @apply text-base-100 bg-brand-primary-bg transition-colors;
     }
   }
 
@@ -83,6 +83,6 @@
   }
 
   &__no-paginated-state-icon {
-    @apply bg-brand-400 p-1 text-2xl rounded-lg;
+    @apply bg-brand-primary-bg p-1 text-2xl rounded-lg;
   }
 }

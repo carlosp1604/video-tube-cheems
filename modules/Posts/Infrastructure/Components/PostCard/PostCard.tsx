@@ -32,6 +32,8 @@ export const PostCard: FC<Props> = ({
       height={ 0 }
       sizes={ '100vw' }
       priority={ true }
+      placeholder={ 'blur' }
+      blurDataURL={ '/img/image-placeholder.gif' }
     />
   )
 
@@ -157,7 +159,7 @@ export const PostCard: FC<Props> = ({
     externalLinkIcon = (
       <span
         className={ styles.postCard__externalIcon }
-        title={ 'Link externo' }
+        title={ t('post_card_external_link_title') }
       >
         <BsLink45Deg />
       </span>
@@ -191,6 +193,7 @@ export const PostCard: FC<Props> = ({
             className={ styles.postCard__videoTitleLink }
             title={ post.title }
             rel={ post.externalLink !== null ? 'nofollow' : 'follow' }
+            target={ post.externalLink !== null ? '_blank' : '_self' }
           >
             { post.title }
           </Link>

@@ -1,11 +1,12 @@
 import { Actor } from '~/modules/Actors/Domain/Actor'
 
-export interface ActorWithPostsCount {
+export interface ActorWithPostsWithViewsCount {
   actor: Actor
   postsNumber: number
+  actorViews: number
 }
 
-export interface ActorsWithPostsCountWithTotalCount {
-  actors: ActorWithPostsCount[]
+export interface ActorsWithPostsCountViewsCountWithTotalCount {
+  actors: ActorWithPostsWithViewsCount[]
   actorsNumber: number
 }

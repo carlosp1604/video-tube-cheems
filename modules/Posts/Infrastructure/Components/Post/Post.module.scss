@@ -1,10 +1,43 @@
 .post {
   &__container {
-    @apply flex flex-col gap-y-4 mx-auto transition pt-10 w-full;
+    @apply container flex flex-col gap-y-4 mx-auto transition
+      pt-5 px-5 w-full overflow-hidden;
+  }
+
+  &__post-with-ads {
+    @apply flex flex-col gap-y-4;
+
+    @screen lg {
+      @apply flex flex-row gap-x-4 justify-between;
+    }
+  }
+
+  &__left-container {
+    @apply flex flex-col gap-y-4 flex-grow;
   }
 
   &__right-container {
-    @apply flex flex-col gap-y-4 overflow-x-scroll whitespace-nowrap
-      scrollbar-hide;
+    @apply relative flex flex-row gap-x-1 gap-y-0.5
+    min-h-[300px] flex-wrap justify-center m-1;
+
+    @screen lg {
+      @apply flex-col max-w-[300px] max-h-max w-full m-0;
+    }
+  }
+
+  &__right-container-item {
+    @apply flex items-center self-center;
+  }
+
+  &__right-container-item-hidden-mobile {
+    @apply hidden;
+
+    @screen md {
+      @apply flex flex-auto;
+    }
+  }
+
+  &__adverstising-title {
+    @apply absolute -top-4 left-4 bg-body p-1 px-2 text-base-400;
   }
 }

@@ -8,7 +8,6 @@ import {
 import {
   PostFilterOptionInterface
 } from '~/modules/Shared/Domain/Posts/PostFilterOption'
-import { PostView } from '~/modules/Posts/Domain/PostView'
 import { User } from '~/modules/Auth/Domain/User'
 import {
   PostsWithViewsInterfaceWithTotalCount,
@@ -17,6 +16,7 @@ import {
 } from '~/modules/Posts/Domain/PostWithCountInterface'
 import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
+import { View } from '~/modules/Views/Domain/View'
 
 export type RepositoryOptions =
   'meta' |
@@ -176,9 +176,9 @@ export interface PostRepositoryInterface {
   /**
    * Create a new post view for a post given its ID
    * @param postId Post ID
-   * @param postView Post View
+   * @param view Post View
    */
-  createPostView (postId: Post['id'], postView: PostView): Promise<void>
+  createPostView (postId: Post['id'], view: View): Promise<void>
 
   /**
    * Find all user interaction with a post given its IDs

@@ -6,7 +6,6 @@ function classNamesToZIndex (classNames) {
   }, {})
 }
 
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
@@ -45,8 +44,8 @@ module.exports = {
       animation: {
         'bounce-short': 'bounce 0.3s ease-in-out 2',
       },
-      aspectRatio: {
-        9.7: '9.7',
+      boxShadow: {
+        all: '0px 0px 10px 2px rgba(0, 0, 0, 0.3)',
       },
       colors: {
         sidebar: {
@@ -68,29 +67,27 @@ module.exports = {
           50: '#FAFAF9',
         },
         brand: {
-          900: '#623307',
-          800: '#6d3c11',
-          700: '#78451a',
-          600: '#834f23',
-          500: '#8e582c',
-          400: '#a06c3f',
-          300: '#b88b5c',
-          200: '#d0ab7a',
-          100: '#e8cb92',
-          50: '#ffedba',
+          primary: {
+            light: '#b88b5c', // 600
+            bg: '#a06c3f', // 700
+            dark: '#8e582c', // 800
+          },
+          secondary: {
+            light: '#834f23', // 300
+            bg: '#78451a', // 400
+            dark: '#6d3c11', // 500
+          },
         },
-        brand2: {
-          900: '#164E63',
-          800: '#155E75',
-          700: '#0E7490',
-          600: '#0891B2',
-          500: '#06B6D4',
-          400: '#22D3EE',
-          300: '#67E8F9',
-          200: '#A5F3FC',
-          100: '#CFFAFE',
-          50: '#ECFEFF',
+        tooltip: '#6d3c11',
+        toast: {
+          error: {
+            bg: '#DC143C',
+            icon: '#FFA07A',
+          },
+          bg: '#78451a',
+          icon: '#b88b5c',
         },
+        'progress-bar': '#a06c3f',
         red: '#FF0000',
         blue: '#00BFFF',
         green: '#008000',
@@ -105,6 +102,7 @@ module.exports = {
       transitionProperty: {
         width: 'width',
         height: 'height',
+        'max-height': 'max-height',
         border: 'border',
         opacity: 'opacity',
         visibility: 'visibility',
@@ -119,6 +117,7 @@ module.exports = {
         'video-player',
         'video-player-options',
         'video-player-options-button',
+        'advertising',
         'video-comments',
         'comment-options',
         'comment-to-reply',

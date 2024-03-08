@@ -4,4 +4,5 @@ export interface ActorCardDto {
   readonly imageUrl: string | null
   readonly slug: string
   readonly postsNumber: number
+  readonly actorViews: number
 }

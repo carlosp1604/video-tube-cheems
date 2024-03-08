@@ -1,0 +1,15 @@
+.mobile-banner {
+  &__container {
+    @apply flex items-center justify-center w-full h-fit my-2
+    overflow-hidden z-advertising;
+  }
+
+  &__banner-wrapper {
+    @apply relative h-[100px] w-[300px] bg-base-800;
+  }
+
+  &__banner-ad {
+    @apply absolute bottom-1 right-1 text-base-100 bg-body
+    text-xl rounded-sm;
+  }
+}

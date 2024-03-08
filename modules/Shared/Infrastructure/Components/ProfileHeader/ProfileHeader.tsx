@@ -6,7 +6,7 @@ export interface Props {
   name: string
   imageUrl: string | null
   imageAlt: string
-  customColor: string | null
+  customColor: string
   rounded: boolean
 }
 
@@ -16,7 +16,7 @@ export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor
         <div
           className={ styles.profileHeader__background }
           style={ {
-            '--custom-color': customColor ?? '#834f23',
+            '--custom-color': customColor,
           } as CSSProperties }
         />
         { /**

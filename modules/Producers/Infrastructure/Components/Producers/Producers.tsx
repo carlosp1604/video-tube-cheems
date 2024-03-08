@@ -56,6 +56,7 @@ export const Producers: FC<Props> = ({
   const { t } = useTranslation('producers')
 
   const sortingOptions: ActorsPaginationSortingType[] = [
+    PaginationSortingType.POPULARITY,
     PaginationSortingType.NAME_FIRST,
     PaginationSortingType.NAME_LAST,
     // TODO: Add this when is supported by prisma
@@ -72,7 +73,7 @@ export const Producers: FC<Props> = ({
   const configuration: Partial<PaginationConfiguration<ProducersPaginationSortingType>> &
     Pick<PaginationConfiguration<ProducersPaginationSortingType>, 'page' | 'sortingOptionType'> = {
       sortingOptionType: {
-        defaultValue: PaginationSortingType.NAME_FIRST,
+        defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: sortingOptions,
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
@@ -91,7 +92,8 @@ export const Producers: FC<Props> = ({
     if (newProducers) {
       setProducersNumber(newProducers.producersNumber)
       setProducers(newProducers.producers.map((producer) => {
-        return ProducerCardDtoTranslator.fromApplicationDto(producer.producer, producer.postsNumber)
+        return ProducerCardDtoTranslator
+          .fromApplicationDto(producer.producer, producer.postsNumber, producer.producerViews)
       }))
     }
   }

@@ -9,7 +9,10 @@ export const ActorCardSkeleton: FC = () => {
       </div>
       <div className={ styles.actorCardSkeleton__dataContainer }>
         <span className={ styles.actorCardSkeleton__actorName } />
-        <span className={ styles.actorCardSkeleton__postsNumber } />
+        <div className={ styles.actorCardSkeleton__countSection }>
+          <span className={ styles.actorCardSkeleton__countItem } />
+          <span className={ styles.actorCardSkeleton__countItem } />
+        </div>
       </div>
     </div>
 

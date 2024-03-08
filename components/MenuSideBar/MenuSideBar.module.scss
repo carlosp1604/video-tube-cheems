@@ -7,10 +7,10 @@
     @screen lg {
       @apply flex flex-col fixed top-14 pb-14 overflow-y-scroll
         scrollbar-hide h-screen w-[74px] text-base-500
-        backdrop-blur-lg bg-opacity-60 bg-body;
-
+        backdrop-blur-xl bg-transparent;
+  
       &_open {
-        @apply block w-40 bg-body;
+        @apply block w-40;
       }
     }
   }
@@ -34,14 +34,14 @@
   }
 
   &__menu-item-content {
-    @apply flex flex-col py-3 items-center justify-center gap-y-1
+    @apply flex flex-col py-2.5 items-center justify-center gap-y-1
       font-light;
 
     &_active {
-      @apply bg-sidebar-active rounded-md text-base-50 transition-colors;
+      @apply rounded-md text-base-50 bg-sidebar-active transition-colors;
 
       #{$parentBlock}__menu-item-icon {
-        @apply scale-110 transition-transform;
+        @apply scale-125 transition-transform;
       }
     }
 
@@ -55,7 +55,7 @@
         cursor-pointer rounded-md;
 
       #{$parentBlock}__menu-item-icon {
-        @apply scale-110 transition-transform;
+        @apply scale-125 transition-transform;
       }
     }
   }

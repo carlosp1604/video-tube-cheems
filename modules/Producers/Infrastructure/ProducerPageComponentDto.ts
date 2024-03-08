@@ -3,6 +3,6 @@ export interface ProducerPageComponentDto {
   readonly slug: string
   readonly name: string
   readonly imageUrl: string | null
-  readonly description: string
+  readonly description: string | null
   readonly brandHexColor: string
 }

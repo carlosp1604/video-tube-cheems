@@ -1,26 +1,22 @@
 import styles from './Post.module.scss'
-import { FC, ReactElement, useEffect, useMemo, useRef, useState } from 'react'
+import { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { useTranslation } from 'next-i18next'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import {
   ReactionComponentDtoTranslator
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
-import toast from 'react-hot-toast'
 import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
-import { Promise } from 'es6-promise'
-import { PostExtraData } from '~/modules/Posts/Infrastructure/Components/Post/PostExtraData/PostExtraData'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
 import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
-import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
-import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
-import { PostProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/PostProducerActor/PostProducerActor'
-import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { useSavePost } from '~/hooks/SavePosts'
 import { useReactPost } from '~/hooks/ReactPost'
+import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
+import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
+import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
+import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/OutstreamBanner'
 
 export interface Props {
   post: PostComponentDto
@@ -45,41 +41,14 @@ export const Post: FC<Props> = ({
   const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
   const [savedPost, setSavedPost] = useState<boolean>(false)
   const [optionsDisabled, setOptionsDisabled] = useState<boolean>(true)
-  const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
 
-  const { t } = useTranslation(['post', 'api_exceptions'])
   const postsApiService = new PostsApiService()
   const commentsRef = useRef<HTMLDivElement>(null)
 
   const { savePost, removeSavedPost } = useSavePost('post')
   const { reactPost, removeReaction } = useReactPost('post')
 
-  const { status, data } = useSession()
-
-  const getMediaUrls = (type: string): MediaUrlComponentDto[] => {
-    let mediaUrls: MediaUrlComponentDto[] = []
-
-    if (post.postMediaEmbedType.length > 0) {
-      if (type === 'access') {
-        mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].urls]
-      } else {
-        mediaUrls = [...mediaUrls, ...post.postMediaEmbedType[0].downloadUrls]
-      }
-    }
-
-    if (post.postMediaVideoType.length > 0) {
-      if (type === 'access') {
-        mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].urls]
-      } else {
-        mediaUrls = [...mediaUrls, ...post.postMediaVideoType[0].downloadUrls]
-      }
-    }
-
-    return mediaUrls
-  }
-
-  const mediaUrls = useMemo(() => getMediaUrls('access'), [post])
-  const downloadUrls = useMemo(() => getMediaUrls('download'), [post])
+  const { status } = useSession()
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -163,15 +132,6 @@ export const Post: FC<Props> = ({
     }
   }
 
-  const onClickDownloadButton = () => {
-    if (downloadUrls.length > 0) {
-      setDownloadMenuOpen(!downloadMenuOpen)
-
-      return
-    }
-    toast.error(t('post_download_no_downloads_error_message'))
-  }
-
   const onClickReactButton = async (type: ReactionType) => {
     if (userReaction !== null && userReaction.reactionType === type) {
       const deletedReaction = await removeReaction(post.id)
@@ -225,46 +185,47 @@ export const Post: FC<Props> = ({
 
   return (
     <div className={ styles.post__container }>
-      { PostTypeResolver.resolve(
-        post,
-        mediaUrls,
-        <PostBasicData
-          post={ post }
-          postViewsNumber={ viewsNumber }
-          postLikes={ likesNumber }
-          postDislikes={ dislikesNumber }
-          postCommentsNumber={ commentsNumber }
-        />,
-        <PostOptions
-          userReaction={ userReaction }
-          savedPost={ savedPost }
-          onClickReactButton={ async (type) => await onClickReactButton(type) }
-          onClickCommentsButton={ onClickCommentsButton }
-          onClickSaveButton={ async () => await onClickSavePostButton() }
-          onClickDownloadButton={ onClickDownloadButton }
-          likesNumber={ likesNumber }
-          downloadUrlNumber={ downloadUrls.length }
-          optionsDisabled={ optionsDisabled }
-        />
-      ) }
+      <section className={ styles.post__postWithAds }>
+        <div className={ styles.post__leftContainer }>
+          { PostTypeResolver.resolve(
+            post,
+            userReaction,
+            savedPost,
+            onClickReactButton,
+            onClickCommentsButton,
+            onClickSavePostButton,
+            likesNumber,
+            optionsDisabled,
+            <PostBasicData
+              post={ post }
+              postViewsNumber={ viewsNumber }
+              postLikes={ likesNumber }
+              postDislikes={ dislikesNumber }
+              postCommentsNumber={ commentsNumber }
+            />
+          ) }
 
-      <DownloadMenu
-        mediaUrls={ downloadUrls }
-        setIsOpen={ setDownloadMenuOpen }
-        isOpen={ downloadMenuOpen }
-      />
+          <PostData
+            producer={ post.producer }
+            actor={ post.actor }
+            postActors={ post.actors }
+            postTags={ post.tags }
+            postDescription={ post.description }
+          />
+        </div>
 
-      <PostProducerActor
-        producer={ post.producer }
-        actor={ post.actor }
-      />
-
-      <PostExtraData
-        postActors={ post.actors }
-        postTags={ post.tags }
-        postDescription={ post.description }
-      />
-
+        <div className={ styles.post__rightContainer }>
+          <span className={ styles.post__rightContainerItem }>
+            <Banner />
+          </span>
+          <span className={ styles.post__rightContainerItem }>
+            <OutstreamBanner />
+          </span>
+          <span className={ styles.post__rightContainerItemHiddenMobile }>
+            <DesktopBanner />
+          </span>
+        </div>
+      </section>
       <div ref={ commentsRef }>
         { commentsComponent }
       </div>

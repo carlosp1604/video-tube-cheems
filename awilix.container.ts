@@ -6,7 +6,7 @@ import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPost
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
-import { GetAllProducers } from '~/modules/Producers/Application/GetAllProducers'
+import { GetPopularProducers } from '~/modules/Producers/Application/GetPopularProducers'
 import { MailerSendUserEmailSender } from '~/modules/Auth/Infrastructure/MailerSendUserEmailSender'
 import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
@@ -46,6 +46,8 @@ import { GetProducerBySlug } from '~/modules/Producers/Application/GetProducerBy
 import { MysqlPostTagRepository } from '~/modules/PostTag/Infrastructure/MysqlPostTagRepository'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
+import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActorView'
+import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
 
 /**
  * We create a container to register our classes dependencies
@@ -141,10 +143,12 @@ container.register('getPostsUseCase', asClass(GetPosts))
 container.register('getUserSavedPostsUseCase', asClass(GetUserSavedPosts))
 container.register('getUserHistoryUseCase', asClass(GetUserHistory))
 container.register('getActorsUseCase', asClass(GetActors))
-container.register('getAllProducersUseCase', asClass(GetAllProducers))
+container.register('getPopularProducersUseCase', asClass(GetPopularProducers))
 container.register('getRelatedPostsUseCase', asClass(GetRelatedPosts))
 container.register('getPostBySlugUseCase', asClass(GetPostBySlug))
 container.register('addPostViewUseCase', asClass(AddPostView))
+container.register('addActorViewUseCase', asClass(AddActorView))
+container.register('addProducerViewUseCase', asClass(AddProducerView))
 container.register('createPostReactionUseCase', asClass(CreatePostReaction))
 container.register('getPostUserInteractionUseCase', asClass(GetPostUserInteraction))
 container.register('getPostPostCommentsUseCase', asClass(GetPostPostComments))

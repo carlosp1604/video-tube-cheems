@@ -1,10 +1,10 @@
 .video-post-type {
   &__video-container {
-    @apply -mx-5 aspect-h-9.7 aspect-w-16 rounded-xl
+    @apply -mx-5 aspect-h-10 aspect-w-16
       overflow-hidden bg-black;
 
     @screen tb {
-      @apply mx-0 aspect-h-9 aspect-w-16;
+      @apply mx-0 aspect-h-9 aspect-w-16 rounded-lg;
     }
   }
 }

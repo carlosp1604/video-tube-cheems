@@ -1,0 +1,25 @@
+.cam-card-skeleton {
+  &__container {
+    @apply flex flex-col gap-y-1;
+
+    &__loading {
+      @apply animate-pulse;
+    }
+  }
+
+  &__media {
+    @apply aspect-w-16 aspect-h-9 bg-base-800 rounded-lg;
+  }
+
+  &__title {
+    @apply h-3 w-full bg-base-700 rounded-lg;
+  }
+
+  &__description {
+    @apply flex flex-col gap-y-1;
+  }
+
+  &__description-line {
+    @apply h-2 w-full bg-base-800 rounded-lg;
+  }
+}

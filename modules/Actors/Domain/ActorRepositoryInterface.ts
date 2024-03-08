@@ -1,9 +1,16 @@
 import { Actor } from './Actor'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import { ActorsWithPostsCountWithTotalCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
+import { ActorsWithPostsCountViewsCountWithTotalCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
+import { View } from '~/modules/Views/Domain/View'
 
 export interface ActorRepositoryInterface {
+  /**
+   * Insert an Actor in the persistence layer
+   * @param actor Actor to persist
+   */
+  save (actor: Actor): Promise<void>
+
   /**
    * Find an Actor given its ID
    * @param actorId Actor ID
@@ -24,12 +31,19 @@ export interface ActorRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
-   * @return ActorsWithPostsCountWithTotalCount
+   * @return ActorsWithPostsCountViewsCountWithTotalCount
    */
   findWithOffsetAndLimit(
     offset: number,
     limit: number,
     sortingOption: ActorSortingOption,
     sortingCriteria: SortingCriteria,
-  ): Promise<ActorsWithPostsCountWithTotalCount>
+  ): Promise<ActorsWithPostsCountViewsCountWithTotalCount>
+
+  /**
+   * Create a new actor view for an actor given its ID
+   * @param actorId Actor ID
+   * @param view Actor View
+   */
+  createActorView (actorId: Actor['id'], view: View): Promise<void>
 }

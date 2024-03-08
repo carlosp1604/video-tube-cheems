@@ -1,5 +1,7 @@
 {
   "actor_card_image_alt_title": "Imagen de perfil de {{actorName}}",
+  "actor_card_posts_count_title": "{{postsNumber}} posts",
+  "actor_card_views_count_title": "{{viewsNumber}} vistas",
   "actor_image_alt_title": "Imagen de perfil de {{actorName}}",
   "actor_page_description": "Explora todos los posts producidos o en los que ha participado el actor {{actorName}}",
   "actor_page_title": "Posts de {{actorName}}",

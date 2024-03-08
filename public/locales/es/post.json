@@ -1,5 +1,6 @@
 {
   "action_cannot_be_performed_error_message": "No puedes hacer esto ahora, espera a que termine la operación actual",
+  "advertising_section_title": "Publicidad",
   "post_comments_button_title": "Comentarios",
   "post_download_button_title": "Descargar {{sourcesNumber}}",
   "post_download_no_downloads_error_message": "No hay opciones de descarga para este video",
@@ -7,10 +8,12 @@
   "post_download_section_description": "Selecciona un servidor para descargar el archivo",
   "post_download_section_title": "Servidores de descarga",
   "post_extra_data_actors_title": "Estrellas",
+  "post_extra_data_collaborator_section": "Colaborador",
   "post_extra_data_description_title": "Descripción",
-  "post_extra_data_section_hide": "Ocultar",
-  "post_extra_data_section_show_more": "Mostrar más",
+  "post_extra_data_section_show_less": "Ver menos",
+  "post_extra_data_section_show_more": "Ver más",
   "post_extra_data_tags_title": "Etiquetas",
+  "post_info_button_title": "Más info",
   "post_option_feature_not_available_message": "Esta característica estará disponible pronto. ¡Mantente atento!",
   "post_reaction_added_correctly_message": "¡Gracias por reaccionar!",
   "post_reaction_deleted_correctly_message": "La reacción fue eliminada correctamente",
@@ -23,6 +26,7 @@
   "post_video_player_selector_button_title": "Cambiar fuente del vídeo",
   "post_video_player_sources_menu_subtitle": "Selecciona una opción para reproducir el vídeo",
   "post_video_player_sources_menu_title": "Seleccionar reproductor",
+  "post_video_player_sources_option_button_title": "Reproductores",
   "post_views_title": "{{views}} vistas",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión"
 }

@@ -4,39 +4,53 @@ import { BsFileEarmarkBreak, BsThreeDotsVertical } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
 import * as uuid from 'uuid'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
-import { VideoPlayer } from '~/components/VideoPlayer/VideoPlayer'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 import {
   VideoSourcesMenu
 } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoSourcesMenu/VideoSourcesMenu'
-import {
-  VideoPostPlayerHelper
-} from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoPostPlayerHelper'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
+import { useSession } from 'next-auth/react'
+import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
+import { FluidVideoPlayer } from '~/components/VideoPlayer/FluidVideoPlayer'
 
 export interface Props {
-  mediaUrls: MediaUrlComponentDto[]
   embedPostMedia: PostMediaComponentDto | null
   videoPostMedia: PostMediaComponentDto | null
 }
 
-export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPostMedia }) => {
+export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [videoReady, setVideoReady] = useState<boolean>(false)
-  const [showVideoOptions, setShowVideoOptions] = useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
 
-  const selectedMediaUrl = useMemo(
-    () => VideoPostPlayerHelper.getFirstMediaUrl(mediaUrls),
-    [embedPostMedia, videoPostMedia])
-
-  const [selectedUrl, setSelectedUrl] = useState<MediaUrlComponentDto | null>(selectedMediaUrl)
+  const { status, data } = useSession()
 
   const selectableUrls = useMemo(
-    () => VideoPostPlayerHelper.getSelectableUrls(embedPostMedia, videoPostMedia),
-    [embedPostMedia, videoPostMedia])
+    () => {
+      let userId: string | null = null
+
+      if (status === 'authenticated' && data) {
+        userId = data.user.id
+      }
+
+      return MediaUrlsHelper.getSelectableUrls(embedPostMedia, videoPostMedia, userId)
+    },
+    [embedPostMedia, videoPostMedia, status])
+
+  const selectedMediaUrl = useMemo(
+    () => {
+      if (selectableUrls.length > 0) {
+        return selectableUrls[0]
+      }
+
+      return null
+    },
+    [selectableUrls, status])
+
+  const [selectedUrl, setSelectedUrl] =
+    useState<MediaUrlComponentDto | null>(selectedMediaUrl)
 
   const { t } = useTranslation('post')
 
@@ -47,7 +61,11 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     setTooltipId(uuid.v4())
   }, [])
 
-  if (mediaUrls.length === 0) {
+  useEffect(() => {
+    setSelectedUrl(selectedMediaUrl)
+  }, [status])
+
+  if (selectableUrls.length === 0) {
     return (
       <div className={ styles.videoPostPlayer__noSourcesState }>
         <BsFileEarmarkBreak className={ styles.videoPostPlayer__noSourcesStateIcon }/>
@@ -63,10 +81,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   if (selectableUrls.length > 1) {
     sourceSelectorButton = (
       <button
-        className={ `
-          ${styles.videoPostPlayer__switcherButton}
-          ${showVideoOptions ? styles.videoPostPlayer__switcherButton_visible : ''}
-         ` }
+        className={ styles.videoPostPlayer__switcherButton }
         onClick={ () => setMenuOpen(!menuOpen) }
         title={ t('post_video_player_selector_button_title') }
         data-tooltip-id={ tooltipId }
@@ -102,12 +117,6 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     )
   }
 
-  const handleIframeEvents = async () => {
-    setShowVideoOptions(true)
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setShowVideoOptions(false)
-  }
-
   const onReady = () => {
     setVideoReady(true)
   }
@@ -119,6 +128,8 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     embedPostMedia &&
     embedPostMedia.urls.includes(selectedUrl)
   ) {
+    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedUrl.provider.id)
+
     playerElement = (
       <iframe
         key={ selectedUrl.url }
@@ -129,6 +140,8 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
         height={ '100%' }
         onLoad={ onReady }
         allowFullScreen={ true }
+        sandbox={ sandbox ? 'allow-same-origin allow-scripts' : undefined }
+        style={ { overflow: 'hidden' } }
       />
     )
   }
@@ -139,7 +152,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
     videoPostMedia.urls.includes(selectedUrl)
   ) {
     playerElement = (
-      <VideoPlayer
+      <FluidVideoPlayer
         videoPostMedia={ videoPostMedia }
         selectedMediaUrl={ selectedUrl }
         onPlayerReady={ onReady }
@@ -148,10 +161,7 @@ export const VideoPostPlayer: FC<Props> = ({ mediaUrls, embedPostMedia, videoPos
   }
 
   return (
-    <div
-      className={ styles.videoPostPlayer__container }
-      onClick={ () => handleIframeEvents() }
-    >
+    <div className={ styles.videoPostPlayer__container }>
       { sourcesMenu }
       { !videoReady ? <VideoLoadingState /> : null }
       { playerElement }

@@ -1,6 +1,6 @@
 .like-button {
   &__container {
-    @apply flex flex-row items-center gap-x-1 text-brand-400 text-sm
+    @apply flex flex-row items-center gap-x-1 text-brand-primary-bg text-sm
     transition-all cursor-default;
 
     &_disabled {
@@ -12,11 +12,11 @@
     @apply text-base-400 text-base;
 
     &:hover {
-      @apply text-brand-400 transition-all;
+      @apply text-brand-primary-bg transition-all;
     }
 
     &_active {
-      @apply text-brand-400 transition-colors outline-none;
+      @apply text-brand-primary-bg transition-colors outline-none;
 
       &:hover {
         @apply text-base-100 transition-colors;

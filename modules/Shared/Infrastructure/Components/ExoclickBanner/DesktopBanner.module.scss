@@ -1,0 +1,16 @@
+.desktop-banner {
+  &__container {
+    @apply flex flex-col items-center justify-center
+    w-full h-fit my-2 overflow-hidden text-sm text-base-500
+    font-semibold gap-y-1 z-advertising;
+  }
+
+  &__banner-wrapper {
+    @apply relative h-[250px] min-w-[300px];
+  }
+
+  &__banner-ad {
+    @apply absolute bottom-1 right-1 text-base-100 bg-body
+    text-xl rounded-sm;
+  }
+}

@@ -12,6 +12,7 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 
 export interface Props {
   page: number
@@ -59,6 +60,8 @@ export const HomePage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <MobileBanner />
 
       <Home
         page={ props.page }

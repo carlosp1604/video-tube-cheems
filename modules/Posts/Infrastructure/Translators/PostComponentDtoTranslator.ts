@@ -10,6 +10,7 @@ import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostM
 import {
   PostMediaComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostMedia/PostMediaComponentDtoTranslator'
+import { MetaApplicationDto } from '~/modules/Posts/Application/Dtos/MetaApplicationDto'
 
 export class PostComponentDtoTranslator {
   public static fromApplicationDto (applicationDto: PostApplicationDto, locale: string): PostComponentDto {
@@ -89,13 +90,9 @@ export class PostComponentDtoTranslator {
       }
     }
 
-    const thumb = applicationDto.meta.find((meta) => {
-      return meta.type === 'thumb'
-    })
+    const thumb = PostComponentDtoTranslator.getMeta(applicationDto.meta, 'thumb')
 
-    const duration = applicationDto.meta.find((meta) => {
-      return meta.type === 'duration'
-    })
+    const duration = PostComponentDtoTranslator.getMeta(applicationDto.meta, 'duration')
 
     const postMediaVideoType: PostMediaComponentDto[] = applicationDto.postMedia
       .filter((postMedia) => postMedia.type === 'Video')
@@ -134,5 +131,11 @@ export class PostComponentDtoTranslator {
       postMediaImageType,
       postMediaEmbedType,
     }
+  }
+
+  private static getMeta (postMeta: MetaApplicationDto[], type: string): MetaApplicationDto | undefined {
+    return postMeta.find((meta) => {
+      return meta.type === type
+    })
   }
 }

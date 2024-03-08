@@ -9,7 +9,7 @@
   }
 
   &__dropdown-button {
-    @apply flex flex-col items-end truncate text-brand-300
+    @apply flex flex-col items-end truncate text-brand-primary-light
       text-xs font-normal leading-none;
 
     @screen md {
@@ -49,10 +49,10 @@
     }
 
     &_active {
-      @apply bg-brand-400 text-base-100 font-bold pointer-events-none;
+      @apply bg-brand-primary-bg text-base-100 font-bold pointer-events-none;
 
       &:hover {
-        @apply bg-brand-400 text-base-100;
+        @apply bg-brand-primary-bg text-base-100;
       }
     }
   }

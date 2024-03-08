@@ -10,6 +10,7 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 
 export interface SearchPageProps {
   initialSearchTerm: string
@@ -61,6 +62,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   return (
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <MobileBanner />
 
       <Search
         initialPage={ initialPage }

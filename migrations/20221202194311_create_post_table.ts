@@ -5,7 +5,7 @@ export async function up (knex: Knex): Promise<void> {
     .createTable('posts', (table) => {
       table.string('id', 36).primary().notNullable()
       table.string('title', 256).notNullable().index()
-      table.string('description', 4096).notNullable().index()
+      table.string('description', 4096).notNullable()
       table.string('slug', 128).unique().notNullable()
       table.string('type', 36).notNullable()
       table.string('producer_id', 36)

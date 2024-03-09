@@ -6,7 +6,7 @@ export async function up (knex: Knex): Promise<void> {
       table.string('translatable_id', 36).notNullable()
       table.string('translatable_type', 36).notNullable()
       table.string('field', 256).notNullable()
-      table.string('value', 2048).notNullable().index()
+      table.string('value', 2048).notNullable()
       table.string('language', 4).notNullable()
       table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
       table.timestamp('updated_at').defaultTo(knex.fn.now()).notNullable()

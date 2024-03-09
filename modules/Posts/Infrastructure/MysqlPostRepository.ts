@@ -930,13 +930,11 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             {
               title: {
                 contains: filter.value,
-                mode: 'insensitive',
               },
             },
             {
               description: {
                 contains: filter.value,
-                mode: 'insensitive',
               },
             },
             {
@@ -944,7 +942,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
                 some: {
                   value: {
                     contains: filter.value,
-                    mode: 'insensitive',
                   },
                 },
               },

@@ -2,9 +2,9 @@ import { FC, useEffect, useState } from 'react'
 import { Carousel, KeyedComponent } from '~/components/Carousel/Carousel'
 import { CamCard } from '~/components/LiveCams/CamCard/CamCard'
 import styles from './LiveCams.module.scss'
-import Link from 'next/link'
 import { Trans, useTranslation } from 'next-i18next'
 import { CamCardSkeleton } from '~/components/LiveCams/CamCard/Skeleton/CamCardSkeleton'
+import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 export interface ActiveCamInterface {
   username: string
@@ -105,6 +105,10 @@ export const LiveCams: FC = () => {
     getActiveCams()
   }, [ip])
 
+  if (!process.env.NEXT_PUBLIC_LIVE_CAMS_CAMPAIGN_URL) {
+    return null
+  }
+
   let content: KeyedComponent[] = Array.from(Array(5).keys())
     .map((key) => {
       return {
@@ -144,13 +148,12 @@ export const LiveCams: FC = () => {
             values={ { camCount: camsCount } }
           />
         </span>
-        <Link
-          href={ 'https://chaturbate.com/in/?tour=LQps&campaign=gqexH&track=default&room=cp1022' }
+        <button
           className={ styles.liveCams__liveCamsLink }
-          target={ '_blank' }
+          onClick={ () => handleClick(process.env.NEXT_PUBLIC_LIVE_CAMS_CAMPAIGN_URL) }
         >
           { t('cams_carousel_link_title') }
-        </Link>
+        </button>
       </div>
       <Carousel
         itemsAutoWidth={ false }

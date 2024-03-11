@@ -19,5 +19,10 @@
     &:last-child {
       @apply -mr-1;
     }
+
+    &:hover {
+      @apply cursor-pointer text-brand-primary-light
+      transition-colors;
+    }
   }
 }

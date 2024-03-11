@@ -38,7 +38,7 @@ export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority' | 'color' |
         sizes={ '100vw' }
         priority={ priority }
         placeholder={ 'blur' }
-        blurDataURL={ '/img/image-placeholder.gif' }
+        blurDataURL={ '/img/placeholder.svg' }
       />
     )
   }

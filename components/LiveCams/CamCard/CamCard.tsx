@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { FaEye } from 'react-icons/fa'
 import { Trans, useTranslation } from 'next-i18next'
-import Link from 'next/link'
+import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 interface Props {
   username: string
@@ -82,21 +82,22 @@ export const CamCard: FC<Props> = ({
       sizes={ '100vw' }
       priority={ true }
       placeholder={ 'blur' }
-      blurDataURL={ '/img/image-placeholder.gif' }
+      blurDataURL={ '/img/placeholder.svg' }
+      onClick={ () => handleClick(camRoomLink) }
     />
   )
 
   const transCamTitle = (
-    <Link
-      href={ camRoomLink }
-      target={ '_blank' }
+    <span
+      className={ styles.camCard__titleLink }
+      onClick={ () => handleClick(camRoomLink) }
     >
       <Trans
         i18nKey={ t('cam_card_title') }
         components={ [<span key={ t('cam_card_title') } className={ styles.camCard__username }/>] }
         values={ { camUsername: username } }
       />
-    </Link>
+    </span>
   )
 
   return (
@@ -107,12 +108,9 @@ export const CamCard: FC<Props> = ({
         onMouseLeave={ () => setShowIframe(false) }
       >
         { !videoReady
-          ? <Link
-            href={ camRoomLink }
-            target={ '_blank' }
-          >
+          ? <span onClick={ () => handleClick(camRoomLink) }>
             <VideoLoadingState />
-          </Link>
+          </span>
           : null
         }
         { !showIframe ? mediaElement : null }

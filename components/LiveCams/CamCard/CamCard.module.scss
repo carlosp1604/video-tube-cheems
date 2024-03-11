@@ -6,6 +6,10 @@
   &__media-wrapper {
     @apply aspect-w-16 aspect-h-9 rounded-md
     overflow-hidden bg-base-950 mb-1;
+
+    &:hover {
+      @apply cursor-pointer;
+    }
   }
 
   &__image {
@@ -56,5 +60,13 @@
 
   &__description {
     @apply text-xs text-base-300 line-clamp-2;
+  }
+
+  &__title-link {
+    @apply text-left;
+
+    &:hover {
+      @apply cursor-pointer text-brand-primary-light;
+    }
   }
 }

@@ -33,17 +33,15 @@ export const Banner: FC = () => {
     }
   }, [bannerRef])
 
-  if (process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY && process.env.NEXT_PUBLIC_ADSTERRA_BANNER_DOMAIN) {
-    atOptions.key = process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY
-  } else {
+  if (!process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY || !process.env.NEXT_PUBLIC_ADSTERRA_BANNER_DOMAIN) {
     return null
   }
 
   return (
     <section className={ styles.banner__container }>
       <div ref={ bannerRef } className={ styles.banner__bannerContainer }>
-        <RiAdvertisementFill className={ styles.banner__bannerAd }/>
       </div>
+      <RiAdvertisementFill className={ styles.banner__bannerAd }/>
       { t('banner_ad_title') }
     </section>
   )

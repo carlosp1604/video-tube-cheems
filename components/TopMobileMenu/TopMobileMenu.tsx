@@ -1,7 +1,7 @@
 import { FC, ReactElement } from 'react'
 import styles from './TopMobileMenu.module.scss'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 export const TopMobileMenu: FC = () => {
   const { t } = useTranslation('menu')
@@ -10,57 +10,53 @@ export const TopMobileMenu: FC = () => {
 
   if (process.env.NEXT_PUBLIC_CAMS_AD_URL) {
     links.push(
-      <Link
+      <span
         className={ styles.topMobileMenu__offerContainer }
-        href={ process.env.NEXT_PUBLIC_CAMS_AD_URL }
+        onClick={ () => handleClick(process.env.NEXT_PUBLIC_CAMS_AD_URL) }
         title={ t('live_cams_advertising_title') }
         key={ t('live_cams_advertising_title') }
-        target={ '_blank' }
       >
         { t('live_cams_advertising_title') }
-      </Link>
+      </span>
     )
   }
 
   if (process.env.NEXT_PUBLIC_DATING_AD_URL) {
     links.push(
-      <Link
+      <span
         className={ styles.topMobileMenu__offerContainer }
-        href={ process.env.NEXT_PUBLIC_DATING_AD_URL }
+        onClick={ () => handleClick(process.env.NEXT_PUBLIC_DATING_AD_URL) }
         title={ t('dating_advertising_title') }
         key={ t('dating_advertising_title') }
-        target={ '_blank' }
       >
         { t('dating_advertising_title') }
-      </Link>
+      </span>
     )
   }
 
   if (process.env.NEXT_PUBLIC_GAMES_AD_URL) {
     links.push(
-      <Link
+      <span
         className={ styles.topMobileMenu__offerContainer }
-        href={ process.env.NEXT_PUBLIC_GAMES_AD_URL }
+        onClick={ () => handleClick(process.env.NEXT_PUBLIC_GAMES_AD_URL) }
         title={ t('games_advertising_title') }
         key={ t('games_advertising_title') }
-        target={ '_blank' }
       >
         { t('games_advertising_title') }
-      </Link>
+      </span>
     )
   }
 
   if (process.env.NEXT_PUBLIC_IA_AD_URL) {
     links.push(
-      <Link
+      <span
         className={ styles.topMobileMenu__offerContainer }
-        href={ process.env.NEXT_PUBLIC_IA_AD_URL }
+        onClick={ () => handleClick(process.env.NEXT_PUBLIC_IA_AD_URL) }
         title={ t('ia_advertising_title') }
         key={ t('ia_advertising_title') }
-        target={ '_blank' }
       >
         { t('ia_advertising_title') }
-      </Link>
+      </span>
     )
   }
 

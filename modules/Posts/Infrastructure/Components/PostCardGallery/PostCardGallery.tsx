@@ -136,8 +136,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
       }
     }
 
-    const adsTerraBanner: ReactElement | null = (<Banner/>)
-
     let exoClickBanner: ReactElement | null = null
 
     if (secondPostList.length > 0) {
@@ -166,7 +164,9 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           { firstPostList }
           { loading ? firstSkeletonList : null }
         </div>
-        { adsTerraBanner }
+
+        <Banner/>
+
         <div className={ `
           ${styles.postCardGallery__container}
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}

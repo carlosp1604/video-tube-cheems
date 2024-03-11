@@ -33,7 +33,7 @@ export const PostCard: FC<Props> = ({
       sizes={ '100vw' }
       priority={ true }
       placeholder={ 'blur' }
-      blurDataURL={ '/img/image-placeholder.gif' }
+      blurDataURL={ '/img/placeholder.svg' }
     />
   )
 

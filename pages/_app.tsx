@@ -23,6 +23,7 @@ import Script from 'next/script'
 import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
 import { LiveCams } from '~/components/LiveCams/LiveCams'
+import { DetectAdBlock } from '~/components/DetectAdBlock/DetectAdBlock'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -86,12 +87,12 @@ function App ({
     ReactGA.initialize(process.env.NEXT_PUBLIC_ANALYTICS_TRACKING_ID)
   }
 
-  let clickainePopunder: ReactElement | null = null
+  let popunder: ReactElement | null = null
 
-  if (process.env.NEXT_PUBLIC_CLICKAINE_POPUNDER_URL) {
-    clickainePopunder = (
+  if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
+    popunder = (
       <Script
-        src={ process.env.NEXT_PUBLIC_CLICKAINE_POPUNDER_URL }
+        src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
         async={ true }
       />
     )
@@ -117,7 +118,7 @@ function App ({
               <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            { clickainePopunder }
+            { popunder }
 
             <AppProgressBar />
 
@@ -132,6 +133,8 @@ function App ({
             />
 
             <AppMenu onClickMenuButton={ () => setMenuOpen(!menuOpen) }/>
+
+            <DetectAdBlock />
 
             <MenuSideBar
               menuOpen={ menuOpen }

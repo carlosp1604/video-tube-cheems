@@ -26,6 +26,10 @@
     @screen md {
       @apply text-base;
     }
+
+    &:hover {
+      @apply text-brand-primary-light transition-colors;
+    }
   }
 
   &__warning-message {

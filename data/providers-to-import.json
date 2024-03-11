@@ -1,13 +1,13 @@
 [
-  { "id": "2fef1a77-a1f8-42a3-9293-437a6f4fc5cc", "name": "Wolfstream", "logo_url": "https://wolfstream.tv/xfst_images/wolfstream.tv3.png" },
-  { "id": "d460ba6c-5b2e-4cc9-a09e-eda5d5a7e12c", "name": "Fastream", "logo_url": "https://fastream.to/images/logo.png" },
-  { "id": "0a635277-c262-4777-8833-caa37e6ec1a8", "name": "Streamhub", "logo_url": "https://streamhub.to/images2/STREAMHUB_LOGO.png" },
-  { "id": "ab535237-2262-4763-2443-dfec1a6ec1b9", "name": "Vidhide", "logo_url": "https://vidhide.com/vidhide/images/logo.svg" },
-  { "id": "baa39748-8402-4378-b296-3ca653e97f9a", "name": "Doodstream", "logo_url": "https://i.doodcdn.co/img/logo-s.png" },
-  { "id": "35677ea5-3641-4319-ae6f-1fe145c9b797", "name": "Lulustream", "logo_url": "https://a.lulucdn.com/static/images/logo.svg" },
-  { "id": "9d2f867d-540d-449b-8064-fa4be9100019", "name": "Streamtape", "logo_url": "https://streamtape.com/images/Logo@2x.png" },
-  { "id": "70802e86-7a26-463b-8036-81d7d4ceac1a", "name": "Voe", "logo_url": "https://voe.sx/s/images/logos/voe-logo.svg?v=2" },
+  { "id": "2fef1a77-a1f8-42a3-9293-437a6f4fc5cc", "name": "Wolfstream", "logo_url": "https://cdn.cheemsporn.com/static/wolfstream-logo.png" },
+  { "id": "d460ba6c-5b2e-4cc9-a09e-eda5d5a7e12c", "name": "Fastream", "logo_url": "https://cdn.cheemsporn.com/static/fastream-logo.png" },
+  { "id": "0a635277-c262-4777-8833-caa37e6ec1a8", "name": "Streamhub", "logo_url": "https://cdn.cheemsporn.com/static/streamhub-logo.png" },
+  { "id": "ab535237-2262-4763-2443-dfec1a6ec1b9", "name": "Vidhide", "logo_url": "https://cdn.cheemsporn.com/static/vidhide-logo.png" },
+  { "id": "baa39748-8402-4378-b296-3ca653e97f9a", "name": "Doodstream", "logo_url": "https://cdn.cheemsporn.com/static/doodstream-logo.png" },
+  { "id": "35677ea5-3641-4319-ae6f-1fe145c9b797", "name": "Lulustream", "logo_url": "https://cdn.cheemsporn.com/static/lulustream-logo.png" },
+  { "id": "9d2f867d-540d-449b-8064-fa4be9100019", "name": "Streamtape", "logo_url": "https://cdn.cheemsporn.com/static/streamtape-logo.png" },
+  { "id": "70802e86-7a26-463b-8036-81d7d4ceac1a", "name": "Voe", "logo_url": "https://cdn.cheemsporn.com/static/voe-logo.png" },
   { "id": "9a51b189-0cbe-4c68-822a-440b61301ec0", "name": "Direct", "logo_url": "/img/app-logo-text.png" },
-  { "id": "9c4fb3fc-3767-4f3e-b0a0-b86fba116326", "name": "Torrent", "logo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/BitTorrent_logo.svg/2560px-BitTorrent_logo.svg.png" },
-  { "id": "6a594991-7364-481d-85f1-62c5ba2b6cb3", "name": "Vtube", "logo_url": "https://vtube.network/assets/img/logo.png" }
+  { "id": "9c4fb3fc-3767-4f3e-b0a0-b86fba116326", "name": "Torrent", "logo_url": "https://cdn.cheemsporn.com/static/torrent-logo.png" },
+  { "id": "6a594991-7364-481d-85f1-62c5ba2b6cb3", "name": "Vtube", "logo_url": "https://cdn.cheemsporn.com/static/vtube-logo.png" }
 ]

@@ -10,6 +10,7 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { SiTinder } from 'react-icons/si'
 import { TfiWorld } from 'react-icons/tfi'
+import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionComponentInterface
@@ -201,11 +202,10 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       title: t('live_cams_advertising_title'),
       isActive: false,
       picture: <BsCameraVideo />,
-      action: {
-        url: process.env.NEXT_PUBLIC_CAMS_AD_URL,
-        blank: true,
+      action: undefined,
+      onClick: () => {
+        handleClick(process.env.NEXT_PUBLIC_CAMS_AD_URL)
       },
-      onClick: undefined,
     })
   }
 
@@ -214,11 +214,10 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       title: t('games_advertising_title'),
       isActive: false,
       picture: <BsController />,
-      action: {
-        url: process.env.NEXT_PUBLIC_GAMES_AD_URL,
-        blank: true,
+      action: undefined,
+      onClick: () => {
+        handleClick(process.env.NEXT_PUBLIC_GAMES_AD_URL)
       },
-      onClick: undefined,
     })
   }
 
@@ -227,11 +226,10 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       title: t('dating_advertising_title'),
       isActive: false,
       picture: <SiTinder />,
-      action: {
-        url: process.env.NEXT_PUBLIC_DATING_AD_URL,
-        blank: true,
+      action: undefined,
+      onClick: () => {
+        handleClick(process.env.NEXT_PUBLIC_DATING_AD_URL)
       },
-      onClick: undefined,
     })
   }
 
@@ -240,11 +238,10 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       title: t('ia_advertising_title'),
       isActive: false,
       picture: <BsCardImage />,
-      action: {
-        url: process.env.NEXT_PUBLIC_IA_AD_URL,
-        blank: true,
+      action: undefined,
+      onClick: () => {
+        handleClick(process.env.NEXT_PUBLIC_IA_AD_URL)
       },
-      onClick: undefined,
     })
   }
 

@@ -1,5 +1,6 @@
 {
   "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
+  "ad_blocker_detected_message_title": "Are you using an ad blocker?\n This may affect your experience on this website.",
   "banner_ad_title": "Advertising",
   "cam_card_live_title": "Live",
   "cam_card_play_button": "Tap here to play the show",

@@ -39,6 +39,12 @@ export class Collection<T extends {}, V extends {}> {
       throw RelationshipDomainException.collectionNotLoaded()
     }
 
+    const itemExists = this.instances.get(objectIdentifier)
+
+    if (itemExists) {
+      itemExists.update(relatedObject)
+    }
+
     this.instances.set(objectIdentifier, CollectionItem.initializeRelation(relatedObject))
   }
 

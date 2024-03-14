@@ -113,6 +113,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       page = paginationQueryParams.page
     }
 
+    const producerFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
+
+    console.log(producerFilter)
+
     const [posts, producers] = await Promise.all([
       getPosts.get({
         page,
@@ -121,7 +125,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
         sortOption,
         postsPerPage: defaultPerPage,
       }),
-      await getProducers.get(),
+      await getProducers.get(producerFilter ? producerFilter.value : null),
     ])
 
     const producerComponents = producers.map((producer) => {
@@ -130,8 +134,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     // Add default producer
     producerComponents.unshift(allPostsProducerDto)
-
-    const producerFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
 
     if (producerFilter) {
       const selectedProducer = producers.find((producer) => producer.slug === producerFilter.value)

@@ -1,35 +1,34 @@
-import {
-  PostRepositoryInterface,
-  RepositoryOptions
-} from '~/modules/Posts/Domain/PostRepositoryInterface'
-import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
-import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
-import { PostMetaModelTranslator } from './ModelTranslators/PostMetaModelTranslator'
-import { Prisma, Post as PostPrimaModel } from '@prisma/client'
-import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCommentModelTranslator'
-import { Post } from '~/modules/Posts/Domain/Post'
-import { prisma } from '~/persistence/prisma'
+import {PostRepositoryInterface, RepositoryOptions} from '~/modules/Posts/Domain/PostRepositoryInterface'
+import {PostModelTranslator} from './ModelTranslators/PostModelTranslator'
+import {PostCommentModelTranslator} from './ModelTranslators/PostCommentModelTranslator'
+import {PostMetaModelTranslator} from './ModelTranslators/PostMetaModelTranslator'
+import {Post as PostPrimaModel, Prisma} from '@prisma/client'
+import {PostChildCommentModelTranslator} from './ModelTranslators/PostChildCommentModelTranslator'
+import {Post} from '~/modules/Posts/Domain/Post'
+import {prisma} from '~/persistence/prisma'
 import {
   PostsWithViewsInterfaceWithTotalCount,
-  PostWithViewsCommentsReactionsInterface, PostWithViewsInterface
+  PostWithViewsCommentsReactionsInterface,
+  PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
-import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
-import { Reaction, ReactionableType, ReactionType } from '~/modules/Reactions/Domain/Reaction'
-import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
-import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
-import { User } from '~/modules/Auth/Domain/User'
-import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
-import { DefaultArgs } from '@prisma/client/runtime/library'
-import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
-import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
-import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
-import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput
-import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
-import { PostMediaModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
-import { MediaUrlModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/MediaUrlModelTranslator'
-import { DateTime } from 'luxon'
-import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
-import { View } from '~/modules/Views/Domain/View'
+import {PostSortingOption} from '~/modules/Shared/Domain/Posts/PostSorting'
+import {Reaction, ReactionableType, ReactionType} from '~/modules/Reactions/Domain/Reaction'
+import {PostComment} from '~/modules/Posts/Domain/PostComments/PostComment'
+import {PostChildComment} from '~/modules/Posts/Domain/PostComments/PostChildComment'
+import {User} from '~/modules/Auth/Domain/User'
+import {ReactionModelTranslator} from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
+import {DefaultArgs} from '@prisma/client/runtime/library'
+import {PostUserInteraction} from '~/modules/Posts/Domain/PostUserInteraction'
+import {PostFilterOptionInterface} from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import {SortingCriteria} from '~/modules/Shared/Domain/SortingCriteria'
+import {TranslationModelTranslator} from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
+import {PostMediaModelTranslator} from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
+import {MediaUrlModelTranslator} from '~/modules/Posts/Infrastructure/ModelTranslators/MediaUrlModelTranslator'
+import {DateTime} from 'luxon'
+import {ViewModelTranslator} from '~/modules/Views/Infrastructure/ViewModelTranslator'
+import {View} from '~/modules/Views/Domain/View'
+import {PostMediaType} from "~/modules/Posts/Domain/PostMedia/PostMedia";
+import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -41,16 +40,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     const meta = post.meta.map((meta) => PostMetaModelTranslator.toDatabase(meta))
     const translations = Array.from(post.translations.values()).flat()
       .map((translation) => { return TranslationModelTranslator.toDatabase(translation) })
-
-    const postMediaModels = post.postMedia.map((postMedia) => {
-      return PostMediaModelTranslator.toDatabase(postMedia)
-    })
-
-    const mediaUrls = post.postMedia.map((postMedia) => {
-      return postMedia.mediaUrls
-    }).flat().map((mediaUrl) => {
-      return MediaUrlModelTranslator.toDatabase(mediaUrl)
-    })
 
     return prisma.$transaction(async (transaction) => {
       await transaction.post.create({
@@ -169,6 +158,107 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         })
       }
     }, { timeout: 100000 })
+  }
+
+  /**
+   * Specific use-case for post media update
+   * Get a post given its slug with its post media
+   * Ignore whether post is deleted or is not published
+   * @param slug Post Slug
+   * @return Post if found or null
+   */
+  public async getPostBySlugWithPostMedia(slug: Post['slug']): Promise<Post | null> {
+    const post = await prisma.post.findFirst({
+      where: {
+        slug,
+      },
+      include: {
+        postMedia: {
+          include: {
+            mediaUrls: {
+              include: {
+                provider: true,
+              },
+            },
+          },
+        },
+      },
+    })
+
+    if (!post) {
+      return null
+    }
+
+    return PostModelTranslator.toDomain(post, ['postMedia'])
+  }
+
+  /**
+   * Specific use-case for post media update
+   * Update post media
+   * v1: Work in replace mode
+   * @param post Post
+   */
+  public async updatePostBySlugWithPostMedia(post: Post): Promise<void> {
+    const removedPostMedia = post.removedPostMedia
+    const postMedia = post.postMedia
+
+    await prisma.$transaction(async (transaction) => {
+      if (postMedia.length > 0) {
+        for (const media of postMedia) {
+          if (media.type === PostMediaType.VIDEO) {
+            continue
+          }
+
+          const postMediaModel = PostMediaModelTranslator.toDatabase(media)
+          const mediaUrls = media.mediaUrls.map((mediaUrl) => {
+            return MediaUrlModelTranslator.toDatabase(mediaUrl)
+          })
+
+          await transaction.postMedia.create({
+            data: {
+              postId: postMediaModel.postId,
+              updatedAt: postMediaModel.updatedAt,
+              createdAt: postMediaModel.createdAt,
+              type: postMediaModel.type,
+              title: postMediaModel.title,
+              thumbnailUrl: postMediaModel.thumbnailUrl,
+              id: postMediaModel.id,
+              mediaUrls: {
+                create: mediaUrls.map((mediaUrl) => {
+                  return {
+                    createdAt: mediaUrl.createdAt,
+                    updatedAt: mediaUrl.updatedAt,
+                    type: mediaUrl.type,
+                    title: mediaUrl.title,
+                    url: mediaUrl.url,
+                    provider: {
+                      connect: {
+                        id: mediaUrl.mediaProviderId,
+                      },
+                    },
+                  }
+                }),
+              },
+            },
+          })
+        }
+      }
+
+      if (removedPostMedia.length > 0) {
+        await transaction.post.update({
+          where: {
+            slug: post.slug
+          },
+          data: {
+            postMedia: {
+              delete: removedPostMedia.map((removedMedia) => ({
+                id: removedMedia.id
+              }))
+            },
+          }
+        })
+      }
+    })
   }
 
   /**

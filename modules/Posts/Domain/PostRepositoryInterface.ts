@@ -44,6 +44,22 @@ export interface PostRepositoryInterface {
   save(post: Post): Promise<void>
 
   /**
+   * Specific use-case for post media update
+   * Get a post given its slug with its post media
+   * @param slug Post Slug
+   * @return Post if found or null
+   */
+  getPostBySlugWithPostMedia(slug: Post['slug']): Promise<Post | null>
+
+  /**
+   * Specific use-case for post media update
+   * Update post media
+   * v1: Work in replace mode
+   * @param post Post
+   */
+  updatePostBySlugWithPostMedia(post: Post): Promise<void>
+
+  /**
    * Find a Post given its ID
    * @param postId Post ID
    * @param options Post relations to load

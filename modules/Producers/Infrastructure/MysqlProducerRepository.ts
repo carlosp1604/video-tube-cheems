@@ -40,16 +40,41 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
   /**
    * TODO: Pagination for this use-case
    * Get first 20 most popular Producers
+   * @param includedProducersSlugs producers Slug to include
    * @return Array of Producer
    */
-  public async getPopular (): Promise<Producer[]> {
-    const producers = await prisma.producer.findMany({
-      take: 20,
-      orderBy: {
-        views: {
-          _count: 'desc',
+  public async getPopular (includedProducerSlugs: Array<Producer['slug']>): Promise<Producer[]> {
+    const producers = await prisma.$transaction(async (transaction) => {
+      const producersToInclude = await transaction.producer.findMany({
+        where: {
+          slug: {
+            in: includedProducerSlugs
+          }
         },
-      },
+        take: 20,
+      })
+
+      if (producersToInclude.length < 20) {
+        const producers = await transaction.producer.findMany({
+          take: (20 - producersToInclude.length),
+          where: {
+            slug: {
+              not: {
+                in: includedProducerSlugs
+              }
+            }
+          },
+          orderBy: {
+            views: {
+              _count: 'desc',
+            },
+          },
+        })
+
+        return [...producers, ...producersToInclude]
+      }
+
+      return producersToInclude
     })
 
     return producers.map(

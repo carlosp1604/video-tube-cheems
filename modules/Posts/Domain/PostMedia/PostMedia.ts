@@ -45,6 +45,10 @@ export class PostMedia {
     return this._mediaUrls.values
   }
 
+  get removedMediaUrls (): Array<MediaUrl> {
+    return this._mediaUrls.removedValues
+  }
+
   private static validatePostMediaType (id: string, value: string): PostMediaType {
     const values: string [] = Object.values(PostMediaType)
 

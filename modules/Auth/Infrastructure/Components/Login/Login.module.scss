@@ -98,4 +98,21 @@
       @apply text-sm;
     }
   }
+
+  &__disabled-feature-container {
+    @apply flex flex-col justify-center mx-auto p-5 gap-y-4;
+
+    @screen tb {
+      @apply max-w-sm;
+    }
+  }
+
+  &__disabled-feature-icon {
+    @apply self-center text-8xl text-base-100 p-2 rounded-full
+    bg-brand-primary-bg text-base-100;
+  }
+
+  &__disabled-feature-message {
+    @apply text-center whitespace-pre-line;
+  }
 }

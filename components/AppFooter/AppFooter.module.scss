@@ -10,13 +10,14 @@
 
     grid-template-areas:
       "social-networks    social-networks   app-logo"
-      "copyright          copyright         languages";
+      "copyright          copyright         languages"
+      "contact            contact           contact";
     grid-auto-columns: auto auto;
     grid-column-gap: 10px;
 
     @screen lg {
       @apply bg-base-950 bg-gradient-to-r
-        from-body via-base-950 to-body;
+      from-body via-base-950 to-body;
     }
   }
 
@@ -81,6 +82,15 @@
     &__active {
       @apply text-base-100 font-black pointer-events-none;
     }
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__contact-link {
+    @apply grid w-full items-center justify-center text-xs font-bold mt-4 -mb-2;
+    grid-area: contact;
 
     @screen md {
       @apply text-sm;

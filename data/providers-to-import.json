@@ -9,5 +9,6 @@
   { "id": "70802e86-7a26-463b-8036-81d7d4ceac1a", "name": "Voe", "logo_url": "https://cdn.cheemsporn.com/static/voe-logo.png" },
   { "id": "9a51b189-0cbe-4c68-822a-440b61301ec0", "name": "Direct", "logo_url": "/img/app-logo-text.png" },
   { "id": "9c4fb3fc-3767-4f3e-b0a0-b86fba116326", "name": "Torrent", "logo_url": "https://cdn.cheemsporn.com/static/torrent-logo.png" },
-  { "id": "6a594991-7364-481d-85f1-62c5ba2b6cb3", "name": "Vtube", "logo_url": "https://cdn.cheemsporn.com/static/vtube-logo.png" }
+  { "id": "6a594991-7364-481d-85f1-62c5ba2b6cb3", "name": "Vtube", "logo_url": "https://cdn.cheemsporn.com/static/vtube-logo.png" },
+  { "id": "b06ba1c1-4988-4b90-8271-a23a56fb0f61", "name": "Filemoon", "logo_url": "https://cdn.cheemsporn.com/static/filemoon.png" }
 ]

@@ -393,7 +393,7 @@ async function run (
     }
 
     const postMedia = new PostMedia(
-      postUuid,
+      postMediaUuid,
       PostMediaType.EMBED,
       '',
       postUuid,

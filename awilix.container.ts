@@ -94,10 +94,10 @@ container.register('producerRepository', asClass(MysqlProducerRepository))
 container.register('dateService', asClass(DateService))
 container.register('postCommentRepository', asClass(MysqlPostCommentRepository))
 container.register('mailerSend', asFunction(() => {
-  const apiKey = process.env.API_TOKEN
+  const apiKey = process.env.EMAIL_API_TOKEN
 
   if (!apiKey) {
-    throw Error('Missing API_TOKEN environment variable to build MailerSend')
+    throw Error('Missing EMAIL_API_TOKEN environment variable to build MailerSend')
   }
 
   return new MailerSend({

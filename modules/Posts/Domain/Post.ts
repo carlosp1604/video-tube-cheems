@@ -138,6 +138,14 @@ export class Post {
     return this.deleteReaction(this.id, ReactionableType.POST, userId)
   }
 
+  public deletePostMedia (postMedia: PostMedia): void {
+    this._postMedia.removeItem(postMedia.id)
+  }
+
+  public addPostMedia (postMedia: PostMedia): void {
+    this._postMedia.addItem(postMedia, postMedia.id)
+  }
+
   public addComment (
     comment: PostComment['comment'],
     user: User
@@ -253,6 +261,10 @@ export class Post {
 
   get actor (): Actor | null {
     return this._actor.value
+  }
+
+  get removedPostMedia (): Array<PostMedia> {
+    return this._postMedia.removedValues
   }
 
   public setProducer (producer: Producer): void {

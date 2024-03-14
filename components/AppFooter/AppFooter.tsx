@@ -76,6 +76,13 @@ export const AppFooter: FC = () => {
   return (
     <footer className={ styles.appFooter__layout }>
       <div className={ styles.appFooter__container }>
+        <Link
+          href={ `mailto:${process.env.NEXT_PUBLIC_EMAIL_CONTACT_ADDRESS}` }
+          shallow={ true }
+          className={ styles.appFooter__contactLink }
+        >
+          { t('contact_title') }
+        </Link>
         <div className={ styles.appFooter__copyright }>
           { transCopyright }
         </div>

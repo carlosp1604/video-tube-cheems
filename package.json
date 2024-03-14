@@ -1,5 +1,5 @@
 {
-  "name": "video-tube",
+  "name": "video-tube-cheems",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -21,6 +21,7 @@
     "db:import-actors": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-actors.ts",
     "db:import-producers": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-producers.ts",
     "db:import-providers": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/import-providers.ts",
+    "db:update-posts": "ts-node --compiler-options '{ \"isolatedModules\": false, \"module\": \"commonjs\" }' -r tsconfig-paths/register scripts/update-post-urls.ts",
     "db:init": "yarn db:up && sleep 20 && yarn db:migrate && yarn db:import-producers && yarn db:import-actors && yarn db:import-tags && yarn db:import-providers && yarn db:import-posts"
   },
   "dependencies": {

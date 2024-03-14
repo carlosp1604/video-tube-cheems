@@ -1,4 +1,4 @@
-import { CSSProperties, FC, ReactElement } from 'react'
+import {createRef, CSSProperties, FC, ReactElement, Ref, useRef} from 'react'
 import styles from './ProducerList.module.scss'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import { useTranslation } from 'next-i18next'
@@ -17,6 +17,7 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer }) => {
   const buildProducerElement = (producer: ProducerComponentDto) => {
     let href = `/?producerSlug=${producer.slug}`
 
+
     if (producer.slug === allPostsProducerDto.slug) {
       href = '/'
     }
@@ -24,8 +25,10 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer }) => {
     let component: ReactElement
 
     if (activeProducer?.slug === producer.slug) {
+      const ref: Ref<HTMLSpanElement> = useRef(null)
       component = (
         <span
+          ref={ ref }
           className={ `${styles.producerList__category}
           ${activeProducer?.id === producer.id ? styles.producerList__categoryActive : ''}
           ` }
@@ -36,6 +39,11 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer }) => {
           { producer.id === '' ? t('all_producers_title') : producer.name }
         </span>
       )
+
+      if (ref.current) {
+        ref.current.scrollIntoView()
+
+      }
     } else {
       component = (
         <Link

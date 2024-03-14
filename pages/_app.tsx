@@ -92,6 +92,7 @@ function App ({
   if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
     popunder = (
       <Script
+        type={ 'text/javascript' }
         src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
         async={ true }
       />

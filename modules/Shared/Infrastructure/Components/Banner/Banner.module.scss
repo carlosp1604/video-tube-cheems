@@ -1,7 +1,7 @@
 .banner {
   &__container {
     @apply relative flex flex-col items-center justify-center
-    min-h-[250px] w-[300px] gap-y-1 mx-auto
+    min-h-[250px] gap-y-1
     text-base-500 text-sm font-semibold overflow-hidden;
   }
 

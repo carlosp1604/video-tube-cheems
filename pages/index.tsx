@@ -115,8 +115,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
     const producerFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
 
-    console.log(producerFilter)
-
     const [posts, producers] = await Promise.all([
       getPosts.get({
         page,

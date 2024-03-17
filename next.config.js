@@ -5,6 +5,32 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   transpilePackages: ['fluid-player'],
+  rewrites: async () => [
+    {
+      source: '/posts-sitemap.xml',
+      destination: '/posts-sitemap',
+    },
+    {
+      source: '/posts-sitemap-:page.xml',
+      destination: '/posts-sitemap/:page',
+    },
+    {
+      source: '/actors-sitemap.xml',
+      destination: '/actors-sitemap',
+    },
+    {
+      source: '/actors-sitemap-:page.xml',
+      destination: '/actors-sitemap/:page',
+    },
+    {
+      source: '/producers-sitemap.xml',
+      destination: '/producers-sitemap',
+    },
+    {
+      source: '/producers-sitemap-:page.xml',
+      destination: '/producers-sitemap/:page',
+    },
+  ],
   webpack: (config) => {
     const rules = config.module.rules
       .find((rule) => typeof rule.oneOf === 'object')

@@ -14,6 +14,7 @@ import {
 import { Producers } from '~/modules/Producers/Infrastructure/Components/Producers/Producers'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
+import { useRouter } from 'next/router'
 
 export interface ProducersPageProps {
   initialPage: number
@@ -21,6 +22,7 @@ export interface ProducersPageProps {
   initialProducers: ProducerCardDto[]
   initialProducersNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
+  baseUrl: string
 }
 
 export const ProducersPage: NextPage<ProducersPageProps> = ({
@@ -29,14 +31,17 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
   initialPage,
   initialOrder,
   htmlPageMetaContextProps,
+  baseUrl,
 }) => {
   const { t } = useTranslation('producers')
+  const locale = useRouter().locale ?? 'en'
 
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('producers_page_title'),
       t('producers_page_description'),
-      HtmlPageMetaContextResourceType.ARTICLE
+      HtmlPageMetaContextResourceType.ARTICLE,
+      `${baseUrl}/${locale}/producers`
     )
   ).getProperties()
 

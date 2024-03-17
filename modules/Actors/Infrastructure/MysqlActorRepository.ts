@@ -36,6 +36,18 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   /**
+   * Count actors number
+   * @return number of actors
+   */
+  public async count (): Promise<number> {
+    return prisma.actor.count({
+      where: {
+        deletedAt: null
+      }
+    })
+  }
+
+  /**
    * Find an Actor given its ID
    * @param actorId Actor ID
    * @return Actor if found or null

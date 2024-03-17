@@ -41,7 +41,6 @@ export const Banner: FC = () => {
     <section className={ styles.banner__container }>
       <div ref={ bannerRef } className={ styles.banner__bannerContainer }>
       </div>
-      <RiAdvertisementFill className={ styles.banner__bannerAd }/>
       { t('banner_ad_title') }
     </section>
   )

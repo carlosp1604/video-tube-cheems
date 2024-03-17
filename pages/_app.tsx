@@ -1,7 +1,7 @@
 import '~/styles/globals.scss'
 import type { AppProps } from 'next/app'
 import styles from '~/styles/pages/_app.module.scss'
-import { ReactElement, useState } from 'react'
+import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
 import { appWithTranslation, useTranslation } from 'next-i18next'
 import { Settings } from 'luxon'
@@ -19,11 +19,8 @@ import { AppToast } from '~/components/AppToast/AppToast'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import ReactGA from 'react-ga4'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
-import Script from 'next/script'
 import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
-import { LiveCams } from '~/components/LiveCams/LiveCams'
-import { DetectAdBlock } from '~/components/DetectAdBlock/DetectAdBlock'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -39,6 +36,14 @@ const MenuSideBar = dynamic(() => import('~/components/MenuSideBar/MenuSideBar')
 
 const LanguageMenu = dynamic(() => import('~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu')
   .then((module) => module.LanguageMenu)
+)
+
+const LiveCams = dynamic(() => import('~/components/LiveCams/LiveCams')
+  .then((module) => module.LiveCams)
+)
+
+const DetectAdBlock = dynamic(() => import('~/components/DetectAdBlock/DetectAdBlock')
+  .then((module) => module.DetectAdBlock)
 )
 
 function applyMixins (derivedCtor: any, constructors: any[]) {
@@ -87,18 +92,6 @@ function App ({
     ReactGA.initialize(process.env.NEXT_PUBLIC_ANALYTICS_TRACKING_ID)
   }
 
-  let popunder: ReactElement | null = null
-
-  if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
-    popunder = (
-      <Script
-        type={ 'text/javascript' }
-        src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
-        async={ true }
-      />
-    )
-  }
-
   /** Post video embed page **/
   if (pathname.startsWith('/posts/videos/embed')) {
     return (
@@ -118,8 +111,6 @@ function App ({
             <Head>
               <link rel="icon" href="/favicon.ico" />
             </Head>
-
-            { popunder }
 
             <AppProgressBar />
 

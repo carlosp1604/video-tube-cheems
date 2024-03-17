@@ -14,6 +14,7 @@ import {
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 import styles from './ProducerPage.module.scss'
+import { useRouter } from 'next/router'
 
 export interface ProducerPageProps {
   initialPage: number
@@ -35,6 +36,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
   baseUrl,
 }) => {
   const { t } = useTranslation('producers')
+  const locale = useRouter().locale ?? 'en'
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -43,12 +45,12 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('producers_breadcrumb_list_title'),
-      item: `${baseUrl}/producers/`,
+      item: `${baseUrl}/${locale}/producers/`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: producer.name,
-      item: `${baseUrl}/producers/${producer.slug}/`,
+      item: `${baseUrl}/${locale}/producers/${producer.slug}/`,
     }],
   }
 
@@ -57,6 +59,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       t('producer_page_title', { producerName: producer.name }),
       t('producer_page_description', { producerName: producer.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
+      `${baseUrl}/${locale}/producers/${producer.slug}/`,
       producer.imageUrl ?? undefined
     )
   ).getProperties()

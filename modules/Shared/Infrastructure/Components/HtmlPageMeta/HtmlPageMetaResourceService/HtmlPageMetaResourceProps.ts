@@ -4,19 +4,22 @@ export class HtmlPageMetaResourceProps {
   public readonly siteName: string
   public readonly resourceType: string
   public readonly image: string
+  public readonly canonical: string | null
 
   constructor (
     title: string,
     description: string,
     siteName: string,
     resourceType: string,
-    image: string
+    image: string,
+    canonical: string | null
   ) {
     this.title = title
     this.description = description
     this.siteName = siteName
     this.resourceType = resourceType
     this.image = image
+    this.canonical = canonical
 
     Object.setPrototypeOf(this, HtmlPageMetaResourceProps)
   }
@@ -32,13 +35,14 @@ export class HtmlPageMetaVideoProps extends HtmlPageMetaResourceProps {
     description: string,
     siteName: string,
     resourceType: string,
+    canonical: string | null,
     image: string,
     videoUrl: string,
     duration: string,
     width: string,
     height: string
   ) {
-    super(title, description, siteName, resourceType, image)
+    super(title, description, siteName, resourceType, image, canonical)
     this.videoUrl = videoUrl
     this.duration = duration
     this.width = width

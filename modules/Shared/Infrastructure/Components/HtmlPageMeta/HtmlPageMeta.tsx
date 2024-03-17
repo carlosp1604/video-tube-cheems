@@ -11,6 +11,7 @@ import {
 export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
   let videoMeta: ReactElement[] | null = null
   let rtaLabel: ReactElement| null = null
+  let canonicalTag: ReactElement | null = null
 
   if (props.resourceProps.resourceType === HtmlPageMetaContextResourceType.VIDEO_MOVIE) {
     const videoProps = props.resourceProps as HtmlPageMetaVideoProps
@@ -64,9 +65,29 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     )
   }
 
+  if (props.resourceProps.canonical) {
+    canonicalTag = (
+      <link rel="canonical" href={ props.resourceProps.canonical } key={ props.resourceProps.canonical }/>
+    )
+  }
+
+  const alternateUrls: ReactElement[] = []
+
+  props.alternateLocale.forEach((alternateUrl) => (
+    alternateUrls.push(
+      <link
+        rel="alternate"
+        hrefLang={ alternateUrl.locale }
+        href={ alternateUrl.alternateUrl }
+        key={ alternateUrl.alternateUrl }
+      />
+    )
+  ))
+
   return (
     <Head>
       { rtaLabel }
+      { canonicalTag }
       <title>{ props.resourceProps.title }</title>
       <meta name="description" content={ props.resourceProps.description } key="description" />
       <meta property="og:title" content={ props.resourceProps.title } key="og:title" />
@@ -79,7 +100,7 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
       { websiteMeta }
       { videoMeta }
       {
-        props.alternateLocale.map((locale) => (
+        props.alternateLocaleWithTerritory.map((locale) => (
           <meta
             property="og:locale:alternate"
             content={ locale }
@@ -87,6 +108,7 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
           />
         ))
       }
+      { alternateUrls }
       { structuredDataScript }
     </Head>
   )

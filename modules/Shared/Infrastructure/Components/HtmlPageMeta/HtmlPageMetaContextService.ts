@@ -3,7 +3,7 @@ import { GetServerSidePropsContext, PreviewData } from 'next'
 import nextI18nextConfig from '~/next-i18next.config'
 import { localeWithTerritory } from '~/modules/Shared/Domain/Locale'
 import { HtmlPageMetaContextServiceInterface } from './HtmlPageMetaContextServiceInterface'
-import { HtmlPageMetaContextProps } from './HtmlPageMetaContextProps'
+import {AlternateUrl, HtmlPageMetaContextProps} from './HtmlPageMetaContextProps'
 
 /**
  * Service to extract metadata properties which are dependent on the context.
@@ -17,9 +17,10 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
 
   public getProperties (): HtmlPageMetaContextProps {
     return {
-      url: this.getUrl(),
+      url: this.getCurrentUrl(),
       locale: this.getExtendedLocale(),
-      alternateLocale: this.getExtendedAlternateLocale(),
+      alternateLocaleWithTerritory: this.getExtendedAlternateLocale(),
+      alternateLocale: this.getAlternateLocaleWithAlternateUrl(),
     }
   }
 
@@ -31,6 +32,20 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
     return localeWithTerritory(this.getLocale())
   }
 
+  private getAlternateLocaleWithAlternateUrl (): AlternateUrl[] {
+    const locales: string[] = this.context.locales?.filter((locale) => locale !== this.getLocale()) || []
+
+    const alternateLocale: AlternateUrl[] = []
+
+    locales.forEach((locale) => {
+      const alternateUrl = this.getUrlForLocale(locale)
+
+      alternateLocale.push({ locale, alternateUrl } )
+    })
+
+    return alternateLocale
+  }
+
   private getAlternateLocale (): string[] {
     return this.context.locales?.filter((locale) => locale !== this.getLocale()) || []
   }
@@ -39,10 +54,17 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
     return this.getAlternateLocale().map(localeWithTerritory)
   }
 
-  private getUrl (): string {
+  private getCurrentUrl (): string {
     const env = process.env
     const baseUrl = env.BASE_URL
 
     return `${baseUrl}/${this.getLocale()}${this.context.req.url}`
+  }
+
+  private getUrlForLocale (locale: string): string {
+    const env = process.env
+    const baseUrl = env.BASE_URL
+
+    return `${baseUrl}/${locale}${this.context.req.url}`
   }
 }

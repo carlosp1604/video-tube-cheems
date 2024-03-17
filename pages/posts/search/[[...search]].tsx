@@ -78,7 +78,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
   let baseUrl = ''
 
   if (!env.BASE_URL) {
-    console.error('Missing env var: BASE_URL. Required in the search page')
+    throw Error('Missing env var: BASE_URL. Required in the search page')
   } else {
     baseUrl = env.BASE_URL
   }

@@ -25,6 +25,8 @@ export const getServerSideProps: GetServerSideProps<UserHistoryPageProps> = asyn
 
   username = username.toString()
 
+  const { env } = process
+
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: UserSavedPostsPageProps = {

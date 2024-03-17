@@ -76,6 +76,14 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     }
   }
 
+  const { env } = process
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    throw Error('Missing env var: BASE_URL. Required in the tag page')
+  } else {
+    baseUrl = env.BASE_URL
+  }
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: TagPageProps = {
@@ -89,6 +97,7 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     initialPosts: [],
     initialPostsNumber: 0,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
+    baseUrl,
     ...i18nSSRConfig,
   }
 

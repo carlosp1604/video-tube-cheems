@@ -13,6 +13,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
+import { useRouter } from 'next/router'
 
 export interface Props {
   page: number
@@ -27,6 +28,7 @@ export interface Props {
 
 export const HomePage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation(['home_page'])
+  const locale = useRouter().locale ?? 'en'
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -37,7 +39,7 @@ export const HomePage: NextPage<Props> = (props: Props) => {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${props.baseUrl}/posts/search?search={search_term_string}`,
+        urlTemplate: `${props.baseUrl}/${locale}/posts/search?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -47,7 +49,8 @@ export const HomePage: NextPage<Props> = (props: Props) => {
     new HtmlPageMetaResourceService(
       t('home_page_title'),
       t('home_page_description'),
-      HtmlPageMetaContextResourceType.WEBSITE
+      HtmlPageMetaContextResourceType.WEBSITE,
+      `${props.baseUrl}/${locale}` // canonical -> Home page
     )
   ).getProperties()
 

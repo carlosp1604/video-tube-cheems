@@ -56,7 +56,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
   let baseUrl = ''
 
   if (!env.BASE_URL) {
-    console.error('Missing env var: BASE_URL. Required in the actor page')
+    throw Error('Missing env var: BASE_URL. Required in the actor page')
   } else {
     baseUrl = env.BASE_URL
   }

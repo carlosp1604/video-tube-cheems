@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   let baseUrl = ''
 
   if (!env.BASE_URL) {
-    console.error('Missing env var: BASE_URL. Required in the home page')
+    throw Error('Missing env var: BASE_URL. Required in the home page')
   } else {
     baseUrl = env.BASE_URL
   }

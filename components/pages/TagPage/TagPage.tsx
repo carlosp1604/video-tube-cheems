@@ -15,6 +15,7 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 import { useAvatarColor } from '~/hooks/AvatarColor'
 import styles from './TagPage.module.scss'
+import { useRouter } from 'next/router'
 
 export interface TagPageProps {
   initialPage: number
@@ -23,6 +24,7 @@ export interface TagPageProps {
   initialPosts: PostCardComponentDto[]
   initialPostsNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
+  baseUrl: string
 }
 
 export const TagPage: NextPage<TagPageProps> = ({
@@ -32,23 +34,37 @@ export const TagPage: NextPage<TagPageProps> = ({
   initialPosts,
   initialPostsNumber,
   htmlPageMetaContextProps,
+  baseUrl,
 }) => {
   const { t } = useTranslation('tag_page')
-
+  const locale = useRouter().locale ?? 'en'
   const getRandomColor = useAvatarColor()
   const tagColor = getRandomColor(tag.name)
+
+  const structuredData = {
+    '@context': 'http://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [{
+      '@type': 'ListItem',
+      position: 1,
+      name: tag.name,
+      item: `${baseUrl}/${locale}/tags/${tag.slug}/`,
+    }],
+  }
 
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('tag_page_title', { tagName: tag.name }),
       t('tag_page_description', { tagName: tag.name }),
-      HtmlPageMetaContextResourceType.ARTICLE
+      HtmlPageMetaContextResourceType.ARTICLE,
+      `${baseUrl}/${locale}/tags/${tag.slug}/`
     )
   ).getProperties()
 
   const htmlPageMetaProps = {
     ...htmlPageMetaContextProps,
     resourceProps: htmlPageMetaUrlProps,
+    structuredData: JSON.stringify(structuredData),
   }
 
   return (

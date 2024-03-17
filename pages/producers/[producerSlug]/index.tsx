@@ -84,7 +84,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
   let baseUrl = ''
 
   if (!env.BASE_URL) {
-    console.error('Missing env var: BASE_URL. Required in the producer page')
+    throw Error('Missing env var: BASE_URL. Required in the producer page')
   } else {
     baseUrl = env.BASE_URL
   }

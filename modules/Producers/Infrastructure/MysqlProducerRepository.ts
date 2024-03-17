@@ -38,6 +38,18 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
   }
 
   /**
+   * Count producers number
+   * @return number of producers
+   */
+  public async count (): Promise<number> {
+    return prisma.producer.count({
+      where: {
+        deletedAt: null
+      }
+    })
+  }
+
+  /**
    * TODO: Pagination for this use-case
    * Get first 20 most popular Producers
    * @param includedProducersSlugs producers Slug to include

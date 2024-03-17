@@ -12,6 +12,12 @@ export interface ActorRepositoryInterface {
   save (actor: Actor): Promise<void>
 
   /**
+   * Count actors number
+   * @return number of actors
+   */
+  count (): Promise<number>
+
+  /**
    * Find an Actor given its ID
    * @param actorId Actor ID
    * @return Actor if found or null

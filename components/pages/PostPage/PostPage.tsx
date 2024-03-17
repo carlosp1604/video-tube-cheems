@@ -15,6 +15,7 @@ import { Duration } from 'luxon'
 import { ReactElement } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
+import Script from 'next/script'
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -38,6 +39,18 @@ export const PostPage: NextPage<PostPageProps> = ({
   htmlPageMetaContextProps,
 }) => {
   const { t } = useTranslation('post_page')
+
+  let popunder: ReactElement | null = null
+
+  if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
+    popunder = (
+      <Script
+        type={ 'text/javascript' }
+        src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
+        async={ true }
+      />
+    )
+  }
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -78,6 +91,7 @@ export const PostPage: NextPage<PostPageProps> = ({
       post.title,
       post.description,
       post.thumb,
+      null,
       postEmbedUrl,
       post.duration
     )
@@ -106,6 +120,8 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   return (
     <>
+      { popunder }
+
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <MobileBanner />

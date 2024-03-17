@@ -29,6 +29,7 @@ export const UserSavedPostsPage: NextPage<UserSavedPostsPageProps> = ({
       t('user_saved_posts_page_title', { userName: userComponentDto.name }),
       t('user_saved_posts_page_description', { userName: userComponentDto.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
+      null,
       userComponentDto.imageUrl ?? undefined
     )
   ).getProperties()

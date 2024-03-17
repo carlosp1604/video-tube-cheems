@@ -33,6 +33,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
 }) => {
   const { asPath } = useRouter()
   const { t } = useTranslation('actors')
+  const locale = useRouter().locale ?? 'en'
   const getRandomColor = useAvatarColor()
 
   const structuredData = {
@@ -42,12 +43,12 @@ export const ActorPage: NextPage<ActorPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('actors_breadcrumb_list_title'),
-      item: `${baseUrl}/actors/`,
+      item: `${baseUrl}/${locale}/actors/`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: actor.name,
-      item: `${baseUrl}/actors/${actor.slug}/`,
+      item: `${baseUrl}/${locale}/actors/${actor.slug}/`,
     }],
   }
 
@@ -56,6 +57,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
       t('actor_page_title', { actorName: actor.name }),
       t('actor_page_description', { actorName: actor.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
+      `${baseUrl}/${locale}/actors/${actor.slug}/`,
       actor.imageUrl ?? undefined
     )
   ).getProperties()

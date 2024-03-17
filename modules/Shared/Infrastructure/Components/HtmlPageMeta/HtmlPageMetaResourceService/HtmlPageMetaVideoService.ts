@@ -16,10 +16,11 @@ export class HtmlPageMetaVideoService extends HtmlPageMetaResourceService {
     title: string,
     description: string,
     image: string,
+    canonical: string | null,
     videoUrl: string,
     duration: string
   ) {
-    super(title, description, HtmlPageMetaContextResourceType.VIDEO_MOVIE, image)
+    super(title, description, HtmlPageMetaContextResourceType.VIDEO_MOVIE, canonical, image)
     this.videoUrl = videoUrl
     this.duration = duration
   }

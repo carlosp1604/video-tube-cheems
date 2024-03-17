@@ -1,5 +1,11 @@
+export interface AlternateUrl {
+  locale: string
+  alternateUrl: string
+}
+
 export interface HtmlPageMetaContextProps {
   url: string
   locale: string
-  alternateLocale: string[]
+  alternateLocaleWithTerritory: string[]
+  alternateLocale: AlternateUrl[]
 }

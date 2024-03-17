@@ -12,6 +12,12 @@ export interface ProducerRepositoryInterface {
   save(producer: Producer): Promise<void>
 
   /**
+   * Count producers number
+   * @return number of producers
+   */
+  count (): Promise<number>
+
+  /**
    * TODO: Pagination for this use-case
    * Get first 20 most popular Producers
    * @param includedProducersSlugs producers Slug to include

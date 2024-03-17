@@ -64,6 +64,15 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
     }
   }
 
+  const { env } = process
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    throw Error('Missing env var: BASE_URL. Required in the producers page')
+  } else {
+    baseUrl = env.BASE_URL
+  }
+
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: ProducersPageProps = {
@@ -72,6 +81,7 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
     initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.NAME_FIRST,
     initialPage: paginationQueryParams.page ?? 1,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
+    baseUrl,
     ...i18nSSRConfig,
   }
 

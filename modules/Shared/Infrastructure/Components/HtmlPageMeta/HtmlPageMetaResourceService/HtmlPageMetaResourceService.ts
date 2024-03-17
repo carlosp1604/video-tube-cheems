@@ -16,17 +16,20 @@ export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceI
   public readonly description: string
   public readonly resourceType: HtmlPageMetaContextResourceType
   public readonly image: string
+  public readonly canonical: string | null
 
   public constructor (
     title: string,
     description: string,
     resourceType: HtmlPageMetaContextResourceType,
-    image = process.env.NEXT_PUBLIC_WEBSITE_IMAGE_URL ?? ''
+    canonical: string | null,
+    image: string = process.env.NEXT_PUBLIC_WEBSITE_IMAGE_URL ?? ''
   ) {
     this.title = title
     this.resourceType = resourceType
     this.description = description
     this.image = image
+    this.canonical = canonical
   }
 
   public getProperties (): HtmlPageMetaResourceProps {
@@ -36,6 +39,7 @@ export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceI
       siteName: this.siteName,
       resourceType: this.resourceType,
       image: this.image,
+      canonical: this.canonical
     }
   }
 

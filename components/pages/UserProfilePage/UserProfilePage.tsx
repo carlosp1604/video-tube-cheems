@@ -40,6 +40,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
       t('user_profile_page_title', { userName: userComponentDto.name }),
       t('user_profile_page_description', { userName: userComponentDto.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
+      null,
       userComponentDto.imageUrl ?? undefined
     )
   ).getProperties()

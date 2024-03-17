@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
     let postEmbedUrl = ''
 
     if (!env.BASE_URL) {
-      console.error('Missing env var: BASE_URL. Required to build post page embed URL')
+      throw Error('Missing env var: BASE_URL. Required to build post page embed URL')
     } else {
       postEmbedUrl = `${env.BASE_URL}/${locale}/posts/videos/embed/${slug}`
     }

@@ -6,7 +6,7 @@
   }
 
   &__banner-wrapper {
-    @apply relative h-[250px] min-w-[300px];
+    @apply relative h-[250px] min-w-[300px] bg-base-800;
   }
 
   &__banner-ad {

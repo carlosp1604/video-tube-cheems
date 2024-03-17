@@ -29,6 +29,7 @@ export const UserHistoryPage: NextPage<UserHistoryPageProps> = ({
       t('user_history_page_title', { userName: userComponentDto.name }),
       t('user_history_page_description', { userName: userComponentDto.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
+      null,
       userComponentDto.imageUrl ?? undefined
     )
   ).getProperties()

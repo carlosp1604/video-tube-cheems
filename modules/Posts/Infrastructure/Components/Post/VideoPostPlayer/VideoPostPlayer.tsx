@@ -21,7 +21,7 @@ export interface Props {
 
 export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
-  const [videoReady, setVideoReady] = useState<boolean>(false)
+  const [videoReady, setVideoReady] = useState<boolean>(true)
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
 

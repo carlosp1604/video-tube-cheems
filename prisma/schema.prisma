@@ -99,18 +99,23 @@ model PostMeta {
 }
 
 model Account {
-  id                   String    @id
-  userId               String    @map("user_id")
-  providerType         String    @map("provider_type")
-  providerId           String    @map("provider_id")
-  providerAccountId    String    @map("provider_account_id")
-  refresh_token        String?
-  access_token         String?
-  access_token_expires DateTime?
-  createdAt            DateTime  @map("created_at")
-  updatedAt            DateTime  @map("updated_at")
-  user                 User      @relation(fields: [userId], references: [id])
+  id                String   @id
+  userId            String   @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?  @db.Text
+  access_token      String?  @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.Text
+  session_state     String?
+  createdAt         DateTime @map("created_at")
+  updatedAt         DateTime @map("updated_at")
+  user              User     @relation(fields: [userId], references: [id])
 
+  @@unique([provider, providerAccountId])
   @@map("accounts")
 }
 

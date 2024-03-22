@@ -1,4 +1,4 @@
-import {Account} from "~/modules/Auth/Domain/Account";
+import { Account } from '~/modules/Auth/Domain/Account'
 
 export interface AccountRepositoryInterface {
   /**

@@ -1,6 +1,6 @@
 import { User } from './User'
 import { Post } from '~/modules/Posts/Domain/Post'
-import {Account} from "~/modules/Auth/Domain/Account";
+import { Account } from '~/modules/Auth/Domain/Account'
 
 export type UserRepositoryOptions = 'verificationToken'| 'savedPosts'
 

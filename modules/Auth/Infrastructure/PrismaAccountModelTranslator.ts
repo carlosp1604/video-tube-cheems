@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { Account as PrismaAccountModel } from '@prisma/client'
-import {Account} from "~/modules/Auth/Domain/Account";
+import { Account } from '~/modules/Auth/Domain/Account'
 
 export class PrismaAccountModelTranslator {
   public static toDomain (prismaAccountModel: PrismaAccountModel) {

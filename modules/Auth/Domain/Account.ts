@@ -1,4 +1,4 @@
-import {DateTime} from "luxon";
+import { DateTime } from 'luxon'
 
 export class Account {
   // eslint-disable-next-line no-useless-constructor

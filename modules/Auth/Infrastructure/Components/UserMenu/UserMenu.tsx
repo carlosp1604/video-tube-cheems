@@ -5,7 +5,6 @@ import { signOut, useSession } from 'next-auth/react'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
 import { CiLogout, CiUser } from 'react-icons/ci'
-import { useLoginContext } from '~/hooks/LoginContext'
 import { usePathname } from 'next/navigation'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
@@ -16,7 +15,6 @@ interface Props {
 
 export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
-  const { setLoginModalOpen, setMode } = useLoginContext()
 
   const pathname = usePathname()
 
@@ -41,7 +39,6 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
     })
   }
 
-  // TODO: Add translations in the image profile alt
   return (
     <Modal
       isOpen={ isOpen }

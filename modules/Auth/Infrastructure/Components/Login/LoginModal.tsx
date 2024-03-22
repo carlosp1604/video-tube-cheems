@@ -1,12 +1,11 @@
-import {FC, FormEvent, useState} from 'react'
+import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { useLoginContext } from '~/hooks/LoginContext'
-import { PiSealWarning } from 'react-icons/pi'
 import styles from './Login.module.scss'
-import {useTranslation} from "next-i18next";
-import {signIn} from "next-auth/react";
-import toast from "react-hot-toast";
-import {FcGoogle} from "react-icons/fc";
+import { useTranslation } from 'next-i18next'
+import { signIn } from 'next-auth/react'
+import toast from 'react-hot-toast'
+import { FcGoogle } from 'react-icons/fc'
 
 export type AuthMode = 'login' | 'retrieve' | 'register'
 
@@ -14,15 +13,7 @@ export const LoginModal: FC = () => {
   const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
   const { t } = useTranslation('user_login')
 
-  const [loading, setLoading] = useState<boolean>(false)
-
-  const onSuccessLogin = () => {
-    setLoginModalOpen(false)
-  }
-
   const onClick = async () => {
-    setLoading(true)
-
     const result = await signIn(
       'google',
       {
@@ -31,21 +22,17 @@ export const LoginModal: FC = () => {
 
     if (result?.error) {
       toast.error(t('login_error_message'))
-    } else {
-      setLoading(false)
-      // TODO: Add a welcome message?¿
     }
-
   }
 
-  let onClose: (() => void) | null = () => setLoginModalOpen(false)
+  const onClose: (() => void) | null = () => setLoginModalOpen(false)
 
   return (
     <Modal
       isOpen={ loginModalOpen }
       onClose={ onClose }
     >
-      <section className={ styles.login__loginWithProvidersContainer}>
+      <section className={ styles.login__loginWithProvidersContainer }>
         <h1 className={ styles.login__title }>
           { t('title') }
           <small className={ styles.login__subtitle }>

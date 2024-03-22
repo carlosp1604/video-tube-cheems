@@ -1,25 +1,20 @@
-import crypto from 'crypto'
 import { DateTime } from 'luxon'
-import { container } from '~/awilix.container'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
 import { EmailValidator } from '~/modules/Shared/Domain/EmailValidator'
 import { UsernameValidator } from '~/modules/Shared/Domain/UsernameValidator'
 import { UserDomainException } from '~/modules/Auth/Domain/UserDomainException'
-import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { RelationshipDomainException } from '~/modules/Shared/Domain/Relationship/RelationshipDomainException'
-import { PasswordValidator } from '~/modules/Shared/Domain/PasswordValidator'
 import { NameValidator } from '~/modules/Shared/Domain/NameValidator'
-import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Post } from '~/modules/Posts/Domain/Post'
-import {Account} from "~/modules/Auth/Domain/Account";
+import { Account } from '~/modules/Auth/Domain/Account'
 
 export class User {
   public readonly id: string
   public readonly name: string
   public readonly username: string
-  public readonly email: string | null
+  public readonly email: string
   public readonly imageUrl: string | null
   public language: string
   private _password: string | null
@@ -33,11 +28,11 @@ export class User {
   public _savedPosts: Collection<Post, Post['id']>
   public _accounts: Collection<Account, string>
 
-  public constructor(
+  public constructor (
     id: string,
     name: string,
     username: string,
-    email: string | null,
+    email: string,
     imageUrl: string | null,
     language: string,
     hashedPassword: string | null,
@@ -49,15 +44,9 @@ export class User {
     savedPosts: Collection<Post, Post['id']> = Collection.notLoaded(),
     accounts: Collection<Account, string> = Collection.notLoaded()
   ) {
-    let validatedEmail: string | null = email
-
-    if (email !== null) {
-      validatedEmail = (new EmailValidator()).validate(email)
-    }
-
     this.id = id
     this.name = (new NameValidator()).validate(name)
-    this.email = validatedEmail
+    this.email = (new EmailValidator()).validate(email)
     this.username = (new UsernameValidator()).validate(username)
     this.imageUrl = imageUrl
     this._password = hashedPassword
@@ -71,15 +60,15 @@ export class User {
     this._accounts = accounts
   }
 
-  public async matchPasswords(password: string) {
+  public async matchPasswords (password: string) {
     throw Error('Not implemented!')
   }
 
-  public isAccountActive(): boolean {
+  public isAccountActive (): boolean {
     return this.emailVerified !== null
   }
 
-  public setVerificationToken(type: VerificationTokenType, renovateToken: boolean): VerificationToken {
+  public setVerificationToken (type: VerificationTokenType, renovateToken: boolean): VerificationToken {
     if (type === VerificationTokenType.CREATE_ACCOUNT) {
       throw UserDomainException.cannotAddVerificationTokenToAccountCreation(this.id)
     }
@@ -101,7 +90,7 @@ export class User {
     return verificationTokenToAdd
   }
 
-  public removeVerificationToken(): void {
+  public removeVerificationToken (): void {
     try {
       this._verificationToken.removeRelationship()
     } catch (exception: unknown) {
@@ -117,7 +106,7 @@ export class User {
     }
   }
 
-  public addSavedPost(post: Post): void {
+  public addSavedPost (post: Post): void {
     const existingSavedPost = this._savedPosts.getItem(post.id)
 
     if (existingSavedPost !== null) {
@@ -127,7 +116,7 @@ export class User {
     this._savedPosts.addItem(post, post.id)
   }
 
-  public removeSavedPost(postId: Post['id']): void {
+  public removeSavedPost (postId: Post['id']): void {
     const existingSavedPost = this._savedPosts.getItem(postId)
 
     if (existingSavedPost === null) {
@@ -141,27 +130,27 @@ export class User {
     }
   }
 
-  get verificationToken(): VerificationToken | null {
+  get verificationToken (): VerificationToken | null {
     return this._verificationToken.value
   }
 
-  get savedPosts(): Array<Post> {
+  get savedPosts (): Array<Post> {
     return this._savedPosts.values
   }
 
-  get accounts(): Array<Account> {
+  get accounts (): Array<Account> {
     return this._accounts.values
   }
 
-  get password(): string | null {
+  get password (): string | null {
     return this._password
   }
 
-  get updatedAt(): DateTime {
+  get updatedAt (): DateTime {
     return this._updatedAt
   }
 
-  public assertVerificationTokenIsValidFor(type: VerificationTokenType, tokenValue: VerificationToken['token']): void {
+  public assertVerificationTokenIsValidFor (type: VerificationTokenType, tokenValue: VerificationToken['token']): void {
     if (this.verificationToken === null) {
       throw UserDomainException.userHasNotAVerificationToken(this.id)
     }
@@ -175,7 +164,7 @@ export class User {
     }
   }
 
-  public async changeUserPassword(password: User['password']): Promise<void> {
+  public async changeUserPassword (password: User['password']): Promise<void> {
     throw Error('Not implemented!')
   }
 
@@ -183,7 +172,7 @@ export class User {
     throw Error('Not implemented!')
   }
 
-  public static buildVerificationTokenForAccountCreation(email: User['email']): VerificationToken {
+  public static buildVerificationTokenForAccountCreation (email: User['email']): VerificationToken {
     throw Error('Not implemented!')
   }
 }

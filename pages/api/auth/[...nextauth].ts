@@ -37,7 +37,6 @@ export const authOptions: NextAuthOptions = {
         profile.name &&
         profile.email
       ) {
-        // User signIn
         const oauthLoginSignUp: OauthLoginSignUp = container.resolve('oauthLoginSignUpUseCase')
 
         try {

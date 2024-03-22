@@ -14,16 +14,23 @@ import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/Usin
 import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { AppFooter } from '~/components/AppFooter/AppFooter'
 import { AppToast } from '~/components/AppToast/AppToast'
-import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import ReactGA from 'react-ga4'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
+import { DetectAdBlock } from '~/components/DetectAdBlock/DetectAdBlock'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
+)
+
+const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
+  .then((module) => module.AppFooter)
+)
+
+const AppBanner = dynamic(() => import('~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner')
+  .then((module) => module.AppBanner)
 )
 
 const MobileMenu = dynamic(() => import('~/components/AppMenu/MobileMenu')
@@ -40,10 +47,6 @@ const LanguageMenu = dynamic(() => import('~/modules/Shared/Infrastructure/Compo
 
 const LiveCams = dynamic(() => import('~/components/LiveCams/LiveCams')
   .then((module) => module.LiveCams)
-)
-
-const DetectAdBlock = dynamic(() => import('~/components/DetectAdBlock/DetectAdBlock')
-  .then((module) => module.DetectAdBlock)
 )
 
 function applyMixins (derivedCtor: any, constructors: any[]) {

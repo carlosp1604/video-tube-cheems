@@ -31,7 +31,6 @@ export const PostCard: FC<Props> = ({
       width={ 0 }
       height={ 0 }
       sizes={ '100vw' }
-      priority={ true }
       placeholder={ 'blur' }
       blurDataURL={ '/img/placeholder.svg' }
     />
@@ -88,7 +87,7 @@ export const PostCard: FC<Props> = ({
             imageAlt={ post.producer.name }
             avatarClassName={ styles.postCard__producerActorAvatarContainer }
             color={ post.producer.brandHexColor }
-            priority={ true }
+            priority={ false }
           />
         </Link>
       )

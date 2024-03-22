@@ -5,7 +5,7 @@ export interface UserRawModel {
   email: string
   image_url: string | null
   language: string
-  password: string
+  password: string | null
   created_at: Date
   updated_at: Date
   deleted_at: Date | null

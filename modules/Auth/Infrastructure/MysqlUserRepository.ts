@@ -9,8 +9,8 @@ import { Post } from '~/modules/Posts/Domain/Post'
 import { UserWithRelationsRawModel } from '~/modules/Auth/Infrastructure/RawSql/UserRawModel'
 import { SqlUserQueryBuilder } from '~/modules/Auth/Infrastructure/RawSql/SqlUserQueryBuilder'
 import { MysqlUsersTranslatorService } from '~/modules/Auth/Infrastructure/MysqlUsersTranslatorService'
-import {Account} from "~/modules/Auth/Domain/Account";
-import {PrismaAccountModelTranslator} from "~/modules/Auth/Infrastructure/PrismaAccountModelTranslator";
+import { Account } from '~/modules/Auth/Domain/Account'
+import { PrismaAccountModelTranslator } from '~/modules/Auth/Infrastructure/PrismaAccountModelTranslator'
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
@@ -62,10 +62,10 @@ export class MysqlUserRepository implements UserRepositoryInterface {
       prisma.account.createMany({
         data: prismaAccountModels.map((prismaAccountModel) => {
           return {
-            ...prismaAccountModel
+            ...prismaAccountModel,
           }
-        })
-      })
+        }),
+      }),
     ])
   }
 
@@ -93,16 +93,19 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    * @param providerAccountId Provider Account ID
    * @return User if found or null
    */
-  public async findByAccountData(provider: Account['provider'], providerAccountId: Account['providerAccountId']): Promise<User | null> {
+  public async findByAccountData (
+    provider: Account['provider'],
+    providerAccountId: Account['providerAccountId']
+  ): Promise<User | null> {
     const user = await prisma.user.findFirst({
       where: {
         accounts: {
           some: {
             provider,
-            providerAccountId
-          }
-        }
-      }
+            providerAccountId,
+          },
+        },
+      },
     })
 
     if (user === null) {
@@ -111,7 +114,6 @@ export class MysqlUserRepository implements UserRepositoryInterface {
 
     return PrismaUserModelTranslator.toDomain(user)
   }
-
 
   /**
    * Find a User given its username

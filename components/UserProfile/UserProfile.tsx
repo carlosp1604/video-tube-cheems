@@ -67,8 +67,10 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
   }
 
   const onSavePost = (postCard: PostCardComponentDto) => {
-    setSavedPostsNumber(savedPostsNumber + 1)
-    setSavedPosts([postCard, ...savedPosts])
+    if (status === 'authenticated' && data && data.user.id === userComponentDto.id) {
+      setSavedPostsNumber(savedPostsNumber + 1)
+      setSavedPosts([postCard, ...savedPosts])
+    }
   }
 
   const fetchSavedPosts = async () => {

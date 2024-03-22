@@ -54,6 +54,7 @@ export const PaginationBarButton: FC<Partial<Props> & Omit<Props, 'disabled' | '
         scroll={ linkMode.scrollOnClick }
         shallow={ linkMode.shallowNavigation }
         replace={ linkMode.replace }
+        title={ title }
       >
         { linkTitle }
       </Link>

@@ -4,13 +4,13 @@ import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicat
 import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
 import {
   OauthLoginSignUpApplicationRequestDto
-} from "~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUpApplicationRequestDto";
-import {randomUUID} from "crypto";
-import {Account} from "~/modules/Auth/Domain/Account";
-import {DateTime} from "luxon";
-import {Relationship} from "~/modules/Shared/Domain/Relationship/Relationship";
-import {Collection} from "~/modules/Shared/Domain/Relationship/Collection";
-import {CryptoServiceInterface} from "~/helpers/Domain/CryptoServiceInterface";
+} from '~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUpApplicationRequestDto'
+import { randomUUID } from 'crypto'
+import { Account } from '~/modules/Auth/Domain/Account'
+import { DateTime } from 'luxon'
+import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
 
 export class OauthLoginSignUp {
   // eslint-disable-next-line no-useless-constructor
@@ -60,7 +60,7 @@ export class OauthLoginSignUp {
       request.profile.email,
       request.profile.pictureUrl,
       request.profile.language,
-      '', // TODO: Fix this so user cannot try to login with password
+      null,
       nowDate,
       nowDate,
       request.profile.emailVerified ? nowDate : null,
@@ -70,14 +70,7 @@ export class OauthLoginSignUp {
       accountCollection
     )
 
-    try {
-      await this.userRepository.save(createdUser)
-    } catch (exception: unknown) {
-      console.error(exception)
-
-      // TODO: Add exception handling
-      throw exception
-    }
+    await this.userRepository.save(createdUser)
 
     return UserApplicationDtoTranslator.fromDomain(createdUser)
   }

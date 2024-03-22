@@ -99,7 +99,7 @@ model PostMeta {
 }
 
 model Account {
-  id                String   @id
+  id                String
   userId            String   @map("user_id")
   type              String
   provider          String

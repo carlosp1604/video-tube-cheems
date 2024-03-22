@@ -9,6 +9,8 @@ import { Post } from '~/modules/Posts/Domain/Post'
 import { UserWithRelationsRawModel } from '~/modules/Auth/Infrastructure/RawSql/UserRawModel'
 import { SqlUserQueryBuilder } from '~/modules/Auth/Infrastructure/RawSql/SqlUserQueryBuilder'
 import { MysqlUsersTranslatorService } from '~/modules/Auth/Infrastructure/MysqlUsersTranslatorService'
+import {Account} from "~/modules/Auth/Domain/Account";
+import {PrismaAccountModelTranslator} from "~/modules/Auth/Infrastructure/PrismaAccountModelTranslator";
 
 export class MysqlUserRepository implements UserRepositoryInterface {
   /**
@@ -18,6 +20,9 @@ export class MysqlUserRepository implements UserRepositoryInterface {
    */
   public async save (user: User): Promise<void> {
     const prismaModelUser = PrismaUserModelTranslator.toDatabase(user)
+    const prismaAccountModels = user.accounts.map((account) => {
+      return PrismaAccountModelTranslator.toDatabase(account)
+    })
 
     await prisma.$transaction([
       prisma.$queryRaw`
@@ -53,6 +58,14 @@ export class MysqlUserRepository implements UserRepositoryInterface {
         FROM verification_tokens
         WHERE user_email = ${prismaModelUser.email};
       `,
+
+      prisma.account.createMany({
+        data: prismaAccountModels.map((prismaAccountModel) => {
+          return {
+            ...prismaAccountModel
+          }
+        })
+      })
     ])
   }
 
@@ -73,6 +86,32 @@ export class MysqlUserRepository implements UserRepositoryInterface {
 
     return new MysqlUsersTranslatorService(options).fromRowsToDomain(users)[0]
   }
+
+  /**
+   * Find a User given its account data
+   * @param provider Account Provider
+   * @param providerAccountId Provider Account ID
+   * @return User if found or null
+   */
+  public async findByAccountData(provider: Account['provider'], providerAccountId: Account['providerAccountId']): Promise<User | null> {
+    const user = await prisma.user.findFirst({
+      where: {
+        accounts: {
+          some: {
+            provider,
+            providerAccountId
+          }
+        }
+      }
+    })
+
+    if (user === null) {
+      return null
+    }
+
+    return PrismaUserModelTranslator.toDomain(user)
+  }
+
 
   /**
    * Find a User given its username

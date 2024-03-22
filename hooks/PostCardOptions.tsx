@@ -42,7 +42,7 @@ export function usePostCardOptions () {
     optionOnSuccess: ((postCard: PostCardComponentDto) => void) | undefined,
     onSuccess:(() => void) | undefined
   ) => {
-    const postIsSaved = await savePost(postCard.id)
+    const postIsSaved = await savePost(postCard.id, false)
 
     if (postIsSaved) {
       if (onSuccess) {

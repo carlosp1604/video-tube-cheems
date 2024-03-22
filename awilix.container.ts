@@ -48,6 +48,7 @@ import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagB
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
 import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActorView'
 import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
+import {OauthLoginSignUp} from "~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUp";
 
 /**
  * We create a container to register our classes dependencies
@@ -119,6 +120,7 @@ container.register('tagRepository', asClass(MysqlPostTagRepository))
  * Use-cases
  */
 container.register('loginUseCase', asClass(Login))
+container.register('oauthLoginSignUpUseCase', asClass(OauthLoginSignUp))
 // FIXME: This was the only way to make it works...
 container.register('createUserUseCase', asFunction(() => {
   return new CreateUser(

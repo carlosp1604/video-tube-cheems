@@ -1,0 +1,97 @@
+import { UserRepositoryInterface } from '~/modules/Auth/Domain/UserRepositoryInterface'
+import { User } from '~/modules/Auth/Domain/User'
+import { UserApplicationDto } from '~/modules/Auth/Application/Dtos/UserApplicationDto'
+import { UserApplicationDtoTranslator } from '~/modules/Auth/Application/Translators/UserApplicationDtoTranslator'
+import {
+  OauthLoginSignUpApplicationRequestDto
+} from "~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUpApplicationRequestDto";
+import {randomUUID} from "crypto";
+import {Account} from "~/modules/Auth/Domain/Account";
+import {DateTime} from "luxon";
+import {Relationship} from "~/modules/Shared/Domain/Relationship/Relationship";
+import {Collection} from "~/modules/Shared/Domain/Relationship/Collection";
+import {CryptoServiceInterface} from "~/helpers/Domain/CryptoServiceInterface";
+
+export class OauthLoginSignUp {
+  // eslint-disable-next-line no-useless-constructor
+  constructor (
+    private userRepository: UserRepositoryInterface,
+    private cryptoService: CryptoServiceInterface
+  ) {}
+
+  public async loginOrSignup (request: OauthLoginSignUpApplicationRequestDto): Promise<UserApplicationDto> {
+    // 1. Find account (retrieve it with user, so we don't have to ask for it again)
+    const user = await this.getUser(request.provider, request.providerAccountId)
+
+    // 2. Account exists?
+    //  - Yes: Return associated User
+    if (user) {
+      return UserApplicationDtoTranslator.fromDomain(user)
+    }
+    //  - No: Continue next step
+    // 3. Create a new account for the Oauth
+    const userId = randomUUID()
+    const accountId = randomUUID()
+    const nowDate = DateTime.now()
+
+    const userAccount = new Account(
+      accountId,
+      userId,
+      request.type,
+      request.provider,
+      request.providerAccountId,
+      request.refreshToken,
+      request.accessToken,
+      request.expiresAt,
+      request.tokenType,
+      request.scope,
+      request.idToken,
+      request.sessionState,
+      nowDate,
+      nowDate
+    )
+
+    const generatedUsername = this.cryptoService.randomString()
+
+    const accountCollection: Collection<Account, string> = Collection.initializeCollection()
+
+    accountCollection.addItem(userAccount, userAccount['provider'] + userAccount['providerAccountId'])
+
+    // 4. Create a new user and add the account
+    const createdUser = new User(
+      userId,
+      request.profile.name,
+      generatedUsername,
+      request.profile.email,
+      request.profile.pictureUrl,
+      request.profile.language,
+      '', // TODO: Fix this so user cannot try to login with password
+      nowDate,
+      nowDate,
+      request.profile.emailVerified ? nowDate : null,
+      null,
+      Relationship.notLoaded(),
+      Collection.notLoaded(),
+      accountCollection
+    )
+
+    // 5. Save user (with account data) and return it
+    try {
+      await this.userRepository.save(createdUser)
+    } catch (exception: unknown) {
+      console.error(exception)
+
+      throw exception
+    }
+
+
+    return UserApplicationDtoTranslator.fromDomain(createdUser)
+  }
+
+  private async getUser (
+    provider: OauthLoginSignUpApplicationRequestDto['provider'],
+    providerAccountId: OauthLoginSignUpApplicationRequestDto['providerAccountId']
+  ): Promise<User | null> {
+    return await this.userRepository.findByAccountData(provider, providerAccountId)
+  }
+}

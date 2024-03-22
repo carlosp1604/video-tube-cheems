@@ -13,6 +13,7 @@ import { NameValidator } from '~/modules/Shared/Domain/NameValidator'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Post } from '~/modules/Posts/Domain/Post'
+import {Account} from "~/modules/Auth/Domain/Account";
 
 export class User {
   public readonly id: string
@@ -30,6 +31,7 @@ export class User {
   /** Relationships **/
   public _verificationToken: Relationship<VerificationToken | null>
   public _savedPosts: Collection<Post, Post['id']>
+  public _accounts: Collection<Account, string>
 
   public constructor (
     id: string,
@@ -44,8 +46,9 @@ export class User {
     emailVerified: DateTime | null,
     deletedAt: DateTime | null,
     verificationTokenRelationship: Relationship<VerificationToken | null> = Relationship.notLoaded(),
-    savedPosts: Collection<Post, Post['id']> = Collection.notLoaded()
-  ) {
+    savedPosts: Collection<Post, Post['id']> = Collection.notLoaded(),
+    accounts: Collection<Account, string> = Collection.notLoaded()
+   ) {
     this.id = id
     this.name = (new NameValidator()).validate(name)
     this.email = (new EmailValidator()).validate(email)
@@ -59,6 +62,7 @@ export class User {
     this.emailVerified = emailVerified
     this._verificationToken = verificationTokenRelationship
     this._savedPosts = savedPosts
+    this._accounts = accounts
   }
 
   public async matchPasswords (password: string) {
@@ -139,6 +143,10 @@ export class User {
 
   get savedPosts (): Array<Post> {
     return this._savedPosts.values
+  }
+
+  get accounts (): Array<Account> {
+    return this._accounts.values
   }
 
   get password (): string {

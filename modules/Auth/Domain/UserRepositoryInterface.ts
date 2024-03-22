@@ -1,5 +1,6 @@
 import { User } from './User'
 import { Post } from '~/modules/Posts/Domain/Post'
+import {Account} from "~/modules/Auth/Domain/Account";
 
 export type UserRepositoryOptions = 'verificationToken'| 'savedPosts'
 
@@ -22,6 +23,14 @@ export interface UserRepositoryInterface {
    * @return User if found or null
    */
   findByEmail(userEmail: User['email'], options?: FindByEmailOptions[]): Promise<User | null>
+
+  /**
+   * Find a User given its account data
+   * @param provider Account Provider
+   * @param providerAccountId Provider Account ID
+   * @return User if found or null
+   */
+  findByAccountData(provider: Account['provider'], providerAccountId: Account['providerAccountId']): Promise<User | null>
 
   /**
    * Find a User given its username

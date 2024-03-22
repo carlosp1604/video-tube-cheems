@@ -6,12 +6,14 @@
   "forgot_password_button_title": "Forgot my password",
   "hide_password_button_title": "Hide password",
   "login_error_message": "Incorrect Email/Password combination",
+  "login_information_message": "You will be redirected to the selected application to complete the operation",
+  "login_with_google": "Log In with Google",
   "password_input_error_message": "Invalid password",
   "password_input_label": "Password",
   "password_input_placeholder": "Password",
   "show_password_button_title": "Show password",
   "sign_in_button_title": "Signup here",
   "submit_button_title": "Sign In",
-  "subtitle": "Sign in with your email and password",
-  "title": "Login",
+  "subtitle": "Sign in to enjoy a complete web experience\n\nComment, react, save and review your history of watched videos. Many more features are on the way!",
+  "title": "Login"
 }

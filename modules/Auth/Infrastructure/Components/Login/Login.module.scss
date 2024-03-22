@@ -24,7 +24,7 @@
   }
 
   &__subtitle {
-    @apply block text-sm font-normal;
+    @apply block text-sm font-normal whitespace-pre-line;
 
     @screen md {
       @apply text-base;
@@ -99,7 +99,7 @@
     }
   }
 
-  &__disabled-feature-container {
+  &__login-with-providers-container {
     @apply flex flex-col justify-center mx-auto p-5 gap-y-4;
 
     @screen tb {
@@ -107,12 +107,29 @@
     }
   }
 
-  &__disabled-feature-icon {
-    @apply self-center text-8xl text-base-100 p-2 rounded-full
-    bg-brand-primary-bg text-base-100;
+  &__google-button {
+    @apply py-2 px-5 rounded-lg flex flex-row bg-base-900
+    gap-x-4 items-center justify-center transition-colors;
+
+    &:hover, :focus {
+      @apply bg-brand-primary-bg transition-colors;
+    }
   }
 
-  &__disabled-feature-message {
-    @apply text-center whitespace-pre-line;
+  &__google-icon {
+    @apply text-2xl;
+  }
+
+  &__information-message {
+    @apply text-xs text-base-400 border-t border-brand-primary-bg/40
+    py-1;
+
+    @screen md {
+      @apply text-sm;
+    }
+  }
+
+  &__password-section {
+    @apply relative;
   }
 }

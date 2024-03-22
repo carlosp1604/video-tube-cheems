@@ -59,7 +59,7 @@ export const Search: FC<Props> = ({
 
   const linkMode: ElementLinkMode = {
     replace: false,
-    shallowNavigation: false,
+    shallowNavigation: true,
     scrollOnClick: false,
   }
 
@@ -109,8 +109,14 @@ export const Search: FC<Props> = ({
 
     let currentTitle = paginationState.searchTerm
 
-    if (query.search && !Array.isArray(query.search)) {
-      currentTitle = String(query.search)
+    if (query.search) {
+      if (Array.isArray(query.search)) {
+        if (query.search.length === 1) {
+          currentTitle = String(query.search)
+        }
+      } else {
+        currentTitle = String(query.search)
+      }
     } else {
       // TODO: Error message and return -> no action taken
       return

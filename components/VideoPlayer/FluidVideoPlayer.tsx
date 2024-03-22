@@ -7,6 +7,7 @@ import styles from './VideoPlayer.module.scss'
 import TailwindConfig from '~/tailwind.config'
 
 interface FluidVideoPlayerProps {
+  title: string
   videoPostMedia: PostMediaComponentDto
   onPlayerReady: () => void
   selectedMediaUrl: MediaUrlComponentDto
@@ -15,6 +16,7 @@ interface FluidVideoPlayerProps {
 export const FluidVideoPlayer: FC<FluidVideoPlayerProps> = ({
   videoPostMedia,
   onPlayerReady,
+  title,
 }) => {
   const playerRef = useRef(null)
 
@@ -63,7 +65,11 @@ export const FluidVideoPlayer: FC<FluidVideoPlayerProps> = ({
 
   return (
     <div className={ styles.videoPlayer__container }>
-      <video ref={ playerRef } className={ styles.videoPlayer__player }>
+      <video
+        ref={ playerRef }
+        className={ styles.videoPlayer__player }
+        title={ title }
+      >
         {
           videoPostMedia.urls.map((mediaUrl) => {
             return (

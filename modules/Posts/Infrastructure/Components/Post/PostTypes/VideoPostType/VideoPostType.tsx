@@ -6,6 +6,7 @@ import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Compone
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
+import { useTranslation } from 'next-i18next'
 
 export interface Props {
   post: PostComponentDto
@@ -31,11 +32,13 @@ export const VideoPostType: FC<Props> = ({
   optionsDisabled,
 }) => {
   const downloadUrls = MediaUrlsHelper.getVideoDownloadUrl(post.postMediaVideoType, post.postMediaEmbedType)
+  const { t } = useTranslation('post')
 
   return (
     <>
       <div className={ styles.videoPostType__videoContainer } >
         <VideoPostPlayer
+          title={ t('post_player_title', { postName: post.title }) }
           embedPostMedia={ post.postMediaEmbedType.length > 0 ? post.postMediaEmbedType[0] : null }
           videoPostMedia={ post.postMediaVideoType.length > 0 ? post.postMediaVideoType[0] : null }
         />

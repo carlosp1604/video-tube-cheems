@@ -80,7 +80,6 @@ export const CamCard: FC<Props> = ({
       width={ 0 }
       height={ 0 }
       sizes={ '100vw' }
-      priority={ true }
       placeholder={ 'blur' }
       blurDataURL={ '/img/placeholder.svg' }
       onClick={ () => handleClick(camRoomLink) }

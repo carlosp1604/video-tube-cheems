@@ -6,12 +6,14 @@
   "forgot_password_button_title": "Olvidé mi contraseña",
   "hide_password_button_title": "Ocultar contraseña",
   "login_error_message": "Combinación Email/Contraseña incorrecta",
+  "login_information_message": "Serás redirigido a la aplicación seleccionada para completar la operación",
+  "login_with_google": "Inicia sesión con Google",
   "password_input_error_message": "Contraseña inválida",
   "password_input_label": "Contraseña",
   "password_input_placeholder": "Contraseña",
   "show_password_button_title": "Mostrar contraseña",
   "sign_in_button_title": "Regístrate aquí",
   "submit_button_title": "Iniciar sesión",
-  "subtitle": "Inicia sesión con tu email y contraseña",
+  "subtitle": "Inicia sesión para disfrutar de una experiencia completa en la web\n\nComenta, reacciona, guarda y revisa tu historial de vídeos vistos. ¡Muchas funciones más vienen en camino!",
   "title": "Inicio de sesión"
 }

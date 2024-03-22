@@ -12,6 +12,7 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
+import { useRouter } from 'next/router'
 
 export interface UserProfilePageProps {
   userComponentDto: UserProfileHeaderComponentDto
@@ -20,6 +21,7 @@ export interface UserProfilePageProps {
 
 export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentDto, htmlPageMetaContextProps }) => {
   const { t } = useTranslation('user_profile')
+  const { asPath } = useRouter()
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -55,7 +57,10 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <UserProfile userComponentDto={ userComponentDto } />
+      <UserProfile
+        key={ asPath }
+        userComponentDto={ userComponentDto }
+      />
     </>
   )
 }

@@ -9,12 +9,12 @@ export class GetUserById {
   constructor (private readonly userRepository: UserRepositoryInterface) {}
 
   public async get (userId: User['id']): Promise<UserApplicationDto> {
-    const actor = await this.userRepository.findById(userId)
+    const user = await this.userRepository.findById(userId)
 
-    if (actor === null) {
+    if (user === null) {
       throw GetUserByIdApplicationException.userNotFound(userId)
     }
 
-    return UserApplicationDtoTranslator.fromDomain(actor)
+    return UserApplicationDtoTranslator.fromDomain(user)
   }
 }

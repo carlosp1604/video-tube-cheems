@@ -1,6 +1,4 @@
-import { Login } from '~/modules/Auth/Application/Login/Login'
 import { GetActors } from '~/modules/Actors/Application/GetActors/GetActors'
-import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { AddPostView } from '~/modules/Posts/Application/AddPostView/AddPostView'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
@@ -8,7 +6,6 @@ import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/Validate
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { GetPopularProducers } from '~/modules/Producers/Application/GetPopularProducers'
 import { MailerSendUserEmailSender } from '~/modules/Auth/Infrastructure/MailerSendUserEmailSender'
-import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
 import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReaction'
 import { MysqlUserRepository } from '~/modules/Auth/Infrastructure/MysqlUserRepository'
@@ -48,6 +45,7 @@ import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagB
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
 import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActorView'
 import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
+import { OauthLoginSignUp } from '~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUp'
 
 /**
  * We create a container to register our classes dependencies
@@ -118,15 +116,8 @@ container.register('tagRepository', asClass(MysqlPostTagRepository))
 /**
  * Use-cases
  */
-container.register('loginUseCase', asClass(Login))
+container.register('oauthLoginSignUpUseCase', asClass(OauthLoginSignUp))
 // FIXME: This was the only way to make it works...
-container.register('createUserUseCase', asFunction(() => {
-  return new CreateUser(
-    container.resolve('userRepository'),
-    container.resolve('verificationTokenRepository'),
-    container.resolve('cryptoService')
-  )
-}))
 container.register('verifyEmailAddressUseCase', asFunction(() => {
   return new VerifyEmailAddress(
     container.resolve('userRepository'),
@@ -136,7 +127,6 @@ container.register('verifyEmailAddressUseCase', asFunction(() => {
   )
 }))
 container.register('validateTokenUseCase', asClass(ValidateToken))
-container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
 container.register('getUserByUsername', asClass(GetUserByUsername))
 container.register('getUserById', asClass(GetUserById))
 container.register('getPostsUseCase', asClass(GetPosts))

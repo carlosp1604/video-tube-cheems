@@ -4,8 +4,7 @@ import { Modal } from '~/components/Modal/Modal'
 import { signOut, useSession } from 'next-auth/react'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
-import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
-import { useLoginContext } from '~/hooks/LoginContext'
+import { CiLogout, CiUser } from 'react-icons/ci'
 import { usePathname } from 'next/navigation'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
@@ -16,7 +15,6 @@ interface Props {
 
 export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
-  const { setLoginModalOpen, setMode } = useLoginContext()
 
   const pathname = usePathname()
 
@@ -26,17 +24,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
     return null
   }
 
-  const menuOptions: MenuOptionComponentInterface[] = [{
-    title: t('user_menu_change_password_button'),
-    isActive: false,
-    action: undefined,
-    picture: <CiUnlock />,
-    onClick: () => {
-      setMode('retrieve')
-      setLoginModalOpen(true)
-      setIsOpen(false)
-    },
-  }]
+  const menuOptions: MenuOptionComponentInterface[] = []
 
   if (pathname !== `/users/${data.user.username}`) {
     menuOptions.unshift({
@@ -63,7 +51,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
             avatarClassName={ styles.userMenu__userAvatar }
             imageClassName={ styles.userMenu__userImage }
             avatarName={ data.user.name }
-            imageAlt={ data.user.username }
+            imageAlt={ data.user.name }
           />
           <span className={ styles.userMenu__userDataText }>
             { data.user.name }

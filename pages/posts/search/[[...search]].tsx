@@ -19,6 +19,12 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
+  if (Array.isArray(search) && search.length > 1) {
+    return {
+      notFound: true,
+    }
+  }
+
   const locale = context.locale ?? 'en'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [

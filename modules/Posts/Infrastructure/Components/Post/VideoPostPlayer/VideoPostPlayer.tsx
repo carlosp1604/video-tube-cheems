@@ -13,19 +13,22 @@ import { Tooltip } from '~/components/Tooltip/Tooltip'
 import { useSession } from 'next-auth/react'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 import { FluidVideoPlayer } from '~/components/VideoPlayer/FluidVideoPlayer'
+import { useFirstRender } from '~/hooks/FirstRender'
 
 export interface Props {
+  title: string
   embedPostMedia: PostMediaComponentDto | null
   videoPostMedia: PostMediaComponentDto | null
 }
 
-export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) => {
+export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, title }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
-  const [videoReady, setVideoReady] = useState<boolean>(true)
+  const [videoReady, setVideoReady] = useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
 
   const { status, data } = useSession()
+  const firstRender = useFirstRender()
 
   const selectableUrls = useMemo(
     () => {
@@ -57,6 +60,10 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) =
   const iframeRef = createRef<HTMLIFrameElement>()
 
   useEffect(() => {
+    if (firstRender) {
+      setVideoReady(true)
+    }
+
     setMounted(true)
     setTooltipId(uuid.v4())
   }, [])
@@ -142,6 +149,7 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) =
         allowFullScreen={ true }
         sandbox={ sandbox ? 'allow-same-origin allow-scripts' : undefined }
         style={ { overflow: 'hidden' } }
+        title={ title }
       />
     )
   }
@@ -153,6 +161,7 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia }) =
   ) {
     playerElement = (
       <FluidVideoPlayer
+        title={ title }
         videoPostMedia={ videoPostMedia }
         selectedMediaUrl={ selectedUrl }
         onPlayerReady={ onReady }

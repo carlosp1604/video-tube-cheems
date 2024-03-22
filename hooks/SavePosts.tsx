@@ -12,7 +12,7 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 
 export interface SavePostInterface {
-  savePost: (postId: string) => Promise<boolean>
+  savePost: (postId: string, returnStatus?: boolean) => Promise<boolean>
   removeSavedPost: (postId: string) => Promise<boolean>
 }
 
@@ -21,7 +21,7 @@ export function useSavePost (namespace: string): SavePostInterface {
   const { status, data } = useSession()
   const { setLoginModalOpen } = useLoginContext()
 
-  const savePost = useCallback(async (postId: string): Promise<boolean> => {
+  const savePost = useCallback(async (postId: string, returnStatus = true): Promise<boolean> => {
     if (status !== 'authenticated' || !data) {
       toast.error(t('user_must_be_authenticated_error_message'))
       setLoginModalOpen(true)
@@ -46,7 +46,7 @@ export function useSavePost (namespace: string): SavePostInterface {
       let savedPost = false
 
       if (exception.code === USER_SAVED_POSTS_POST_ALREADY_ADDED) {
-        savedPost = true
+        savedPost = true && returnStatus
       }
 
       if (exception.code === USER_USER_NOT_FOUND) {

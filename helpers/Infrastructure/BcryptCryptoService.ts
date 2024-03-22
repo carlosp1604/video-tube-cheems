@@ -23,9 +23,21 @@ export class BcryptCryptoService implements CryptoServiceInterface {
     return hash(randomString, salt)
   }
 
-  public randomString (): string {
+  public randomNumericCode (): string {
     const allowedCharacters = '0123456789'
     const defaultLength = 8
+    let result = ''
+
+    for (let i = defaultLength; i > 0; --i) {
+      result += allowedCharacters[Math.floor(Math.random() * allowedCharacters.length)]
+    }
+
+    return result
+  }
+
+  public randomString (): string {
+    const allowedCharacters = 'abcdefghijklmnopgrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const defaultLength = 16
     let result = ''
 
     for (let i = defaultLength; i > 0; --i) {

@@ -41,6 +41,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
     })
   }
 
+  // TODO: Add translations in the image profile alt
   return (
     <Modal
       isOpen={ isOpen }
@@ -53,7 +54,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
             avatarClassName={ styles.userMenu__userAvatar }
             imageClassName={ styles.userMenu__userImage }
             avatarName={ data.user.name }
-            imageAlt={ data.user.username }
+            imageAlt={ data.user.name }
           />
           <span className={ styles.userMenu__userDataText }>
             { data.user.name }

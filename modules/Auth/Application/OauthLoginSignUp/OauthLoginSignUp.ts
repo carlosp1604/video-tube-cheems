@@ -20,16 +20,12 @@ export class OauthLoginSignUp {
   ) {}
 
   public async loginOrSignup (request: OauthLoginSignUpApplicationRequestDto): Promise<UserApplicationDto> {
-    // 1. Find account (retrieve it with user, so we don't have to ask for it again)
     const user = await this.getUser(request.provider, request.providerAccountId)
 
-    // 2. Account exists?
-    //  - Yes: Return associated User
     if (user) {
       return UserApplicationDtoTranslator.fromDomain(user)
     }
-    //  - No: Continue next step
-    // 3. Create a new account for the Oauth
+
     const userId = randomUUID()
     const accountId = randomUUID()
     const nowDate = DateTime.now()
@@ -55,9 +51,8 @@ export class OauthLoginSignUp {
 
     const accountCollection: Collection<Account, string> = Collection.initializeCollection()
 
-    accountCollection.addItem(userAccount, userAccount['provider'] + userAccount['providerAccountId'])
+    accountCollection.addItem(userAccount, userAccount.provider + userAccount.providerAccountId)
 
-    // 4. Create a new user and add the account
     const createdUser = new User(
       userId,
       request.profile.name,
@@ -75,15 +70,14 @@ export class OauthLoginSignUp {
       accountCollection
     )
 
-    // 5. Save user (with account data) and return it
     try {
       await this.userRepository.save(createdUser)
     } catch (exception: unknown) {
       console.error(exception)
 
+      // TODO: Add exception handling
       throw exception
     }
-
 
     return UserApplicationDtoTranslator.fromDomain(createdUser)
   }

@@ -19,10 +19,10 @@ export class User {
   public readonly id: string
   public readonly name: string
   public readonly username: string
-  public readonly email: string
+  public readonly email: string | null
   public readonly imageUrl: string | null
   public language: string
-  private _password: string
+  private _password: string | null
   public emailVerified: DateTime | null
   public readonly createdAt: DateTime
   public _updatedAt: DateTime
@@ -33,14 +33,14 @@ export class User {
   public _savedPosts: Collection<Post, Post['id']>
   public _accounts: Collection<Account, string>
 
-  public constructor (
+  public constructor(
     id: string,
     name: string,
     username: string,
-    email: string,
+    email: string | null,
     imageUrl: string | null,
     language: string,
-    hashedPassword: string,
+    hashedPassword: string | null,
     createdAt: DateTime,
     updatedAt: DateTime,
     emailVerified: DateTime | null,
@@ -48,10 +48,16 @@ export class User {
     verificationTokenRelationship: Relationship<VerificationToken | null> = Relationship.notLoaded(),
     savedPosts: Collection<Post, Post['id']> = Collection.notLoaded(),
     accounts: Collection<Account, string> = Collection.notLoaded()
-   ) {
+  ) {
+    let validatedEmail: string | null = email
+
+    if (email !== null) {
+      validatedEmail = (new EmailValidator()).validate(email)
+    }
+
     this.id = id
     this.name = (new NameValidator()).validate(name)
-    this.email = (new EmailValidator()).validate(email)
+    this.email = validatedEmail
     this.username = (new UsernameValidator()).validate(username)
     this.imageUrl = imageUrl
     this._password = hashedPassword
@@ -65,17 +71,15 @@ export class User {
     this._accounts = accounts
   }
 
-  public async matchPasswords (password: string) {
-    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
-
-    return cryptoService.compare(password, this.password)
+  public async matchPasswords(password: string) {
+    throw Error('Not implemented!')
   }
 
-  public isAccountActive (): boolean {
+  public isAccountActive(): boolean {
     return this.emailVerified !== null
   }
 
-  public setVerificationToken (type: VerificationTokenType, renovateToken: boolean): VerificationToken {
+  public setVerificationToken(type: VerificationTokenType, renovateToken: boolean): VerificationToken {
     if (type === VerificationTokenType.CREATE_ACCOUNT) {
       throw UserDomainException.cannotAddVerificationTokenToAccountCreation(this.id)
     }
@@ -97,7 +101,7 @@ export class User {
     return verificationTokenToAdd
   }
 
-  public removeVerificationToken (): void {
+  public removeVerificationToken(): void {
     try {
       this._verificationToken.removeRelationship()
     } catch (exception: unknown) {
@@ -113,7 +117,7 @@ export class User {
     }
   }
 
-  public addSavedPost (post: Post): void {
+  public addSavedPost(post: Post): void {
     const existingSavedPost = this._savedPosts.getItem(post.id)
 
     if (existingSavedPost !== null) {
@@ -123,7 +127,7 @@ export class User {
     this._savedPosts.addItem(post, post.id)
   }
 
-  public removeSavedPost (postId: Post['id']): void {
+  public removeSavedPost(postId: Post['id']): void {
     const existingSavedPost = this._savedPosts.getItem(postId)
 
     if (existingSavedPost === null) {
@@ -137,27 +141,27 @@ export class User {
     }
   }
 
-  get verificationToken (): VerificationToken | null {
+  get verificationToken(): VerificationToken | null {
     return this._verificationToken.value
   }
 
-  get savedPosts (): Array<Post> {
+  get savedPosts(): Array<Post> {
     return this._savedPosts.values
   }
 
-  get accounts (): Array<Account> {
+  get accounts(): Array<Account> {
     return this._accounts.values
   }
 
-  get password (): string {
+  get password(): string | null {
     return this._password
   }
 
-  get updatedAt (): DateTime {
+  get updatedAt(): DateTime {
     return this._updatedAt
   }
 
-  public assertVerificationTokenIsValidFor (type: VerificationTokenType, tokenValue: VerificationToken['token']): void {
+  public assertVerificationTokenIsValidFor(type: VerificationTokenType, tokenValue: VerificationToken['token']): void {
     if (this.verificationToken === null) {
       throw UserDomainException.userHasNotAVerificationToken(this.id)
     }
@@ -171,54 +175,15 @@ export class User {
     }
   }
 
-  public async changeUserPassword (password: User['password']): Promise<void> {
-    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
-
-    const validatedPassword = (new PasswordValidator()).validate(password)
-
-    this._password = await cryptoService.hash(validatedPassword)
-    this._updatedAt = DateTime.now()
+  public async changeUserPassword(password: User['password']): Promise<void> {
+    throw Error('Not implemented!')
   }
 
   private buildVerificationToken (type: VerificationTokenType): VerificationToken {
-    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
-
-    const nowDate = DateTime.now()
-
-    return new VerificationToken(
-      crypto.randomUUID(),
-      cryptoService.randomString(),
-      this.email,
-      type,
-      nowDate.plus({ minute: 30 }),
-      nowDate
-    )
+    throw Error('Not implemented!')
   }
 
-  public static buildVerificationTokenForAccountCreation (email: User['email']): VerificationToken {
-    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
-
-    const nowDate = DateTime.now()
-
-    try {
-      return new VerificationToken(
-        crypto.randomUUID(),
-        cryptoService.randomString(),
-        email,
-        VerificationTokenType.CREATE_ACCOUNT,
-        nowDate.plus({ minute: 30 }),
-        nowDate
-      )
-    } catch (exception: unknown) {
-      if (!(exception instanceof ValidationException)) {
-        throw exception
-      }
-
-      if (exception.id === ValidationException.invalidEmailId) {
-        throw UserDomainException.cannotCreateVerificationToken(email)
-      }
-
-      throw exception
-    }
+  public static buildVerificationTokenForAccountCreation(email: User['email']): VerificationToken {
+    throw Error('Not implemented!')
   }
 }

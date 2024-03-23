@@ -86,8 +86,8 @@ export class MediaUrlsHelper {
   public static sortMediaUrl (mediaUrls: MediaUrlComponentDto[]): MediaUrlComponentDto[] {
     const providersOrder = [
       { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' }, // Direct
-      { id: '2fef1a77-a1f8-42a3-9293-437a6f4fc5cc' }, // Wolfstream
       { id: 'b06ba1c1-4988-4b90-8271-a23a56fb0f61' }, // Filemoon
+      { id: '2fef1a77-a1f8-42a3-9293-437a6f4fc5cc' }, // Wolfstream
       { id: '6a594991-7364-481d-85f1-62c5ba2b6cb3' }, // Vtube
       { id: 'd460ba6c-5b2e-4cc9-a09e-eda5d5a7e12c' }, // Fastream
       { id: 'ab535237-2262-4763-2443-dfec1a6ec1b9' }, // Vidhide

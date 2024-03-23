@@ -45,7 +45,7 @@ export class User {
     accounts: Collection<Account, string> = Collection.notLoaded()
   ) {
     this.id = id
-    this.name = (new NameValidator()).validate(name)
+    this.name = name
     this.email = (new EmailValidator()).validate(email)
     this.username = (new UsernameValidator()).validate(username)
     this.imageUrl = imageUrl

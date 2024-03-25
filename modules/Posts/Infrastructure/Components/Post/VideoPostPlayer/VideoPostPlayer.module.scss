@@ -15,6 +15,10 @@
     }
   }
 
+  &__overlay-contaier {
+    @apply h-full w-full absolute top-0 left-0 bg-transparent z-video-player-overlay;
+  }
+
   &__no-sources-state {
     @apply flex flex-col items-center justify-center bg-black w-full h-full
       whitespace-pre-line gap-y-4 text-base-400 px-5 py-10 text-xs rounded-lg;

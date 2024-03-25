@@ -19,7 +19,6 @@ import ReactGA from 'react-ga4'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
-import { DetectAdBlock } from '~/components/DetectAdBlock/DetectAdBlock'
 
 const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
   .then((module) => module.AppMenu)
@@ -128,8 +127,6 @@ function App ({
             />
 
             <AppMenu onClickMenuButton={ () => setMenuOpen(!menuOpen) }/>
-
-            <DetectAdBlock />
 
             <MenuSideBar
               menuOpen={ menuOpen }

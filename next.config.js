@@ -4,7 +4,7 @@ const { i18n } = require('./next-i18next.config')
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['fluid-player'],
+  // transpilePackages: ['fluid-player'],
   rewrites: async () => [
     {
       source: '/posts-sitemap.xml',

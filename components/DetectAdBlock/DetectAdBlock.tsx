@@ -1,22 +1,28 @@
-import React, { FC } from 'react'
-import { useDetectAdBlock } from 'adblock-detect-react'
+import { FC, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { AppToastDismissible } from '~/components/AppToast/AppToastDismissible'
 import { useTranslation } from 'next-i18next'
 
-export const DetectAdBlock: FC = () => {
+export interface Props {
+  adblockDetected: boolean
+}
+
+export const DetectAdBlock: FC<Props> = ({ adblockDetected }) => {
   const { t } = useTranslation('common')
+  const [closed, setClosed] = useState<boolean>(false)
 
-  const adBlockDetected = useDetectAdBlock()
-
-  React.useEffect(() => {
-    if (adBlockDetected) {
+  useEffect(() => {
+    if (adblockDetected && !closed) {
       toast((initialToast) =>
-        (<AppToastDismissible message={ t('ad_blocker_detected_message_title') } initialToast={ initialToast } />),
+        (<AppToastDismissible
+            onClose={ () => setClosed(true) }
+            message={ t('ad_blocker_detected_message_title') }
+            initialToast={ initialToast }
+          />),
       { duration: Infinity, position: 'top-right' }
       )
     }
-  }, [])
+  })
 
   return <></>
 }

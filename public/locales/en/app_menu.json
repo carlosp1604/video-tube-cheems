@@ -7,7 +7,7 @@
   "app_menu_search_button_title": "Search posts",
   "app_menu_search_menu_placeholder_title": "Search posts",
   "app_menu_user_button_title": "Login",
-  "empty_search_error_message": "Please, enter a search term",
+  "empty_search_error_message": "Please enter a valid search term",
   "search_bar_contract_title": "Contract",
   "search_bar_expand_title": "Open search"
 }

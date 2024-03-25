@@ -12,6 +12,12 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
+import ReactGA from 'react-ga4'
+import {
+  ClickDownloadButtonAction,
+  VideoPostCategory, DownloadVideoCompletedAction
+} from '~/modules/Shared/Infrastructure/FrontEnd/AnalyticsEvents/PostPage'
+import { useRouter } from 'next/router'
 
 export interface Props {
   userReaction: ReactionComponentDto | null
@@ -39,6 +45,7 @@ export const PostOptions: FC<Props> = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false)
   const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
+  const { pathname } = useRouter()
 
   const { t } = useTranslation('post')
 
@@ -86,13 +93,27 @@ export const PostOptions: FC<Props> = ({
         mediaUrls={ MediaUrlsHelper.sortMediaUrl(downloadUrls) }
         setIsOpen={ setDownloadMenuOpen }
         isOpen={ downloadMenuOpen }
+        onClickOption={ (mediaUrl: MediaUrlComponentDto) => {
+          ReactGA.event({
+            category: VideoPostCategory,
+            action: DownloadVideoCompletedAction,
+            label: mediaUrl.provider.name,
+          })
+        } }
       />
     )
 
     downloadButton = (
       <span
         className={ styles.postOptions__optionItem }
-        onClick={ () => onClickDownloadButton() }
+        onClick={ () => {
+          ReactGA.event({
+            category: VideoPostCategory,
+            action: ClickDownloadButtonAction,
+            label: pathname,
+          })
+          onClickDownloadButton()
+        } }
       >
         <BsDownload className={ styles.postOptions__optionItemIcon }/>
         { t('post_download_button_title', { sourcesNumber: downloadUrls.length }) }

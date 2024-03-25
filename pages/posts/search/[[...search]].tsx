@@ -9,6 +9,7 @@ import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import DOMPurify from 'isomorphic-dompurify'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -20,6 +21,14 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
   }
 
   if (Array.isArray(search) && search.length > 1) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const cleanSearchTerm = DOMPurify.sanitize(search.toLocaleString())
+
+  if (cleanSearchTerm === '') {
     return {
       notFound: true,
     }
@@ -91,7 +100,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
 
   return {
     props: {
-      initialSearchTerm: search.toLocaleString(),
+      initialSearchTerm: DOMPurify.sanitize(search.toLocaleString()),
       initialSortingOption: paginationQueryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
       initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
       htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),

@@ -40,13 +40,25 @@ export const PostPage: NextPage<PostPageProps> = ({
 }) => {
   const { t } = useTranslation('post_page')
 
-  let popunder: ReactElement | null = null
+  let popUnder: ReactElement | null = null
 
   if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
-    popunder = (
+    popUnder = (
       <Script
         type={ 'text/javascript' }
         src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
+        async={ true }
+      />
+    )
+  }
+
+  let videoPopUnder: ReactElement | null = null
+
+  if (process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL) {
+    videoPopUnder = (
+      <Script
+        type={ 'text/javascript' }
+        src={ process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL }
         async={ true }
       />
     )
@@ -120,7 +132,9 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   return (
     <>
-      { popunder }
+      { popUnder }
+
+      { videoPopUnder }
 
       <HtmlPageMeta { ...htmlPageMetaProps } />
 

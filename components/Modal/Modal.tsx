@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react'
+import React, { FC, ReactNode, useRef } from 'react'
 import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { BsX } from 'react-icons/bs'
@@ -18,6 +18,16 @@ export const Modal: FC<Props> = ({
   onClose = undefined,
   children,
 }) => {
+  const backdropRef = useRef(null)
+  const slideOutRef = useRef(null)
+
+  const closeButton = (
+    <BsX
+      className={ styles.modal__closeModalButton }
+      onClick={ onClose }
+    />
+  )
+
   return (
     <CSSTransition
       classNames={ {
@@ -30,6 +40,7 @@ export const Modal: FC<Props> = ({
       } }
       in={ isOpen }
       timeout={ parseInt('100') }
+      ref={ backdropRef }
     >
       <div
         className={ styles.modal__modalBackdrop }
@@ -44,6 +55,7 @@ export const Modal: FC<Props> = ({
             exitActive: styles.modal__containerExitActive,
             exitDone: styles.modal__containerExitDone,
           } }
+          ref={ slideOutRef }
           in={ isOpen }
           timeout={ parseInt('100') }
         >
@@ -51,13 +63,7 @@ export const Modal: FC<Props> = ({
             className={ styles.modal__container }
             onClick={ (event) => event.stopPropagation() }
           >
-            {
-              onClose &&
-                <BsX
-                  className={ styles.modal__closeModalButton }
-                  onClick={ onClose }
-                />
-            }
+            { onClose && closeButton }
             { children }
           </section>
         </CSSTransition>

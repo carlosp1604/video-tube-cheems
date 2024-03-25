@@ -17,6 +17,7 @@ import Image from 'next/image'
 import { BsArrowUpShort } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
 import { HiBars3 } from 'react-icons/hi2'
+import DOMPurify from 'dompurify'
 
 export interface Props {
   onClickMenuButton : () => void
@@ -77,14 +78,16 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
   }
 
   const onSearch = async () => {
-    if (title === '') {
-      toast.error(t('empty_search_error_message'))
+    if (blocked) {
+      toast.error(t('action_cannot_be_performed_error_message'))
 
       return
     }
 
-    if (blocked) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+    const cleanTitle = DOMPurify.sanitize(title.trim())
+
+    if (cleanTitle === '') {
+      toast.error(t('empty_search_error_message'))
 
       return
     }
@@ -93,12 +96,12 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
 
     if (
       !search ||
-      (search && search !== title.trim())
+      (search && search !== cleanTitle)
     ) {
       await router.push({
-        pathname: '/posts/search/[search]',
+        pathname: '/posts/search',
         query: {
-          search: title.trim(),
+          search: cleanTitle,
         },
       }, undefined, { shallow: true, scroll: true })
 
@@ -131,7 +134,6 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
               />
             </Link>
           </div>
-
           <div className={ `
             ${styles.appMenu__searchContainer}
             ${openSearchBar ? styles.appMenu__searchContainer__open : ''}
@@ -158,57 +160,6 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
           </div>
         </div>
       </nav>
-      {
-        /**
-         <div className={ styles.appMenu__utilLinksContainer }>
-         <Link
-           href={ '/' }
-           title={ 'Live cams' }
-           className={ styles.appMenu__utilLink }
-         >
-           <BsCameraVideo />
-           Live cams
-         </Link>
-
-         <Link
-         href={ '/' }
-         title={ 'asdasdas' }
-         className={ styles.appMenu__utilLink }
-         >
-         <BsSearch />
-         asdasda
-         </Link>
-
-         <Link
-         href={ '/' }
-         title={ 'asdasdas' }
-         className={ styles.appMenu__utilLink }
-         >
-         <BsSearch />
-         asdasda
-         </Link>
-
-         <Link
-         href={ '/' }
-         title={ 'asdasdas' }
-         className={ styles.appMenu__utilLink }
-         >
-         <BsSearch />
-         asdasda
-         </Link>
-
-         <Link
-         href={ '/' }
-         title={ 'asdasdas' }
-         className={ styles.appMenu__utilLink }
-         >
-         <BsSearch />
-         asdasda
-         </Link>
-
-         </div>
-         */
-      }
     </>
   )
 }

@@ -85,6 +85,7 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, sea
         onClick={ onSearch }
         data-tooltip-id={ tooltipId }
         data-tooltip-content={ searchIconTitle }
+        title={ searchIconTitle }
       >
         <CiSearch/>
         { mounted

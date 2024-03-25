@@ -12,9 +12,10 @@ interface Props {
   mediaUrls: MediaUrlComponentDto[]
   setIsOpen: (isOpen: boolean) => void
   isOpen: boolean
+  onClickOption: (mediaUrl: MediaUrlComponentDto) => void
 }
 
-export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen }) => {
+export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen, onClickOption }) => {
   const { t } = useTranslation('post')
 
   const menuOptions: MenuOptionComponentInterface[] = mediaUrls.map((mediaUrl) => {
@@ -35,7 +36,7 @@ export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen }) => {
         />
       ),
       isActive: false,
-      onClick: undefined,
+      onClick: () => onClickOption(mediaUrl),
     }
   })
 

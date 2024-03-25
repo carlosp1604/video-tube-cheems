@@ -9,6 +9,8 @@ import HoverVideoPlayer from 'react-hover-video-player'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { usePathname } from 'next/navigation'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import { useRouter } from 'next/router'
 
 interface Props {
   post: PostCardComponentDto
@@ -21,6 +23,7 @@ export const PostCard: FC<Props> = ({
 }) => {
   const { t } = useTranslation('post_card')
 
+  const locale = useRouter().locale ?? 'en'
   const pathname = usePathname()
 
   const poster: ReactElement = (
@@ -199,7 +202,7 @@ export const PostCard: FC<Props> = ({
           <div className={ styles.postCard__extraData }>
             { producerNameLink }
             { (post.producer !== null || post.actor !== null) ? <BsDot /> : '' }
-            { t('post_card_post_views', { views: post.views }) }
+            { t('post_card_post_views', { views: NumberFormatter.compatFormat(post.views, locale) }) }
             <BsDot className={ styles.postCard__separatorIcon }/>
             { post.date }
           </div>

@@ -42,8 +42,8 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   public async count (): Promise<number> {
     return prisma.actor.count({
       where: {
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     })
   }
 

@@ -125,7 +125,7 @@ export interface PostRepositoryInterface {
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
    * @param filters Post filters
-   * @return Array of PostWithViewsInterface
+   * @return PostsWithViewsInterfaceWithTotalCount
    */
   findWithOffsetAndLimit(
     offset: number,
@@ -133,7 +133,7 @@ export interface PostRepositoryInterface {
     sortingOption: PostSortingOption,
     sortingCriteria: SortingCriteria,
     filters: PostFilterOptionInterface[],
-  ): Promise<PostWithViewsInterface[]>
+  ): Promise<PostsWithViewsInterfaceWithTotalCount>
 
   /**
    * Find SavedPosts based on filter and order criteria

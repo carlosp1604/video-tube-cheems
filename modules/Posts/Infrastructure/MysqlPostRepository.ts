@@ -1,33 +1,33 @@
-import {PostRepositoryInterface, RepositoryOptions} from '~/modules/Posts/Domain/PostRepositoryInterface'
-import {PostModelTranslator} from './ModelTranslators/PostModelTranslator'
-import {PostCommentModelTranslator} from './ModelTranslators/PostCommentModelTranslator'
-import {PostMetaModelTranslator} from './ModelTranslators/PostMetaModelTranslator'
-import {Post as PostPrimaModel, Prisma} from '@prisma/client'
-import {PostChildCommentModelTranslator} from './ModelTranslators/PostChildCommentModelTranslator'
-import {Post} from '~/modules/Posts/Domain/Post'
-import {prisma} from '~/persistence/prisma'
+import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
+import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
+import { PostMetaModelTranslator } from './ModelTranslators/PostMetaModelTranslator'
+import { Post as PostPrimaModel, Prisma } from '@prisma/client'
+import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCommentModelTranslator'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { prisma } from '~/persistence/prisma'
 import {
   PostsWithViewsInterfaceWithTotalCount,
   PostWithViewsCommentsReactionsInterface,
   PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
-import {PostSortingOption} from '~/modules/Shared/Domain/Posts/PostSorting'
-import {Reaction, ReactionableType, ReactionType} from '~/modules/Reactions/Domain/Reaction'
-import {PostComment} from '~/modules/Posts/Domain/PostComments/PostComment'
-import {PostChildComment} from '~/modules/Posts/Domain/PostComments/PostChildComment'
-import {User} from '~/modules/Auth/Domain/User'
-import {ReactionModelTranslator} from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
-import {DefaultArgs} from '@prisma/client/runtime/library'
-import {PostUserInteraction} from '~/modules/Posts/Domain/PostUserInteraction'
-import {PostFilterOptionInterface} from '~/modules/Shared/Domain/Posts/PostFilterOption'
-import {SortingCriteria} from '~/modules/Shared/Domain/SortingCriteria'
-import {TranslationModelTranslator} from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
-import {PostMediaModelTranslator} from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
-import {MediaUrlModelTranslator} from '~/modules/Posts/Infrastructure/ModelTranslators/MediaUrlModelTranslator'
-import {DateTime} from 'luxon'
-import {ViewModelTranslator} from '~/modules/Views/Infrastructure/ViewModelTranslator'
-import {View} from '~/modules/Views/Domain/View'
-import {PostMediaType} from "~/modules/Posts/Domain/PostMedia/PostMedia";
+import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
+import { Reaction, ReactionableType, ReactionType } from '~/modules/Reactions/Domain/Reaction'
+import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
+import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
+import { User } from '~/modules/Auth/Domain/User'
+import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
+import { DefaultArgs } from '@prisma/client/runtime/library'
+import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
+import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
+import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
+import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
+import { PostMediaModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
+import { MediaUrlModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/MediaUrlModelTranslator'
+import { DateTime } from 'luxon'
+import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
+import { View } from '~/modules/Views/Domain/View'
+import { PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
 
 export class MysqlPostRepository implements PostRepositoryInterface {
@@ -167,7 +167,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param slug Post Slug
    * @return Post if found or null
    */
-  public async getPostBySlugWithPostMedia(slug: Post['slug']): Promise<Post | null> {
+  public async getPostBySlugWithPostMedia (slug: Post['slug']): Promise<Post | null> {
     const post = await prisma.post.findFirst({
       where: {
         slug,
@@ -198,7 +198,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * v1: Work in replace mode
    * @param post Post
    */
-  public async updatePostBySlugWithPostMedia(post: Post): Promise<void> {
+  public async updatePostBySlugWithPostMedia (post: Post): Promise<void> {
     const removedPostMedia = post.removedPostMedia
     const postMedia = post.postMedia
 
@@ -247,15 +247,15 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       if (removedPostMedia.length > 0) {
         await transaction.post.update({
           where: {
-            slug: post.slug
+            slug: post.slug,
           },
           data: {
             postMedia: {
               delete: removedPostMedia.map((removedMedia) => ({
-                id: removedMedia.id
-              }))
+                id: removedMedia.id,
+              })),
             },
-          }
+          },
         })
       }
     })
@@ -474,7 +474,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param sortingOption Post sorting option
    * @param sortingCriteria Post sorting criteria
    * @param filters Post filters
-   * @return Array of PostWithViewsInterface
+   * @return PostsWithViewsInterfaceWithTotalCount
    */
   public async findWithOffsetAndLimit (
     offset: number,
@@ -482,32 +482,40 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     sortingOption: PostSortingOption,
     sortingCriteria: SortingCriteria,
     filters: PostFilterOptionInterface[]
-  ): Promise<PostWithViewsInterface[]> {
+  ): Promise<PostsWithViewsInterfaceWithTotalCount> {
     const includeFilters = MysqlPostRepository.buildIncludes(filters)
     const whereFilters = MysqlPostRepository.buildFilters(filters)
     const sortCriteria = MysqlPostRepository.buildOrder(sortingOption, sortingCriteria)
 
-    const posts = await prisma.post.findMany({
-      where: whereFilters,
-      include: {
-        _count: {
-          select: {
-            views: true,
+    const [posts, postsNumber] = await prisma.$transaction([
+      prisma.post.findMany({
+        where: whereFilters,
+        include: {
+          _count: {
+            select: {
+              views: true,
+            },
           },
+          ...includeFilters,
         },
-        ...includeFilters,
-      },
-      take: limit,
-      skip: offset,
-      orderBy: sortCriteria,
-    })
+        take: limit,
+        skip: offset,
+        orderBy: sortCriteria,
+      }),
+      prisma.post.count({
+        where: whereFilters,
+      }),
+    ])
 
-    return posts.map((post) => {
-      return {
-        post: PostModelTranslator.toDomain(post, ['meta', 'producer', 'actor', 'translations']),
-        postViews: post._count.views,
-      }
-    })
+    return {
+      posts: posts.map((post) => {
+        return {
+          post: PostModelTranslator.toDomain(post, ['meta', 'producer', 'actor', 'translations']),
+          postViews: post._count.views,
+        }
+      }),
+      count: postsNumber,
+    }
   }
 
   /**

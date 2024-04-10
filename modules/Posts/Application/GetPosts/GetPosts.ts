@@ -32,18 +32,15 @@ export class GetPosts {
     const sortingCriteria = GetPosts.validateSortingCriteria(request.sortCriteria)
     const sortingOption = GetPosts.validateSortingOption(request.sortOption)
 
-    const [posts, postsNumber] = await Promise.all([
-      await this.postRepository.findWithOffsetAndLimit(
-        offset,
-        request.postsPerPage,
-        sortingOption,
-        sortingCriteria,
-        filters
-      ),
-      await this.postRepository.countPostsWithFilters(filters),
-    ])
+    const postsWithCount = await this.postRepository.findWithOffsetAndLimit(
+      offset,
+      request.postsPerPage,
+      sortingOption,
+      sortingCriteria,
+      filters
+    )
 
-    return GetPostsApplicationDtoTranslator.fromDomain(posts, postsNumber)
+    return GetPostsApplicationDtoTranslator.fromDomain(postsWithCount.posts, postsWithCount.count)
   }
 
   private static validateRequest (request: GetPostsApplicationRequestDto): void {

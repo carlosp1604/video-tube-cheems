@@ -44,8 +44,8 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
   public async count (): Promise<number> {
     return prisma.producer.count({
       where: {
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     })
   }
 
@@ -56,40 +56,33 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
    * @return Array of Producer
    */
   public async getPopular (includedProducerSlugs: Array<Producer['slug']>): Promise<Producer[]> {
-    const producers = await prisma.$transaction(async (transaction) => {
-      const producersToInclude = await transaction.producer.findMany({
+    const [producersToInclude, popularProducers] = await prisma.$transaction([
+      prisma.producer.findMany({
         where: {
           slug: {
-            in: includedProducerSlugs
-          }
+            in: includedProducerSlugs,
+          },
         },
         take: 20,
-      })
-
-      if (producersToInclude.length < 20) {
-        const producers = await transaction.producer.findMany({
-          take: (20 - producersToInclude.length),
-          where: {
-            slug: {
-              not: {
-                in: includedProducerSlugs
-              }
-            }
-          },
-          orderBy: {
-            views: {
-              _count: 'desc',
+      }),
+      prisma.producer.findMany({
+        take: 20,
+        where: {
+          slug: {
+            not: {
+              in: includedProducerSlugs,
             },
           },
-        })
+        },
+        orderBy: {
+          views: {
+            _count: 'desc',
+          },
+        },
+      }),
+    ])
 
-        return [...producers, ...producersToInclude]
-      }
-
-      return producersToInclude
-    })
-
-    return producers.map(
+    return [...producersToInclude, ...popularProducers].map(
       (producer) => ProducerModelTranslator.toDomain(producer)
     )
   }

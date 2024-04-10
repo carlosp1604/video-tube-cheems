@@ -12,5 +12,7 @@
   { "id": "6a594991-7364-481d-85f1-62c5ba2b6cb3", "name": "Vtube", "logo_url": "https://cdn.cheemsporn.com/static/vtube-logo.png" },
   { "id": "b06ba1c1-4988-4b90-8271-a23a56fb0f61", "name": "Filemoon", "logo_url": "https://cdn.cheemsporn.com/static/filemoon.png" },
   { "id": "b9da1a7e-bafa-4fee-8673-2303246429e9", "name": "Hexupload", "logo_url": "https://cdn.cheemsporn.com/static/hexupload-logo.png" },
-  { "id": "e0f92228-068c-43a5-a61f-b7262f124868", "name": "Katfile", "logo_url": "https://cdn.cheemsporn.com/static/katfile-logo.png" }
+  { "id": "e0f92228-068c-43a5-a61f-b7262f124868", "name": "Katfile", "logo_url": "https://cdn.cheemsporn.com/static/katfile-logo.png" },
+  { "id": "29404ca6-05f5-4f89-9b39-adedddd88071", "name": "Linkvertise", "logo_url": "https://cdn.cheemsporn.com/static/linkvertise-logo.png" },
+  { "id": "bdeaa99d-1263-4195-9244-b29c1839e5a8", "name": "Media.cm", "logo_url": "https://cdn.cheemsporn.com/static/media-logo.png" }
 ]

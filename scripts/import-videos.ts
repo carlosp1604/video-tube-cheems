@@ -249,13 +249,17 @@ async function run (
      **/
     const metaDuration = buildMeta('duration', String(video.duration), postUuid)
     const metaThumb = buildMeta('thumb', String(video.thumb), postUuid)
-    const metaTrailer = buildMeta('trailer', String(video.trailer), postUuid)
 
     const metaCollection: Collection<PostMeta, PostMeta['type']> = Collection.initializeCollection()
 
     metaCollection.addItem(metaDuration, metaDuration.type)
     metaCollection.addItem(metaThumb, metaThumb.type)
-    metaCollection.addItem(metaTrailer, metaTrailer.type)
+
+    if (video.trailer) {
+      const metaTrailer = buildMeta('trailer', String(video.trailer), postUuid)
+
+      metaCollection.addItem(metaTrailer, metaTrailer.type)
+    }
 
     console.log('\t- Done')
 

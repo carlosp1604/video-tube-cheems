@@ -3,7 +3,7 @@ import { GetServerSidePropsContext, PreviewData } from 'next'
 import nextI18nextConfig from '~/next-i18next.config'
 import { localeWithTerritory } from '~/modules/Shared/Domain/Locale'
 import { HtmlPageMetaContextServiceInterface } from './HtmlPageMetaContextServiceInterface'
-import {AlternateUrl, HtmlPageMetaContextProps} from './HtmlPageMetaContextProps'
+import { AlternateUrl, HtmlPageMetaContextProps } from './HtmlPageMetaContextProps'
 
 /**
  * Service to extract metadata properties which are dependent on the context.
@@ -40,7 +40,7 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
     locales.forEach((locale) => {
       const alternateUrl = this.getUrlForLocale(locale)
 
-      alternateLocale.push({ locale, alternateUrl } )
+      alternateLocale.push({ locale, alternateUrl })
     })
 
     return alternateLocale

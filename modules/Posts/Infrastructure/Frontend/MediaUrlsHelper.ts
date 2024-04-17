@@ -71,6 +71,14 @@ export class MediaUrlsHelper {
     return false
   }
 
+  public static shouldShowExtraAdvertising (providerId: string): boolean {
+    if (providerId !== 'edf20c13-f085-4d0e-a124-567fdc42cf9f') { // for the moment, just ph
+      return true
+    }
+
+    return false
+  }
+
   private static filterProviders (mediaUrls: MediaUrlComponentDto[], userId: string | null): MediaUrlComponentDto[] {
     if (!userId || (userId && userId !== '00000000-0000-0000-0000-000000000000')) {
       return mediaUrls.filter((mediaUrl) => {

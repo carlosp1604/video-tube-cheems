@@ -43,13 +43,19 @@ export const ActorPage: NextPage<ActorPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('actors_breadcrumb_list_title'),
-      item: `${baseUrl}/${locale}/actors/`,
+      item: `${baseUrl}/${locale}/actors`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: actor.name,
-      item: `${baseUrl}/${locale}/actors/${actor.slug}/`,
+      item: `${baseUrl}/${locale}/actors/${actor.slug}`,
     }],
+  }
+
+  let canonicalUrl = `${baseUrl}/actors/${actor.slug}`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/actors/${actor.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -57,7 +63,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
       t('actor_page_title', { actorName: actor.name }),
       t('actor_page_description', { actorName: actor.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      `${baseUrl}/${locale}/actors/${actor.slug}/`,
+      canonicalUrl,
       actor.imageUrl ?? undefined
     )
   ).getProperties()

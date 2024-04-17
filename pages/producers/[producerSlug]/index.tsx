@@ -89,6 +89,12 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     baseUrl = env.BASE_URL
   }
 
+  // Experimental: Try yo improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=60, stale-while-revalidate=300'
+  )
+
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: ProducerPageProps = {

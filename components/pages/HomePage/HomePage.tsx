@@ -45,12 +45,18 @@ export const HomePage: NextPage<Props> = (props: Props) => {
     },
   }
 
+  let canonicalUrl = props.baseUrl
+
+  if (locale !== 'en') {
+    canonicalUrl = `${props.baseUrl}/${locale}`
+  }
+
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('home_page_title'),
       t('home_page_description'),
       HtmlPageMetaContextResourceType.WEBSITE,
-      `${props.baseUrl}/${locale}` // canonical -> Home page
+      canonicalUrl // canonical -> Home page
     )
   ).getProperties()
 

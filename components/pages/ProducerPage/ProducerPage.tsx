@@ -45,13 +45,19 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('producers_breadcrumb_list_title'),
-      item: `${baseUrl}/${locale}/producers/`,
+      item: `${baseUrl}/${locale}/producers`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: producer.name,
-      item: `${baseUrl}/${locale}/producers/${producer.slug}/`,
+      item: `${baseUrl}/${locale}/producers/${producer.slug}`,
     }],
+  }
+
+  let canonicalUrl = `${baseUrl}/producers/${producer.slug}`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/producers/${producer.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -59,7 +65,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       t('producer_page_title', { producerName: producer.name }),
       t('producer_page_description', { producerName: producer.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      `${baseUrl}/${locale}/producers/${producer.slug}/`,
+      canonicalUrl,
       producer.imageUrl ?? undefined
     )
   ).getProperties()

@@ -191,9 +191,15 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
     />
   )
 
+  let shouldShowExtraAds = true
+
+  if (selectedUrl) {
+    shouldShowExtraAds = MediaUrlsHelper.shouldShowExtraAdvertising(selectedUrl?.provider.id)
+  }
+
   return (
     <div className={ styles.videoPostPlayer__container }>
-      { adOpen && overlay }
+      { adOpen && shouldShowExtraAds && overlay }
       { sourcesMenu }
       { !videoReady ? <VideoLoadingState /> : null }
       { playerElement }

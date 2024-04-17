@@ -38,13 +38,19 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('search_page_breadcrumb_title'),
-      item: `${baseUrl}/${locale}/posts/search/`,
+      item: `${baseUrl}/${locale}/posts/search`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: initialSearchTerm,
-      item: `${baseUrl}/${locale}/posts/search/${initialSearchTerm}/`,
+      item: `${baseUrl}/${locale}/posts/search/${initialSearchTerm}`,
     }],
+  }
+
+  let canonicalUrl = `${baseUrl}/posts/search/${initialSearchTerm}`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/posts/search/${initialSearchTerm}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -52,7 +58,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
       t('search_page_title', { searchTerm: initialSearchTerm }),
       t('search_page_subtitle', { searchTerm: initialSearchTerm }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      `${baseUrl}/${locale}/posts/search/${initialSearchTerm}/`
+      canonicalUrl
     )
   ).getProperties()
 

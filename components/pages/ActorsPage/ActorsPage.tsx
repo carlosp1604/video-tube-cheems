@@ -34,12 +34,18 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
   const { t } = useTranslation('actors')
   const locale = useRouter().locale ?? 'en'
 
+  let canonicalUrl = `${baseUrl}/actors`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/actors`
+  }
+
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('actors_page_title'),
       t('actors_page_description'),
       HtmlPageMetaContextResourceType.ARTICLE,
-      `${baseUrl}/${locale}/actors`
+      canonicalUrl
     )
   ).getProperties()
 

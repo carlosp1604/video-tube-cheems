@@ -33,12 +33,20 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
 
     let postEmbedUrl = ''
+    let baseUrl = ''
 
     if (!env.BASE_URL) {
       throw Error('Missing env var: BASE_URL. Required to build post page embed URL')
     } else {
       postEmbedUrl = `${env.BASE_URL}/${locale}/posts/videos/embed/${slug}`
+      baseUrl = env.BASE_URL
     }
+
+    // Experimental: Try yo improve performance (1 day)
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=86400, stale-while-revalidate=300'
+    )
 
     return {
       props: {
@@ -51,6 +59,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
         postDislikes: postWithCount.reactions.dislike,
         postCommentsNumber: postWithCount.comments,
         postEmbedUrl,
+        baseUrl,
         htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
         ...await serverSideTranslations(
           locale,

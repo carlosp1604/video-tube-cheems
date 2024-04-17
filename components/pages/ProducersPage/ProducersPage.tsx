@@ -36,12 +36,18 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
   const { t } = useTranslation('producers')
   const locale = useRouter().locale ?? 'en'
 
+  let canonicalUrl = `${baseUrl}/producers`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/producers`
+  }
+
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('producers_page_title'),
       t('producers_page_description'),
       HtmlPageMetaContextResourceType.ARTICLE,
-      `${baseUrl}/${locale}/producers`
+      canonicalUrl
     )
   ).getProperties()
 

@@ -39,7 +39,7 @@ export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceI
       siteName: this.siteName,
       resourceType: this.resourceType,
       image: this.image,
-      canonical: this.canonical
+      canonical: this.canonical,
     }
   }
 

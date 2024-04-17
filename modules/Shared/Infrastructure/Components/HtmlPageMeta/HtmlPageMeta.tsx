@@ -7,6 +7,7 @@ import {
 import {
   HtmlPageMetaVideoProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceProps'
+import { UrlsHelper } from '~/helpers/Domain/UrlsHelper'
 
 export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
   let videoMeta: ReactElement[] | null = null
@@ -17,7 +18,7 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     const videoProps = props.resourceProps as HtmlPageMetaVideoProps
 
     videoMeta = [
-      <meta property="og:video:url" content={ videoProps.videoUrl } key="og:video" />,
+      <meta property="og:video:url" content={ UrlsHelper.deleteTrailingSlash(videoProps.videoUrl) } key="og:video" />,
       <meta property="og:video:type" content='text/html' key="og:video:type" />,
       <meta property="og:video:duration" content={ videoProps.duration } key="og:video:duration" />,
       <meta property="video:duration" content={ videoProps.duration } key="video:duration" />,
@@ -25,9 +26,13 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
       <meta name="twitter:card" content="player" key="twitter:card" />,
       <meta name="twitter:title" content={ videoProps.title } key="twitter:title" />,
       <meta name="twitter:description" content={ videoProps.description } key="twitter:description" />,
-      <meta name="twitter:url" content={ props.url } key="twitter:url" />,
+      <meta name="twitter:url" content={ UrlsHelper.deleteTrailingSlash(props.url) } key="twitter:url" />,
       <meta name="twitter:image" content={ props.resourceProps.image } key="twitter:image" />,
-      <meta name="twitter:player" content={ videoProps.videoUrl } key="twitter:player" />,
+      <meta
+        name="twitter:player"
+        content={ UrlsHelper.deleteTrailingSlash(videoProps.videoUrl) }
+        key="twitter:player"
+      />,
       <meta name="twitter:player:width" content={ videoProps.width } key="twitter:player:width" />,
       <meta name="twitter:player:height" content={ videoProps.height } key="twitter:player:height" />,
     ]
@@ -67,7 +72,11 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
 
   if (props.resourceProps.canonical) {
     canonicalTag = (
-      <link rel="canonical" href={ props.resourceProps.canonical } key={ props.resourceProps.canonical }/>
+      <link
+        rel="canonical"
+        href={ UrlsHelper.deleteTrailingSlash(props.resourceProps.canonical) }
+        key="canonical"
+      />
     )
   }
 
@@ -78,8 +87,8 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
       <link
         rel="alternate"
         hrefLang={ alternateUrl.locale }
-        href={ alternateUrl.alternateUrl }
-        key={ alternateUrl.alternateUrl }
+        href={ UrlsHelper.deleteTrailingSlash(alternateUrl.alternateUrl) }
+        key={ UrlsHelper.deleteTrailingSlash(alternateUrl.alternateUrl) }
       />
     )
   ))
@@ -94,7 +103,7 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
       <meta property="og:description" content={ props.resourceProps.description } key="og:description" />
       <meta property="og:site_name" content={ props.resourceProps.siteName } key="og:site_name" />
       <meta property="og:type" content={ props.resourceProps.resourceType } key="og:type" />
-      <meta property="og:url" content={ props.url } key="og:url" />
+      <meta property="og:url" content={ UrlsHelper.deleteTrailingSlash(props.url) } key="og:url" />
       <meta property="og:image" content={ props.resourceProps.image } key="og:image" />
       <meta property="og:locale" content={ props.locale } key="og:locale" />
       { websiteMeta }

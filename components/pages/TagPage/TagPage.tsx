@@ -48,8 +48,14 @@ export const TagPage: NextPage<TagPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: tag.name,
-      item: `${baseUrl}/${locale}/tags/${tag.slug}/`,
+      item: `${baseUrl}/${locale}/tags/${tag.slug}`,
     }],
+  }
+
+  let canonicalUrl = `${baseUrl}/tags/${tag.slug}`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/tags/${tag.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -57,7 +63,7 @@ export const TagPage: NextPage<TagPageProps> = ({
       t('tag_page_title', { tagName: tag.name }),
       t('tag_page_description', { tagName: tag.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      `${baseUrl}/${locale}/tags/${tag.slug}/`
+      canonicalUrl
     )
   ).getProperties()
 

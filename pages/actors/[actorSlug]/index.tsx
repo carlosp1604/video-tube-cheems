@@ -61,6 +61,12 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
     baseUrl = env.BASE_URL
   }
 
+  // Experimental: Try yo improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=60, stale-while-revalidate=300'
+  )
+
   const props: ActorPageProps = {
     actor: {
       description: null,

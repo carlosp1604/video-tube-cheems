@@ -44,7 +44,10 @@ export default async function handler (
   try {
     const posts = await useCase.get(applicationRequest)
 
-    return response.status(200).json(posts)
+    return response
+      .status(200)
+      .setHeader('Cache-Control', 'public, max-age=60, must-revalidate')
+      .json(posts)
   } catch (exception: unknown) {
     if (!(exception instanceof GetPostsApplicationException)) {
       console.error(exception)

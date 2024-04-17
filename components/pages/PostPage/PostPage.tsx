@@ -16,10 +16,12 @@ import { ReactElement } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 import Script from 'next/script'
+import { useRouter } from 'next/router'
 
 export interface PostPageProps {
   post: PostComponentDto
   postEmbedUrl: string
+  baseUrl: string
   postViewsNumber: number
   postLikes: number
   postDislikes: number
@@ -31,6 +33,7 @@ export interface PostPageProps {
 export const PostPage: NextPage<PostPageProps> = ({
   post,
   postEmbedUrl,
+  baseUrl,
   relatedPosts,
   postCommentsNumber,
   postViewsNumber,
@@ -39,6 +42,7 @@ export const PostPage: NextPage<PostPageProps> = ({
   htmlPageMetaContextProps,
 }) => {
   const { t } = useTranslation('post_page')
+  const locale = useRouter().locale ?? 'en'
 
   let popUnder: ReactElement | null = null
 
@@ -72,7 +76,6 @@ export const PostPage: NextPage<PostPageProps> = ({
     thumbnailUrl: [post.thumb],
     uploadDate: post.publishedAt,
     duration: Duration.fromMillis(Number.parseInt(post.duration) * 1000),
-    // Get domainUrl from .env file
     embedUrl: postEmbedUrl,
     interactionStatistics: [
       {
@@ -98,12 +101,18 @@ export const PostPage: NextPage<PostPageProps> = ({
     ],
   }
 
+  let canonicalUrl = `${baseUrl}/posts/videos/${post.slug}`
+
+  if (locale !== 'en') {
+    canonicalUrl = `${baseUrl}/${locale}/posts/videos/${post.slug}`
+  }
+
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaVideoService(
       post.title,
       post.description,
       post.thumb,
-      null,
+      canonicalUrl,
       postEmbedUrl,
       post.duration
     )

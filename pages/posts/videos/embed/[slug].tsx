@@ -7,6 +7,7 @@ import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { VideoEmbedPage, VideoEmbedPageProps } from '~/components/pages/VideoEmbedPage/VideoEmbedPage'
+import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<VideoEmbedPageProps> = async (context) => {
   if (!context.query.slug) {
@@ -17,6 +18,9 @@ export const getServerSideProps: GetServerSideProps<VideoEmbedPageProps> = async
 
   const slug = String(context.query.slug)
   const locale = context.locale ?? 'en'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   // TODO: Consider to create a new use-case to retrieve only video data
   const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')

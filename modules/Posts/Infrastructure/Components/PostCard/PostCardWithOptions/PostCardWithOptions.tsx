@@ -3,9 +3,9 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import styles from './PostCardWithOptions.module.scss'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { PostCard } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
-import * as uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import { useTranslation } from 'next-i18next'
-import { Tooltip } from '~/components/Tooltip/Tooltip'
+import dynamic from 'next/dynamic'
 
 interface Props {
   post: PostCardComponentDto
@@ -13,6 +13,10 @@ interface Props {
   showProducerImage: boolean
   onClickOptions: (postId: string) => void
 }
+
+const Tooltip = dynamic(() => import(
+  '~/components/Tooltip/Tooltip').then((module) => module.Tooltip), { ssr: false }
+)
 
 export const PostCardWithOptions: FC<Props> = ({
   post,
@@ -26,7 +30,7 @@ export const PostCardWithOptions: FC<Props> = ({
 
   useEffect(() => {
     setMounted(true)
-    setTooltipId(uuid.v4())
+    setTooltipId(uuidv4())
   }, [])
 
   return (

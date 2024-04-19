@@ -19,6 +19,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActorView'
 import { getSession } from 'next-auth/react'
+import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   const actorSlug = context.query.actorSlug
@@ -30,6 +31,9 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
   }
 
   const locale = context.locale ?? 'en'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'app_menu',

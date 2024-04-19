@@ -1,6 +1,10 @@
 import { FC } from 'react'
 import TailwindConfig from '~/tailwind.config'
-import NextNProgress from 'nextjs-progressbar'
+import dynamic from 'next/dynamic'
+
+const NextNProgress = dynamic(() =>
+  import('nextjs-progressbar'), { ssr: false }
+)
 
 export const AppProgressBar: FC = () => {
   return (

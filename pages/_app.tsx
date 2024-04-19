@@ -3,63 +3,35 @@ import type { AppProps } from 'next/app'
 import styles from '~/styles/pages/_app.module.scss'
 import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
-import { appWithTranslation, useTranslation } from 'next-i18next'
-import { Settings } from 'luxon'
+import { appWithTranslation } from 'next-i18next'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
-import { Post } from '~/modules/Posts/Domain/Post'
-import { ReactionableModel } from '~/modules/Reactions/Domain/ReactionableModel'
-import { TranslatableModel } from '~/modules/Translations/Domain/TranslatableModel'
 import { Roboto } from 'next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
 import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { AppToast } from '~/components/AppToast/AppToast'
 import ReactGA from 'react-ga4'
-import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
-
-const AppMenu = dynamic(() => import('~/components/AppMenu/AppMenu')
-  .then((module) => module.AppMenu)
-)
+import { AppMenu } from '~/components/AppMenu/AppMenu'
+import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
+import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
+import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
+import { MobileMenu } from '~/components/AppMenu/MobileMenu'
+import { AppToast } from '~/components/AppToast/AppToast'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
-  .then((module) => module.AppFooter)
+  .then((module) => module.AppFooter),
+{ ssr: false }
 )
 
 const AppBanner = dynamic(() => import('~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner')
-  .then((module) => module.AppBanner)
+  .then((module) => module.AppBanner),
+{ ssr: false }
 )
 
-const MobileMenu = dynamic(() => import('~/components/AppMenu/MobileMenu')
-  .then((module) => module.MobileMenu)
-)
-
-const MenuSideBar = dynamic(() => import('~/components/MenuSideBar/MenuSideBar')
-  .then((module) => module.MenuSideBar)
-)
-
-const LanguageMenu = dynamic(() => import('~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu')
-  .then((module) => module.LanguageMenu)
-)
-
-const LiveCams = dynamic(() => import('~/components/LiveCams/LiveCams')
-  .then((module) => module.LiveCams)
-)
-
-function applyMixins (derivedCtor: any, constructors: any[]) {
-  constructors.forEach((baseCtor) => {
-    Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
-      Object.defineProperty(
-        derivedCtor.prototype,
-        name,
-        Object.getOwnPropertyDescriptor(baseCtor.prototype, name) ||
-        Object.create(null)
-      )
-    })
-  })
-}
+const LiveCams = dynamic(() =>
+  import('~/components/LiveCams/LiveCams').then((module) => module.LiveCams), { ssr: false })
 
 const roboto = Roboto({
   weight: ['100', '300', '400', '500', '700', '900'],
@@ -79,15 +51,7 @@ function App ({
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
 
-  const { i18n } = useTranslation()
   const { pathname } = useRouter()
-
-  Settings.defaultLocale = i18n.language || 'en'
-
-  // TODO: find the way to get user timezone and set it on Luxon Settings
-  Settings.defaultZone = 'Europe/Madrid'
-
-  applyMixins(Post, [ReactionableModel, TranslatableModel])
 
   // Environment var make sense only for production
   if (process.env.NEXT_PUBLIC_NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ANALYTICS_TRACKING_ID) {
@@ -147,7 +111,7 @@ function App ({
 
               <AppBanner />
 
-              <AppFooter/>
+              <AppFooter />
             </div>
           </div>
         </LoginProvider>

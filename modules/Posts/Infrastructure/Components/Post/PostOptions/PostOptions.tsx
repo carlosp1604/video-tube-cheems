@@ -5,11 +5,9 @@ import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { RxDividerVertical } from 'react-icons/rx'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import { useTranslation } from 'next-i18next'
-import toast from 'react-hot-toast'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
 import { AiOutlineLoading } from 'react-icons/ai'
-import { DownloadMenu } from '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 import ReactGA from 'react-ga4'
@@ -18,6 +16,12 @@ import {
   VideoPostCategory, DownloadVideoCompletedAction
 } from '~/modules/Shared/Infrastructure/FrontEnd/AnalyticsEvents/PostPage'
 import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
+
+const DownloadMenu = dynamic(() => import(
+  '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
+).then((module) => module.DownloadMenu), { ssr: false }
+)
 
 export interface Props {
   userReaction: ReactionComponentDto | null
@@ -51,6 +55,8 @@ export const PostOptions: FC<Props> = ({
 
   const onClickLikeDislike = async (reactionType: ReactionType) => {
     if (loading || loadingSaveButton) {
+      const toast = (await import('react-hot-toast')).default
+
       toast.error(t('action_cannot_be_performed_error_message'))
 
       return
@@ -62,6 +68,8 @@ export const PostOptions: FC<Props> = ({
   }
 
   const onClickSave = async () => {
+    const toast = (await import('react-hot-toast')).default
+
     if (loading || loadingSaveButton) {
       toast.error(t('action_cannot_be_performed_error_message'))
 
@@ -75,12 +83,14 @@ export const PostOptions: FC<Props> = ({
     setLoadingSaveButton(false)
   }
 
-  const onClickDownloadButton = () => {
+  const onClickDownloadButton = async () => {
     if (downloadUrls.length > 0) {
       setDownloadMenuOpen(!downloadMenuOpen)
 
       return
     }
+    const toast = (await import('react-hot-toast')).default
+
     toast.error(t('post_download_no_downloads_error_message'))
   }
 
@@ -166,7 +176,11 @@ export const PostOptions: FC<Props> = ({
       { downloadButton }
       <span
         className={ styles.postOptions__optionItem }
-        onClick={ () => { toast.success(t('post_option_feature_not_available_message')) } }
+        onClick={ async () => {
+          const toast = (await import('react-hot-toast')).default
+
+          toast.success(t('post_option_feature_not_available_message'))
+        } }
       >
         <BsMegaphone className={ styles.postOptions__optionItemIcon }/>
         { t('post_report_button_title') }

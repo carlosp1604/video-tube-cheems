@@ -3,10 +3,6 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import styles from './PostCardGallery.module.scss'
 import { useTranslation } from 'next-i18next'
 import { useSession } from 'next-auth/react'
-import toast from 'react-hot-toast'
-import {
-  PostCardGalleryOptions
-} from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
 import { PostCardOptionConfiguration, usePostCardOptions } from '~/hooks/PostCardOptions'
 import {
   PostCardWithOptions
@@ -15,6 +11,12 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import { PostCardSkeleton } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardSkeleton/PostCardSkeleton'
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
 import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
+import dynamic from 'next/dynamic'
+
+const PostCardGalleryOptions = dynamic(() => import(
+  '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
+).then((module) => module.PostCardGalleryOptions), { ssr: false }
+)
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -46,8 +48,10 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   let onClickOptions : ((post: PostCardComponentDto) => void) | undefined
 
   if (postCardGalleryOptions.length > 0) {
-    onClickOptions = (post: PostCardComponentDto) => {
+    onClickOptions = async (post: PostCardComponentDto) => {
       if (status !== 'authenticated') {
+        const toast = (await import('react-hot-toast')).default
+
         toast.error(t('user_must_be_authenticated_error_message'))
 
         return
@@ -155,12 +159,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
         ` }
         >
-          <PostCardGalleryOptions
-            options={ postCardGalleryOptions }
-            isOpen={ postCardOptionsMenuOpen }
-            onClose={ () => setPostCardOptionsMenuOpen(false) }
-            selectedPostCard={ selectedPostCard as PostCardComponentDto }
-          />
           { firstPostList }
           { loading ? firstSkeletonList : null }
         </div>
@@ -172,12 +170,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
         ` }
         >
-          <PostCardGalleryOptions
-            options={ postCardGalleryOptions }
-            isOpen={ postCardOptionsMenuOpen }
-            onClose={ () => setPostCardOptionsMenuOpen(false) }
-            selectedPostCard={ selectedPostCard as PostCardComponentDto }
-          />
           { secondPostList }
           { loading ? secondSkeletonList : null }
         </div>
@@ -187,12 +179,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
         ` }
         >
-          <PostCardGalleryOptions
-            options={ postCardGalleryOptions }
-            isOpen={ postCardOptionsMenuOpen }
-            onClose={ () => setPostCardOptionsMenuOpen(false) }
-            selectedPostCard={ selectedPostCard as PostCardComponentDto }
-          />
           { thirdPostList }
           { loading ? thirdSkeletonList : null }
         </div>

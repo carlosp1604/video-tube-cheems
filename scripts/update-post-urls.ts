@@ -1,11 +1,11 @@
 import * as fs from 'fs'
 import { randomUUID } from 'crypto'
 import { DateTime } from 'luxon'
-import {MysqlPostRepository} from "~/modules/Posts/Infrastructure/MysqlPostRepository";
-import {Post} from "~/modules/Posts/Domain/Post";
-import {PostMedia, PostMediaType} from "~/modules/Posts/Domain/PostMedia/PostMedia";
-import {MediaUrl, MediaUrlType} from "~/modules/Posts/Domain/PostMedia/MediaUrl";
-import {Collection} from "~/modules/Shared/Domain/Relationship/Collection";
+import { MysqlPostRepository } from '~/modules/Posts/Infrastructure/MysqlPostRepository'
+import { Post } from '~/modules/Posts/Domain/Post'
+import { PostMedia, PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
+import { MediaUrl, MediaUrlType } from '~/modules/Posts/Domain/PostMedia/MediaUrl'
+import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 
 const postRepository = new MysqlPostRepository()
 
@@ -58,7 +58,7 @@ async function run () {
       }
     } else {
       // Replace whole post media
-      let postMediaUuid: string = randomUUID()
+      const postMediaUuid: string = randomUUID()
       const nowDate = DateTime.now()
       const newMediaUrlsCollection : Collection<MediaUrl, MediaUrl['url'] & string> =
         Collection.initializeCollection()

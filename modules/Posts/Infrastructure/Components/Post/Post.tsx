@@ -6,7 +6,6 @@ import {
   ReactionComponentDtoTranslator
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
-import { PostComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostComments'
 import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
@@ -17,6 +16,12 @@ import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostDat
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
 import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
 import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/OutstreamBanner'
+import dynamic from 'next/dynamic'
+
+const PostComments = dynamic(() =>
+  import('~/modules/Posts/Infrastructure/Components/PostComment/PostComments').then((module) => module.PostComments),
+{ ssr: false }
+)
 
 export interface Props {
   post: PostComponentDto

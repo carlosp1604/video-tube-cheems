@@ -11,6 +11,7 @@ import {
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { Duration, Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<PostPageProps> = async (context) => {
   if (!context.query.slug) {
@@ -22,6 +23,12 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
   const { env } = process
   const slug = String(context.query.slug)
   const locale = context.locale ?? 'en'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   const useCase = container.resolve<GetPostBySlug>('getPostBySlugUseCase')
   const getRelatedPosts = container.resolve<GetRelatedPosts>('getRelatedPostsUseCase')
@@ -48,12 +55,15 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
       'public, s-maxage=86400, stale-while-revalidate=300'
     )
 
+    const applicationPost = PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale)
+
     return {
       props: {
         post: PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale),
         relatedPosts: relatedPosts.posts.map((relatedPost) => {
           return PostCardComponentDtoTranslator.fromApplication(relatedPost.post, relatedPost.postViews, locale)
         }),
+        parsedDuration: Duration.fromMillis(Number.parseInt(applicationPost.duration) * 1000).toString(),
         postViewsNumber: postWithCount.views,
         postLikes: postWithCount.reactions.like,
         postDislikes: postWithCount.reactions.dislike,

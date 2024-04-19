@@ -10,10 +10,14 @@ import {
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<UserProfilePageProps> = async (context) => {
   const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
   let { username } = context.query
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   if (!username) {
     return {

@@ -14,9 +14,13 @@ import { PaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'all_producers',

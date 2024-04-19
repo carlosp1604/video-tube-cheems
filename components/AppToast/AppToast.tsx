@@ -1,6 +1,10 @@
 import { FC } from 'react'
-import { Toaster } from 'react-hot-toast'
 import tailwindConfig from '~/tailwind.config.js'
+import { Toaster } from 'react-hot-toast'
+
+// const Toaster = dynamic(() =>
+// import('react-hot-toast').then((module) => module.Toaster), { ssr: false }
+// )
 
 export const AppToast: FC = () => {
   return (

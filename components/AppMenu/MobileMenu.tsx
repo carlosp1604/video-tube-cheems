@@ -1,15 +1,18 @@
 import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
-import { CSSTransition } from 'react-transition-group'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import { useTranslation } from 'next-i18next'
 import { BsBookmarks, BsClock, BsHouse, BsStar, BsTv } from 'react-icons/bs'
-import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useRouter } from 'next/router'
 import { TfiWorld } from 'react-icons/tfi'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
+import dynamic from 'next/dynamic'
+
+const CSSTransition = dynamic(() =>
+  import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
+)
 
 interface Props {
   openMenu: boolean
@@ -38,7 +41,9 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
     }
 
     if (status !== 'authenticated' || !data) {
-      option.onClick = () => {
+      option.onClick = async () => {
+        const toast = (await import('react-hot-toast')).default
+
         toast.error(t('user_must_be_authenticated_error_message'))
 
         setLoginModalOpen(true)
@@ -48,7 +53,9 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
     }
 
     if (url === asPath) {
-      option.onClick = () => {
+      option.onClick = async () => {
+        const toast = (await import('react-hot-toast')).default
+
         toast.error(t('user_already_on_path'))
       }
 

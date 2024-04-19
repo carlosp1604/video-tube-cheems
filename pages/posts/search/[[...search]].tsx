@@ -10,6 +10,7 @@ import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import DOMPurify from 'isomorphic-dompurify'
+import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -35,6 +36,9 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
   }
 
   const locale = context.locale ?? 'en'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'home_page',

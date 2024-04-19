@@ -1,17 +1,16 @@
-import React, { FC, useRef } from 'react'
-import 'fluid-player/src/css/fluidplayer.css'
+import { FC, useRef } from 'react'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import styles from './VideoPlayer.module.scss'
 
-interface FluidVideoPlayerProps {
+interface HTMLVideoPlayerProps {
   title: string
   videoPostMedia: PostMediaComponentDto
   onPlayerReady: () => void
   selectedMediaUrl: MediaUrlComponentDto
 }
 
-export const HtmlVideoPlayer: FC<FluidVideoPlayerProps> = ({
+export const HtmlVideoPlayer: FC<HTMLVideoPlayerProps> = ({
   videoPostMedia,
   onPlayerReady,
   title,

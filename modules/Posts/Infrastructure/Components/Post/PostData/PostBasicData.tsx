@@ -24,9 +24,7 @@ export const PostBasicData: FC<Props> = ({
 }) => {
   const { t } = useTranslation('post')
 
-  let { locale } = useRouter()
-
-  locale = locale ?? 'en'
+  const locale = useRouter().locale ?? 'en'
 
   return (
     <div className={ styles.postBasicData__container } key={ post.id }>

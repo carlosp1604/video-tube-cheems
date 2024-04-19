@@ -2,13 +2,10 @@ import { createRef, FC, ReactElement, useEffect, useMemo, useState } from 'react
 import styles from './VideoPostPlayer.module.scss'
 import { BsFileEarmarkBreak, BsThreeDotsVertical } from 'react-icons/bs'
 import { useTranslation } from 'next-i18next'
-import * as uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
-import {
-  VideoSourcesMenu
-} from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoSourcesMenu/VideoSourcesMenu'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
 import { useSession } from 'next-auth/react'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
@@ -19,12 +16,19 @@ import {
   ChangeVideoPlayerSourceAction,
   VideoPostCategory
 } from '~/modules/Shared/Infrastructure/FrontEnd/AnalyticsEvents/PostPage'
+import dynamic from 'next/dynamic'
 
 export interface Props {
   title: string
   embedPostMedia: PostMediaComponentDto | null
   videoPostMedia: PostMediaComponentDto | null
 }
+
+const VideoSourcesMenu = dynamic(() =>
+  import('~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoSourcesMenu/VideoSourcesMenu')
+    .then((module) => module.VideoSourcesMenu),
+{ ssr: false }
+)
 
 export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, title }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
@@ -71,7 +75,7 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
     }
 
     setMounted(true)
-    setTooltipId(uuid.v4())
+    setTooltipId(uuidv4())
   }, [])
 
   useEffect(() => {

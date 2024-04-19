@@ -23,6 +23,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { getSession } from 'next-auth/react'
 import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
+import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
   const producerSlug = context.query.producerSlug
@@ -34,6 +35,9 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
   }
 
   const locale = context.locale ?? 'en'
+
+  Settings.defaultLocale = locale
+  Settings.defaultZone = 'Europe/Madrid'
 
   const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
     'app_menu',

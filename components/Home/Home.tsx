@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import styles from './Home.module.scss'
 import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList/ProducerList'
-import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
@@ -27,6 +26,11 @@ import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilt
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
+import dynamic from 'next/dynamic'
+
+const PaginationBar = dynamic(() =>
+  import('~/components/PaginationBar/PaginationBar').then((module) => module.PaginationBar), { ssr: false }
+)
 
 export interface HomePagePaginationState {
   page: number

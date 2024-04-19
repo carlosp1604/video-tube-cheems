@@ -1,7 +1,6 @@
 import { FC, ReactElement, useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { useTimer } from '~/hooks/Timer'
-import { Duration } from 'luxon'
 import { MdOutlineTouchApp } from 'react-icons/md'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 import styles from './CamCard.module.scss'
@@ -10,6 +9,7 @@ import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/Number
 import { FaEye } from 'react-icons/fa'
 import { Trans, useTranslation } from 'next-i18next'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
+import { DateService } from '~/helpers/Infrastructure/DateService'
 
 interface Props {
   username: string
@@ -119,7 +119,7 @@ export const CamCard: FC<Props> = ({
         ${styles.camCard__liveTime}
         ${showIframe ? styles.camCard__liveTime__visible : ''}
       ` }>
-        { Duration.fromObject({ seconds: timeLive }).toFormat('hh:mm:ss') }
+        { new DateService().formatSecondsToHHMMSSFormat(timeLive) }
       </span>
       <div className={ styles.camCard__liveSection }>
         { t('cam_card_live_title') }

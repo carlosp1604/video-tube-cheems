@@ -11,7 +11,6 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
-import { Duration } from 'luxon'
 import { ReactElement } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
@@ -20,6 +19,7 @@ import { useRouter } from 'next/router'
 
 export interface PostPageProps {
   post: PostComponentDto
+  parsedDuration: string
   postEmbedUrl: string
   baseUrl: string
   postViewsNumber: number
@@ -33,6 +33,7 @@ export interface PostPageProps {
 export const PostPage: NextPage<PostPageProps> = ({
   post,
   postEmbedUrl,
+  parsedDuration,
   baseUrl,
   relatedPosts,
   postCommentsNumber,
@@ -75,7 +76,7 @@ export const PostPage: NextPage<PostPageProps> = ({
     description: post.description,
     thumbnailUrl: [post.thumb],
     uploadDate: post.publishedAt,
-    duration: Duration.fromMillis(Number.parseInt(post.duration) * 1000),
+    duration: parsedDuration,
     embedUrl: postEmbedUrl,
     interactionStatistics: [
       {

@@ -3,21 +3,24 @@ import styles from './AppMenu.module.scss'
 import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
-import { LoginModal } from '~/modules/Auth/Infrastructure/Components/Login/LoginModal'
 import { FC, ReactElement, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { CiSearch, CiUser } from 'react-icons/ci'
-import toast from 'react-hot-toast'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import Image from 'next/image'
 import { BsArrowUpShort } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
 import { HiBars3 } from 'react-icons/hi2'
-import DOMPurify from 'dompurify'
+import dynamic from 'next/dynamic'
+
+const LoginModal = dynamic(() =>
+  import('~/modules/Auth/Infrastructure/Components/Login/LoginModal').then((module) => module.LoginModal),
+{ ssr: false }
+)
 
 export interface Props {
   onClickMenuButton : () => void
@@ -78,13 +81,16 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
   }
 
   const onSearch = async () => {
+    const toast = (await import('react-hot-toast')).default
+
     if (blocked) {
       toast.error(t('action_cannot_be_performed_error_message'))
 
       return
     }
 
-    const cleanTitle = DOMPurify.sanitize(title.trim())
+    const dompurify = (await import('dompurify')).default
+    const cleanTitle = dompurify.sanitize(title.trim())
 
     if (cleanTitle === '') {
       toast.error(t('empty_search_error_message'))

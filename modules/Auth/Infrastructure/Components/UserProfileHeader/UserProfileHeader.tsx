@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styles from './UserProfileHeader.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BiCalendarEvent, BiIdCard } from 'react-icons/bi'
 import {
   UserProfileHeaderComponentDto

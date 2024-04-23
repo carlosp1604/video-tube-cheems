@@ -2,7 +2,7 @@ import { FC } from 'react'
 import styles from './VideoSourcesMenu.module.scss'
 import Image from 'next/image'
 import { BsPlay } from 'react-icons/bs'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 

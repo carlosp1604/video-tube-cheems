@@ -1,6 +1,6 @@
 import { NextPage } from 'next'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { Search } from '~/components/Search/Search'
 import {
   HtmlPageMetaContextProps

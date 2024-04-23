@@ -1,6 +1,6 @@
 import { createRef, FC, useEffect } from 'react'
 import styles from './Banner.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 
 export const Banner: FC = () => {
   const { t } = useTranslation('common')

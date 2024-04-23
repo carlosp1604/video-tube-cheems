@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
-const { i18n } = require('./next-i18next.config')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const nextTranslate = require('next-translate-plugin')
 
 const nextConfig = {
   reactStrictMode: true,
@@ -52,7 +53,6 @@ const nextConfig = {
 
     return config
   },
-  i18n,
   images: {
     remotePatterns: [
       {
@@ -64,4 +64,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = nextTranslate(nextConfig)

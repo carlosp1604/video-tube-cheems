@@ -1,7 +1,7 @@
 import { FC, ReactElement, useMemo } from 'react'
 import styles from './PaginationBar.module.scss'
 import { BsCaretLeft, BsCaretRight, BsSkipEnd, BsSkipStart, BsXCircle } from 'react-icons/bs'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { TbNumber1 } from 'react-icons/tb'
 import { useRouter } from 'next/router'
 import Link from 'next/link'

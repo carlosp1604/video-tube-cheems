@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import styles from './Register.module.scss'
 import { BsCheckCircle } from 'react-icons/bs'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 
 export interface Props {
   onConfirm: () => void

@@ -8,7 +8,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
@@ -82,7 +82,7 @@ export const Actor: FC<Props> = ({
   return (
     <>
       <CommonGalleryHeader
-        title={ t('actor_posts_gallery_title') }
+        title={ 'actors:actor_posts_gallery_title' }
         term={ { title: 'actorName', value: actorName } }
         subtitle={ t('actor_posts_gallery_posts_quantity', { postsNumber }) }
         tag={ 'h2' }

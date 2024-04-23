@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import {
   HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService

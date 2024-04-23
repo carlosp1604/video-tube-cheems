@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
 import {
   ProducersPaginationSortingType

@@ -4,7 +4,7 @@ import styles from './PostCardWithOptions.module.scss'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { PostCard } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
 import { v4 as uuidv4 } from 'uuid'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import dynamic from 'next/dynamic'
 
 interface Props {

@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { GetActorBySlug } from '~/modules/Actors/Application/GetActorBySlug/GetActorBySlug'
 import { ActorPageComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorPageComponentDtoTranslator'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -35,25 +34,6 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'app_menu',
-    'app_banner',
-    'footer',
-    'menu',
-    'sorting_menu_dropdown',
-    'user_menu',
-    'post_card',
-    'user_signup',
-    'user_login',
-    'user_retrieve_password',
-    'pagination_bar',
-    'common',
-    'api_exceptions',
-    'post_card_options',
-    'post_card_gallery',
-    'actors',
-  ])
-
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const { env } = process
@@ -83,7 +63,6 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
     initialPostsNumber: 0,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
-    ...i18nSSRConfig,
   }
 
   const getActor = container.resolve<GetActorBySlug>('getActorBySlugUseCase')

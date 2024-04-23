@@ -5,7 +5,7 @@ import styles from './RetrievePassword.module.scss'
 import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingPasswordChange } from './ConfirmingPasswordChange'
 import { ChangeUserPassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/ChangeUserPassword'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { useSession } from 'next-auth/react'
 import { IconButton } from '~/components/IconButton/IconButton'
 

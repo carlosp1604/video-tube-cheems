@@ -4,7 +4,7 @@ import { BsBookmarks, BsChatSquareText, BsDownload, BsMegaphone } from 'react-ic
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { RxDividerVertical } from 'react-icons/rx'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
 import { AiOutlineLoading } from 'react-icons/ai'

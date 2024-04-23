@@ -1,7 +1,7 @@
 import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BsBookmarks, BsClock, BsHouse, BsStar, BsTv } from 'react-icons/bs'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useRouter } from 'next/router'

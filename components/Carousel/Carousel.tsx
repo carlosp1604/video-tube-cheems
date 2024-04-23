@@ -1,7 +1,7 @@
 import { createRef, FC, ReactNode, useEffect, useState } from 'react'
 import styles from './Carousel.module.scss'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 
 export interface KeyedComponent {
   key: string

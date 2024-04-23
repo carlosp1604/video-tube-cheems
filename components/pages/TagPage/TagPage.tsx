@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageComponentDto'
 import {
   HtmlPageMetaContextProps

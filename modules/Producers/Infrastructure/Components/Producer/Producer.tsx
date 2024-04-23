@@ -9,7 +9,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { ProducerPageComponentDto } from '~/modules/Producers/Infrastructure/ProducerPageComponentDto'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -139,7 +139,7 @@ export const Producer: FC<Props> = ({
   return (
     <>
       <CommonGalleryHeader
-        title={ t('producer_posts_gallery_title') }
+        title={ 'producers:producer_posts_gallery_title' }
         subtitle={ t('producer_posts_gallery_posts_quantity', { postsNumber }) }
         term={ { title: 'producerName', value: producer.name } }
         loading={ loading }

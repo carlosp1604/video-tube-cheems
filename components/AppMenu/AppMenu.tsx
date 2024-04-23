@@ -4,7 +4,7 @@ import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/User
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
 import { FC, ReactElement, useState } from 'react'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'

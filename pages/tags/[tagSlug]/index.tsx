@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -34,25 +33,6 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
-
-  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'app_menu',
-    'app_banner',
-    'footer',
-    'menu',
-    'sorting_menu_dropdown',
-    'user_menu',
-    'post_card',
-    'user_signup',
-    'user_login',
-    'user_retrieve_password',
-    'pagination_bar',
-    'common',
-    'api_exceptions',
-    'post_card_options',
-    'post_card_gallery',
-    'tag_page',
-  ])
 
   const paginationQueryParams = new PostsPaginationQueryParams(
     context.query,
@@ -109,7 +89,6 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     initialPostsNumber: 0,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
-    ...i18nSSRConfig,
   }
 
   const getTag = container.resolve<GetTagBySlug>('getTagBySlugUseCase')

@@ -6,7 +6,6 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
@@ -21,24 +20,6 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
-
-  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'all_producers',
-    'app_menu',
-    'app_banner',
-    'footer',
-    'menu',
-    'sorting_menu_dropdown',
-    'user_menu',
-    'carousel',
-    'post_card',
-    'user_signup',
-    'user_login',
-    'user_retrieve_password',
-    'pagination_bar',
-    'common',
-    'actors',
-  ])
 
   const paginationQueryParams = new PaginationQueryParams(
     context.query,
@@ -92,7 +73,6 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
     initialPage: paginationQueryParams.page ?? 1,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
-    ...i18nSSRConfig,
   }
 
   const getActors = container.resolve<GetActors>('getActorsUseCase')

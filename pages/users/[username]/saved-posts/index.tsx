@@ -1,6 +1,4 @@
-import nextI18nextConfig from '~/next-i18next.config'
 import { GetServerSideProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { UserSavedPostsPage, UserSavedPostsPageProps } from '~/components/pages/UserSavedPostsPage/UserSavedPostsPage'
 import { GetUserByUsername } from '~/modules/Auth/Application/GetUser/GetUserByUsername'
 import {
@@ -13,7 +11,7 @@ import {
 import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<UserSavedPostsPageProps> = async (context) => {
-  const locale = context.locale ? context.locale : nextI18nextConfig.i18n.defaultLocale
+  const locale = context.locale ?? 'en'
   let { username } = context.query
 
   Settings.defaultLocale = locale
@@ -61,25 +59,6 @@ export const getServerSideProps: GetServerSideProps<UserSavedPostsPageProps> = a
   return {
     props: {
       ...props,
-      ...await serverSideTranslations(locale, [
-        'user_menu',
-        'user_profile',
-        'app_menu',
-        'app_banner',
-        'footer',
-        'menu',
-        'user_menu',
-        'user_signup',
-        'user_login',
-        'user_retrieve_password',
-        'post_card',
-        'common',
-        'api_exceptions',
-        'post_card_options',
-        'post_card_gallery',
-        'carousel',
-        'sorting_menu_dropdown',
-      ]),
     },
   }
 }

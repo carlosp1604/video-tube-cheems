@@ -10,8 +10,8 @@
 
     grid-template-areas:
       "social-networks    social-networks   app-logo"
-      "copyright          copyright         languages"
-      "contact            contact           contact";
+      "contact            contact           languages"
+      "copyright          copyright         languages";
     grid-auto-columns: auto auto;
     grid-column-gap: 10px;
 
@@ -22,14 +22,19 @@
   }
 
   &__logo-image-link {
+    @apply flex w-full justify-center items-center;
     grid-area: app-logo;
   }
 
   &__logo-image {
     @apply object-contain w-24 h-auto transition-all;
 
-    @screen md {
+    @screen tb {
       @apply w-32 transition-all;
+    }
+
+    @screen md {
+      @apply w-36 transition-all;
     }
 
     @screen lg {
@@ -60,19 +65,30 @@
   }
 
   &__social-networks {
-    @apply flex flex-row flex-wrap gap-x-4 gap-y-2 text-base-400
-      text-xl uppercase items-center justify-center mt-1;
+    @apply flex flex-row flex-wrap gap-x-2 gap-y-2
+      text-base uppercase items-center justify-center mt-1;
     grid-area: social-networks;
 
     @screen md {
-      @apply text-2xl;
+      @apply text-xl;
     }
 
+    @screen lg {
+      @apply text-2xl;
+    }
+  }
+
+  &__social-network {
+    @apply relative p-1.5 rounded-full bg-brand-primary-bg transition-colors;
+
+    &:hover {
+      @apply bg-brand-secondary-dark transition-colors;
+    }
   }
 
   &__languages {
-    @apply flex flex-wrap gap-x-3 gap-y-1.5 mt-2 ml-1
-      items-center justify-center;
+    @apply flex w-full flex-wrap gap-x-3 gap-y-1 mt-2
+      items-center justify-center self-start;
     grid-area: languages;
   }
 
@@ -89,7 +105,8 @@
   }
 
   &__contact-link {
-    @apply grid w-full items-center justify-center text-xs font-bold mt-4 -mb-2;
+    @apply grid items-start justify-start text-xs font-bold
+    mt-4;
     grid-area: contact;
 
     @screen md {

@@ -9,7 +9,7 @@ import {
   POST_COMMENT_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { signOut, useSession } from 'next-auth/react'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
 import { FiTrash } from 'react-icons/fi'
@@ -40,7 +40,7 @@ export const PostChildCommentWithOptions: FC<Props> = ({
   const [optionsMenuOpen, setOptionsMenuOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const { t } = useTranslation(['post_comments', 'api_exceptions'])
+  const { t } = useTranslation('post_comments')
   const { status, data } = useSession()
 
   const onClickDelete = async () => {
@@ -68,7 +68,7 @@ export const PostChildCommentWithOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
     } finally {
       setLoading(false)
     }
@@ -121,7 +121,7 @@ export const PostChildCommentWithOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
     } finally {
       setLoading(false)
     }
@@ -168,7 +168,7 @@ export const PostChildCommentWithOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
     } finally {
       setLoading(false)
     }

@@ -10,13 +10,13 @@ import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
 import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
-import { useSavePost } from '~/hooks/SavePosts'
 import { useReactPost } from '~/hooks/ReactPost'
 import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
 import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
 import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
 import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/OutstreamBanner'
 import dynamic from 'next/dynamic'
+import { useSavePost } from '~/hooks/SavePosts'
 
 const PostComments = dynamic(() =>
   import('~/modules/Posts/Infrastructure/Components/PostComment/PostComments').then((module) => module.PostComments),
@@ -231,9 +231,8 @@ export const Post: FC<Props> = ({
           </span>
         </div>
       </section>
-      <div ref={ commentsRef }>
-        { commentsComponent }
-      </div>
+      <div className={ styles.post__commentsContainer } ref={ commentsRef }></div>
+      { commentsComponent }
     </div>
   )
 }

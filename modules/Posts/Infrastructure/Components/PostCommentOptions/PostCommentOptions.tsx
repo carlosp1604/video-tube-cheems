@@ -4,7 +4,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
 import { FiTrash } from 'react-icons/fi'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut, useSession } from 'next-auth/react'
@@ -31,7 +31,7 @@ export const PostCommentOptions: FC<Props> = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
 
-  const { t } = useTranslation(['post_comments', 'api_exceptions'])
+  const { t } = useTranslation('post_comments')
   const { data } = useSession()
 
   const onClickDelete = async () => {
@@ -59,7 +59,7 @@ export const PostCommentOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
     }
 
     setLoading(false)

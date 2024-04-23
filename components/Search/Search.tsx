@@ -4,7 +4,7 @@ import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/Number
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { FC, useEffect, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { useRouter } from 'next/router'
@@ -159,7 +159,7 @@ export const Search: FC<Props> = ({
   return (
     <div className={ styles.search__container }>
       <CommonGalleryHeader
-        title={ t('search_result_title') }
+        title={ 'search:search_result_title' }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         term={ { title: 'searchTerm', value: paginationState.searchTerm } }
         loading={ firstRender || loading }

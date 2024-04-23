@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { UserSavedPosts } from '~/modules/Auth/Infrastructure/Components/UserSavedPosts/UserSavedPosts'
 import {
   HtmlPageMetaContextProps

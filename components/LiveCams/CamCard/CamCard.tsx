@@ -7,7 +7,8 @@ import styles from './CamCard.module.scss'
 import { useRouter } from 'next/router'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { FaEye } from 'react-icons/fa'
-import { Trans, useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
+import Trans from 'next-translate/Trans'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 import { DateService } from '~/helpers/Infrastructure/DateService'
 
@@ -92,7 +93,7 @@ export const CamCard: FC<Props> = ({
       onClick={ () => handleClick(camRoomLink) }
     >
       <Trans
-        i18nKey={ t('cam_card_title') }
+        i18nKey={ 'common:cam_card_title' }
         components={ [<span key={ t('cam_card_title') } className={ styles.camCard__username }/>] }
         values={ { camUsername: username } }
       />

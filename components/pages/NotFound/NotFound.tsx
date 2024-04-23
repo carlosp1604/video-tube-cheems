@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { Error } from '~/components/Error/Error'
 
 export const NotFound: NextPage = () => {

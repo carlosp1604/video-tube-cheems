@@ -1,6 +1,6 @@
 import { FC, ReactElement, ReactNode } from 'react'
 import styles from './CommonGalleryHeader.module.scss'
-import { Trans } from 'next-i18next'
+import Trans from 'next-translate/Trans'
 
 export type HeaderTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'span'
 

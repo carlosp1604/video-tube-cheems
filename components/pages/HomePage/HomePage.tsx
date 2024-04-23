@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import {
   HtmlPageMetaContextProps
@@ -27,7 +27,7 @@ export interface Props {
 }
 
 export const HomePage: NextPage<Props> = (props: Props) => {
-  const { t } = useTranslation(['home_page'])
+  const { t } = useTranslation('home_page')
   const locale = useRouter().locale ?? 'en'
 
   const structuredData = {

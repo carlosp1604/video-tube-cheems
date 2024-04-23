@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import styles from './PostPage.module.scss'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
 import {
   HtmlPageMetaContextProps

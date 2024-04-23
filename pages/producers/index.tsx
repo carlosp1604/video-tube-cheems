@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next'
 import { container } from '~/awilix.container'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ProducersPage, ProducersPageProps } from '~/components/pages/ProducersPage/ProducersPage'
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
@@ -21,24 +20,6 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
-
-  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'all_producers',
-    'app_menu',
-    'app_banner',
-    'footer',
-    'menu',
-    'sorting_menu_dropdown',
-    'user_menu',
-    'carousel',
-    'post_card',
-    'user_signup',
-    'user_login',
-    'user_retrieve_password',
-    'pagination_bar',
-    'common',
-    'producers',
-  ])
 
   const paginationQueryParams = new PaginationQueryParams(
     context.query,
@@ -92,7 +73,6 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
     initialPage: paginationQueryParams.page ?? 1,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
-    ...i18nSSRConfig,
   }
 
   const getProducers = container.resolve<GetProducers>('getProducersUseCase')

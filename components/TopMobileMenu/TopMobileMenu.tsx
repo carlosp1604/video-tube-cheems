@@ -1,6 +1,6 @@
 import { FC, ReactElement } from 'react'
 import styles from './TopMobileMenu.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 export const TopMobileMenu: FC = () => {

@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { useLoginContext } from '~/hooks/LoginContext'
 import styles from './Login.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { signIn } from 'next-auth/react'
 import toast from 'react-hot-toast'
 import { FcGoogle } from 'react-icons/fc'
@@ -10,7 +10,7 @@ import { FcGoogle } from 'react-icons/fc'
 export type AuthMode = 'login' | 'retrieve' | 'register'
 
 export const LoginModal: FC = () => {
-  const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
+  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
   const { t } = useTranslation('user_login')
 
   const onClick = async () => {

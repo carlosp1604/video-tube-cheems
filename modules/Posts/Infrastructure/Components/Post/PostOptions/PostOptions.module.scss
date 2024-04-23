@@ -44,6 +44,10 @@
   }
 
   &__option-item-icon {
-    @apply text-base;
+    @apply text-sm;
+
+    @screen tb {
+      @apply text-base;
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styles from './RetrievePassword.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BsCheckCircle } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
 

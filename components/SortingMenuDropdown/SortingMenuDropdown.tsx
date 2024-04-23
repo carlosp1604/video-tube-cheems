@@ -1,7 +1,7 @@
 import { FC, ReactElement, useMemo, useState } from 'react'
 import styles from './SortingMenuDropdown.module.scss'
 import { BsSortDown } from 'react-icons/bs'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { IconButton } from '~/components/IconButton/IconButton'
 import Link from 'next/link'
 import { useRouter } from 'next/router'

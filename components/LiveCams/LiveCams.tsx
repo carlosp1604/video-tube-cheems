@@ -2,7 +2,8 @@ import { FC, useEffect, useState } from 'react'
 import { Carousel, KeyedComponent } from '~/components/Carousel/Carousel'
 import { CamCard } from '~/components/LiveCams/CamCard/CamCard'
 import styles from './LiveCams.module.scss'
-import { Trans, useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
+import Trans from 'next-translate/Trans'
 import { CamCardSkeleton } from '~/components/LiveCams/CamCard/Skeleton/CamCardSkeleton'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
@@ -141,7 +142,7 @@ export const LiveCams: FC = () => {
       <div className={ styles.liveCams__liveCamsTitle }>
         <span>
           <Trans
-            i18nKey={ t('cams_carousel_title') }
+            i18nKey={ 'common:cams_carousel_title' }
             components={ [
               <span key={ t('cams_carousel_title') } className={ styles.liveCams__liveCamsCount }/>,
             ] }

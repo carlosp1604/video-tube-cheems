@@ -14,7 +14,7 @@ import {
   UserProfileHeaderComponentDto
 } from '~/modules/Auth/Infrastructure/ComponentDtos/UserProfileHeaderComponentDto'
 import { UserProfileHeader } from '~/modules/Auth/Infrastructure/Components/UserProfileHeader/UserProfileHeader'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import styles from './UserHistory.module.scss'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useSession } from 'next-auth/react'

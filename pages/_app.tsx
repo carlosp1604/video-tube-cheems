@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 import styles from '~/styles/pages/_app.module.scss'
 import { useState } from 'react'
 import { SessionProvider } from 'next-auth/react'
-import { appWithTranslation } from 'next-i18next'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
 import { Roboto } from 'next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
@@ -120,4 +119,4 @@ function App ({
   )
 }
 
-export default appWithTranslation(App)
+export default App

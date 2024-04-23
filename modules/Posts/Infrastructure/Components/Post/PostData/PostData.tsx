@@ -6,7 +6,7 @@ import {
   PostComponentDtoProducerDto, PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
 
 export interface Props {

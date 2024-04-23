@@ -8,7 +8,7 @@ import {
 } from '~/modules/Posts/Infrastructure/Translators/PostCommentComponentDtoTranslator'
 import { GetPostPostCommentsResponseDto } from '~/modules/Posts/Application/Dtos/GetPostPostCommentsResponseDto'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import toast from 'react-hot-toast'
 import { PostCommentList } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentList/PostCommentList'
@@ -38,7 +38,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
   const commentsAreaRef = useRef<HTMLDivElement>(null)
   const commentApiService = new CommentsApiService()
 
-  const { t } = useTranslation(['post_comments', 'api_exceptions'])
+  const { t } = useTranslation('post_comments')
 
   const router = useRouter()
   const locale = router.locale ?? 'en'
@@ -74,7 +74,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
         await signOut({ redirect: false })
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
     }
   }
 

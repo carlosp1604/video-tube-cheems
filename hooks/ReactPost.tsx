@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import toast from 'react-hot-toast'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut, useSession } from 'next-auth/react'
@@ -18,8 +18,8 @@ export interface ReactPostInterface {
 }
 
 export function useReactPost (namespace: string): ReactPostInterface {
-  const { t } = useTranslation([namespace, 'api_exceptions'])
-  const { status, data } = useSession()
+  const { t } = useTranslation(namespace)
+  const { status } = useSession()
   const { setLoginModalOpen } = useLoginContext()
 
   const reactPost = useCallback(async (postId: string, type: ReactionType): Promise<ReactionComponentDto | null> => {
@@ -39,7 +39,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
       return reactionComponentDto
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
-        toast.error(t('something_went_wrong_error_message', { ns: 'api_exceptions' }))
+        toast.error(t('api_exceptions:something_went_wrong_error_message'))
 
         console.error(exception)
 
@@ -54,7 +54,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
         setLoginModalOpen(true)
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
 
       return null
     }
@@ -76,7 +76,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
       return true
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
-        toast.error(t('something_went_wrong_error_message', { ns: 'api_exceptions' }))
+        toast.error(t('api_exceptions:something_went_wrong_error_message'))
 
         console.error(exception)
 
@@ -91,7 +91,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
         setLoginModalOpen(true)
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
 
       return false
     }

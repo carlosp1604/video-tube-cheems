@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { container } from '~/awilix.container'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
@@ -33,13 +32,6 @@ export const getServerSideProps: GetServerSideProps<VideoEmbedPageProps> = async
       props: {
         post: PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale),
         htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
-        ...await serverSideTranslations(
-          locale,
-          [
-            'post_page',
-            'post',
-          ]
-        ),
       },
     }
   } catch (exception: unknown) {

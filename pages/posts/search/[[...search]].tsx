@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next'
 import { SearchPage, SearchPageProps } from '~/components/pages/SearchPage/SearchPage'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import {
   PostsPaginationConfiguration,
   PostsPaginationQueryParams
@@ -39,27 +38,6 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
-
-  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'home_page',
-    'app_menu',
-    'app_banner',
-    'footer',
-    'menu',
-    'sorting_menu_dropdown',
-    'user_menu',
-    'carousel',
-    'post_card',
-    'user_signup',
-    'user_login',
-    'user_retrieve_password',
-    'pagination_bar',
-    'search',
-    'common',
-    'api_exceptions',
-    'post_card_options',
-    'post_card_gallery',
-  ])
 
   const configuration: Partial<PostsPaginationConfiguration> &
     Pick<PostsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
@@ -109,7 +87,6 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
       initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
       htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
       baseUrl,
-      ...i18nSSRConfig,
     },
   }
 }

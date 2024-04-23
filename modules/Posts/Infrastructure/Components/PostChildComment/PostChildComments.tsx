@@ -10,7 +10,7 @@ import {
 import {
   GetPostPostChildCommentsResponseDto
 } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildCommentsResponseDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import toast from 'react-hot-toast'
 import {
@@ -48,7 +48,7 @@ export const PostChildComments: FC<Props> = ({
 
   const repliesAreaRef = useRef<HTMLDivElement>(null)
 
-  const { t } = useTranslation(['post_comments', 'api_exceptions'])
+  const { t } = useTranslation('post_comments')
 
   const router = useRouter()
   const locale = router.locale ?? 'en'
@@ -84,7 +84,7 @@ export const PostChildComments: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
     }
   }
 

@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { FaFacebookF, FaTelegramPlane, FaTiktok } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { useRouter } from 'next/router'
-import { Trans, useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
+import Trans from 'next-translate/Trans'
 
 export const AppFooter: FC = () => {
   const { asPath, locale } = useRouter()
@@ -13,7 +14,7 @@ export const AppFooter: FC = () => {
 
   const transCopyright = (
     <Trans
-      i18nKey={ t('copyright_title') }
+      i18nKey={ 'footer:copyright_title' }
       components={ [
         <small key={ t('copyright_title') } className={ styles.appFooter__copyrightBrandName }/>,
       ] }
@@ -31,6 +32,7 @@ export const AppFooter: FC = () => {
         href={ process.env.NEXT_PUBLIC_FACEBOOK_PROFILE }
         title={ t('facebook_icon_title') }
         target={ '_blank' }
+        className={ styles.appFooter__socialNetwork }
       >
         <FaFacebookF />
       </Link>
@@ -43,6 +45,7 @@ export const AppFooter: FC = () => {
         href={ process.env.NEXT_PUBLIC_X_PROFILE }
         title={ t('twitter_icon_title') }
         target={ '_blank' }
+        className={ styles.appFooter__socialNetwork }
       >
         <FaXTwitter />
       </Link>
@@ -55,6 +58,7 @@ export const AppFooter: FC = () => {
         href={ process.env.NEXT_PUBLIC_TIKTOK_PROFILE }
         title={ t('tiktok_icon_title') }
         target={ '_blank' }
+        className={ styles.appFooter__socialNetwork }
       >
         <FaTiktok />
       </Link>
@@ -67,6 +71,7 @@ export const AppFooter: FC = () => {
         href={ process.env.NEXT_PUBLIC_TELEGRAM_PROFILE }
         title={ t('telegram_icon_title') }
         target={ '_blank' }
+        className={ styles.appFooter__socialNetwork }
       >
         <FaTelegramPlane />
       </Link>
@@ -124,10 +129,12 @@ export const AppFooter: FC = () => {
           </Link>
         </div>
 
-        { facebookProfile }
-        { xProfile }
-        { tiktokProfile }
-        { telegramProfile }
+        <div className={ styles.appFooter__socialNetworks }>
+          { facebookProfile }
+          { xProfile }
+          { tiktokProfile }
+          { telegramProfile }
+        </div>
       </div>
     </footer>
   )

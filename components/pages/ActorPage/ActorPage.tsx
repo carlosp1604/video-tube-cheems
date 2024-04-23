@@ -4,7 +4,7 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ActorPageComponentDto } from '~/modules/Actors/Infrastructure/ActorPageComponentDto'
 import {

@@ -6,7 +6,7 @@ import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Compone
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 
 export interface Props {
   post: PostComponentDto

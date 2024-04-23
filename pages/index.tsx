@@ -5,7 +5,6 @@ import { HomePage, Props } from '~/components/pages/HomePage/HomePage'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { GetServerSideProps } from 'next'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import {
   ProducerComponentDtoTranslator
 } from '~/modules/Producers/Infrastructure/Translators/ProducerComponentDtoTranslator'
@@ -29,26 +28,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
-
-  const i18nSSRConfig = await serverSideTranslations(locale || 'en', [
-    'home_page',
-    'app_menu',
-    'app_banner',
-    'footer',
-    'menu',
-    'sorting_menu_dropdown',
-    'user_menu',
-    'carousel',
-    'post_card',
-    'user_signup',
-    'user_login',
-    'user_retrieve_password',
-    'pagination_bar',
-    'common',
-    'api_exceptions',
-    'post_card_options',
-    'post_card_gallery',
-  ])
 
   const paginationQueryParams = new PostsPaginationQueryParams(
     context.query,
@@ -100,7 +79,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     initialPosts: [],
     producers: [],
     initialPostsNumber: 0,
-    ...i18nSSRConfig,
     activeProducer: null,
     baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),

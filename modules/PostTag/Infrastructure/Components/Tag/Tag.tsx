@@ -9,7 +9,7 @@ import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
@@ -139,7 +139,7 @@ export const Tag: FC<Props> = ({
   return (
     <>
       <CommonGalleryHeader
-        title={ t('tag_posts_gallery_title') }
+        title={ 'tag_page:tag_posts_gallery_title' }
         subtitle={ t('tag_posts_gallery_posts_quantity', { postsNumber }) }
         term={ { title: 'tagName', value: tag.name } }
         loading={ loading }

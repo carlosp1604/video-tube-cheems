@@ -1,6 +1,7 @@
 import { FC, ReactElement } from 'react'
 import styles from './AppBanner.module.scss'
-import { Trans, useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
+import Trans from 'next-translate/Trans'
 import Link from 'next/link'
 import Image from 'next/image'
 

@@ -6,7 +6,7 @@
   &__post-title {
     @apply font-black text-sm;
 
-    @screen md {
+    @screen tb {
       @apply text-base;
     }
 
@@ -23,13 +23,8 @@
     @apply flex flex-row flex-wrap items-center font-light text-base-400
       gap-x-1 text-xs justify-center text-center;
 
-    @screen md {
-      @apply text-sm;
-    }
-
-    @screen lg {
+    @screen tb {
       @apply text-base;
     }
   }
-
 }

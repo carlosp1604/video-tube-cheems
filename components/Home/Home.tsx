@@ -1,6 +1,6 @@
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { useRouter } from 'next/router'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import styles from './Home.module.scss'
@@ -25,7 +25,9 @@ import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Componen
 import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
+import {
+  CommonGalleryHeader
+} from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import dynamic from 'next/dynamic'
 
 const PaginationBar = dynamic(() =>
@@ -57,7 +59,7 @@ export const Home: FC<Props> = ({
 }) => {
   const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
-  const { t } = useTranslation(['home_page'])
+  const { t } = useTranslation('home_page')
   const router = useRouter()
   const { query, asPath } = router
   const locale = router.locale ?? 'en'
@@ -160,7 +162,7 @@ export const Home: FC<Props> = ({
     galleryTitle = t('post_gallery_no_producer_title')
   } else {
     if (paginationState.activeProducer.id === '') {
-      galleryTitle = t('all_producers_title', { ns: 'home_page' })
+      galleryTitle = t('all_producers_title')
     } else {
       galleryTitle = paginationState.activeProducer.name
     }

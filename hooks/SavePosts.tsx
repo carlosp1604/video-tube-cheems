@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import toast from 'react-hot-toast'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import {
@@ -17,7 +17,7 @@ export interface SavePostInterface {
 }
 
 export function useSavePost (namespace: string): SavePostInterface {
-  const { t } = useTranslation([namespace, 'api_exceptions'])
+  const { t } = useTranslation(namespace)
   const { status, data } = useSession()
   const { setLoginModalOpen } = useLoginContext()
 
@@ -36,7 +36,7 @@ export function useSavePost (namespace: string): SavePostInterface {
       return true
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
-        toast.error(t('something_went_wrong_error_message', { ns: 'api_exceptions' }))
+        toast.error(t('api_exceptions:something_went_wrong_error_message'))
 
         console.error(exception)
 
@@ -61,7 +61,7 @@ export function useSavePost (namespace: string): SavePostInterface {
         savedPost = false
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
 
       return savedPost
     }
@@ -82,7 +82,7 @@ export function useSavePost (namespace: string): SavePostInterface {
       return true
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
-        toast.error(t('something_went_wrong_error_message', { ns: 'api_exceptions' }))
+        toast.error(t('api_exceptions:something_went_wrong_error_message'))
 
         console.error(exception)
 
@@ -109,7 +109,7 @@ export function useSavePost (namespace: string): SavePostInterface {
         deleteSavedPost = true
       }
 
-      toast.error(t(exception.translationKey, { ns: 'api_exceptions' }))
+      toast.error(t(`api_exceptions:${exception.translationKey}`))
 
       return deleteSavedPost
     }

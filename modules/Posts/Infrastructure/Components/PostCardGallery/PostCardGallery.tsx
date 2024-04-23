@@ -1,7 +1,7 @@
 import { FC, ReactElement, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import styles from './PostCardGallery.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { useSession } from 'next-auth/react'
 import { PostCardOptionConfiguration, usePostCardOptions } from '~/hooks/PostCardOptions'
 import {

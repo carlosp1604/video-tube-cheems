@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import {
   PostCardWithOptions
 } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardWithOptions/PostCardWithOptions'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { useSession } from 'next-auth/react'
 import {
   PostCardGalleryOptions

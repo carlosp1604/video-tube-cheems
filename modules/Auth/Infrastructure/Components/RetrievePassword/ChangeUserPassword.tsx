@@ -1,7 +1,7 @@
 import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import styles from './RetrievePassword.module.scss'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import toast from 'react-hot-toast'

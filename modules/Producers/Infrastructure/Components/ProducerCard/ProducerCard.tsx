@@ -3,7 +3,7 @@ import styles from './ProducerCard.module.scss'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { CSSProperties, FC } from 'react'
 import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { useRouter } from 'next/router'
 

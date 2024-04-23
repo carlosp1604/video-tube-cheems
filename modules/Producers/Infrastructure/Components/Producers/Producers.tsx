@@ -8,7 +8,7 @@ import {
   fromOrderTypeToComponentSortingOption,
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
 import {
   ProducerCardGallery

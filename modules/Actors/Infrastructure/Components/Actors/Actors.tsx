@@ -15,7 +15,7 @@ import {
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { ActorCardGallery } from '~/modules/Actors/Infrastructure/Components/ActorCardGallery/ActorCardGallery'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import {
   PaginationConfiguration,

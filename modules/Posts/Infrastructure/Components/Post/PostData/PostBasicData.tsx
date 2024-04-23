@@ -1,7 +1,7 @@
 import styles from './PostBasicData.module.scss'
 import { FC } from 'react'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BsChatSquareText } from 'react-icons/bs'
 import { BiDislike, BiLike } from 'react-icons/bi'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'

@@ -5,7 +5,7 @@ import { RegisterUser } from '~/modules/Auth/Infrastructure/Components/Register/
 import styles from './Register.module.scss'
 import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingRegister } from '~/modules/Auth/Infrastructure/Components/Register/ConfirmingRegister'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { IconButton } from '~/components/IconButton/IconButton'
 
 type RegistrationSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'signup_completed'

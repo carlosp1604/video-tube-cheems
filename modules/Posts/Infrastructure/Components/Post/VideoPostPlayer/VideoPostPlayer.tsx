@@ -1,7 +1,7 @@
 import { createRef, FC, ReactElement, useEffect, useMemo, useState } from 'react'
 import styles from './VideoPostPlayer.module.scss'
 import { BsFileEarmarkBreak, BsThreeDotsVertical } from 'react-icons/bs'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { v4 as uuidv4 } from 'uuid'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'

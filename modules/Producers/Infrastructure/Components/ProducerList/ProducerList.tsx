@@ -1,7 +1,7 @@
 import { CSSProperties, FC, ReactElement } from 'react'
 import styles from './ProducerList.module.scss'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { Carousel } from '~/components/Carousel/Carousel'
 import Link from 'next/link'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'

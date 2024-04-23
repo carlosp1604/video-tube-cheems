@@ -2,7 +2,6 @@ import { container } from '~/awilix.container'
 import { GetPostBySlug } from '~/modules/Posts/Application/GetPostBySlug/GetPostBySlug'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { GetServerSideProps } from 'next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { PostPage, PostPageProps } from '~/components/pages/PostPage/PostPage'
 import { PostComponentDtoTranslator } from '~/modules/Posts/Infrastructure/Translators/PostComponentDtoTranslator'
 import {
@@ -71,29 +70,6 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
         postEmbedUrl,
         baseUrl,
         htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
-        ...await serverSideTranslations(
-          locale,
-          [
-            'user_menu',
-            'app_menu',
-            'app_banner',
-            'footer',
-            'menu',
-            'post_comments',
-            'post_page',
-            'post',
-            'carousel',
-            'common',
-            'post_card',
-            'user_signup',
-            'user_login',
-            'user_retrieve_password',
-            'api_exceptions',
-            'api_exceptions',
-            'post_card_options',
-            'post_card_gallery',
-          ]
-        ),
       },
     }
   } catch (exception: unknown) {

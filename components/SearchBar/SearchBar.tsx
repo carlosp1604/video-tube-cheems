@@ -4,7 +4,7 @@ import { CiSearch } from 'react-icons/ci'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { TfiClose } from 'react-icons/tfi'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import * as uuid from 'uuid'
 
 interface Props {

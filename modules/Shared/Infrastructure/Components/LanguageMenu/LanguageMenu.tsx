@@ -1,7 +1,7 @@
 import styles from './LanguageMenu.module.scss'
 import { FC, useState } from 'react'
 import { MenuOptions } from '~/components/MenuOptions/MenuOptions'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
 import { IoLanguageOutline } from 'react-icons/io5'
 import { useRouter } from 'next/router'
@@ -33,6 +33,7 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
     if (currentLocale !== newLocale) {
       await push({ pathname, query }, asPath, { locale: newLocale, scroll: false })
       toast.remove(languageMenuToastId)
+      onClose()
     } else {
       toast.error(t('language_menu_already_on_language_error_message'), { id: languageMenuToastId })
     }

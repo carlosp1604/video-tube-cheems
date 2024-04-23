@@ -1,6 +1,6 @@
 import { FC, ReactElement, useEffect, useState } from 'react'
 import styles from './LikeButton.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BiLike, BiSolidLike } from 'react-icons/bi'
 import { useRouter } from 'next/router'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'

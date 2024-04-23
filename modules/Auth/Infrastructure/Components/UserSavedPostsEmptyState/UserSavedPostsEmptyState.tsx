@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import styles from './UserSavedPostsEmptyState.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BsBookmark, BsThreeDotsVertical } from 'react-icons/bs'
 
 export const UserSavedPostsEmptyState: FC = () => {

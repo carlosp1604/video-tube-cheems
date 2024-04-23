@@ -5,7 +5,7 @@ import {
 import styles from './UserProfile.module.scss'
 import { useRouter } from 'next/router'
 import { FC, ReactElement, useEffect, useState } from 'react'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -126,7 +126,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
     if (status === 'authenticated' && userComponentDto.id === data?.user.id) {
       savedPostsContent = (<UserSavedPostsEmptyState />)
     } else {
-      savedPostsContent = (<PostCardCarouselSkeleton postCardsNumber={ 3 } loading={ true }/>)
+      savedPostsContent = (<PostCardCarouselSkeleton postCardsNumber={ 3 } />)
     }
   } else {
     if (loading) {

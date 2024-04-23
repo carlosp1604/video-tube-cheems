@@ -1,6 +1,6 @@
 import { BiLike } from 'react-icons/bi'
 import { useCallback } from 'react'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { useSession } from 'next-auth/react'
 import { BsBookmark, BsTrash } from 'react-icons/bs'
 import {
@@ -31,7 +31,7 @@ export type PostCardOptionConfiguration =
   PostCardDeletableOption
 
 export function usePostCardOptions () {
-  const { t } = useTranslation(['post_card_options', 'api_exceptions'])
+  const { t } = useTranslation('post_card_options')
 
   const { status, data } = useSession()
   const { savePost, removeSavedPost } = useSavePost('post_card_options')
@@ -103,7 +103,7 @@ export function usePostCardOptions () {
           if (status === 'authenticated' && data) {
             options.push({
               icon: <BsBookmark />,
-              title: t('save_post_post_card_gallery_action_title', { ns: 'post_card_options' }),
+              title: t('save_post_post_card_gallery_action_title'),
               onClick: (postCard: PostCardComponentDto) =>
                 savePostPostCardAction(postCard, optionConfiguration.onSuccess, onSuccess),
             })
@@ -116,7 +116,7 @@ export function usePostCardOptions () {
           if (status === 'authenticated' && data) {
             options.push({
               icon: <BiLike />,
-              title: t('like_post_post_card_gallery_action_title', { ns: 'post_card_options' }),
+              title: t('like_post_post_card_gallery_action_title'),
               onClick: async (postCard: PostCardComponentDto) => {
                 await likePostPostCardAction(postCard, optionConfiguration.onSuccess, onSuccess)
               },
@@ -130,7 +130,7 @@ export function usePostCardOptions () {
           if (status === 'authenticated' && data && optionConfiguration.ownerId === data.user.id) {
             options.push({
               icon: <BsTrash />,
-              title: t('delete_saved_post_option_title', { ns: 'post_card_options' }),
+              title: t('delete_saved_post_option_title'),
               onClick: async (postCard: PostCardComponentDto) => {
                 await deleteSavedPostCardAction(postCard, onSuccess, optionConfiguration.onDelete)
               },

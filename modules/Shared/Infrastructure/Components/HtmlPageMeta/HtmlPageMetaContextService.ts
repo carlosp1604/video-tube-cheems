@@ -1,6 +1,6 @@
 import { ParsedUrlQuery } from 'querystring'
 import { GetServerSidePropsContext, PreviewData } from 'next'
-import nextI18nextConfig from '~/next-i18next.config'
+import nextTranslatei18nConfig from '~/i18n'
 import { localeWithTerritory } from '~/modules/Shared/Domain/Locale'
 import { HtmlPageMetaContextServiceInterface } from './HtmlPageMetaContextServiceInterface'
 import { AlternateUrl, HtmlPageMetaContextProps } from './HtmlPageMetaContextProps'
@@ -25,7 +25,7 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
   }
 
   private getLocale (): string {
-    return this.context.locale ? this.context.locale : nextI18nextConfig.i18n.defaultLocale
+    return this.context.locale ? this.context.locale : nextTranslatei18nConfig.defaultLocale
   }
 
   private getExtendedLocale (): string {

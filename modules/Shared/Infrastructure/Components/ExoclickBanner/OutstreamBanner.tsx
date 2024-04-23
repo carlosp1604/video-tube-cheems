@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Outstream } from 'exoclick-react'
 import styles from './OutstreamBanner.module.scss'
 import { RiAdvertisementFill } from 'react-icons/ri'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 
 export const OutstreamBanner: FC = () => {
   const { t } = useTranslation('common')

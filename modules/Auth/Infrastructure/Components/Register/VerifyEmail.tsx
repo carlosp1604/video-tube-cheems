@@ -1,6 +1,6 @@
 import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import styles from './Register.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiService'
 import { emailValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'

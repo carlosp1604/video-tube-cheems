@@ -1,6 +1,6 @@
 import { FC, ReactElement, useEffect, useState } from 'react'
 import styles from './DislikeButton.module.scss'
-import { useTranslation } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { BiDislike, BiSolidDislike } from 'react-icons/bi'
 import * as uuid from 'uuid'
 import { Tooltip } from '~/components/Tooltip/Tooltip'

@@ -5,7 +5,9 @@ const nextI18nextConfig = {
     defaultLocale: 'en',
     locales: ['en', 'es'],
   },
-  localePath: path.resolve('./public/locales'),
+  loadLocaleFrom: (lang, ns) => {
+    import(`./myTranslationsFiles/${lang}/${ns}.json`).then((m) => m.default)
+  }
 }
 
 module.exports = nextI18nextConfig

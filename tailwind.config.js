@@ -125,6 +125,7 @@ module.exports = {
         'comment-replies',
         'floating-action-app-menu',
         'sidebar-menu',
+        'top-mobile',
         'app-menu',
         'mobile-menu',
         'modal-backdrop',

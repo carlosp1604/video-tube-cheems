@@ -2,6 +2,7 @@ import { FC, ReactElement } from 'react'
 import styles from './TopMobileMenu.module.scss'
 import useTranslation from 'next-translate/useTranslation'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
+import Link from 'next/link'
 
 export const TopMobileMenu: FC = () => {
   const { t } = useTranslation('menu')
@@ -66,6 +67,15 @@ export const TopMobileMenu: FC = () => {
 
   return (
     <div className={ styles.topMobileMenu__container }>
+      <Link
+        className={ styles.topMobileMenu__offerContainer }
+        href={ 'https://theporndude.com/' }
+        title={ t('the_porn_dude_link_title') }
+        key={ t('the_porn_dude_link_title') }
+        rel={ 'nofollow' }
+      >
+        { t('the_porn_dude_link_title') }
+      </Link>
       { links }
     </div>
   )

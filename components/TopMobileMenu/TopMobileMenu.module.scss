@@ -1,16 +1,27 @@
 .top-mobile-menu {
   &__container {
-    @apply flex items-center justify-around border-t border-b
-    border-base-800 px-5 py-2 my-4 backdrop-blur-lg;
+    @apply flex items-center justify-between border-t border-b
+    border-base-800 px-5 py-2 my-4 backdrop-blur-lg bg-body/60
+    overflow-x-scroll scrollbar-hide gap-x-1 sticky top-[52px]
+    z-top-mobile;
+
+    @screen md {
+      @apply overflow-hidden top-14;
+    }
 
     @screen lg {
-      @apply hidden;
+      @apply border-r border-l;
     }
   }
 
   &__offer-container {
-    @apply text-center text-xs leading-none font-semibold text-base-400
-    w-full border-l border-base-800 py-2 -my-1 break-words line-clamp-2;
+    @apply flex-auto flex-shrink-0 items-center text-center text-xs
+    leading-none font-semibold text-base-300 border-l border-base-800
+    py-1 mx-auto px-2;
+
+    @screen md {
+      @apply font-bold;
+    }
 
     &:first-child {
       @apply -ml-1 border-none;

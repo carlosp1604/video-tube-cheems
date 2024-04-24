@@ -15,7 +15,7 @@ export const AppBanner: FC = () => {
       <div className={ styles.appBanner__rtaSection }>
         <span>
           <Trans
-            i18nKey={ t('rta_description_title') }
+            i18nKey={ 'app_banner:rta_description_title' }
             components={ [
               <Link
                 key={ t('rta_description_title') }

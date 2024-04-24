@@ -7,6 +7,11 @@ import { FaXTwitter } from 'react-icons/fa6'
 import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
 import Trans from 'next-translate/Trans'
+import ReactGA from 'react-ga4'
+import {
+  ClickSocialNetworkProfile,
+  SocialNetworkCategory
+} from '~/modules/Shared/Infrastructure/FrontEnd/AnalyticsEvents/Footer'
 
 export const AppFooter: FC = () => {
   const { asPath, locale } = useRouter()
@@ -26,6 +31,14 @@ export const AppFooter: FC = () => {
   let tiktokProfile: ReactElement | null = null
   let telegramProfile: ReactElement | null = null
 
+  const onClickSocialNetworkIcon = (socialNetwork: string) => {
+    ReactGA.event({
+      category: SocialNetworkCategory,
+      action: ClickSocialNetworkProfile,
+      label: socialNetwork,
+    })
+  }
+
   if (process.env.NEXT_PUBLIC_FACEBOOK_PROFILE) {
     facebookProfile = (
       <Link
@@ -33,6 +46,9 @@ export const AppFooter: FC = () => {
         title={ t('facebook_icon_title') }
         target={ '_blank' }
         className={ styles.appFooter__socialNetwork }
+        onClick={ () => {
+          onClickSocialNetworkIcon(t('facebook_icon_title'))
+        } }
       >
         <FaFacebookF />
       </Link>
@@ -46,6 +62,9 @@ export const AppFooter: FC = () => {
         title={ t('twitter_icon_title') }
         target={ '_blank' }
         className={ styles.appFooter__socialNetwork }
+        onClick={ () => {
+          onClickSocialNetworkIcon(t('twitter_icon_title'))
+        } }
       >
         <FaXTwitter />
       </Link>
@@ -59,6 +78,9 @@ export const AppFooter: FC = () => {
         title={ t('tiktok_icon_title') }
         target={ '_blank' }
         className={ styles.appFooter__socialNetwork }
+        onClick={ () => {
+          onClickSocialNetworkIcon(t('tiktok_icon_title'))
+        } }
       >
         <FaTiktok />
       </Link>
@@ -72,6 +94,9 @@ export const AppFooter: FC = () => {
         title={ t('telegram_icon_title') }
         target={ '_blank' }
         className={ styles.appFooter__socialNetwork }
+        onClick={ () => {
+          onClickSocialNetworkIcon(t('telegram_icon_title'))
+        } }
       >
         <FaTelegramPlane />
       </Link>

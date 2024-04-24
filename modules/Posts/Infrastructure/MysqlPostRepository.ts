@@ -554,14 +554,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     const [savedPosts, count] = await prisma.$transaction([
       prisma.savedPost.findMany({
         where: {
-          OR: [
-            { userId },
-            {
-              user: {
-                username: userId,
-              },
-            },
-          ],
+          userId,
           post: postsWhereFilters,
         },
         include: {
@@ -582,14 +575,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }),
       prisma.savedPost.count({
         where: {
-          OR: [
-            { userId },
-            {
-              user: {
-                username: userId,
-              },
-            },
-          ],
+          userId,
           post: postsWhereFilters,
         },
       }),
@@ -642,14 +628,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     const [viewedPosts, posts] = await prisma.$transaction([
       prisma.view.findMany({
         where: {
-          OR: [
-            { userId },
-            {
-              user: {
-                username: userId,
-              },
-            },
-          ],
+          userId,
           post: postsWhereFilters,
         },
         include: {
@@ -672,14 +651,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       // Prisma doest not support distinct on count :/. Workaround
       prisma.view.findMany({
         where: {
-          OR: [
-            { userId },
-            {
-              user: {
-                username: userId,
-              },
-            },
-          ],
+          userId,
           post: postsWhereFilters,
         },
         distinct: 'viewableId',

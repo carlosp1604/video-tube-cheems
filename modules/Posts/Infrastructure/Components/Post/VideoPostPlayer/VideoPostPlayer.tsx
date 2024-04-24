@@ -149,7 +149,8 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
   if (
     selectedUrl &&
     embedPostMedia &&
-    embedPostMedia.urls.includes(selectedUrl)
+    embedPostMedia.urls.find((postMedia) =>
+      selectedUrl.url === postMedia.url)
   ) {
     const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedUrl.provider.id)
 
@@ -173,7 +174,8 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
   if (
     selectedUrl &&
     videoPostMedia &&
-    videoPostMedia.urls.includes(selectedUrl)
+    videoPostMedia.urls.find((postMedia) =>
+      selectedUrl.url === postMedia.url)
   ) {
     playerElement = (
       <HtmlVideoPlayer

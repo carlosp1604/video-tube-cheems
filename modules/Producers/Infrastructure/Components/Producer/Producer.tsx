@@ -22,6 +22,7 @@ import { useFirstRender } from '~/hooks/FirstRender'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
+import { ProducersApiService } from '~/modules/Producers/Infrastructure/Frontend/ProducersApiService'
 
 export interface ProducerPagePaginationState {
   page: number
@@ -79,6 +80,14 @@ export const Producer: FC<Props> = ({
         parseableOptionTypes: sortingOptions,
       },
     }
+
+  useEffect(() => {
+    try {
+      (new ProducersApiService()).addProducerView(producer.id)
+    } catch (exception: unknown) {
+      console.error(exception)
+    }
+  }, [])
 
   useEffect(() => {
     if (firstRender) {

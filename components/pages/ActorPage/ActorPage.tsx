@@ -88,6 +88,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
 
       <Actor
         key={ asPath }
+        actorId={ actor.id }
         actorName={ actor.name }
         actorSlug={ actor.slug }
         initialPosts={ initialPosts }

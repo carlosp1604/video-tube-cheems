@@ -7,10 +7,10 @@
     @apply font-black text-sm;
 
     @screen tb {
-      @apply text-base;
+      @apply text-sm;
     }
 
-    @screen lg {
+    @screen md {
       @apply text-xl;
     }
   }

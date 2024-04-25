@@ -10,8 +10,6 @@ import {
 } from '~/modules/Actors/Domain/ActorWithCountInterface'
 import ActorOrderByWithRelationInput = Prisma.ActorOrderByWithRelationInput
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
-import { View } from '~/modules/Views/Domain/View'
-import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
   /**
@@ -19,7 +17,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param actor Actor to persist
    */
   public async save (actor: Actor): Promise<void> {
-    const actorModel = ActorModelTranslator.toDatabase(actor)
+    const actorModel = ActorModelTranslator.toDatabase(actor, 0)
 
     await prisma.actor.create({
       data: {
@@ -123,7 +121,6 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
                   },
                 },
               },
-              views: true,
             },
           },
         },
@@ -140,7 +137,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
       return {
         actor: ActorModelTranslator.toDomain(actor),
         postsNumber: actor._count.postActors,
-        actorViews: actor._count.views,
+        actorViews: Number.parseInt(actor.viewsCount.toString()),
       }
     })
 
@@ -151,25 +148,17 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
   }
 
   /**
-   * Create a new actor view for an actor given its ID
+   * Add a new actor view for an actor given its ID
    * @param actorId Actor ID
-   * @param view Actor View
    */
-  public async createActorView (actorId: Actor['id'], view: View): Promise<void> {
-    const prismaPostView = ViewModelTranslator.toDatabase(view)
-
+  public async addActorView (actorId: Actor['id']): Promise<void> {
     await prisma.actor.update({
       where: {
         id: actorId,
       },
       data: {
-        views: {
-          create: {
-            id: prismaPostView.id,
-            viewableType: prismaPostView.viewableType,
-            userId: prismaPostView.userId,
-            createdAt: prismaPostView.createdAt,
-          },
+        viewsCount: {
+          increment: 1,
         },
       },
     })

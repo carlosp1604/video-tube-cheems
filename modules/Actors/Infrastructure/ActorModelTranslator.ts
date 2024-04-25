@@ -22,7 +22,7 @@ export class ActorModelTranslator {
     )
   }
 
-  public static toDatabase (actor: Actor): PrismaActorModel {
+  public static toDatabase (actor: Actor, viewsCount: number): PrismaActorModel {
     return {
       id: actor.id,
       slug: actor.slug,
@@ -32,6 +32,7 @@ export class ActorModelTranslator {
       updatedAt: actor.updatedAt.toJSDate(),
       imageUrl: actor.imageUrl,
       name: actor.name,
+      viewsCount: BigInt(viewsCount),
     }
   }
 }

@@ -61,7 +61,7 @@ function App ({
   if (pathname.startsWith('/posts/videos/embed')) {
     return (
       <SessionProvider session={ session }>
-        <main className={ styles.app__embedContainer }>
+        <main className={ styles.app__embedContainer } translate={ 'no' }>
           <Component { ...pageProps }/>
         </main>
       </SessionProvider>

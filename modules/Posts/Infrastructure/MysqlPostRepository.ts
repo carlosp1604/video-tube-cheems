@@ -29,6 +29,8 @@ import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTra
 import { View } from '~/modules/Views/Domain/View'
 import { PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
+import ViewUncheckedUpdateManyWithoutPostNestedInput = Prisma.ViewUncheckedUpdateManyWithoutPostNestedInput;
+import ViewUpdateManyWithoutPostNestedInput = Prisma.ViewUpdateManyWithoutPostNestedInput;
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -36,7 +38,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param post Post to persist
    */
   public async save (post: Post): Promise<void> {
-    const prismaPostModel = PostModelTranslator.toDatabase(post)
+    const prismaPostModel = PostModelTranslator.toDatabase(post, 0)
     const meta = post.meta.map((meta) => PostMetaModelTranslator.toDatabase(meta))
     const translations = Array.from(post.translations.values()).flat()
       .map((translation) => { return TranslationModelTranslator.toDatabase(translation) })
@@ -280,7 +282,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         _count: {
           select: {
             comments: true,
-            views: true,
           },
         },
         producer: true,
@@ -352,7 +353,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         'postMedia',
       ]),
       postComments: post._count.comments,
-      postViews: post._count.views,
+      postViews: Number.parseInt(post.viewsCount.toString()),
       reactions: {
         dislike: dislikes,
         like: likes,
@@ -374,7 +375,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     let includeProducer: boolean | Prisma.Post$producerArgs<DefaultArgs> | undefined = false
     let includeActors: boolean | Prisma.Post$actorsArgs<DefaultArgs> | undefined = false
     let includeTags: boolean | Prisma.Post$tagsArgs<DefaultArgs> | undefined
-    let countStatement: boolean | Prisma.PostCountOutputTypeDefaultArgs<DefaultArgs> | undefined
 
     if (options.includes('comments')) {
       includeComments = true
@@ -425,12 +425,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       }
     }
 
-    if (options.includes('viewsCount')) {
-      countStatement = {
-        select: { views: true },
-      }
-    }
-
     const post = await prisma.post.findFirst({
       where: {
         id: postId,
@@ -449,7 +443,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         tags: includeTags,
         translations: options.includes('translations'),
         actor: options.includes('actor'),
-        _count: countStatement,
       },
     })
 
@@ -460,7 +453,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     if (options.includes('viewsCount')) {
       return {
         post: PostModelTranslator.toDomain(post, options),
-        postViews: post._count.views,
+        postViews: Number.parseInt(post.viewsCount.toString()),
       }
     }
 
@@ -491,11 +484,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       prisma.post.findMany({
         where: whereFilters,
         include: {
-          _count: {
-            select: {
-              views: true,
-            },
-          },
           ...includeFilters,
         },
         take: limit,
@@ -511,7 +499,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       posts: posts.map((post) => {
         return {
           post: PostModelTranslator.toDomain(post, ['meta', 'producer', 'actor', 'translations']),
-          postViews: post._count.views,
+          postViews: Number.parseInt(post.viewsCount.toString()),
         }
       }),
       count: postsNumber,
@@ -560,11 +548,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         include: {
           post: {
             include: {
-              _count: {
-                select: {
-                  views: true,
-                },
-              },
               ...postsIncludeFilters,
             },
           },
@@ -585,7 +568,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       posts: savedPosts.map((savedPost) => {
         return {
           post: PostModelTranslator.toDomain(savedPost.post, ['meta', 'producer', 'actor', 'translations']),
-          postViews: savedPost.post._count.views,
+          postViews: Number.parseInt(savedPost.post.viewsCount.toString()),
         }
       }),
       count,
@@ -634,11 +617,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         include: {
           post: {
             include: {
-              _count: {
-                select: {
-                  views: true,
-                },
-              },
               ...postsIncludeFilters,
             },
           },
@@ -664,7 +642,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         return {
           post: PostModelTranslator.toDomain(
             viewedPost.post as PostPrimaModel, ['meta', 'producer', 'actor', 'translations']),
-          postViews: viewedPost.post?._count.views ?? 0,
+          postViews: viewedPost.post ? Number.parseInt(viewedPost.post.viewsCount.toString()) : 0,
         }
       }),
       count: posts.length,
@@ -894,11 +872,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         ],
       },
       include: {
-        _count: {
-          select: {
-            views: true,
-          },
-        },
         meta: true,
         producer: true,
         actor: true,
@@ -916,7 +889,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           'translations',
           'actor',
         ]),
-        postViews: post._count.views,
+        postViews: Number.parseInt(post.viewsCount.toString()),
       }
     })
   }
@@ -926,22 +899,31 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * @param postId Post ID
    * @param view Post View
    */
-  public async createPostView (postId: Post['id'], view: View): Promise<void> {
-    const prismaPostView = ViewModelTranslator.toDatabase(view)
+  public async createPostView (postId: Post['id'], view: View | null): Promise<void> {
+    let createView: ViewUncheckedUpdateManyWithoutPostNestedInput | ViewUpdateManyWithoutPostNestedInput | undefined
+
+    if (view) {
+      const prismaPostView = ViewModelTranslator.toDatabase(view)
+
+      createView = {
+        create: {
+          id: prismaPostView.id,
+          viewableType: prismaPostView.viewableType,
+          userId: prismaPostView.userId,
+          createdAt: prismaPostView.createdAt,
+        },
+      }
+    }
 
     await prisma.post.update({
       where: {
         id: postId,
       },
       data: {
-        views: {
-          create: {
-            id: prismaPostView.id,
-            viewableType: prismaPostView.viewableType,
-            userId: prismaPostView.userId,
-            createdAt: prismaPostView.createdAt,
-          },
+        viewsCount: {
+          increment: 1,
         },
+        views: createView,
       },
     })
   }

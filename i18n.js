@@ -8,6 +8,7 @@ const i18nConfig = {
         .catch((exception) => reject((exception)))
     })
   },
+  logBuild: false,
   pages: {
     '*': [
       'app_menu',

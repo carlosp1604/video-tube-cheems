@@ -23,4 +23,13 @@ export class ProducersApiService {
 
     return ((await fetch(`/api/producers?${params}`)).json())
   }
+
+  public async addProducerView (producerId: string): Promise<Response> {
+    return fetch(`/api/producers/${producerId}/producer-views`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
 }

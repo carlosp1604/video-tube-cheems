@@ -20,7 +20,6 @@ import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
-import { getSession } from 'next-auth/react'
 import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
 import { Settings } from 'luxon'
 
@@ -135,16 +134,6 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       sortOption,
       postsPerPage: defaultPerPage,
     })
-
-    // TODO: Maybe we need to move this to an endpoint so its called from client side
-    const session = await getSession()
-    let userId: string | null = null
-
-    if (session) {
-      userId = session.user.id
-    }
-
-    await addProducerView.add({ producerSlug: String(producerSlug), userId })
 
     props.initialPosts = producerPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)

@@ -2,7 +2,6 @@ import { Actor } from './Actor'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { ActorsWithPostsCountViewsCountWithTotalCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
-import { View } from '~/modules/Views/Domain/View'
 
 export interface ActorRepositoryInterface {
   /**
@@ -47,9 +46,8 @@ export interface ActorRepositoryInterface {
   ): Promise<ActorsWithPostsCountViewsCountWithTotalCount>
 
   /**
-   * Create a new actor view for an actor given its ID
+   * Add a new actor view for an actor given its ID
    * @param actorId Actor ID
-   * @param view Actor View
    */
-  createActorView (actorId: Actor['id'], view: View): Promise<void>
+  addActorView (actorId: Actor['id']): Promise<void>
 }

@@ -195,7 +195,7 @@ export class PostModelTranslator {
     )
   }
 
-  public static toDatabase (post: Post): PostPrismaModel {
+  public static toDatabase (post: Post, viewsCount: number): PostPrismaModel {
     return {
       id: post.id,
       description: post.description,
@@ -208,6 +208,7 @@ export class PostModelTranslator {
       createdAt: post.createdAt.toJSDate(),
       deletedAt: post.deletedAt?.toJSDate() ?? null,
       updatedAt: post.updatedAt.toJSDate(),
+      viewsCount: BigInt(viewsCount),
     }
   }
 }

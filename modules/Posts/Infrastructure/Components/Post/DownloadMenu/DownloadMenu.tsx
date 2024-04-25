@@ -33,6 +33,8 @@ export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen, onClickO
           width={ 0 }
           height={ 0 }
           sizes={ '100vw' }
+          fill={ false }
+          priority={ true }
         />
       ),
       isActive: false,

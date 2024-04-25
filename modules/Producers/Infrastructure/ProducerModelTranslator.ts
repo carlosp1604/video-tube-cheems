@@ -3,7 +3,6 @@ import { Producer as PrismaProducerModel } from '@prisma/client'
 import { ProducerWithParent } from './PrismaProducerModel'
 import { Producer } from '~/modules/Producers/Domain/Producer'
 import { Relationship } from '~/modules/Shared/Domain/Relationship/Relationship'
-import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 
 export class ProducerModelTranslator {
   public static toDomain (prismaProducerModel: PrismaProducerModel) {
@@ -34,12 +33,11 @@ export class ProducerModelTranslator {
       DateTime.fromJSDate(prismaProducerModel.createdAt),
       DateTime.fromJSDate(prismaProducerModel.updatedAt),
       deletedAt,
-      parentProducerRelationship,
-      Collection.notLoaded()
+      parentProducerRelationship
     )
   }
 
-  public static toDatabase (producer: Producer): PrismaProducerModel {
+  public static toDatabase (producer: Producer, viewsCount: number): PrismaProducerModel {
     return {
       id: producer.id,
       slug: producer.slug,
@@ -51,6 +49,7 @@ export class ProducerModelTranslator {
       createdAt: producer.createdAt.toJSDate(),
       deletedAt: producer.deletedAt?.toJSDate() ?? null,
       updatedAt: producer.updatedAt.toJSDate(),
+      viewsCount: BigInt(viewsCount),
     }
   }
 }

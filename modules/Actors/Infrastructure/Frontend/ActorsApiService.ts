@@ -21,4 +21,13 @@ export class ActorsApiService {
 
     return ((await fetch(`/api/actors?${params}`)).json())
   }
+
+  public async addActorView (actorId: string): Promise<Response> {
+    return fetch(`/api/actors/${actorId}/actor-views`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
 }

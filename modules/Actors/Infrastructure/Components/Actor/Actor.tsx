@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { useRouter } from 'next/router'
@@ -13,9 +13,11 @@ import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 
 export interface Props {
   actorName: string
+  actorId: string
   actorSlug: string
   initialPosts: PostCardComponentDto[]
   initialPostsNumber: number
@@ -23,6 +25,7 @@ export interface Props {
 
 export const Actor: FC<Props> = ({
   actorName,
+  actorId,
   actorSlug,
   initialPosts,
   initialPostsNumber,
@@ -36,6 +39,14 @@ export const Actor: FC<Props> = ({
   const locale = router.locale ?? 'en'
 
   const { t } = useTranslation('actors')
+
+  useEffect(() => {
+    try {
+      (new ActorsApiService()).addActorView(actorId)
+    } catch (exception: unknown) {
+      console.error(exception)
+    }
+  }, [])
 
   const updatePosts = async (page:number) => {
     try {

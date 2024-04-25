@@ -72,7 +72,7 @@ function App ({
     <SessionProvider session={ session }>
       <UsingRouterProvider >
         <LoginProvider>
-          <div className={ `${styles.app__layout} ${roboto.variable}` }>
+          <div className={ `${styles.app__layout} ${roboto.variable}` } translate={ 'no' }>
             <Head>
               <link rel="icon" href="/favicon.ico" />
             </Head>

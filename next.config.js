@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const nextTranslate = require('next-translate-plugin')
-const { withSentryConfig } = require('@sentry/nextjs')
 
 const nextConfig = {
   reactStrictMode: true,
@@ -83,22 +82,4 @@ const nextConfig = {
   },
 }
 
-const sentryWebpackPluginOptions = {
-  // Additional config options for the Sentry webpack plugin. Keep in mind that
-  // the following options are set automatically, and overriding them is not
-  // recommended:
-  //   release, url, configFile, stripPrefix, urlPrefix, include, ignore
-
-  org: 'cheems',
-  project: 'javascript-nextjs',
-
-  // An auth token is required for uploading source maps.
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-
-  silent: false, // Suppresses all logs
-
-  // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options.
-}
-
-module.exports = withSentryConfig(nextTranslate(nextConfig), sentryWebpackPluginOptions)
+module.exports = nextTranslate(nextConfig)

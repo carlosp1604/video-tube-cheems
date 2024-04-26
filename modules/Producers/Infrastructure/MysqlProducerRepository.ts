@@ -224,9 +224,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
 
     if (sortingOption === 'views') {
       sortCriteria = {
-        views: {
-          _count: sortingCriteria,
-        },
+        viewsCount: sortingCriteria,
       }
     }
 

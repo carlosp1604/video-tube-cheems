@@ -188,9 +188,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
 
     if (sortingOption === 'views') {
       sortCriteria = {
-        views: {
-          _count: sortingCriteria,
-        },
+        viewsCount: sortingCriteria,
       }
     }
 

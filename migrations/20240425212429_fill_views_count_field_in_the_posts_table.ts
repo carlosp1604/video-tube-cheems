@@ -23,6 +23,7 @@ export async function up (knex: Knex): Promise<void> {
       .del()
       .whereNull('user_id')
       .andWhere('viewable_type', '=', 'Post')
+      .andWhere('viewable_id', '=', postId.id)
   }
 }
 

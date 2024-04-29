@@ -5,7 +5,7 @@
       min-h-screen px-5;
 
     @screen md {
-      @apply flex flex-row h-3/4 -mt-14;
+      @apply flex flex-row -mt-14;
     }
   }
 
@@ -13,7 +13,11 @@
     @apply w-full h-auto max-w-lg;
 
     @screen md {
-      @apply max-w-2xl;
+      @apply max-w-md;
+    }
+
+    @screen lg {
+      @apply max-w-lg;
     }
   }
 

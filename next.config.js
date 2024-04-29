@@ -3,7 +3,7 @@
 const nextTranslate = require('next-translate-plugin')
 
 const nextConfig = {
-  reactStrictMode: false,
+  reactStrictMode: true,
   swcMinify: true,
   // transpilePackages: ['fluid-player'],
   rewrites: async () => [

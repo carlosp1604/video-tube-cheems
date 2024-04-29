@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { v4 as uuidv4 } from 'uuid'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 import dynamic from 'next/dynamic'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 const Modal = dynamic(() =>
   import('~/components/Modal/Modal').then((module) => module.Modal),
@@ -62,6 +63,8 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
                 width={ 0 }
                 height={ 0 }
                 sizes={ '100vw' }
+                placeholder={ 'blur' }
+                blurDataURL={ rgbDataURL(81, 80, 80) }
               />
             ),
             isActive: locale === 'es',

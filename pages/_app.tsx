@@ -89,7 +89,10 @@ function App ({
               setOpenMenu={ setMenuOpen }
             />
 
-            <AppMenu onClickMenuButton={ () => setMenuOpen(!menuOpen) }/>
+            <AppMenu
+              onClickMenuButton={ () => setMenuOpen(!menuOpen) }
+              setOpenLanguageMenu={ setOpenLanguageMenu }
+            />
 
             <MenuSideBar
               menuOpen={ menuOpen }

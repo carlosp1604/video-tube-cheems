@@ -20,10 +20,6 @@
       @apply w-32 transition-all;
     }
 
-    @screen lg {
-      @apply w-40 transition-all;
-    }
-
     &:hover {
       @apply invert transition-all;
     }
@@ -31,6 +27,10 @@
 
   &__left-container {
     @apply flex flex-row items-center gap-x-1 -ml-2;
+
+    @screen md {
+      @apply gap-x-2;
+    }
   }
 
   &__right-container {
@@ -132,5 +132,21 @@
         @apply mx-0;
       }
     }
+  }
+
+  &__language-button {
+    @apply h-4 self-start mt-3;
+
+    @screen lg {
+      @apply h-5 pl-0;
+    }
+
+    &:hover {
+      @apply animate-pulse;
+    }
+  }
+
+  &__language-image {
+    @apply h-full w-auto;
   }
 }

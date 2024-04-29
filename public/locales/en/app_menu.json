@@ -8,6 +8,8 @@
   "app_menu_search_menu_placeholder_title": "Search posts",
   "app_menu_user_button_title": "Login",
   "empty_search_error_message": "Please enter a valid search term",
+  "language_button_image_alt": "Current language: {{locale}}",
+  "language_button_title": "Change application language",
   "search_bar_contract_title": "Contract",
   "search_bar_expand_title": "Open search"
 }

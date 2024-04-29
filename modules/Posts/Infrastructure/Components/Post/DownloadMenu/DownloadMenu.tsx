@@ -7,6 +7,7 @@ import { BsDownload } from 'react-icons/bs'
 import Image from 'next/image'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -35,6 +36,8 @@ export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen, onClickO
           sizes={ '100vw' }
           fill={ false }
           priority={ true }
+          placeholder={ 'blur' }
+          blurDataURL={ rgbDataURL(81, 80, 80) }
         />
       ),
       isActive: false,

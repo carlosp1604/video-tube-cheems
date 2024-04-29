@@ -138,7 +138,7 @@ export class PostsPaginationQueryParams {
       }
 
       filters.push({
-        type: parseableFilter,
+        type: PostsPaginationQueryParams.getFilterAlias(parseableFilter),
         value: filter,
       })
     }
@@ -261,6 +261,14 @@ export class PostsPaginationQueryParams {
     }
 
     return query
+  }
+
+  public static getFilterAlias (filterOption: PostFilterOptions): PostFilterOptions {
+    if (filterOption === PostFilterOptions.SEARCH) {
+      return PostFilterOptions.POST_TITLE
+    }
+
+    return filterOption
   }
 
   private parseNumber (value: string): number | null {

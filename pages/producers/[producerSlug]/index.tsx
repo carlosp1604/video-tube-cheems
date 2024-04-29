@@ -20,7 +20,6 @@ import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
-import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
 import { Settings } from 'luxon'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
@@ -99,7 +98,6 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
   const getProducer = container.resolve<GetProducerBySlug>('getProducerBySlugUseCase')
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
-  const addProducerView = container.resolve<AddProducerView>('addProducerViewUseCase')
 
   try {
     const producer = await getProducer.get(producerSlug.toString())

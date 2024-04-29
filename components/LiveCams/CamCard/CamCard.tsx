@@ -11,6 +11,7 @@ import useTranslation from 'next-translate/useTranslation'
 import Trans from 'next-translate/Trans'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 import { DateService } from '~/helpers/Infrastructure/DateService'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 interface Props {
   username: string
@@ -82,7 +83,7 @@ export const CamCard: FC<Props> = ({
       height={ 0 }
       sizes={ '100vw' }
       placeholder={ 'blur' }
-      blurDataURL={ '/img/placeholder.svg' }
+      blurDataURL={ rgbDataURL(81, 80, 80) }
       onClick={ () => handleClick(camRoomLink) }
     />
   )

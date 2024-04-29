@@ -1,14 +1,6 @@
-import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { useRouter } from 'next/router'
-import { FC, ReactElement, useEffect, useState } from 'react'
-import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
-import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import {
-  PostCardComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import { FC, ReactElement, useState } from 'react'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import {
   UserProfileHeaderComponentDto
@@ -22,41 +14,25 @@ import {
   fromOrderTypeToComponentSortingOption,
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
-
-interface PaginationState {
-  page: number
-  order:PostsPaginationSortingType
-}
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import {
+  PaginatedPostCardGallery, PaginatedPostCardGalleryConfiguration
+} from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
+import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { useRouter } from 'next/router'
 
 export interface Props {
   userComponentDto: UserProfileHeaderComponentDto
 }
 
 export const UserHistory: FC<Props> = ({ userComponentDto }) => {
-  const [posts, setPosts] = useState<PostCardComponentDto[]>([])
   const [postsNumber, setPostsNumber] = useState<number>(0)
-
-  const [paginationState, setPaginationState] = useState<PaginationState>({
-    order: PaginationSortingType.NEWEST_VIEWED,
-    page: 1,
-  })
 
   const { t } = useTranslation('user_profile')
   const { status, data } = useSession()
-
-  const [loading, setLoading] = useState(false)
-
   const locale = useRouter().locale ?? 'en'
 
-  useEffect(() => {
-    setLoading(true)
-    updatePosts(paginationState.page, paginationState.order)
-      .then(() => { setLoading(false) })
-  }, [])
-
-  const postCardOptions: PostCardOptionConfiguration[] = [
+  const postCardOptions: PaginatedPostCardGalleryConfiguration[] = [
     { type: 'savePost' },
     { type: 'react' },
   ]
@@ -66,53 +42,24 @@ export const UserHistory: FC<Props> = ({ userComponentDto }) => {
     PaginationSortingType.OLDEST_VIEWED,
   ]
 
-  const onChangeOption = async (newOrder: PaginationSortingType) => {
-    setLoading(true)
-    setPaginationState({ ...paginationState, order: newOrder as PostsPaginationSortingType, page: 1 })
-
-    await updatePosts(1, newOrder as PostsPaginationSortingType)
-
-    setLoading(false)
-  }
-
-  const updatePosts = async (page:number, order: PostsPaginationSortingType) => {
+  const customPostsFetcher = async (page:number, order: PostsPaginationSortingType, _filters: FetchPostsFilter[]) => {
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
-      const newPosts = await (new PostsApiService())
+      return (new PostsApiService())
         .getUserHistory(
           userComponentDto.id,
           page,
           defaultPerPage,
           componentOrder.criteria,
           componentOrder.option,
-          []
+          [{ type: PostFilterOptions.VIEWED_BY, value: userComponentDto.id }]
         )
-
-      if (page === 1) {
-        setPosts(newPosts.posts.map((post) => {
-          return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-        }))
-      } else {
-        setPosts([
-          ...posts,
-          ...newPosts.posts.map((post) => {
-            return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-          }),
-        ])
-      }
-
-      setPostsNumber(newPosts.postsNumber)
     } catch (exception: unknown) {
       console.error(exception)
-    }
-  }
 
-  const onEndGalleryReach = async () => {
-    setLoading(true)
-    setPaginationState({ ...paginationState, page: paginationState.page + 1 })
-    await updatePosts(paginationState.page + 1, paginationState.order)
-    setLoading(false)
+      return null
+    }
   }
 
   let emptyState: ReactElement
@@ -133,41 +80,26 @@ export const UserHistory: FC<Props> = ({ userComponentDto }) => {
     )
   }
 
-  const sortingMenu = (
-    <SortingMenuDropdown
-      activeOption={ paginationState.order }
-      options={ sortingOptions }
-      loading={ loading }
-      visible={ postsNumber > defaultPerPage }
-      onClickOption={ onChangeOption }
-    />
-  )
-
   return (
     <div className={ styles.userHistory__container }>
       <UserProfileHeader componentDto={ userComponentDto } />
 
-      <CommonGalleryHeader
+      <PaginatedPostCardGallery
+        headerTag={ 'h2' }
+        key={ locale }
         title={ t('user_history_title') }
         subtitle={ t('posts_number_title', { postsNumber }) }
-        loading={ loading }
-        sortingMenu={ sortingMenu }
-        tag={ 'h1' }
+        page={ 1 }
+        order={ PaginationSortingType.NEWEST_VIEWED }
+        filters={ [] }
+        filtersToParse={ [] }
+        paginatedPostCardGalleryPostCardOptions={ postCardOptions }
+        sortingOptions={ sortingOptions }
+        defaultSortingOption={ PaginationSortingType.NEWEST_VIEWED }
+        onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
+        emptyState={ emptyState }
+        customPostsFetcher={ customPostsFetcher }
       />
-
-      <InfiniteScroll
-        next={ onEndGalleryReach }
-        hasMore={ paginationState.page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        loader={ null }
-        dataLength={ posts.length }
-      >
-        <PostCardGallery
-          posts={ posts }
-          postCardOptions={ postCardOptions }
-          loading={ loading }
-          emptyState={ emptyState }
-        />
-      </InfiniteScroll>
     </div>
   )
 }

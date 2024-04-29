@@ -42,22 +42,6 @@ export default async function handler (
 
   const apiRequest = GetPostsQueryParser.parseQuery(request.query)
 
-  if (apiRequest.filters) {
-    const viewedByFilterIndex =
-      apiRequest.filters?.findIndex((filter) => filter.type === 'viewedBy')
-
-    const viewedByFilter = {
-      type: 'viewedBy',
-      value: String(userId),
-    }
-
-    if (viewedByFilterIndex !== -1) {
-      apiRequest.filters[viewedByFilterIndex] = viewedByFilter
-    } else {
-      apiRequest.filters.push(viewedByFilter)
-    }
-  }
-
   const validationError = GetPostsApiRequestValidator.validate(apiRequest)
 
   if (validationError) {

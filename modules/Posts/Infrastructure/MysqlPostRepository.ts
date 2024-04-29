@@ -31,6 +31,7 @@ import { PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
 import ViewUncheckedUpdateManyWithoutPostNestedInput = Prisma.ViewUncheckedUpdateManyWithoutPostNestedInput;
 import ViewUpdateManyWithoutPostNestedInput = Prisma.ViewUpdateManyWithoutPostNestedInput;
+import SortOrder = Prisma.SortOrder;
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -1110,9 +1111,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     if (sortingOption === 'views') {
       sortCriteria = {
-        views: {
-          _count: sortingCriteria,
-        },
+        viewsCount: sortCriteria as unknown as SortOrder, // FIXME:
       }
     }
 

@@ -98,7 +98,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
         defaultPerPage,
         InfrastructureSortingCriteria.DESC,
         InfrastructureSortingOptions.VIEW_DATE,
-        []
+        [{ type: PostFilterOptions.VIEWED_BY, value: userComponentDto.id }]
       )
 
     setPostsHistory(postsHistory.posts.map((post) => {

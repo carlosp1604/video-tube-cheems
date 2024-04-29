@@ -19,7 +19,7 @@
 
     &:hover {
       @apply text-base-100 border-brand-primary-bg bg-base-900
-      transition-colors;
+      transition-colors cursor-pointer;
     }
 
     @screen md {

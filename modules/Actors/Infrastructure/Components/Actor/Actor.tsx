@@ -1,18 +1,14 @@
 import { FC, useEffect, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { useRouter } from 'next/router'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import { useGetPosts } from '~/hooks/GetPosts'
-import {
-  PostCardComponentDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import useTranslation from 'next-translate/useTranslation'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
-import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import {
+  PaginatedPostCardGallery, PaginatedPostCardGalleryConfiguration
+} from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
+import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 
 export interface Props {
@@ -30,11 +26,8 @@ export const Actor: FC<Props> = ({
   initialPosts,
   initialPostsNumber,
 }) => {
-  const [page, setPage] = useState<number>(1)
-  const [posts, setPosts] = useState<PostCardComponentDto[]>(initialPosts)
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
 
-  const { loading, getPosts } = useGetPosts()
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
@@ -48,40 +41,13 @@ export const Actor: FC<Props> = ({
     }
   }, [])
 
-  const updatePosts = async (page:number) => {
-    try {
-      const newPosts = await getPosts(
-        page,
-        PaginationSortingType.LATEST,
-        [{ type: PostFilterOptions.ACTOR_SLUG, value: actorSlug }]
-      )
+  const sortingOptions: PostsPaginationSortingType[] = [
+    PaginationSortingType.LATEST,
+    PaginationSortingType.OLDEST,
+    PaginationSortingType.MOST_VIEWED,
+  ]
 
-      if (newPosts) {
-        if (page === 1) {
-          setPosts(newPosts.posts.map((post) => {
-            return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-          }))
-        } else {
-          setPosts([
-            ...posts,
-            ...newPosts.posts.map((post) => {
-              return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale ?? 'en')
-            }),
-          ])
-        }
-
-        setPostsNumber(newPosts.postsNumber)
-      }
-    } catch (exception: unknown) {
-      console.error(exception)
-    }
-  }
-  const onEndGalleryReach = async () => {
-    const newPage = page + 1
-
-    setPage(newPage)
-    await updatePosts(newPage)
-  }
+  const postCardOptions: PaginatedPostCardGalleryConfiguration[] = [{ type: 'savePost' }, { type: 'react' }]
 
   const emptyState = (
     <EmptyState
@@ -92,27 +58,24 @@ export const Actor: FC<Props> = ({
 
   return (
     <>
-      <CommonGalleryHeader
+      <PaginatedPostCardGallery
+        key={ locale }
+        headerTag={ 'h1' }
+        initialPosts={ initialPosts }
+        initialPostsNumber={ initialPostsNumber }
         title={ 'actors:actor_posts_gallery_title' }
-        term={ { title: 'actorName', value: actorName } }
         subtitle={ t('actor_posts_gallery_posts_quantity', { postsNumber }) }
-        tag={ 'h2' }
+        term={ { title: 'actorName', value: actorName } }
+        page={ 1 }
+        order={ PaginationSortingType.LATEST }
+        filters={ [{ type: PostFilterOptions.ACTOR_SLUG, value: actorSlug }] }
+        filtersToParse={ [PostFilterOptions.ACTOR_SLUG] }
+        paginatedPostCardGalleryPostCardOptions={ postCardOptions }
+        sortingOptions={ sortingOptions }
+        defaultSortingOption={ PaginationSortingType.LATEST }
+        onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
+        emptyState={ emptyState }
       />
-
-      <InfiniteScroll
-        key={ router.asPath }
-        next={ onEndGalleryReach }
-        hasMore={ page < PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
-        loader={ null }
-        dataLength={ posts.length }
-      >
-        <PostCardGallery
-          posts={ posts }
-          postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-          emptyState={ emptyState }
-          loading={ loading }
-        />
-      </InfiniteScroll>
     </>
   )
 }

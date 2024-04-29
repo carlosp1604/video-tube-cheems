@@ -21,7 +21,7 @@ export interface UserProfilePageProps {
 
 export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentDto, htmlPageMetaContextProps }) => {
   const { t } = useTranslation('user_profile')
-  const { asPath } = useRouter()
+  const { locale } = useRouter()
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -58,7 +58,7 @@ export const UserProfilePage: NextPage<UserProfilePageProps> = ({ userComponentD
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <UserProfile
-        key={ asPath }
+        key={ locale }
         userComponentDto={ userComponentDto }
       />
     </>

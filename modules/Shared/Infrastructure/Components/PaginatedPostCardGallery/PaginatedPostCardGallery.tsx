@@ -307,7 +307,6 @@ export const PaginatedPostCardGallery: FC<Partial<Props> & Omit<Props,
         showAds={ true }
       />
       <PaginationBar
-        key={ asPath }
         pageNumber={ paginationState.page }
         pagesNumber={ PaginationHelper.calculatePagesNumber(postsNumber, defaultPerPage) }
         linkMode={ linkMode }

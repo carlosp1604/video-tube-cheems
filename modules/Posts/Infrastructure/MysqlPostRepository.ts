@@ -1111,7 +1111,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
 
     if (sortingOption === 'views') {
       sortCriteria = {
-        viewsCount: sortCriteria as unknown as SortOrder, // FIXME:
+        viewsCount: sortingCriteria,
       }
     }
 

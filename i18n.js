@@ -8,6 +8,7 @@ const i18nConfig = {
         .catch((exception) => reject((exception)))
     })
   },
+  localeDetection: true,
   logBuild: false,
   pages: {
     '*': [

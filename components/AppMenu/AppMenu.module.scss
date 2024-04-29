@@ -137,10 +137,6 @@
   &__language-button {
     @apply h-4 self-start mt-3;
 
-    @screen lg {
-      @apply h-5 pl-0;
-    }
-
     &:hover {
       @apply animate-pulse;
     }

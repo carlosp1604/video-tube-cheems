@@ -57,7 +57,11 @@
   }
 
   &__option-logo {
-    @apply h-6 w-auto;
+    @apply w-20 h-auto;
+
+    @screen md {
+      @apply w-28 h-auto;
+    }
   }
 
   &__option-icon {

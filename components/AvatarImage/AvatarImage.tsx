@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import Image from 'next/image'
 import { CommonAvatar } from '~/components/AvatarImage/CommonAvatar'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 interface Props {
   imageUrl: string | null
@@ -38,7 +39,7 @@ export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority' | 'color' |
         sizes={ '100vw' }
         priority={ priority }
         placeholder={ 'blur' }
-        blurDataURL={ '/img/placeholder.svg' }
+        blurDataURL={ rgbDataURL(81, 80, 80) }
       />
     )
   }

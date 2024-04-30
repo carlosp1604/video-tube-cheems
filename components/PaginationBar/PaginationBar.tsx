@@ -14,7 +14,7 @@ interface Props {
   pagesNumber: number
   onePageStateTitle: string
   disabled: boolean
-  linkMode: ElementLinkMode
+  linkMode: ElementLinkMode | undefined
   onPageChange: (page: number) => void
 }
 
@@ -78,22 +78,38 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
   let content: ReactElement
 
   if (pageNumber > pagesNumber && !disabled) {
-    content = (
-      <div className={ styles.paginationBar__errorState }>
-        <BsXCircle className={ styles.paginationBar__errorIcon }/>
-        { t('error_state_description') }
-        <Link
-          href={ { pathname, query: buildQuery(1) } }
-          className={ styles.paginationBar__errorButton }
-          title={ t('error_state_button_title') }
-          shallow={ linkMode.shallowNavigation }
-          scroll={ linkMode.scrollOnClick }
-          replace={ true }
-        >
-          { t('error_state_button_title') }
-        </Link>
-      </div>
-    )
+    if (linkMode) {
+      content = (
+        <div className={ styles.paginationBar__errorState }>
+          <BsXCircle className={ styles.paginationBar__errorIcon }/>
+          { t('error_state_description') }
+          <Link
+            href={ { pathname, query: buildQuery(1) } }
+            className={ styles.paginationBar__errorButton }
+            title={ t('error_state_button_title') }
+            shallow={ linkMode.shallowNavigation }
+            scroll={ linkMode.scrollOnClick }
+            replace={ true }
+          >
+            { t('error_state_button_title') }
+          </Link>
+        </div>
+      )
+    } else {
+      content = (
+        <div className={ styles.paginationBar__errorState }>
+          <BsXCircle className={ styles.paginationBar__errorIcon }/>
+          { t('error_state_description') }
+          <span
+            className={ styles.paginationBar__errorButton }
+            title={ t('error_state_button_title') }
+            onClick={ () => onPageChange && onPageChange(1) }
+          >
+            { t('error_state_button_title') }
+          </span>
+        </div>
+      )
+    }
   } else {
     content = (
       <div className={ styles.paginationBar__container }>
@@ -143,7 +159,7 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
             href={ { pathname, query: buildQuery(pageNumber + 1) } }
             active={ false }
             linkMode={ linkMode }
-            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber - 1) } } }
+            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber + 1) } } }
             key={ t('next_page_button_title') }
             disabled={ disabled || pageNumber === pagesNumber }
             hideDirection={ 'right' }
@@ -155,7 +171,7 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
             href={ { pathname, query: buildQuery(pagesNumber) } }
             active={ false }
             linkMode={ linkMode }
-            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pageNumber - 1) } } }
+            onClickButton={ () => { if (onPageChange && !disabled) { onPageChange(pagesNumber) } } }
             key={ t('last_page_button_title') }
             disabled={ disabled || pageNumber === pagesNumber }
             hideDirection={ 'right' }

@@ -13,7 +13,7 @@ interface Props {
   active: boolean
   disabled: boolean
   hideDirection: HideDirectionOnDisable | null
-  linkMode: ElementLinkMode
+  linkMode: ElementLinkMode | undefined
   onClickButton: () => void
 
 }
@@ -28,6 +28,40 @@ export const PaginationBarButton: FC<Partial<Props> & Omit<Props, 'disabled' | '
   linkMode,
   onClickButton,
 }) => {
+  let content: ReactElement
+
+  if (linkMode) {
+    content = (
+      <Link
+        href={ href }
+        className={ `
+          ${styles.paginationBarButton__pageNumberLink}
+          ${active ? styles.paginationBarButton__pageNumberLink_currentPage : ''}
+          ${disabled ? styles.paginationBarButton__pageNumberLink__disabled : ''}
+        ` }
+        scroll={ linkMode.scrollOnClick }
+        shallow={ linkMode.shallowNavigation }
+        replace={ linkMode.replace }
+        title={ title }
+      >
+        { linkTitle }
+      </Link>
+    )
+  } else {
+    content = (
+      <span
+        className={ `
+          ${styles.paginationBarButton__pageNumberLink}
+          ${active ? styles.paginationBarButton__pageNumberLink_currentPage : ''}
+          ${disabled ? styles.paginationBarButton__pageNumberLink__disabled : ''}
+        ` }
+        title={ title }
+      >
+        { linkTitle }
+      </span>
+    )
+  }
+
   return (
     <li
       className={ `
@@ -44,20 +78,7 @@ export const PaginationBarButton: FC<Partial<Props> & Omit<Props, 'disabled' | '
       title={ title }
       onClick={ onClickButton }
     >
-      <Link
-        href={ href }
-        className={ `
-          ${styles.paginationBarButton__pageNumberLink}
-          ${active ? styles.paginationBarButton__pageNumberLink_currentPage : ''}
-          ${disabled ? styles.paginationBarButton__pageNumberLink__disabled : ''}
-        ` }
-        scroll={ linkMode.scrollOnClick }
-        shallow={ linkMode.shallowNavigation }
-        replace={ linkMode.replace }
-        title={ title }
-      >
-        { linkTitle }
-      </Link>
+      { content }
     </li>
   )
 }

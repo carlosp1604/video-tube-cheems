@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import {
   InfrastructureSortingCriteria,
@@ -11,7 +11,6 @@ import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/Ge
 import { fromOrderTypeToComponentSortingOption } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 
 export interface GetPostsInterface {
-  loading: boolean
   getPosts: (
     page: number,
     order: PostsPaginationSortingType,
@@ -20,8 +19,6 @@ export interface GetPostsInterface {
 }
 
 export function useGetPosts (): GetPostsInterface {
-  const [loading, setLoading] = useState<boolean>(false)
-
   const fetchPosts = (
     page: number,
     orderCriteria: InfrastructureSortingCriteria,
@@ -43,8 +40,6 @@ export function useGetPosts (): GetPostsInterface {
     order: PostsPaginationSortingType,
     filters: FetchPostsFilter[]
   ): Promise<GetPostsApplicationResponse | null> => {
-    setLoading(true)
-
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
@@ -55,10 +50,8 @@ export function useGetPosts (): GetPostsInterface {
       console.error(exception)
 
       return null
-    } finally {
-      setLoading(false)
     }
   }, [])
 
-  return { loading, getPosts }
+  return { getPosts }
 }

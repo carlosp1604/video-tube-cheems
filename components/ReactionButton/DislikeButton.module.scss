@@ -1,6 +1,6 @@
 .dislike-button {
   &__container {
-    @apply flex flex-row items-center gap-x-1 text-brand-primary-bg text-sm
+    @apply flex flex-row items-center gap-x-1 text-brand-primary-bg
       transition-all;
 
     &_disabled {
@@ -9,7 +9,7 @@
   }
 
   &__dislike-button {
-    @apply text-base-400 text-base;
+    @apply text-base-400;
 
     &:hover {
       @apply text-red transition-all;

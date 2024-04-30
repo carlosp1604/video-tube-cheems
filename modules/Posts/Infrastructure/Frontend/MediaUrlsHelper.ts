@@ -94,14 +94,14 @@ export class MediaUrlsHelper {
   public static sortMediaUrl (mediaUrls: MediaUrlComponentDto[]): MediaUrlComponentDto[] {
     const providersOrder = [
       { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' }, // Direct
-      { id: '2fef1a77-a1f8-42a3-9293-437a6f4fc5cc' }, // Wolfstream
+      { id: '35677ea5-3641-4319-ae6f-1fe145c9b797' }, // Lulustream
       { id: 'b06ba1c1-4988-4b90-8271-a23a56fb0f61' }, // Filemoon
-      { id: '6a594991-7364-481d-85f1-62c5ba2b6cb3' }, // Vtube
-      { id: 'd460ba6c-5b2e-4cc9-a09e-eda5d5a7e12c' }, // Fastream
       { id: 'ab535237-2262-4763-2443-dfec1a6ec1b9' }, // Vidhide
+      { id: '6a594991-7364-481d-85f1-62c5ba2b6cb3' }, // Vtube
       { id: '70802e86-7a26-463b-8036-81d7d4ceac1a' }, // Voe
       { id: 'baa39748-8402-4378-b296-3ca653e97f9a' }, // Doodstream
-      { id: '35677ea5-3641-4319-ae6f-1fe145c9b797' }, // Lulustream
+      { id: '2fef1a77-a1f8-42a3-9293-437a6f4fc5cc' }, // Wolfstream
+      { id: 'd460ba6c-5b2e-4cc9-a09e-eda5d5a7e12c' }, // Fastream
     ]
 
     let currentPointer = -1

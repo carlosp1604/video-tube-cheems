@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GetPostsApplicationException } from '~/modules/Posts/Application/GetPosts/GetPostsApplicationException'
 import {
   PostsApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Api/Validators/PostsApiRequestValidatorError'
@@ -52,9 +51,9 @@ export default async function handler (
   const useCase = container.resolve<AddPostView>('addPostViewUseCase')
 
   try {
-    const posts = await useCase.add(applicationRequest)
+    await useCase.add(applicationRequest)
 
-    return response.status(200).json(posts)
+    response.status(201).end()
   } catch (exception: unknown) {
     if (!(exception instanceof AddPostViewApplicationException)) {
       console.error(exception)
@@ -64,10 +63,10 @@ export default async function handler (
 
     switch (exception.id) {
       case AddPostViewApplicationException.postNotFoundId:
-        return handleNotFound(response, POST_POST_NOT_FOUND, exception)
+        return handleNotFound(response, POST_POST_NOT_FOUND, exception.message)
 
       case AddPostViewApplicationException.userNotFoundId:
-        return handleNotFound(response, POST_USER_NOT_FOUND, exception)
+        return handleNotFound(response, POST_USER_NOT_FOUND, exception.message)
 
       default: {
         console.error(exception)
@@ -111,12 +110,12 @@ function handleBadRequest (response: NextApiResponse) {
 function handleNotFound (
   response: NextApiResponse,
   code: string,
-  exception: GetPostsApplicationException
+  message: string
 ) {
   return response.status(404)
     .json({
       code,
-      message: exception.message,
+      message,
     })
 }
 

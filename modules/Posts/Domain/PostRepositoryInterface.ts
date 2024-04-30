@@ -194,7 +194,7 @@ export interface PostRepositoryInterface {
    * @param postId Post ID
    * @param view Post View
    */
-  createPostView (postId: Post['id'], view: View): Promise<void>
+  createPostView (postId: Post['id'], view: View | null): Promise<void>
 
   /**
    * Find all user interaction with a post given its IDs

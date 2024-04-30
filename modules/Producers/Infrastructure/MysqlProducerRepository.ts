@@ -10,8 +10,6 @@ import {
 import { Prisma } from '@prisma/client'
 import ProducerOrderByWithRelationInput = Prisma.ProducerOrderByWithRelationInput
 import { ProducerSortingOption } from '~/modules/Producers/Domain/ProducerSorting'
-import { View } from '~/modules/Views/Domain/View'
-import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTranslator'
 
 export class MysqlProducerRepository implements ProducerRepositoryInterface {
   /**
@@ -19,7 +17,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
    * @param producer Producer to persist
    */
   public async save (producer: Producer): Promise<void> {
-    const producerModel = ProducerModelTranslator.toDatabase(producer)
+    const producerModel = ProducerModelTranslator.toDatabase(producer, 0)
 
     await prisma.producer.create({
       data: {
@@ -75,9 +73,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
           },
         },
         orderBy: {
-          views: {
-            _count: 'desc',
-          },
+          viewsCount: 'desc',
         },
       }),
     ])
@@ -96,6 +92,26 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
     const producer = await prisma.producer.findFirst({
       where: {
         slug: producerSlug,
+        deletedAt: null,
+      },
+    })
+
+    if (producer === null) {
+      return null
+    }
+
+    return ProducerModelTranslator.toDomain(producer)
+  }
+
+  /**
+   * Find a Producer given its ID
+   * @param producerId Producer ID
+   * @return Producer if found or null
+   */
+  public async findById (producerId: Producer['id']): Promise<Producer | null> {
+    const producer = await prisma.producer.findFirst({
+      where: {
+        id: producerId,
         deletedAt: null,
       },
     })
@@ -141,7 +157,6 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
                   },
                 },
               },
-              views: true,
             },
           },
         },
@@ -158,7 +173,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
       return {
         producer: ProducerModelTranslator.toDomain(producer),
         postsNumber: producer._count.posts,
-        producerViews: producer._count.views,
+        producerViews: Number.parseInt(producer.viewsCount.toString()),
       }
     })
 
@@ -169,25 +184,17 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
   }
 
   /**
-   * Create a new producer view for a producer given its ID
+   * Add a new producer view for a producer given its ID
    * @param producerId Producer ID
-   * @param view Producer View
    */
-  public async createProducerView (producerId: Producer['id'], view: View): Promise<void> {
-    const prismaPostView = ViewModelTranslator.toDatabase(view)
-
+  public async addProducerView (producerId: Producer['id']): Promise<void> {
     await prisma.producer.update({
       where: {
         id: producerId,
       },
       data: {
-        views: {
-          create: {
-            id: prismaPostView.id,
-            viewableType: prismaPostView.viewableType,
-            userId: prismaPostView.userId,
-            createdAt: prismaPostView.createdAt,
-          },
+        viewsCount: {
+          increment: 1,
         },
       },
     })
@@ -217,9 +224,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
 
     if (sortingOption === 'views') {
       sortCriteria = {
-        views: {
-          _count: sortingCriteria,
-        },
+        viewsCount: sortingCriteria,
       }
     }
 

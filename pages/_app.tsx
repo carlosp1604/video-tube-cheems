@@ -61,7 +61,7 @@ function App ({
   if (pathname.startsWith('/posts/videos/embed')) {
     return (
       <SessionProvider session={ session }>
-        <main className={ styles.app__embedContainer }>
+        <main className={ styles.app__embedContainer } translate={ 'no' }>
           <Component { ...pageProps }/>
         </main>
       </SessionProvider>
@@ -72,7 +72,7 @@ function App ({
     <SessionProvider session={ session }>
       <UsingRouterProvider >
         <LoginProvider>
-          <div className={ `${styles.app__layout} ${roboto.variable}` }>
+          <div className={ `${styles.app__layout} ${roboto.variable}` } translate={ 'no' }>
             <Head>
               <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -89,7 +89,10 @@ function App ({
               setOpenMenu={ setMenuOpen }
             />
 
-            <AppMenu onClickMenuButton={ () => setMenuOpen(!menuOpen) }/>
+            <AppMenu
+              onClickMenuButton={ () => setMenuOpen(!menuOpen) }
+              setOpenLanguageMenu={ setOpenLanguageMenu }
+            />
 
             <MenuSideBar
               menuOpen={ menuOpen }

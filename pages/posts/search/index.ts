@@ -20,12 +20,6 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
-  if (Array.isArray(search) && search.length > 1) {
-    return {
-      notFound: true,
-    }
-  }
-
   const cleanSearchTerm = DOMPurify.sanitize(search.toLocaleString())
 
   if (cleanSearchTerm === '') {

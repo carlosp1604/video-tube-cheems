@@ -3,7 +3,7 @@ import styles from './AppMenu.module.scss'
 import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
-import { FC, ReactElement, useState } from 'react'
+import { Dispatch, FC, ReactElement, SetStateAction, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
@@ -16,6 +16,7 @@ import { BsArrowUpShort } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
 import { HiBars3 } from 'react-icons/hi2'
 import dynamic from 'next/dynamic'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 const LoginModal = dynamic(() =>
   import('~/modules/Auth/Infrastructure/Components/Login/LoginModal').then((module) => module.LoginModal),
@@ -24,11 +25,13 @@ const LoginModal = dynamic(() =>
 
 export interface Props {
   onClickMenuButton : () => void
+  setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
+
 }
 
-export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
+export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) => {
   const [title, setTitle] = useState<string>('')
-  const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
+  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
   const { blocked } = useUsingRouterContext()
   const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false)
   const [openSearchBar, setOpenSearchBar] = useState<boolean>(false)
@@ -36,6 +39,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
   const { t } = useTranslation('app_menu')
   const router = useRouter()
   const { status, data } = useSession()
+  const locale = useRouter().locale ?? 'en'
 
   let userAvatar: ReactElement | null = (
     <IconButton
@@ -139,6 +143,22 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
                 sizes={ '100vw' }
               />
             </Link>
+            <button
+              className={ styles.appMenu__languageButton }
+              onClick={ () => setOpenLanguageMenu(true) }
+              title={ t('language_button_title') }
+            >
+              <Image
+                className={ styles.appMenu__languageImage }
+                alt={ t('language_button_image_alt', { locale }) }
+                src={ `/img/${locale}-locale.svg` }
+                width={ 0 }
+                height={ 0 }
+                sizes={ '100vw' }
+                placeholder={ 'blur' }
+                blurDataURL={ rgbDataURL(81, 80, 80) }
+              />
+            </button>
           </div>
           <div className={ `
             ${styles.appMenu__searchContainer}
@@ -161,7 +181,6 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton }) => {
                 showTooltip={ true }
               />
             </div>
-
             { userAvatar }
           </div>
         </div>

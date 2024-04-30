@@ -5,6 +5,7 @@ import { BsPlay } from 'react-icons/bs'
 import useTranslation from 'next-translate/useTranslation'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 export interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -51,6 +52,8 @@ export const VideoSourcesMenu: FC<Props> = ({ mediaUrls, selectedUrl, onClickOpt
                 width={ 0 }
                 height={ 0 }
                 sizes={ '100vw' }
+                placeholder={ 'blur' }
+                blurDataURL={ rgbDataURL(81, 80, 80) }
               />
               <span>
                 { mediaUrl.provider.name }

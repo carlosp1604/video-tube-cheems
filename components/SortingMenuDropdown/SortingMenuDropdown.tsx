@@ -10,6 +10,7 @@ import {
   fromOrderTypeToComponentSortingOption,
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { usePathname } from 'next/navigation'
 
 interface Props {
   activeOption: PaginationSortingType
@@ -31,7 +32,8 @@ export const SortingMenuDropdown: FC<Partial<Props>
     const [openMenu, setOpenMenu] = useState<boolean>(false)
 
     const { t } = useTranslation('sorting_menu_dropdown')
-    const { pathname, query } = useRouter()
+    const { query } = useRouter()
+    const pathname = usePathname()
 
     const componentActiveSortingOption = useMemo(() =>
       fromOrderTypeToComponentSortingOption(activeOption),
@@ -66,10 +68,12 @@ export const SortingMenuDropdown: FC<Partial<Props>
           const componentOption = fromOrderTypeToComponentSortingOption(option)
 
           let content: ReactElement = (
-            <span className={ `${styles.sortingMenuDropdown__dropdownItemLink}
-                ${componentOption.translationKey === componentActiveSortingOption.translationKey
+            <span className={ `
+              ${styles.sortingMenuDropdown__dropdownItemLink}
+              ${componentOption.translationKey === componentActiveSortingOption.translationKey
               ? styles.sortingMenuDropdown__dropdownItemLink_active
-              : ''} ` }>
+              : ''} ` }
+            >
               { t(componentOption.translationKey) }
             </span>
           )
@@ -80,12 +84,18 @@ export const SortingMenuDropdown: FC<Partial<Props>
             delete newQuery.page
             newQuery.order = String(option)
 
+            const search = new URLSearchParams()
+
+            Object.entries(newQuery).forEach(([key, value]) => {
+              search.append(key, `${value}`)
+            })
+
             content = (
               <Link className={ `${styles.sortingMenuDropdown__dropdownItemLink}
                 ${componentOption.translationKey === componentActiveSortingOption.translationKey
                 ? styles.sortingMenuDropdown__dropdownItemLink_active
                 : ''} ` }
-                href={ { pathname, query: newQuery } }
+                href={ `${pathname}?${search.toString()}` }
                 scroll={ linkMode.scrollOnClick }
                 shallow={ linkMode.shallowNavigation }
                 replace={ linkMode.replace }

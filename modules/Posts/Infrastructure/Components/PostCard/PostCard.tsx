@@ -11,6 +11,7 @@ import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { usePathname } from 'next/navigation'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { useRouter } from 'next/router'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 
 interface Props {
   post: PostCardComponentDto
@@ -35,7 +36,7 @@ export const PostCard: FC<Props> = ({
       height={ 0 }
       sizes={ '100vw' }
       placeholder={ 'blur' }
-      blurDataURL={ '/img/placeholder.svg' }
+      blurDataURL={ rgbDataURL(81, 80, 80) }
     />
   )
 

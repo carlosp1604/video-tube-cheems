@@ -6,3 +6,4 @@ export const ACTOR_INVALID_SORTING_CRITERIA = 'actor-unprocessable-entity-invali
 export const ACTOR_INVALID_SORTING_OPTION = 'actor-unprocessable-entity-invalid-sorting-option'
 export const ACTOR_INVALID_PER_PAGE = 'actor-unprocessable-entity-invalid-per-page'
 export const ACTOR_INVALID_PAGE = 'actor-unprocessable-entity-invalid-page'
+export const ACTOR_ACTOR_NOT_FOUND = 'actor-actor-not-found'

@@ -2,7 +2,6 @@ import { Producer } from './Producer'
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { ProducersWithPostsCountViewsCountWithTotalCount } from '~/modules/Producers/Domain/ProducerWithCountInterface'
-import { View } from '~/modules/Views/Domain/View'
 
 export interface ProducerRepositoryInterface {
   /**
@@ -33,6 +32,13 @@ export interface ProducerRepositoryInterface {
   findBySlug (producerSlug: Producer['slug']): Promise<Producer | null>
 
   /**
+   * Find a Producer given its ID
+   * @param producerId Producer ID
+   * @return Producer if found or null
+   */
+  findById (producerId: Producer['id']): Promise<Producer | null>
+
+  /**
    * Find Producers based on sorting criteria
    * @param offset Records offset
    * @param limit Records limit
@@ -48,9 +54,8 @@ export interface ProducerRepositoryInterface {
   ): Promise<ProducersWithPostsCountViewsCountWithTotalCount>
 
   /**
-   * Create a new producer view for a producer given its ID
+   * Add a new producer view for a producer given its ID
    * @param producerId Producer ID
-   * @param view Producer View
    */
-  createProducerView (producerId: Producer['id'], view: View): Promise<void>
+  addProducerView (producerId: Producer['id']): Promise<void>
 }

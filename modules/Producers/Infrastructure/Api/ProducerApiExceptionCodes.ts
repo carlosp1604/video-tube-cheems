@@ -6,3 +6,4 @@ export const PRODUCER_INVALID_SORTING_CRITERIA = 'producer-unprocessable-entity-
 export const PRODUCER_INVALID_SORTING_OPTION = 'producer-unprocessable-entity-invalid-sorting-option'
 export const PRODUCER_INVALID_PER_PAGE = 'producer-unprocessable-entity-invalid-per-page'
 export const PRODUCER_INVALID_PAGE = 'producer-unprocessable-entity-invalid-page'
+export const PRODUCER_PRODUCER_NOT_FOUND = 'producer-producer-not-found'

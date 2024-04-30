@@ -1,5 +1,6 @@
 export enum PostFilterOptions {
   POST_TITLE = 'postTitle',
+  SEARCH = 'search',
   PRODUCER_SLUG = 'producerSlug',
   ACTOR_SLUG = 'actorSlug',
   TAG_SLUG = 'tagSlug',

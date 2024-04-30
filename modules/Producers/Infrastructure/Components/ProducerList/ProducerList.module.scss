@@ -1,7 +1,11 @@
 .producer-list {
   &__category {
-    @apply block text-center rounded-lg p-2 border border-base-800
-      truncate text-sm transition-colors;
+    @apply block text-center rounded-lg p-1.5 text-base-400
+      truncate text-sm transition-colors font-normal;
+
+    @screen md {
+      @apply p-2;
+    }
 
     &:hover {
       @apply text-base-100 transition-colors;
@@ -14,7 +18,7 @@
   }
 
   &__category-active {
-    @apply font-bold bg-[color:var(--category-color)]
+    @apply font-bold bg-[color:var(--category-color)] text-base-100
       transition border-[color:var(--category-color)] border;
 
     &:hover {

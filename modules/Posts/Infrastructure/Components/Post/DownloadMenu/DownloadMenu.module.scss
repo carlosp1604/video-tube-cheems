@@ -8,6 +8,10 @@
   }
 
   &__option-image {
-    @apply max-w-[90px] w-full h-4;
+    @apply w-10 h-auto;
+
+    @screen md {
+      @apply w-12;
+    }
   }
 }

@@ -31,22 +31,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   const { t } = useTranslation('search')
   const locale = useRouter().locale ?? 'en'
 
-  const structuredData = {
-    '@context': 'http://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [{
-      '@type': 'ListItem',
-      position: 1,
-      name: t('search_page_breadcrumb_title'),
-      item: `${baseUrl}/${locale}/posts/search`,
-    }, {
-      '@type': 'ListItem',
-      position: 2,
-      name: initialSearchTerm,
-      item: `${baseUrl}/${locale}/posts/search/${initialSearchTerm}`,
-    }],
-  }
-
   let canonicalUrl = `${baseUrl}/posts/search/${initialSearchTerm}`
 
   if (locale !== 'en') {
@@ -65,7 +49,6 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   const htmlPageMetaProps = {
     ...htmlPageMetaContextProps,
     resourceProps: htmlPageMetaUrlProps,
-    structuredData: JSON.stringify(structuredData),
   }
 
   return (

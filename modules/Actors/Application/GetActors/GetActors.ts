@@ -1,4 +1,4 @@
-import { GetActorsApplicationRequestDto } from './GetActorsApplicationRequestDto'
+import { GetActorsApplicationRequestDto, GetActorsRequestFilterDto } from './GetActorsApplicationRequestDto'
 import { GetActorsApplicationResponseDto } from './GetActorsApplicationResponseDto'
 import { ActorRepositoryInterface } from '~/modules/Actors/Domain/ActorRepositoryInterface'
 import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
@@ -11,6 +11,9 @@ import { GetActorsSortingOptionValidator } from '~/modules/Actors/Domain/Validat
 import {
   GetActorsApplicationResponseDtoTranslator
 } from '~/modules/Actors/Application/GetActors/GetActorsApplicationResponseDtoTranslator'
+import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
+import { ActorFilterOptionInterface } from '~/modules/Actors/Domain/ActorFilterOption'
+import { GetActorsFilterOptionValidator } from '~/modules/Actors/Domain/Validators/GetActorsFilterOptionValidator'
 
 export class GetActors {
   // eslint-disable-next-line no-useless-constructor
@@ -20,6 +23,8 @@ export class GetActors {
     GetActors.validateRequest(request)
     const offset = (request.page - 1) * request.actorsPerPage
 
+    const filters = GetActors.parseFilters(request.filters)
+
     const sortingCriteria = GetActors.validateSortingCriteria(request.sortCriteria)
     const sortingOption = GetActors.validateSortingOption(request.sortOption)
 
@@ -27,7 +32,8 @@ export class GetActors {
       offset,
       request.actorsPerPage,
       sortingOption,
-      sortingCriteria
+      sortingCriteria,
+      filters
     )
 
     return GetActorsApplicationResponseDtoTranslator.fromDomain(actors)
@@ -41,6 +47,31 @@ export class GetActors {
     if (isNaN(request.actorsPerPage) || request.actorsPerPage < minPerPage || request.actorsPerPage > maxPerPage) {
       throw GetActorsApplicationException.invalidPerPage(minPerPage, maxPerPage)
     }
+  }
+
+  private static parseFilters (filters: GetActorsRequestFilterDto[]): ActorFilterOptionInterface[] {
+    return filters.map((filter) => {
+      try {
+        const validatedFilter = new GetActorsFilterOptionValidator().validate(filter.type)
+        const validFilterValue = new FilterValueValidator().validate(filter.value)
+
+        return { type: validatedFilter, value: validFilterValue }
+      } catch (exception: unknown) {
+        if (!(exception instanceof ValidationException)) {
+          throw exception
+        }
+
+        if (exception.id === ValidationException.invalidFilterTypeId) {
+          throw GetActorsApplicationException.invalidFilterType(filter.type)
+        }
+
+        if (exception.id === ValidationException.invalidFilterValueId) {
+          throw GetActorsApplicationException.invalidFilterValue()
+        }
+
+        throw exception
+      }
+    })
   }
 
   private static validateSortingOption (sortingOption: string): GetActorsSortingOption {

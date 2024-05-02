@@ -5,17 +5,16 @@ import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructur
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { FC, ReactElement, useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
 import {
-  PostsPaginationConfiguration,
-  PostsPaginationQueryParams
-} from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
+  PostsQueryParamsParser
+} from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
 import { useGetPosts } from '~/hooks/GetPosts'
 import { useFirstRender } from '~/hooks/FirstRender'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 import dynamic from 'next/dynamic'
 import {
   PostCardDeletableOptions,
@@ -29,6 +28,7 @@ import {
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
 
 const PaginationBar = dynamic(() =>
   import('~/components/PaginationBar/PaginationBar').then((module) => module.PaginationBar), { ssr: false }
@@ -37,13 +37,13 @@ const PaginationBar = dynamic(() =>
 export type PostsFetcher = (
   page: number,
   order: PostsPaginationSortingType,
-  filters: FetchPostsFilter[]
+  filters: FetchFilter<PostFilterOptions>[]
 ) => Promise<GetPostsApplicationResponse | null>
 
 export type PaginationStateChange = (
   pageNumber: number,
   order: PostsPaginationSortingType,
-  filters: FetchPostsFilter[]
+  filters: FetchFilter<PostFilterOptions>[]
 ) => void
 
 export type PaginatedPostCardGalleryPostCardOption = PostCardOption
@@ -60,7 +60,7 @@ export type PaginatedPostCardGalleryConfiguration =
 interface PaginationState {
   page: number
   order: PostsPaginationSortingType
-  filters: FetchPostsFilter[]
+  filters: FetchFilter<PostFilterOptions>[]
 }
 
 export interface Props {
@@ -72,7 +72,7 @@ export interface Props {
   order: PostsPaginationSortingType
   initialPosts: PostCardComponentDto[] | undefined
   initialPostsNumber: number | undefined
-  filters: FetchPostsFilter[]
+  filters: FetchFilter<PostFilterOptions>[]
   filtersToParse: PostFilterOptions[]
   paginatedPostCardGalleryPostCardOptions: PaginatedPostCardGalleryConfiguration[]
   linkMode: ElementLinkMode | undefined
@@ -113,7 +113,7 @@ export const PaginatedPostCardGallery: FC<Partial<Props> & Omit<Props,
   const [loading, setLoading] = useState<boolean>(false)
 
   const router = useRouter()
-  const { query, asPath } = router
+  const { query } = router
   const locale = router.locale ?? 'en'
   const { getPosts } = useGetPosts()
   const firstRender = useFirstRender()
@@ -126,27 +126,32 @@ export const PaginatedPostCardGallery: FC<Partial<Props> & Omit<Props,
   })
 
   // TODO: Add support to change perPage prop
-  const configuration: Omit<PostsPaginationConfiguration, 'perPage'> = {
-    page: {
-      defaultValue: 1,
-      maxValue: Infinity,
-      minValue: 1,
-    },
-    filters: {
-      filtersToParse,
-    },
-    sortingOptionType: {
-      defaultValue: defaultSortingOption,
-      parseableOptionTypes: sortingOptions,
-    },
-  }
+  const configuration:
+    Omit<QueryParamsParserConfiguration<PostFilterOptions, PostsPaginationSortingType>, 'perPage'> = {
+      page: {
+        defaultValue: 1,
+        maxValue: Infinity,
+        minValue: 1,
+      },
+      filters: {
+        filtersToParse,
+      },
+      sortingOptionType: {
+        defaultValue: defaultSortingOption,
+        parseableOptionTypes: sortingOptions,
+      },
+    }
 
-  const updatePosts = async (page:number, order: PostsPaginationSortingType, filters: FetchPostsFilter[]) => {
+  const updatePosts = async (
+    page:number,
+    order: PostsPaginationSortingType,
+    filters: FetchFilter<PostFilterOptions>[]
+  ) => {
     setLoading(true)
 
     const parsedFilters = filters.map((filter) => {
       return {
-        type: PostsPaginationQueryParams.getFilterAlias(filter.type),
+        type: PostsQueryParamsParser.getFilterAlias(filter.type),
         value: filter.value,
       }
     })
@@ -173,7 +178,9 @@ export const PaginatedPostCardGallery: FC<Partial<Props> & Omit<Props,
     setLoading(false)
   }
 
-  const arraysEqual = (currentFiltersArray: FetchPostsFilter[], newFiltersArray: FetchPostsFilter[]) => {
+  const arraysEqual = (
+    currentFiltersArray: FetchFilter<PostFilterOptions>[],
+    newFiltersArray: FetchFilter<PostFilterOptions>[]) => {
     if (currentFiltersArray.length !== newFiltersArray.length) {
       return false
     }
@@ -207,7 +214,7 @@ export const PaginatedPostCardGallery: FC<Partial<Props> & Omit<Props,
       return
     }
 
-    const queryParams = new PostsPaginationQueryParams(query, configuration)
+    const queryParams = new PostsQueryParamsParser(query, configuration)
 
     const newPage = queryParams.page ?? configuration.page.defaultValue
 

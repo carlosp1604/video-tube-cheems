@@ -41,14 +41,4 @@
     @apply font-light font-sans text-base normal-case whitespace-pre-line
       text-center;
   }
-
-  &__back-to-home-link {
-    @apply flex items-center mt-4 justify-center py-2 px-4
-      rounded-lg border border-brand-primary-bg transition-colors
-      text-base-300 font-sans;
-
-    &:hover, &:focus {
-      @apply text-base-300 bg-brand-primary-bg transition-colors;
-    }
-  }
 }

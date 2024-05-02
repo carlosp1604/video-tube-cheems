@@ -1,4 +1,5 @@
 {
+  "already_searching_term_error_message": "Ya estás buscando este término",
   "producer_card_image_alt_title": "Imagen de perfil de {{producerName}}",
   "producer_card_posts_count_title": "{{postsNumber}} posts",
   "producer_card_views_count_title": "{{viewsNumber}} vistas",
@@ -15,5 +16,9 @@
   "producers_gallery_subtitle": "{{producersNumber}} productoras",
   "producers_gallery_title": "Productoras",
   "producers_page_description": "¡Busca a tus productores porno favoritos en cheemsporno y mira sus videos gratis en HD!",
-  "producers_page_title": "Productoras porno. Videos de sexo gratis en HD"
+  "producers_page_title": "Productoras porno. Videos de sexo gratis en HD",
+  "producers_search_button_title": "Buscar productoras",
+  "producers_search_placeholder_title": "Buscar productoras por su nombre",
+  "producers_search_result_title": "Resultados para <0>{{searchTerm}}</0>",
+  "producers_see_all_button_title": "Ver todo"
 }

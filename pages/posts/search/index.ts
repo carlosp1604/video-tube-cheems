@@ -1,15 +1,15 @@
 import { GetServerSideProps } from 'next'
 import { SearchPage, SearchPageProps } from '~/components/pages/SearchPage/SearchPage'
-import {
-  PostsPaginationConfiguration,
-  PostsPaginationQueryParams
-} from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import DOMPurify from 'isomorphic-dompurify'
 import { Settings } from 'luxon'
+import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
+import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -33,8 +33,8 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const configuration: Partial<PostsPaginationConfiguration> &
-    Pick<PostsPaginationConfiguration, 'page' | 'sortingOptionType'> = {
+  const configuration:
+    Omit<QueryParamsParserConfiguration<PostFilterOptions, PostsPaginationSortingType>, 'filters' | 'perPage'> = {
       page: {
         defaultValue: 1,
         maxValue: Infinity,
@@ -50,7 +50,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
       },
     }
 
-  const paginationQueryParams = new PostsPaginationQueryParams(context.query, configuration)
+  const paginationQueryParams = new PostsQueryParamsParser(context.query, configuration)
 
   if (paginationQueryParams.parseFailed) {
     const query = paginationQueryParams.getParsedQueryString()

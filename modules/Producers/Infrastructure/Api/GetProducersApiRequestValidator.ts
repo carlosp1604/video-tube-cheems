@@ -6,6 +6,10 @@ import { UnprocessedGetProducersApiRequestDto } from '~/modules/Producers/Infras
 export class GetProducersApiRequestValidator {
   private static getProducersApiRequestSchema = z.object({
     page: z.number().positive().min(0),
+    filters: z.array(z.object({
+      type: z.string().min(1),
+      value: z.string().min(1),
+    })),
     perPage: z.number().positive().min(minPerPage).max(maxPerPage),
     orderBy: z.string().min(1),
     order: z.string().min(1),

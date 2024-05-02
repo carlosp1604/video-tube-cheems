@@ -1,43 +1,45 @@
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
 import { ParsedUrlQuery } from 'querystring'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
-import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
+import {
+  fromOrderTypeToComponentSortingOption,
+  PaginationSortingType
+} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 import { ComponentSortingOption } from '~/components/SortingMenuDropdown/ComponentSortingOptions'
-import { fromOrderTypeToComponentSortingOption } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 
-export interface PostsPaginationNumericParameterConfiguration {
+export interface NumericParameterConfiguration {
   defaultValue: number
   maxValue: number
   minValue: number
 }
 
-export interface PostsPaginationFiltersParameterConfiguration {
-  filtersToParse: PostFilterOptions[]
+export interface FiltersParameterConfiguration<T extends FilterOptions> {
+  filtersToParse: T[]
 }
 
-export interface PostsPaginationSortingOptionParameterConfiguration {
-  defaultValue: PostsPaginationSortingType
-  parseableOptionTypes: PostsPaginationSortingType[]
+export interface SortingOptionParameterConfiguration<K extends PaginationSortingType> {
+  defaultValue: K
+  parseableOptionTypes: K[]
 }
 
-export interface PostsPaginationConfiguration {
-  page: PostsPaginationNumericParameterConfiguration
-  perPage: PostsPaginationNumericParameterConfiguration
-  filters: PostsPaginationFiltersParameterConfiguration
-  sortingOptionType: PostsPaginationSortingOptionParameterConfiguration
+export interface QueryParamsParserConfiguration<T extends FilterOptions, K extends PaginationSortingType> {
+  page: NumericParameterConfiguration
+  perPage: NumericParameterConfiguration
+  filters: FiltersParameterConfiguration<T>
+  sortingOptionType: SortingOptionParameterConfiguration<K>
 }
 
-export class PostsPaginationQueryParams {
-  private configuration: Partial<PostsPaginationConfiguration>
+export abstract class QueryParamsParser<T extends FilterOptions, K extends PaginationSortingType> {
+  protected configuration: Partial<QueryParamsParserConfiguration<T, K>>
   public readonly page: number | null
   public readonly perPage: number | null
-  public readonly filters: FetchPostsFilter[]
-  public readonly sortingOptionType: PostsPaginationSortingType | null
-  private _parseFailed = false
+  public readonly filters: FetchFilter<T>[]
+  public readonly sortingOptionType: K | null
+  protected _parseFailed = false
 
   constructor (
     query: ParsedUrlQuery,
-    configuration: Partial<PostsPaginationConfiguration>
+    configuration: Partial<QueryParamsParserConfiguration<T, K>>
   ) {
     this.configuration = configuration
     this.page = this.parsePage(query)
@@ -123,30 +125,9 @@ export class PostsPaginationQueryParams {
     return parsedPerPage
   }
 
-  private parseFilters (query: ParsedUrlQuery): FetchPostsFilter[] {
-    const filters: FetchPostsFilter [] = []
+  protected abstract parseFilters (query: ParsedUrlQuery): FetchFilter<T>[]
 
-    if (!this.configuration.filters) {
-      return filters
-    }
-
-    for (const parseableFilter of this.configuration.filters.filtersToParse) {
-      const filter = query[parseableFilter]
-
-      if (!filter || (filter && Array.isArray(filter))) {
-        continue
-      }
-
-      filters.push({
-        type: PostsPaginationQueryParams.getFilterAlias(parseableFilter),
-        value: filter,
-      })
-    }
-
-    return filters
-  }
-
-  private parseSortingOption (query: ParsedUrlQuery): PostsPaginationSortingType | null {
+  private parseSortingOption (query: ParsedUrlQuery): K | null {
     if (!this.configuration.sortingOptionType) {
       this._parseFailed = true
 
@@ -175,7 +156,7 @@ export class PostsPaginationQueryParams {
       (optionToParse) => optionToParse === parseOrderBy)
 
     if (validOptionMatch) {
-      return parseOrderBy as PostsPaginationSortingType
+      return parseOrderBy as K
     }
 
     this._parseFailed = true
@@ -183,18 +164,15 @@ export class PostsPaginationQueryParams {
     return this.configuration.sortingOptionType.defaultValue
   }
 
-  public getFilter (filterType: PostFilterOptions): FetchPostsFilter | null {
-    const foundFilter = this.filters.find((filter) => filter.type === filterType)
+  public getFilter (filterType: T): FetchFilter<T> | null {
+    const foundFilter =
+      this.filters.find((filter) => filter.type === filterType)
 
     if (!foundFilter) {
       return null
     }
 
     return foundFilter
-  }
-
-  get parseFailed (): boolean {
-    return this._parseFailed
   }
 
   get componentSortingOption (): ComponentSortingOption | null {
@@ -239,36 +217,8 @@ export class PostsPaginationQueryParams {
     return queries.join('&')
   }
 
-  public static buildQuery (
-    page: string,
-    defaultPage: string,
-    sortingOption: PostsPaginationSortingType,
-    defaultSortingOption: PostsPaginationSortingType,
-    filters: FetchPostsFilter[]
-  ): ParsedUrlQuery {
-    const query: ParsedUrlQuery = {}
-
-    if (page !== defaultPage) {
-      query.page = page
-    }
-
-    if (sortingOption !== defaultSortingOption) {
-      query.order = sortingOption
-    }
-
-    for (const filter of filters) {
-      query[filter.type] = filter.value
-    }
-
-    return query
-  }
-
-  public static getFilterAlias (filterOption: PostFilterOptions): PostFilterOptions {
-    if (filterOption === PostFilterOptions.SEARCH) {
-      return PostFilterOptions.POST_TITLE
-    }
-
-    return filterOption
+  get parseFailed (): boolean {
+    return this._parseFailed
   }
 
   private parseNumber (value: string): number | null {

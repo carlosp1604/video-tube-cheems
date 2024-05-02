@@ -7,3 +7,5 @@ export const ACTOR_INVALID_SORTING_OPTION = 'actor-unprocessable-entity-invalid-
 export const ACTOR_INVALID_PER_PAGE = 'actor-unprocessable-entity-invalid-per-page'
 export const ACTOR_INVALID_PAGE = 'actor-unprocessable-entity-invalid-page'
 export const ACTOR_ACTOR_NOT_FOUND = 'actor-actor-not-found'
+export const ACTOR_INVALID_FILTER_TYPE = 'actor-unprocessable-entity-invalid-filter-type'
+export const ACTOR_INVALID_FILTER_VALUE = 'actor-unprocessable-entity-invalid-filter-value'

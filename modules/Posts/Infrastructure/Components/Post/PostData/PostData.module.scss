@@ -36,17 +36,7 @@
   }
 
   &__show-info-section {
-    @apply relative;
-  }
-
-  &__show-info-button {
-    @apply absolute left-1/2 -top-5 bg-brand-primary-bg px-4 py-1
-    rounded-lg text-sm transition-colors;
-    transform: translate(-50%);
-
-    &:hover {
-      @apply bg-brand-secondary-light transition-colors;
-    }
+    @apply -mt-6 self-center;
   }
 
   &__post-extra-data {

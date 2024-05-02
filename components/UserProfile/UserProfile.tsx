@@ -13,7 +13,6 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
@@ -26,6 +25,7 @@ import {
   UserSavedPostsEmptyState
 } from '~/modules/Auth/Infrastructure/Components/UserSavedPostsEmptyState/UserSavedPostsEmptyState'
 import { useSession } from 'next-auth/react'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface Props {
   userComponentDto: UserProfileHeaderComponentDto
@@ -81,7 +81,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
         defaultPerPage,
         InfrastructureSortingCriteria.DESC,
         InfrastructureSortingOptions.SAVED_DATE,
-        [{ type: PostFilterOptions.SAVED_BY, value: userComponentDto.id }]
+        [{ type: FilterOptions.SAVED_BY, value: userComponentDto.id }]
       )
 
     setSavedPosts(savedPosts.posts.map((post) => {
@@ -98,7 +98,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
         defaultPerPage,
         InfrastructureSortingCriteria.DESC,
         InfrastructureSortingOptions.VIEW_DATE,
-        [{ type: PostFilterOptions.VIEWED_BY, value: userComponentDto.id }]
+        [{ type: FilterOptions.VIEWED_BY, value: userComponentDto.id }]
       )
 
     setPostsHistory(postsHistory.posts.map((post) => {

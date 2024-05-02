@@ -3,7 +3,6 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useRouter } from 'next/router'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import useTranslation from 'next-translate/useTranslation'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageComponentDto'
@@ -12,6 +11,7 @@ import {
   PaginatedPostCardGallery
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface Props {
   initialPage: number
@@ -67,8 +67,8 @@ export const Tag: FC<Props> = ({
         order={ initialOrder }
         initialPosts={ initialPosts }
         initialPostsNumber={ initialPostsNumber }
-        filters={ [{ type: PostFilterOptions.TAG_SLUG, value: tag.slug }] }
-        filtersToParse={ [PostFilterOptions.TAG_SLUG] }
+        filters={ [{ type: FilterOptions.TAG_SLUG, value: tag.slug }] }
+        filtersToParse={ [FilterOptions.TAG_SLUG] }
         paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         linkMode={ linkMode }
         sortingOptions={ sortingOptions }

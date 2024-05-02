@@ -1,4 +1,5 @@
 {
+  "already_searching_term_error_message": "You are already searching for this term",
   "producer_card_image_alt_title": "{{producerName}} profile image",
   "producer_card_posts_count_title": "{{postsNumber}} posts",
   "producer_card_views_count_title": "{{viewsNumber}} views",
@@ -15,5 +16,9 @@
   "producers_gallery_subtitle": "{{producersNumber}} producers",
   "producers_gallery_title": "Producers",
   "producers_page_description": "Search for your favorite porn producers on cheemsporno and watch their videos for free in HD!",
-  "producers_page_title": "Porn Producers. Free sex videos in HD"
+  "producers_page_title": "Porn Producers. Free sex videos in HD",
+  "producers_search_button_title": "Search for producers",
+  "producers_search_placeholder_title": "Search for producers by name",
+  "producers_search_result_title": "Results for <0>{{searchTerm}}</0>",
+  "producers_see_all_button_title": "See all"
 }

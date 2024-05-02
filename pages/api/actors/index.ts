@@ -6,11 +6,12 @@ import { GetActorsRequestDtoTranslator } from '~/modules/Actors/Infrastructure/G
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActors/GetActorsApplicationException'
 import { ActorsApiRequestValidatorError } from '~/modules/Actors/Infrastructure/Api/ActorsApiRequestValidatorError'
 import {
+  GetActorsApiFilterRequestDto,
   GetActorsApiRequestDto,
   UnprocessedGetActorsApiRequestDto
 } from '~/modules/Actors/Infrastructure/Api/GetActorsApiRequestDto'
 import {
-  ACTOR_BAD_REQUEST,
+  ACTOR_BAD_REQUEST, ACTOR_INVALID_FILTER_TYPE, ACTOR_INVALID_FILTER_VALUE,
   ACTOR_INVALID_PAGE,
   ACTOR_INVALID_PER_PAGE,
   ACTOR_INVALID_SORTING_CRITERIA,
@@ -19,6 +20,7 @@ import {
   ACTOR_SERVER_ERROR,
   ACTOR_VALIDATION
 } from '~/modules/Actors/Infrastructure/Api/ActorApiExceptionCodes'
+import { GetActorsFilterStringTypeOptions } from '~/modules/Actors/Domain/ActorFilterOption'
 
 export default async function handler (
   request: NextApiRequest,
@@ -70,6 +72,12 @@ export default async function handler (
       case GetActorsApplicationException.invalidPageValueId:
         return handleUnprocessableEntity(response, exception, ACTOR_INVALID_PAGE)
 
+      case GetActorsApplicationException.invalidFilterTypeId:
+        return handleUnprocessableEntity(response, exception, ACTOR_INVALID_FILTER_TYPE)
+
+      case GetActorsApplicationException.invalidFilterValueId:
+        return handleUnprocessableEntity(response, exception, ACTOR_INVALID_FILTER_VALUE)
+
       default: {
         console.error(exception)
 
@@ -93,11 +101,26 @@ const parseUnprocessedQuery = (request: NextApiRequest): UnprocessedGetActorsApi
     actorsPerPage = parseInt(String(perPage))
   }
 
+  const filters: GetActorsApiFilterRequestDto[] = []
+
+  for (const filter of Object.values(GetActorsFilterStringTypeOptions)) {
+    const queryFilter = request.query[`${filter}`]
+
+    if (queryFilter) {
+      filters.push({
+        type: filter,
+        value: String(queryFilter),
+      })
+    }
+  }
+
   return {
     page: actorsPage ?? page,
     perPage: actorsPerPage ?? perPage,
     order,
     orderBy,
+    filters,
+
   }
 }
 

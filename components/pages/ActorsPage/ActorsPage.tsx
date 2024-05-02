@@ -15,6 +15,7 @@ import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Exoclic
 import { useRouter } from 'next/router'
 
 export interface ActorsPageProps {
+  initialSearchTerm: string
   initialPage: number
   initialOrder: ActorsPaginationSortingType
   initialActors: ActorCardDto[]
@@ -24,6 +25,7 @@ export interface ActorsPageProps {
 }
 
 export const ActorsPage: NextPage<ActorsPageProps> = ({
+  initialSearchTerm,
   initialActors,
   initialActorsNumber,
   initialPage,
@@ -61,6 +63,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
       <MobileBanner />
 
       <Actors
+        initialSearchTerm={ initialSearchTerm }
         initialPage={ initialPage }
         initialOrder={ initialOrder }
         initialActors={ initialActors }

@@ -9,11 +9,12 @@ import {
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { PaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
+import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend/ActorQueryParamsParser'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -21,15 +22,18 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const paginationQueryParams = new PaginationQueryParams(
+  const paginationQueryParams = new ActorQueryParamsParser(
     context.query,
     {
+      filters: {
+        filtersToParse: [FilterOptions.ACTOR_NAME],
+      },
       sortingOptionType: {
         defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: [
+          PaginationSortingType.POPULARITY,
           PaginationSortingType.NAME_FIRST,
           PaginationSortingType.NAME_LAST,
-          PaginationSortingType.POPULARITY,
           // PaginationSortingType.MORE_POSTS,
           // PaginationSortingType.LESS_POSTS,
         ],
@@ -67,6 +71,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: ActorsPageProps = {
+    initialSearchTerm: '',
     initialActors: [],
     initialActorsNumber: 0,
     initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.NAME_FIRST,
@@ -91,11 +96,18 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
       page = paginationQueryParams.page
     }
 
+    const actorNameFilter = paginationQueryParams.getFilter(FilterOptions.ACTOR_NAME)
+
+    if (actorNameFilter) {
+      props.initialSearchTerm = actorNameFilter.value
+    }
+
     const actors = await getActors.get({
       actorsPerPage: defaultPerPage,
       page,
       sortCriteria,
       sortOption,
+      filters: actorNameFilter ? [actorNameFilter] : [],
     })
 
     props.initialActorsNumber = actors.actorsNumber

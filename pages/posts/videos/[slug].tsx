@@ -48,12 +48,6 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
       baseUrl = env.BASE_URL
     }
 
-    // Experimental: Try yo improve performance (1 day)
-    context.res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=86400, stale-while-revalidate=300'
-    )
-
     const applicationPost = PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale)
 
     return {

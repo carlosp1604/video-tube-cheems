@@ -7,3 +7,5 @@ export const PRODUCER_INVALID_SORTING_OPTION = 'producer-unprocessable-entity-in
 export const PRODUCER_INVALID_PER_PAGE = 'producer-unprocessable-entity-invalid-per-page'
 export const PRODUCER_INVALID_PAGE = 'producer-unprocessable-entity-invalid-page'
 export const PRODUCER_PRODUCER_NOT_FOUND = 'producer-producer-not-found'
+export const PRODUCER_INVALID_FILTER_TYPE = 'producer-unprocessable-entity-invalid-filter-type'
+export const PRODUCER_INVALID_FILTER_VALUE = 'producer-unprocessable-entity-invalid-filter-value'

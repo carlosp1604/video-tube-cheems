@@ -5,16 +5,17 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import { fromOrderTypeToComponentSortingOption } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 
 export interface GetPostsInterface {
   getPosts: (
     page: number,
     order: PostsPaginationSortingType,
-    filters: FetchPostsFilter[]
+    filters: FetchFilter<PostFilterOptions>[]
   ) => Promise<GetPostsApplicationResponse | null>
 }
 
@@ -23,7 +24,7 @@ export function useGetPosts (): GetPostsInterface {
     page: number,
     orderCriteria: InfrastructureSortingCriteria,
     orderOption: InfrastructureSortingOptions,
-    filters: FetchPostsFilter[]
+    filters: FetchFilter<PostFilterOptions>[]
   ) => {
     return (new PostsApiService())
       .getPosts(
@@ -38,7 +39,7 @@ export function useGetPosts (): GetPostsInterface {
   const getPosts = useCallback(async (
     page: number,
     order: PostsPaginationSortingType,
-    filters: FetchPostsFilter[]
+    filters: FetchFilter<PostFilterOptions>[]
   ): Promise<GetPostsApplicationResponse | null> => {
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 

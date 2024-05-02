@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { container } from '~/awilix.container'
 import {
-  PRODUCER_BAD_REQUEST,
+  PRODUCER_BAD_REQUEST, PRODUCER_INVALID_FILTER_TYPE, PRODUCER_INVALID_FILTER_VALUE,
   PRODUCER_INVALID_PAGE,
   PRODUCER_INVALID_PER_PAGE,
   PRODUCER_INVALID_SORTING_CRITERIA,
@@ -11,6 +11,7 @@ import {
   GetProducersApplicationException
 } from '~/modules/Producers/Application/GetProducers/GetProducersApplicationException'
 import {
+  GetProducersApiFilterRequestDto,
   GetProducersApiRequestDto,
   UnprocessedGetProducersApiRequestDto
 } from '~/modules/Producers/Infrastructure/Api/GetProducersApiRequestDto'
@@ -20,6 +21,7 @@ import {
   ProducerApiRequestValidatorError
 } from '~/modules/Producers/Infrastructure/Api/ProducerApiRequestValidatorError'
 import { GetProducersApiRequestValidator } from '~/modules/Producers/Infrastructure/Api/GetProducersApiRequestValidator'
+import { GetProducersFilterStringTypeOptions } from '~/modules/Producers/Domain/ProducerFilterOption'
 
 export default async function handler (
   request: NextApiRequest,
@@ -72,6 +74,12 @@ export default async function handler (
       case GetProducersApplicationException.invalidPageValueId:
         return handleUnprocessableEntity(response, exception, PRODUCER_INVALID_PAGE)
 
+      case GetProducersApplicationException.invalidFilterTypeId:
+        return handleUnprocessableEntity(response, exception, PRODUCER_INVALID_FILTER_TYPE)
+
+      case GetProducersApplicationException.invalidFilterValueId:
+        return handleUnprocessableEntity(response, exception, PRODUCER_INVALID_FILTER_VALUE)
+
       default: {
         console.error(exception)
 
@@ -95,11 +103,25 @@ const parseUnprocessedQuery = (request: NextApiRequest): UnprocessedGetProducers
     producersPerPage = parseInt(String(perPage))
   }
 
+  const filters: GetProducersApiFilterRequestDto[] = []
+
+  for (const filter of Object.values(GetProducersFilterStringTypeOptions)) {
+    const queryFilter = request.query[`${filter}`]
+
+    if (queryFilter) {
+      filters.push({
+        type: filter,
+        value: String(queryFilter),
+      })
+    }
+  }
+
   return {
     page: producersPage ?? page,
     perPage: producersPerPage ?? perPage,
     order,
     orderBy,
+    filters,
   }
 }
 

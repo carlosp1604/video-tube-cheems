@@ -8,6 +8,7 @@ export class GetActorsRequestDtoTranslator {
       page: request.page,
       actorsPerPage: request.perPage,
       sortCriteria: request.order,
+      filters: request.filters,
     }
   }
 }

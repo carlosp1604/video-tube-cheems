@@ -33,6 +33,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     actorsPerPage: urlsPerPage,
     sortCriteria: InfrastructureSortingCriteria.DESC,
     sortOption: InfrastructureSortingOptions.NAME,
+    filters: [],
   })
 
   if (actors.actors.length === 0) {

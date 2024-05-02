@@ -2,7 +2,6 @@ import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
 import { container } from '~/awilix.container'
 import { GetPopularProducers } from '~/modules/Producers/Application/GetPopularProducers'
 import { HomePage, Props } from '~/components/pages/HomePage/HomePage'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { GetServerSideProps } from 'next'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import {
@@ -15,13 +14,14 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
+import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -29,10 +29,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const paginationQueryParams = new PostsPaginationQueryParams(
+  const paginationQueryParams = new PostsQueryParamsParser(
     context.query,
     {
-      filters: { filtersToParse: [PostFilterOptions.PRODUCER_SLUG] },
+      filters: { filtersToParse: [FilterOptions.PRODUCER_SLUG] },
       sortingOptionType: {
         defaultValue: PaginationSortingType.LATEST,
         parseableOptionTypes: [
@@ -67,12 +67,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     baseUrl = env.BASE_URL
   }
 
-  // Experimental: Try yo improve performance
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  )
-
   const props: Props = {
     order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,
@@ -101,7 +95,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
       page = paginationQueryParams.page
     }
 
-    const producerFilter = paginationQueryParams.getFilter(PostFilterOptions.PRODUCER_SLUG)
+    const producerFilter = paginationQueryParams.getFilter(FilterOptions.PRODUCER_SLUG)
 
     const [posts, producers] = await Promise.all([
       getPosts.get({

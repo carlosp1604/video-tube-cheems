@@ -7,7 +7,6 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
@@ -17,6 +16,7 @@ import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
   const actorSlug = context.query.actorSlug
@@ -81,7 +81,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
   try {
     const actorPosts = await getPosts.get({
       page: 1,
-      filters: [{ type: PostFilterOptions.ACTOR_SLUG, value: String(actorSlug) }],
+      filters: [{ type: FilterOptions.ACTOR_SLUG, value: String(actorSlug) }],
       sortCriteria: InfrastructureSortingCriteria.DESC,
       sortOption: InfrastructureSortingOptions.DATE,
       postsPerPage: defaultPerPage,

@@ -10,6 +10,7 @@ export class GetProducersRequestDtoTranslator {
       page: request.page,
       producersPerPage: request.perPage,
       sortCriteria: request.order,
+      filters: request.filters,
     }
   }
 }

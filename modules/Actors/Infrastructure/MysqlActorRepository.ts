@@ -10,6 +10,7 @@ import {
 } from '~/modules/Actors/Domain/ActorWithCountInterface'
 import ActorOrderByWithRelationInput = Prisma.ActorOrderByWithRelationInput
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
+import { ActorFilterOptionInterface } from '~/modules/Actors/Domain/ActorFilterOption'
 
 export class MysqlActorRepository implements ActorRepositoryInterface {
   /**
@@ -91,17 +92,17 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
+   * @param filters Actor filters
    * @return ActorsWithPostsCountViewsCountWithTotalCount
    */
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: ActorSortingOption,
-    sortingCriteria: SortingCriteria
+    sortingCriteria: SortingCriteria,
+    filters: ActorFilterOptionInterface[]
   ): Promise<ActorsWithPostsCountViewsCountWithTotalCount> {
-    const whereClause: Prisma.ActorWhereInput | undefined = {
-      deletedAt: null,
-    }
+    const whereClause = MysqlActorRepository.buildFilters(filters)
 
     const actorsSortCriteria = MysqlActorRepository.buildOrder(sortingOption, sortingCriteria)
 
@@ -193,5 +194,25 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
     }
 
     return sortCriteria
+  }
+
+  private static buildFilters (
+    filters: ActorFilterOptionInterface[]
+  ): Prisma.ActorWhereInput | undefined {
+    let whereClause: Prisma.ActorWhereInput | undefined = {
+      deletedAt: null,
+    }
+
+    for (const filter of filters) {
+      if (filter.type === 'actorName') {
+        whereClause = {
+          name: {
+            contains: filter.value,
+          },
+        }
+      }
+    }
+
+    return whereClause
   }
 }

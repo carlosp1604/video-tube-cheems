@@ -34,8 +34,8 @@ export const AvatarImage: FC<Partial<Props> & Omit<Props, 'priority' | 'color' |
         alt={ imageAlt }
         className={ imageClassName }
         src={ imageUrl }
-        width={ 0 }
-        height={ 0 }
+        width={ 200 }
+        height={ 200 }
         sizes={ '100vw' }
         priority={ priority }
         placeholder={ 'blur' }

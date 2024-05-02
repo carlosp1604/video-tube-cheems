@@ -7,15 +7,27 @@ import { TfiClose } from 'react-icons/tfi'
 import useTranslation from 'next-translate/useTranslation'
 import * as uuid from 'uuid'
 
+export type Style = 'main' | 'sub'
+
 interface Props {
   onChange: (value: string) => void
   onSearch: () => void
   placeHolderTitle: string
   searchIconTitle: string
   focus: boolean
+  style: Style
+  clearBarOnSearch: boolean
 }
 
-export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, searchIconTitle, focus }) => {
+export const SearchBar: FC<Partial<Props> & Omit<Props, 'style' | 'clearBarOnSearch'>> = ({
+  onChange,
+  onSearch,
+  placeHolderTitle,
+  searchIconTitle,
+  focus,
+  style = 'main',
+  clearBarOnSearch = false,
+}) => {
   const [title, setTitle] = useState<string>('')
 
   const { t } = useTranslation('common')
@@ -39,9 +51,17 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, sea
     }
   }, [focus])
 
+  const handleSearch = () => {
+    onSearch()
+    if (clearBarOnSearch) {
+      onChange('')
+      setTitle('')
+    }
+  }
+
   const handleKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      onSearch()
+      handleSearch()
       event.currentTarget.blur()
     }
   }
@@ -60,7 +80,7 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, sea
     <div className={ styles.searchBar__container }>
       <div className={ styles.searchBar__searchInputContainer }>
         <input
-          className={ styles.searchBar__searchInput }
+          className={ `${styles.searchBar__searchInput} ${style === 'sub' ? styles.searchBar__searchInputStyle2 : ''}` }
           placeholder={ placeHolderTitle }
           onKeyDown={ async (event: KeyboardEvent<HTMLInputElement>) => { await handleKeyDown(event) } }
           onChange={ (event: ChangeEvent<HTMLInputElement>) => { handleChange(event) } }
@@ -81,8 +101,8 @@ export const SearchBar: FC<Props> = ({ onChange, onSearch, placeHolderTitle, sea
         }
       </div>
       <button
-        className={ styles.searchBar__searchButton }
-        onClick={ onSearch }
+        className={ `${styles.searchBar__searchButton} ${style === 'sub' ? styles.searchBar__searchButtonStyle2 : ''}` }
+        onClick={ handleSearch }
         data-tooltip-id={ tooltipId }
         data-tooltip-content={ searchIconTitle }
         title={ searchIconTitle }

@@ -2,6 +2,7 @@ import { Producer } from './Producer'
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { ProducersWithPostsCountViewsCountWithTotalCount } from '~/modules/Producers/Domain/ProducerWithCountInterface'
+import { ProducerFilterOptionInterface } from '~/modules/Producers/Domain/ProducerFilterOption'
 
 export interface ProducerRepositoryInterface {
   /**
@@ -44,13 +45,15 @@ export interface ProducerRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
+   * @param filters Producer filters
    * @return ProducersWithPostsCountViewsCountWithTotalCount
    */
   findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: ActorSortingOption,
-    sortingCriteria: SortingCriteria
+    sortingCriteria: SortingCriteria,
+    filters: ProducerFilterOptionInterface[]
   ): Promise<ProducersWithPostsCountViewsCountWithTotalCount>
 
   /**

@@ -2,6 +2,7 @@ import { Actor } from './Actor'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { ActorsWithPostsCountViewsCountWithTotalCount } from '~/modules/Actors/Domain/ActorWithCountInterface'
 import { ActorSortingOption } from '~/modules/Actors/Domain/ActorSorting'
+import { ActorFilterOptionInterface } from '~/modules/Actors/Domain/ActorFilterOption'
 
 export interface ActorRepositoryInterface {
   /**
@@ -36,6 +37,7 @@ export interface ActorRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
+   * @param filters Actor filters
    * @return ActorsWithPostsCountViewsCountWithTotalCount
    */
   findWithOffsetAndLimit(
@@ -43,6 +45,7 @@ export interface ActorRepositoryInterface {
     limit: number,
     sortingOption: ActorSortingOption,
     sortingCriteria: SortingCriteria,
+    filters: ActorFilterOptionInterface[]
   ): Promise<ActorsWithPostsCountViewsCountWithTotalCount>
 
   /**

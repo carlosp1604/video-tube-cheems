@@ -3,7 +3,6 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useRouter } from 'next/router'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import useTranslation from 'next-translate/useTranslation'
 import { ProducerPageComponentDto } from '~/modules/Producers/Infrastructure/ProducerPageComponentDto'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
@@ -13,6 +12,7 @@ import {
   PaginatedPostCardGallery
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface Props {
   initialPage: number
@@ -76,8 +76,8 @@ export const Producer: FC<Props> = ({
         order={ initialOrder }
         initialPosts={ initialPosts }
         initialPostsNumber={ initialPostsNumber }
-        filters={ [{ type: PostFilterOptions.PRODUCER_SLUG, value: producer.slug }] }
-        filtersToParse={ [PostFilterOptions.PRODUCER_SLUG] }
+        filters={ [{ type: FilterOptions.PRODUCER_SLUG, value: producer.slug }] }
+        filtersToParse={ [FilterOptions.PRODUCER_SLUG] }
         paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         linkMode={ linkMode }
         sortingOptions={ sortingOptions }

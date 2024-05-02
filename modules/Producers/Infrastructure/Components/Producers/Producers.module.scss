@@ -2,4 +2,12 @@
   &__container {
     @apply container px-5 mx-auto flex flex-col gap-y-8 mt-5 mb-10;
   }
+
+  &__search-bar {
+    @apply flex flex-row gap-x-2 self-center w-full -mt-6;
+
+    @screen lg {
+      @apply max-w-lg;
+    }
+  }
 }

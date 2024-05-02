@@ -8,6 +8,7 @@ import {
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import useTranslation from 'next-translate/useTranslation'
 import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 
 export interface Props {
   producer: PostComponentDtoProducerDto | null
@@ -184,13 +185,11 @@ export const PostData: FC<Props> = ({
       </div>
 
       <div className={ styles.postData__showInfoSection }>
-        <button
-          className={ styles.postData__showInfoButton }
-          onClick={ () => setExtraDataOpen(!extraDataOpen) }
+        <CommonButton
           title={ extraDataOpen ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }
-        >
-          { extraDataOpen ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }
-        </button>
+          disabled={ false }
+          onClick={ () => setExtraDataOpen(!extraDataOpen) }
+        />
       </div>
     </div>
   )

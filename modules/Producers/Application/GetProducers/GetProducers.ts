@@ -4,7 +4,7 @@ import { maxPerPage, minPerPage } from '~/modules/Shared/Domain/Pagination'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { ProducerRepositoryInterface } from '~/modules/Producers/Domain/ProducerRepositoryInterface'
 import {
-  GetProducersApplicationRequestDto
+  GetProducersApplicationRequestDto, GetProducersRequestFilterDto
 } from '~/modules/Producers/Application/GetProducers/GetProducersApplicationRequestDto'
 import {
   GetProducersApplicationResponseDto
@@ -21,6 +21,11 @@ import {
 import {
   GetProducersSortingOptionValidator
 } from '~/modules/Producers/Domain/Validators/GetProducersSortingOptionValidator'
+import { FilterValueValidator } from '~/modules/Shared/Domain/FilterValueValidator'
+import { ProducerFilterOptionInterface } from '~/modules/Producers/Domain/ProducerFilterOption'
+import {
+  GetProducersFilterOptionValidator
+} from '~/modules/Producers/Domain/Validators/GetProducersFilterOptionValidator'
 
 export class GetProducers {
   // eslint-disable-next-line no-useless-constructor
@@ -30,6 +35,8 @@ export class GetProducers {
     GetProducers.validateRequest(request)
     const offset = (request.page - 1) * request.producersPerPage
 
+    const filters = GetProducers.parseFilters(request.filters)
+
     const sortingCriteria = GetProducers.validateSortingCriteria(request.sortCriteria)
     const sortingOption = GetProducers.validateSortingOption(request.sortOption)
 
@@ -37,7 +44,8 @@ export class GetProducers {
       offset,
       request.producersPerPage,
       sortingOption,
-      sortingCriteria
+      sortingCriteria,
+      filters
     )
 
     return GetProducersApplicationResponseDtoTranslator.fromDomain(producers)
@@ -54,6 +62,31 @@ export class GetProducers {
     ) {
       throw GetProducersApplicationException.invalidPerPage(minPerPage, maxPerPage)
     }
+  }
+
+  private static parseFilters (filters: GetProducersRequestFilterDto[]): ProducerFilterOptionInterface[] {
+    return filters.map((filter) => {
+      try {
+        const validatedFilter = new GetProducersFilterOptionValidator().validate(filter.type)
+        const validFilterValue = new FilterValueValidator().validate(filter.value)
+
+        return { type: validatedFilter, value: validFilterValue }
+      } catch (exception: unknown) {
+        if (!(exception instanceof ValidationException)) {
+          throw exception
+        }
+
+        if (exception.id === ValidationException.invalidFilterTypeId) {
+          throw GetProducersApplicationException.invalidFilterType(filter.type)
+        }
+
+        if (exception.id === ValidationException.invalidFilterValueId) {
+          throw GetProducersApplicationException.invalidFilterValue()
+        }
+
+        throw exception
+      }
+    })
   }
 
   private static validateSortingOption (sortingOption: string): GetProducersSortingOption {

@@ -8,8 +8,8 @@ import {
   PaginatedPostCardGallery, PaginatedPostCardGalleryConfiguration
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface Props {
   actorName: string
@@ -68,8 +68,8 @@ export const Actor: FC<Props> = ({
         term={ { title: 'actorName', value: actorName } }
         page={ 1 }
         order={ PaginationSortingType.LATEST }
-        filters={ [{ type: PostFilterOptions.ACTOR_SLUG, value: actorSlug }] }
-        filtersToParse={ [PostFilterOptions.ACTOR_SLUG] }
+        filters={ [{ type: FilterOptions.ACTOR_SLUG, value: actorSlug }] }
+        filtersToParse={ [FilterOptions.ACTOR_SLUG] }
         paginatedPostCardGalleryPostCardOptions={ postCardOptions }
         sortingOptions={ sortingOptions }
         defaultSortingOption={ PaginationSortingType.LATEST }

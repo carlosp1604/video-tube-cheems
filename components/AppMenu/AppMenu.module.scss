@@ -50,14 +50,14 @@
   }
 
   &__search-container {
-    @apply hidden absolute top-12 w-full left-0;
+    @apply hidden absolute top-12 w-full left-0 p-1.5;
 
     &__open {
       @apply block;
     }
 
     @screen md {
-      @apply block static max-w-sm;
+      @apply block static max-w-sm p-0;
     }
 
     @screen lg {

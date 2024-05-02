@@ -3,7 +3,7 @@ import {
   GetPostsApiFilterRequestDto,
   GetPostsApiRequestDto
 } from '~/modules/Shared/Infrastructure/Api/GetPostsApiRequestDto'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import { GetPostsFilterStringTypeOptions } from '~/modules/Shared/Domain/Posts/PostFilterOption'
 
 export class GetPostsQueryParser {
   public static parseQuery (query: NextApiRequestQuery): Partial<GetPostsApiRequestDto> {
@@ -16,7 +16,7 @@ export class GetPostsQueryParser {
 
     const filters: GetPostsApiFilterRequestDto[] = []
 
-    for (const filter of Object.values(PostFilterOptions)) {
+    for (const filter of Object.values(GetPostsFilterStringTypeOptions)) {
       const queryFilter = query[`${filter}`]
 
       if (queryFilter) {

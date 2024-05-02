@@ -9,11 +9,12 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PaginationQueryParams } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
+import { ProducerQueryParamsParser } from '~/modules/Producers/Infrastructure/Frontend/ProducerQueryParamsParser'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -21,9 +22,12 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const paginationQueryParams = new PaginationQueryParams(
+  const paginationQueryParams = new ProducerQueryParamsParser(
     context.query,
     {
+      filters: {
+        filtersToParse: [FilterOptions.PRODUCER_NAME],
+      },
       sortingOptionType: {
         defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: [
@@ -67,6 +71,7 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: ProducersPageProps = {
+    initialSearchTerm: '',
     initialProducers: [],
     initialProducersNumber: 0,
     initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.NAME_FIRST,
@@ -91,11 +96,18 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
       page = paginationQueryParams.page
     }
 
+    const producerNameFilter = paginationQueryParams.getFilter(FilterOptions.PRODUCER_NAME)
+
+    if (producerNameFilter) {
+      props.initialSearchTerm = producerNameFilter.value
+    }
+
     const actors = await getProducers.get({
       producersPerPage: defaultPerPage,
       page,
       sortCriteria,
       sortOption,
+      filters: producerNameFilter ? [producerNameFilter] : [],
     })
 
     props.initialProducersNumber = actors.producersNumber

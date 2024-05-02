@@ -1,4 +1,4 @@
-export enum PostFilterOptions {
+export enum FilterOptions {
   POST_TITLE = 'postTitle',
   SEARCH = 'search',
   PRODUCER_SLUG = 'producerSlug',

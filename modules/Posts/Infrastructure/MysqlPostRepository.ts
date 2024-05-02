@@ -1012,15 +1012,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
             },
           }
         }
-
-        if (filter.type === 'producerName') {
-          whereClause = {
-            ...whereClause,
-            producer: {
-              name: filter.value,
-            },
-          }
-        }
       }
 
       if (filter.type.startsWith('actor')) {

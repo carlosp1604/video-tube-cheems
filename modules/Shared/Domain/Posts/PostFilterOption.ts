@@ -3,7 +3,6 @@ export type PostFilterStringTypeOption =
   'producerSlug' |
   'actorId' |
   'tagId' |
-  'producerName' |
   'actorSlug' |
   'tagSlug' |
   'savedBy' |

@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import { PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PaginationBarButton } from '~/components/PaginationBar/PaginationBarButton/PaginationBarButton'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 
 interface Props {
   pageNumber: number
@@ -100,13 +101,11 @@ export const PaginationBar: FC<Partial<Props> & Pick<Props, 'pagesNumber' | 'pag
         <div className={ styles.paginationBar__errorState }>
           <BsXCircle className={ styles.paginationBar__errorIcon }/>
           { t('error_state_description') }
-          <span
-            className={ styles.paginationBar__errorButton }
+          <CommonButton
             title={ t('error_state_button_title') }
+            disabled={ false }
             onClick={ () => onPageChange && onPageChange(1) }
-          >
-            { t('error_state_button_title') }
-          </span>
+          />
         </div>
       )
     }

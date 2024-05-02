@@ -10,6 +10,7 @@ import {
 import { Prisma } from '@prisma/client'
 import ProducerOrderByWithRelationInput = Prisma.ProducerOrderByWithRelationInput
 import { ProducerSortingOption } from '~/modules/Producers/Domain/ProducerSorting'
+import { ProducerFilterOptionInterface } from '~/modules/Producers/Domain/ProducerFilterOption'
 
 export class MysqlProducerRepository implements ProducerRepositoryInterface {
   /**
@@ -129,17 +130,17 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
    * @param limit Records limit
    * @param sortingOption Sorting option
    * @param sortingCriteria Sorting criteria
+   * @param filters Producer filters
    * @return ProducersWithPostsCountViewsCountWithTotalCount
    */
   public async findWithOffsetAndLimit (
     offset: number,
     limit: number,
     sortingOption: ProducerSortingOption,
-    sortingCriteria: SortingCriteria
+    sortingCriteria: SortingCriteria,
+    filters: ProducerFilterOptionInterface[]
   ): Promise<ProducersWithPostsCountViewsCountWithTotalCount> {
-    const whereClause: Prisma.ProducerWhereInput | undefined = {
-      deletedAt: null,
-    }
+    const whereClause = MysqlProducerRepository.buildFilters(filters)
 
     const producersSortCriteria = MysqlProducerRepository.buildOrder(sortingOption, sortingCriteria)
 
@@ -229,5 +230,25 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
     }
 
     return sortCriteria
+  }
+
+  private static buildFilters (
+    filters: ProducerFilterOptionInterface[]
+  ): Prisma.ProducerWhereInput | undefined {
+    let whereClause: Prisma.ProducerWhereInput | undefined = {
+      deletedAt: null,
+    }
+
+    for (const filter of filters) {
+      if (filter.type === 'producerName') {
+        whereClause = {
+          name: {
+            contains: filter.value,
+          },
+        }
+      }
+    }
+
+    return whereClause
   }
 }

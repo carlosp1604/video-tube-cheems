@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import toast from 'react-hot-toast'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 
 interface Props {
   onAddComment: (comment: string) => void
@@ -50,12 +51,11 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
     content = (
       <div className={ styles.addCommentInput__loginToCommentSection }>
         { t('add_comment_section_login_title') }
-        <button
-          className={ styles.addCommentInput__loginButton }
+        <CommonButton
+          title={ t('add_comment_section_login_button_title') }
+          disabled={ false }
           onClick={ () => setLoginModalOpen(true) }
-        >
-          { t('add_comment_section_login_button_title') }
-        </button>
+        />
       </div>
     )
   }

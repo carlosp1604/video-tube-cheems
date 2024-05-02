@@ -17,11 +17,12 @@ import { ActorCardGallery } from '~/modules/Actors/Infrastructure/Components/Act
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import useTranslation from 'next-translate/useTranslation'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
-import {
-  PaginationConfiguration,
-  PaginationQueryParams
-} from '~/modules/Shared/Infrastructure/FrontEnd/PaginationQueryParams'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import { SearchBar } from '~/components/SearchBar/SearchBar'
+import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
+import { ActorFilterOptions } from '~/modules/Actors/Infrastructure/Frontend/ActorFilterOptions'
+import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend/ActorQueryParamsParser'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface ActorsPagePaginationState {
   page: number
@@ -45,6 +46,7 @@ export const Actors: FC<Props> = ({
   const [actorsNumber, setActorsNumber] = useState<number>(initialActorsNumber)
   const [pagination, setPagination] = useState<ActorsPagePaginationState>({ page: initialPage, order: initialOrder })
   const [loading, setLoading] = useState<boolean>(false)
+  const [searchFilter, setSearchFilter] = useState<string>('')
 
   const router = useRouter()
   const firstRender = useFirstRender()
@@ -65,11 +67,14 @@ export const Actors: FC<Props> = ({
     scrollOnClick: true,
   }
 
-  const configuration: Partial<PaginationConfiguration<ActorsPaginationSortingType>> &
-    Pick<PaginationConfiguration<ActorsPaginationSortingType>, 'page' | 'sortingOptionType'> = {
+  const configuration:
+    Omit<QueryParamsParserConfiguration<ActorFilterOptions, ActorsPaginationSortingType>, 'perPage'> = {
       sortingOptionType: {
         defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: sortingOptions,
+      },
+      filters: {
+        filtersToParse: [FilterOptions.ACTOR_NAME],
       },
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
     }
@@ -97,7 +102,7 @@ export const Actors: FC<Props> = ({
       return
     }
 
-    const queryParams = new PaginationQueryParams(router.query, configuration)
+    const queryParams = new ActorQueryParamsParser(router.query, configuration)
 
     const newPage = queryParams.page ?? configuration.page.defaultValue
     const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue
@@ -140,6 +145,16 @@ export const Actors: FC<Props> = ({
         loading={ loading }
         sortingMenu={ sortingMenu }
       />
+
+      <div className={ styles.actors__searchBar }>
+        <SearchBar
+          onChange={ (value: string) => console.log(value) }
+          onSearch={ () => console.log('Click') }
+          placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
+          searchIconTitle={ t('app_menu_search_button_title') }
+          focus={ true }
+        />
+      </div>
 
       <ActorCardGallery
         actors={ actors }

@@ -2,7 +2,7 @@ import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import {
@@ -20,6 +20,7 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import {
   PostWithRelationsAndViewsApplicationDto
 } from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 
 export class PostsApiService {
   public async getPosts (
@@ -27,7 +28,7 @@ export class PostsApiService {
     perPage: number = defaultPerPage,
     order: InfrastructureSortingCriteria,
     orderBy: InfrastructureSortingOptions,
-    filters: FetchPostsFilter[]
+    filters: FetchFilter<PostFilterOptions>[]
   ): Promise<GetPostsApplicationResponse> {
     const params = new URLSearchParams()
 
@@ -51,7 +52,7 @@ export class PostsApiService {
     perPage: number = defaultPerPage,
     order: InfrastructureSortingCriteria,
     orderBy: InfrastructureSortingOptions,
-    filters: FetchPostsFilter[]
+    filters: FetchFilter<PostFilterOptions>[]
   ): Promise<GetPostsApplicationResponse> {
     const params = new URLSearchParams()
 
@@ -75,7 +76,7 @@ export class PostsApiService {
     perPage: number = defaultPerPage,
     order: InfrastructureSortingCriteria,
     orderBy: InfrastructureSortingOptions,
-    filters: FetchPostsFilter[]
+    filters: FetchFilter<PostFilterOptions>[]
   ): Promise<GetPostsApplicationResponse> {
     const params = new URLSearchParams()
 

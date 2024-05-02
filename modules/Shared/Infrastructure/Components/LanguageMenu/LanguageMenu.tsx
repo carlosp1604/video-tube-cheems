@@ -60,8 +60,8 @@ export const LanguageMenu: FC<Props> = ({ isOpen, onClose }) => {
                 alt={ t('language_menu_spanish_option_title') }
                 className={ styles.languageMenu__optionImage }
                 src={ '/img/es-locale.svg' }
-                width={ 0 }
-                height={ 0 }
+                width={ 200 }
+                height={ 200 }
                 sizes={ '100vw' }
                 placeholder={ 'blur' }
                 blurDataURL={ rgbDataURL(81, 80, 80) }

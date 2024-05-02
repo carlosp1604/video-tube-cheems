@@ -5,12 +5,11 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
-import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
+import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
 import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/TagPageComponentDtoTranslator'
@@ -19,6 +18,7 @@ import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
   const tagSlug = context.query.tagSlug
@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const paginationQueryParams = new PostsPaginationQueryParams(
+  const paginationQueryParams = new PostsQueryParamsParser(
     context.query,
     {
       sortingOptionType: {
@@ -122,7 +122,7 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
 
     const producerPosts = await getPosts.get({
       page,
-      filters: [{ type: PostFilterOptions.TAG_SLUG, value: String(tagSlug) }],
+      filters: [{ type: FilterOptions.TAG_SLUG, value: String(tagSlug) }],
       sortCriteria,
       sortOption,
       postsPerPage: defaultPerPage,

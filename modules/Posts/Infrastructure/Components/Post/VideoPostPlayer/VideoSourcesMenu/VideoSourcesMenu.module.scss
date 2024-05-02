@@ -57,10 +57,10 @@
   }
 
   &__option-logo {
-    @apply w-20 h-auto;
+    @apply h-4 w-auto min-w-12;
 
     @screen md {
-      @apply w-28 h-auto;
+      @apply h-6 min-w-20;
     }
   }
 

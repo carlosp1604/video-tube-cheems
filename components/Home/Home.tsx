@@ -8,14 +8,15 @@ import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { FC, ReactElement, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   PaginatedPostCardGallery, PaginatedPostCardGalleryConfiguration
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface Props {
   page: number
@@ -62,9 +63,9 @@ export const Home: FC<Props> = ({
     />
   )
 
-  const onFetchNewPosts = (filters: FetchPostsFilter[]) => {
+  const onFetchNewPosts = (filters: FetchFilter<PostFilterOptions>[]) => {
     const producerFilter = filters.find((filter) =>
-      filter.type === PostFilterOptions.PRODUCER_SLUG
+      filter.type === FilterOptions.PRODUCER_SLUG
     )
 
     if (!producerFilter) {
@@ -113,8 +114,8 @@ export const Home: FC<Props> = ({
         initialPostsNumber={ initialPostsNumber }
         filters={ !activeProducer || activeProducer.slug === allPostsProducerDto.slug
           ? []
-          : [{ type: PostFilterOptions.PRODUCER_SLUG, value: activeProducer.slug }] }
-        filtersToParse={ [PostFilterOptions.PRODUCER_SLUG] }
+          : [{ type: FilterOptions.PRODUCER_SLUG, value: activeProducer.slug }] }
+        filtersToParse={ [FilterOptions.PRODUCER_SLUG] }
         paginatedPostCardGalleryPostCardOptions={ postCardOptions }
         linkMode={ linkMode }
         sortingOptions={ sortingOptions }

@@ -5,7 +5,6 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   InfrastructureSortingCriteria,
   InfrastructureSortingOptions
@@ -15,12 +14,13 @@ import { ProducerPage, ProducerPageProps } from '~/components/pages/ProducerPage
 import {
   ProducerPageComponentDtoTranslator
 } from '~/modules/Producers/Infrastructure/ProducerPageComponentDtoTranslator'
-import { PostsPaginationQueryParams } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationQueryParams'
+import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
   const producerSlug = context.query.producerSlug
@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const paginationQueryParams = new PostsPaginationQueryParams(
+  const paginationQueryParams = new PostsQueryParamsParser(
     context.query,
     {
       sortingOptionType: {
@@ -127,7 +127,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
     const producerPosts = await getPosts.get({
       page,
-      filters: [{ type: PostFilterOptions.PRODUCER_SLUG, value: String(producerSlug) }],
+      filters: [{ type: FilterOptions.PRODUCER_SLUG, value: String(producerSlug) }],
       sortCriteria,
       sortOption,
       postsPerPage: defaultPerPage,

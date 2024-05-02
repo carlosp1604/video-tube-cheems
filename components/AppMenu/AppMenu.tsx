@@ -152,8 +152,8 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
                 className={ styles.appMenu__languageImage }
                 alt={ t('language_button_image_alt', { locale }) }
                 src={ `/img/${locale}-locale.svg` }
-                width={ 0 }
-                height={ 0 }
+                width={ 200 }
+                height={ 200 }
                 sizes={ '100vw' }
                 placeholder={ 'blur' }
                 blurDataURL={ rgbDataURL(81, 80, 80) }

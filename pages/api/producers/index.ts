@@ -11,6 +11,7 @@ import {
   GetProducersApplicationException
 } from '~/modules/Producers/Application/GetProducers/GetProducersApplicationException'
 import {
+  GetProducersApiFilterRequestDto,
   GetProducersApiRequestDto,
   UnprocessedGetProducersApiRequestDto
 } from '~/modules/Producers/Infrastructure/Api/GetProducersApiRequestDto'
@@ -20,6 +21,7 @@ import {
   ProducerApiRequestValidatorError
 } from '~/modules/Producers/Infrastructure/Api/ProducerApiRequestValidatorError'
 import { GetProducersApiRequestValidator } from '~/modules/Producers/Infrastructure/Api/GetProducersApiRequestValidator'
+import { GetProducersFilterStringTypeOptions } from '~/modules/Producers/Domain/ProducerFilterOption'
 
 export default async function handler (
   request: NextApiRequest,
@@ -95,11 +97,25 @@ const parseUnprocessedQuery = (request: NextApiRequest): UnprocessedGetProducers
     producersPerPage = parseInt(String(perPage))
   }
 
+  const filters: GetProducersApiFilterRequestDto[] = []
+
+  for (const filter of Object.values(GetProducersFilterStringTypeOptions)) {
+    const queryFilter = request.query[`${filter}`]
+
+    if (queryFilter) {
+      filters.push({
+        type: filter,
+        value: String(queryFilter),
+      })
+    }
+  }
+
   return {
     page: producersPage ?? page,
     perPage: producersPerPage ?? perPage,
     order,
     orderBy,
+    filters,
   }
 }
 

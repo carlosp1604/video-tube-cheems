@@ -14,12 +14,13 @@ import {
   fromOrderTypeToComponentSortingOption,
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
 import {
   PaginatedPostCardGallery, PaginatedPostCardGalleryConfiguration
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 import { useRouter } from 'next/router'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 
 export interface Props {
   userComponentDto: UserProfileHeaderComponentDto
@@ -42,7 +43,11 @@ export const UserHistory: FC<Props> = ({ userComponentDto }) => {
     PaginationSortingType.OLDEST_VIEWED,
   ]
 
-  const customPostsFetcher = async (page:number, order: PostsPaginationSortingType, _filters: FetchPostsFilter[]) => {
+  const customPostsFetcher = async (
+    page:number,
+    order: PostsPaginationSortingType,
+    _filters: FetchFilter<PostFilterOptions>[]
+  ) => {
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
@@ -53,7 +58,7 @@ export const UserHistory: FC<Props> = ({ userComponentDto }) => {
           defaultPerPage,
           componentOrder.criteria,
           componentOrder.option,
-          [{ type: PostFilterOptions.VIEWED_BY, value: userComponentDto.id }]
+          [{ type: FilterOptions.VIEWED_BY, value: userComponentDto.id }]
         )
     } catch (exception: unknown) {
       console.error(exception)

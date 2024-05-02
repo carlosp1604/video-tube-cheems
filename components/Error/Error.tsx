@@ -1,7 +1,8 @@
 import styles from './Error.module.scss'
 import Image from 'next/image'
-import Link from 'next/link'
 import { FC } from 'react'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { useRouter } from 'next/router'
 
 export interface Props {
   title: string
@@ -12,6 +13,8 @@ export interface Props {
 }
 
 export const Error: FC<Props> = ({ title, subtitle, imageUrl, imageAlt, actionButtonTitle }) => {
+  const router = useRouter()
+
   return (
     <div className={ styles.error__container }>
       <Image
@@ -29,12 +32,11 @@ export const Error: FC<Props> = ({ title, subtitle, imageUrl, imageAlt, actionBu
         <span className={ styles.error__subtitle }>
           { subtitle }
         </span>
-        <Link
-          href={ '/' }
-          className={ styles.error__backToHomeLink }
-        >
-          { actionButtonTitle }
-        </Link>
+        <CommonButton
+          title={ actionButtonTitle }
+          disabled={ false }
+          onClick={ async () => await router.push('/') }
+        />
       </div>
     </div>
   )

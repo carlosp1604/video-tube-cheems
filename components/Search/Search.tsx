@@ -5,13 +5,14 @@ import useTranslation from 'next-translate/useTranslation'
 import { FC, useState } from 'react'
 import { useRouter } from 'next/router'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import { PostFilterOptions } from '~/modules/Shared/Infrastructure/PostFilterOptions'
+import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   PaginatedPostCardGallery
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
-import { FetchPostsFilter } from '~/modules/Shared/Infrastructure/FetchPostsFilter'
+import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export interface Props {
   initialSearchTerm: string
@@ -49,9 +50,9 @@ export const Search: FC<Props> = ({
     />
   )
 
-  const onFetchNewPosts = (filters: FetchPostsFilter[]) => {
+  const onFetchNewPosts = (filters: FetchFilter<PostFilterOptions>[]) => {
     const searchTitleFilter = filters.find((filter) =>
-      filter.type === PostFilterOptions.POST_TITLE
+      filter.type === FilterOptions.POST_TITLE
     )
 
     if (!searchTitleFilter || !searchTitleFilter.value) {
@@ -73,8 +74,8 @@ export const Search: FC<Props> = ({
         term={ { title: 'searchTerm', value: searchTerm } }
         page={ initialPage }
         order={ initialSortingOption }
-        filters={ [{ type: PostFilterOptions.SEARCH, value: initialSearchTerm }] }
-        filtersToParse={ [PostFilterOptions.SEARCH] }
+        filters={ [{ type: FilterOptions.SEARCH, value: initialSearchTerm }] }
+        filtersToParse={ [FilterOptions.SEARCH] }
         paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         linkMode={ linkMode }
         sortingOptions={ sortingOptions }

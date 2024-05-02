@@ -128,6 +128,7 @@ module.exports = {
         'top-mobile',
         'app-menu',
         'mobile-menu',
+        'tooltip',
         'modal-backdrop',
       ]),
     },

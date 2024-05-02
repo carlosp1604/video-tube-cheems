@@ -4,7 +4,7 @@
   }
 
   &__search-bar {
-    @apply self-center w-full -mt-8;
+    @apply flex flex-row gap-x-2 self-center w-full -mt-6;
 
     @screen lg {
       @apply max-w-lg;

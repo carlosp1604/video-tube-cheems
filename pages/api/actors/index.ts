@@ -6,6 +6,7 @@ import { GetActorsRequestDtoTranslator } from '~/modules/Actors/Infrastructure/G
 import { GetActorsApplicationException } from '~/modules/Actors/Application/GetActors/GetActorsApplicationException'
 import { ActorsApiRequestValidatorError } from '~/modules/Actors/Infrastructure/Api/ActorsApiRequestValidatorError'
 import {
+  GetActorsApiFilterRequestDto,
   GetActorsApiRequestDto,
   UnprocessedGetActorsApiRequestDto
 } from '~/modules/Actors/Infrastructure/Api/GetActorsApiRequestDto'
@@ -19,6 +20,7 @@ import {
   ACTOR_SERVER_ERROR,
   ACTOR_VALIDATION
 } from '~/modules/Actors/Infrastructure/Api/ActorApiExceptionCodes'
+import { GetActorsFilterStringTypeOptions } from '~/modules/Actors/Domain/ActorFilterOption'
 
 export default async function handler (
   request: NextApiRequest,
@@ -93,11 +95,26 @@ const parseUnprocessedQuery = (request: NextApiRequest): UnprocessedGetActorsApi
     actorsPerPage = parseInt(String(perPage))
   }
 
+  const filters: GetActorsApiFilterRequestDto[] = []
+
+  for (const filter of Object.values(GetActorsFilterStringTypeOptions)) {
+    const queryFilter = request.query[`${filter}`]
+
+    if (queryFilter) {
+      filters.push({
+        type: filter,
+        value: String(queryFilter),
+      })
+    }
+  }
+
   return {
     page: actorsPage ?? page,
     perPage: actorsPerPage ?? perPage,
     order,
     orderBy,
+    filters,
+
   }
 }
 

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { container } from '~/awilix.container'
 import {
-  PRODUCER_BAD_REQUEST,
+  PRODUCER_BAD_REQUEST, PRODUCER_INVALID_FILTER_TYPE, PRODUCER_INVALID_FILTER_VALUE,
   PRODUCER_INVALID_PAGE,
   PRODUCER_INVALID_PER_PAGE,
   PRODUCER_INVALID_SORTING_CRITERIA,
@@ -73,6 +73,12 @@ export default async function handler (
 
       case GetProducersApplicationException.invalidPageValueId:
         return handleUnprocessableEntity(response, exception, PRODUCER_INVALID_PAGE)
+
+      case GetProducersApplicationException.invalidFilterTypeId:
+        return handleUnprocessableEntity(response, exception, PRODUCER_INVALID_FILTER_TYPE)
+
+      case GetProducersApplicationException.invalidFilterValueId:
+        return handleUnprocessableEntity(response, exception, PRODUCER_INVALID_FILTER_VALUE)
 
       default: {
         console.error(exception)

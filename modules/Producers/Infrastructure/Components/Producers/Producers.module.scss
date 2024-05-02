@@ -10,25 +10,4 @@
       @apply max-w-lg;
     }
   }
-
-  &__clear-search-term-button {
-    @apply flex flex-col text-body items-center justify-center
-    text-xs my-1 px-2 rounded-md bg-brand-primary-bg transition-colors;
-
-    @screen md {
-      @apply text-sm;
-    }
-
-    &:hover {
-      @apply bg-brand-primary-dark transition-colors;
-    }
-
-    &:active {
-      @apply text-base-100 transition-colors;
-    }
-
-    &:disabled {
-      @apply bg-base-800 text-base-500 transition-colors;
-    }
-  }
 }

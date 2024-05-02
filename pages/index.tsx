@@ -67,12 +67,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
     baseUrl = env.BASE_URL
   }
 
-  // Experimental: Try yo improve performance
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  )
-
   const props: Props = {
     order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,

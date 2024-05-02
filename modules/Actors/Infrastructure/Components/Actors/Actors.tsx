@@ -23,13 +23,16 @@ import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/
 import { ActorFilterOptions } from '~/modules/Actors/Infrastructure/Frontend/ActorFilterOptions'
 import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend/ActorQueryParamsParser'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 
 export interface ActorsPagePaginationState {
   page: number
   order: ActorsPaginationSortingType
+  searchTerm: string
 }
 
 export interface Props {
+  initialSearchTerm: string
   initialPage: number
   initialOrder: ActorsPaginationSortingType
   initialActors: ActorCardDto[]
@@ -37,6 +40,7 @@ export interface Props {
 }
 
 export const Actors: FC<Props> = ({
+  initialSearchTerm,
   initialActors,
   initialActorsNumber,
   initialPage,
@@ -44,9 +48,14 @@ export const Actors: FC<Props> = ({
 }) => {
   const [actors, setActors] = useState<ActorCardDto[]>(initialActors)
   const [actorsNumber, setActorsNumber] = useState<number>(initialActorsNumber)
-  const [pagination, setPagination] = useState<ActorsPagePaginationState>({ page: initialPage, order: initialOrder })
+  const [pagination, setPagination] = useState<ActorsPagePaginationState>({
+    page: initialPage,
+    order: initialOrder,
+    searchTerm: initialSearchTerm,
+  })
+
   const [loading, setLoading] = useState<boolean>(false)
-  const [searchFilter, setSearchFilter] = useState<string>('')
+  const [searchBarTerm, setSearchBarTerm] = useState<string>('')
 
   const router = useRouter()
   const firstRender = useFirstRender()
@@ -60,6 +69,46 @@ export const Actors: FC<Props> = ({
     // PaginationSortingType.MORE_POSTS,
     // PaginationSortingType.LESS_POSTS,
   ]
+
+  const updateQueryOnSearch = async (producerName: string) => {
+    if (producerName) {
+      await router.push({
+        pathname: '/actors',
+        query: {
+          [FilterOptions.ACTOR_NAME]: producerName,
+        },
+      }, undefined, { shallow: true, scroll: true })
+    } else {
+      await router.push({
+        pathname: '/actors',
+      }, undefined, { shallow: true, scroll: true })
+    }
+  }
+
+  const onSearch = async () => {
+    const toast = (await import('react-hot-toast')).default
+
+    const dompurify = (await import('dompurify')).default
+    const cleanTerm = dompurify.sanitize(searchBarTerm.trim())
+
+    const queryParams = new ActorQueryParamsParser(router.query, configuration)
+
+    const currentTerm = queryParams.getFilter(FilterOptions.ACTOR_NAME)
+
+    if (!currentTerm && cleanTerm === '') {
+      return
+    }
+
+    if (currentTerm && currentTerm.value === cleanTerm) {
+      toast.error(t('already_searching_term_error_message'))
+
+      return
+    }
+
+    await updateQueryOnSearch(cleanTerm)
+
+    setSearchBarTerm('')
+  }
 
   const linkMode: ElementLinkMode = {
     replace: false,
@@ -79,14 +128,15 @@ export const Actors: FC<Props> = ({
       page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
     }
 
-  const updateActors = async (page:number, order: ActorsPaginationSortingType) => {
+  const updateActors = async (page:number, order: ActorsPaginationSortingType, searchTerm: string) => {
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     const newActors = await (new ActorsApiService()).getActors(
       page,
       defaultPerPage,
       componentOrder.criteria,
-      componentOrder.option
+      componentOrder.option,
+      searchTerm ? [{ type: FilterOptions.ACTOR_NAME, value: searchTerm }] : []
     )
 
     if (newActors) {
@@ -106,15 +156,20 @@ export const Actors: FC<Props> = ({
 
     const newPage = queryParams.page ?? configuration.page.defaultValue
     const newOrder = queryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue
+    const newSearchTerm = queryParams.getFilter(FilterOptions.ACTOR_NAME)
 
-    if (newPage === pagination.page && newOrder === pagination.order) {
+    if (
+      newPage === pagination.page &&
+      newOrder === pagination.order &&
+      (newSearchTerm && newSearchTerm.value === pagination.searchTerm)
+    ) {
       return
     }
 
-    setPagination({ page: newPage, order: newOrder })
+    setPagination({ page: newPage, order: newOrder, searchTerm: newSearchTerm?.value ?? '' })
 
     setLoading(true)
-    updateActors(newPage, newOrder)
+    updateActors(newPage, newOrder, newSearchTerm?.value ?? '')
       .then(() => {
         setLoading(false)
       })
@@ -137,22 +192,49 @@ export const Actors: FC<Props> = ({
     />
   )
 
-  return (
-    <div className={ styles.actors__container }>
+  let galleryHeader
+
+  if (pagination.searchTerm) {
+    galleryHeader = (
+      <CommonGalleryHeader
+        title={ 'actors:actors_search_result_title' }
+        subtitle={ t('actors_gallery_subtitle', { actorsNumber }) }
+        loading={ loading }
+        sortingMenu={ sortingMenu }
+        term={ { title: 'searchTerm', value: pagination.searchTerm } }
+      />
+    )
+  } else {
+    galleryHeader = (
       <CommonGalleryHeader
         title={ t('actors_gallery_title') }
         subtitle={ t('actors_gallery_subtitle', { actorsNumber }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
       />
+    )
+  }
+
+  return (
+    <div className={ styles.actors__container }>
+      { galleryHeader }
 
       <div className={ styles.actors__searchBar }>
+        { pagination.searchTerm &&
+          <CommonButton
+            title={ t('actors_see_all_button_title') }
+            disabled={ !pagination.searchTerm }
+            onClick={ async () => await updateQueryOnSearch('') }
+          />
+        }
         <SearchBar
-          onChange={ (value: string) => console.log(value) }
-          onSearch={ () => console.log('Click') }
-          placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
-          searchIconTitle={ t('app_menu_search_button_title') }
+          onChange={ setSearchBarTerm }
+          onSearch={ onSearch }
+          placeHolderTitle={ t('actors_search_placeholder_title') }
+          searchIconTitle={ t('actors_search_button_title') }
           focus={ true }
+          style={ 'sub' }
+          clearBarOnSearch={ true }
         />
       </div>
 

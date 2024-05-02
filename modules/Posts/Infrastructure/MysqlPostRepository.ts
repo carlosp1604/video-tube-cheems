@@ -7,12 +7,11 @@ import { PostChildCommentModelTranslator } from './ModelTranslators/PostChildCom
 import { Post } from '~/modules/Posts/Domain/Post'
 import { prisma } from '~/persistence/prisma'
 import {
-  PostsWithViewsInterfaceWithTotalCount,
-  PostWithViewsCommentsReactionsInterface,
+  PostsWithViewsInterfaceWithTotalCount, PostWithViewsCommentsReactionsInterface,
   PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
 import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
-import { Reaction, ReactionableType, ReactionType } from '~/modules/Reactions/Domain/Reaction'
+import { Reaction, ReactionableType } from '~/modules/Reactions/Domain/Reaction'
 import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
 import { User } from '~/modules/Auth/Domain/User'
@@ -32,6 +31,7 @@ import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
 import ViewUncheckedUpdateManyWithoutPostNestedInput = Prisma.ViewUncheckedUpdateManyWithoutPostNestedInput;
 import ViewUpdateManyWithoutPostNestedInput = Prisma.ViewUpdateManyWithoutPostNestedInput;
 import SortOrder = Prisma.SortOrder;
+import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**

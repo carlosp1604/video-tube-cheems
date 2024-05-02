@@ -31,9 +31,9 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
       sortingOptionType: {
         defaultValue: PaginationSortingType.POPULARITY,
         parseableOptionTypes: [
+          PaginationSortingType.POPULARITY,
           PaginationSortingType.NAME_FIRST,
           PaginationSortingType.NAME_LAST,
-          PaginationSortingType.POPULARITY,
           // PaginationSortingType.MORE_POSTS,
           // PaginationSortingType.LESS_POSTS,
         ],
@@ -71,6 +71,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
   const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
 
   const props: ActorsPageProps = {
+    initialSearchTerm: '',
     initialActors: [],
     initialActorsNumber: 0,
     initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.NAME_FIRST,
@@ -95,11 +96,18 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
       page = paginationQueryParams.page
     }
 
+    const actorNameFilter = paginationQueryParams.getFilter(FilterOptions.ACTOR_NAME)
+
+    if (actorNameFilter) {
+      props.initialSearchTerm = actorNameFilter.value
+    }
+
     const actors = await getActors.get({
       actorsPerPage: defaultPerPage,
       page,
       sortCriteria,
       sortOption,
+      filters: actorNameFilter ? [actorNameFilter] : [],
     })
 
     props.initialActorsNumber = actors.actorsNumber

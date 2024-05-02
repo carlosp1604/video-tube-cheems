@@ -8,6 +8,17 @@ export type PostFilterStringTypeOption =
   'savedBy' |
   'viewedBy'
 
+export const PostFilterStringTypeOptions: PostFilterStringTypeOption[] = [
+  'postTitle',
+  'producerSlug',
+  'actorId',
+  'tagId',
+  'actorSlug',
+  'tagSlug',
+  'savedBy',
+  'viewedBy',
+]
+
 export const GetPostsFilterStringTypeOptions:
   Extract<PostFilterStringTypeOption, 'postTitle' | 'producerSlug' | 'actorSlug' | 'tagSlug'>[] = [
     'postTitle', 'producerSlug', 'actorSlug', 'tagSlug',

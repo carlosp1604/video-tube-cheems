@@ -11,7 +11,7 @@ import {
   UnprocessedGetActorsApiRequestDto
 } from '~/modules/Actors/Infrastructure/Api/GetActorsApiRequestDto'
 import {
-  ACTOR_BAD_REQUEST,
+  ACTOR_BAD_REQUEST, ACTOR_INVALID_FILTER_TYPE, ACTOR_INVALID_FILTER_VALUE,
   ACTOR_INVALID_PAGE,
   ACTOR_INVALID_PER_PAGE,
   ACTOR_INVALID_SORTING_CRITERIA,
@@ -71,6 +71,12 @@ export default async function handler (
 
       case GetActorsApplicationException.invalidPageValueId:
         return handleUnprocessableEntity(response, exception, ACTOR_INVALID_PAGE)
+
+      case GetActorsApplicationException.invalidFilterTypeId:
+        return handleUnprocessableEntity(response, exception, ACTOR_INVALID_FILTER_TYPE)
+
+      case GetActorsApplicationException.invalidFilterValueId:
+        return handleUnprocessableEntity(response, exception, ACTOR_INVALID_FILTER_VALUE)
 
       default: {
         console.error(exception)

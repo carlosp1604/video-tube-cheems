@@ -12,7 +12,7 @@ import {
 import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
-import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/TagPageComponentDtoTranslator'
+import { TagPageComponentDtoTranslator } from '~/modules/PostTag/Infrastructure/Translators/TagPageComponentDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   HtmlPageMetaContextService

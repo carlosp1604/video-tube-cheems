@@ -2,7 +2,6 @@ import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
-import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageComponentDto'
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
@@ -16,6 +15,7 @@ import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/Profil
 import { useAvatarColor } from '~/hooks/AvatarColor'
 import styles from './TagPage.module.scss'
 import { useRouter } from 'next/router'
+import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
 
 export interface TagPageProps {
   initialPage: number
@@ -36,7 +36,7 @@ export const TagPage: NextPage<TagPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { t } = useTranslation('tag_page')
+  const { t } = useTranslation('tags')
   const locale = useRouter().locale ?? 'en'
   const getRandomColor = useAvatarColor()
   const tagColor = getRandomColor(tag.name)
@@ -81,7 +81,7 @@ export const TagPage: NextPage<TagPageProps> = ({
       <ProfileHeader
         name={ tag.name }
         imageAlt={ '' }
-        imageUrl={ null }
+        imageUrl={ tag.imageUrl }
         customColor={ tagColor }
         rounded={ false }
       />

@@ -49,7 +49,7 @@ const i18nConfig = {
       'sorting_menu_dropdown',
       'post_card',
       'pagination_bar',
-      'tag_page',
+      'tags',
       'api_exceptions',
     ],
     'rgx:/actors/*': [

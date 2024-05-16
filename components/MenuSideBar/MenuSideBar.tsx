@@ -3,14 +3,12 @@ import styles from './MenuSideBar.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
-import { BsBookmarks, BsCameraVideo, BsCardImage, BsClock, BsController, BsHouse, BsStar, BsTv } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags, BsTv } from 'react-icons/bs'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
-import { SiTinder } from 'react-icons/si'
 import { TfiWorld } from 'react-icons/tfi'
-import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionComponentInterface
@@ -163,17 +161,16 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       picture: <BsTv />,
       onClick: undefined,
     },
-    /**
     {
-      title: t('menu_reacted_button_title'),
-      isActive: false,
-      action: undefined,
-      picture: <BsHeart/>,
-      onClick: () => {
-        toast.success(t('user_menu_option_not_available_message'))
+      title: t('menu_tags_button_title'),
+      isActive: pathname === '/tags',
+      action: {
+        url: '/tags',
+        blank: false,
       },
+      picture: <BsTags />,
+      onClick: undefined,
     },
-    */
     buildAuthenticationAction(
       `/users/${data ? data.user.username : ''}/saved-posts`,
       <BsBookmarks />,
@@ -186,64 +183,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       asPath === `/users/${data ? data.user.username : ''}/history`,
       t('menu_user_history_button_title')
     ),
-    /**
-    {
-      title: t('menu_live_cams_button_title'),
-      isActive: false,
-      action: undefined,
-      picture: <BsCameraVideo />,
-      onClick: undefined,
-    },
-     */
   ]
-
-  if (process.env.NEXT_PUBLIC_CAMS_AD_URL) {
-    menuOptions.push({
-      title: t('live_cams_advertising_title'),
-      isActive: false,
-      picture: <BsCameraVideo />,
-      action: undefined,
-      onClick: () => {
-        handleClick(process.env.NEXT_PUBLIC_CAMS_AD_URL)
-      },
-    })
-  }
-
-  if (process.env.NEXT_PUBLIC_GAMES_AD_URL) {
-    menuOptions.push({
-      title: t('games_advertising_title'),
-      isActive: false,
-      picture: <BsController />,
-      action: undefined,
-      onClick: () => {
-        handleClick(process.env.NEXT_PUBLIC_GAMES_AD_URL)
-      },
-    })
-  }
-
-  if (process.env.NEXT_PUBLIC_DATING_AD_URL) {
-    menuOptions.push({
-      title: t('dating_advertising_title'),
-      isActive: false,
-      picture: <SiTinder />,
-      action: undefined,
-      onClick: () => {
-        handleClick(process.env.NEXT_PUBLIC_DATING_AD_URL)
-      },
-    })
-  }
-
-  if (process.env.NEXT_PUBLIC_IA_AD_URL) {
-    menuOptions.push({
-      title: t('ia_advertising_title'),
-      isActive: false,
-      picture: <BsCardImage />,
-      action: undefined,
-      onClick: () => {
-        handleClick(process.env.NEXT_PUBLIC_IA_AD_URL)
-      },
-    })
-  }
 
   menuOptions.push({
     title: t('menu_language_button_title'),
@@ -260,7 +200,6 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
       ${styles.menuSideBar__asideSlideOut}
       ${menuOpen ? styles.menuSideBar__asideSlideOut_open : ''}
     ` }>
-
       <div className={ styles.menuSideBar__menuSectionContainer }>
         <div className={ styles.menuSideBar__menuContainer }>
           { menuOptions.map((menuOption) => {

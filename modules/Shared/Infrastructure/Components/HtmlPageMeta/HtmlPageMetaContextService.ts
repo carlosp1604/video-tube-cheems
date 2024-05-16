@@ -1,5 +1,5 @@
 import { ParsedUrlQuery } from 'querystring'
-import { GetServerSidePropsContext, PreviewData } from 'next'
+import { GetServerSidePropsContext, GetStaticPropsContext, PreviewData } from 'next'
 import nextTranslatei18nConfig from '~/i18n'
 import { localeWithTerritory } from '~/modules/Shared/Domain/Locale'
 import { HtmlPageMetaContextServiceInterface } from './HtmlPageMetaContextServiceInterface'
@@ -8,10 +8,18 @@ import { AlternateUrl, HtmlPageMetaContextProps } from './HtmlPageMetaContextPro
 /**
  * Service to extract metadata properties which are dependent on the context.
  */
-export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInterface {
-  private context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+export interface StaticContext extends GetStaticPropsContext {
+  pathname: string
+  locale: string
+  req: {
+    url: string
+  }
+}
 
-  public constructor (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) {
+export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInterface {
+  private context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData> | StaticContext
+
+  public constructor (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData> | StaticContext) {
     this.context = context
   }
 

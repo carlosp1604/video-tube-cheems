@@ -7,4 +7,5 @@ export interface TagApplicationDto {
   readonly description: string | null
   readonly imageUrl: string | null
   readonly translations: ModelTranslationsApplicationDto[]
+  readonly createdAt: string
 }

@@ -35,7 +35,7 @@ export const Actor: FC<Props> = ({
 
   useEffect(() => {
     try {
-      (new ActorsApiService()).addActorView(actorId)
+      (new ActorsApiService()).addActorView(actorId).then()
     } catch (exception: unknown) {
       console.error(exception)
     }

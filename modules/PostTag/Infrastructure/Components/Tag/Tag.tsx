@@ -5,13 +5,13 @@ import { useRouter } from 'next/router'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/TagPageComponentDto'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   PaginatedPostCardGallery
 } from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
 
 export interface Props {
   initialPage: number
@@ -33,7 +33,7 @@ export const Tag: FC<Props> = ({
   const router = useRouter()
   const locale = router.locale ?? 'en'
 
-  const { t } = useTranslation('tag_page')
+  const { t } = useTranslation('tags')
 
   const sortingOptions: PostsPaginationSortingType[] = [
     PaginationSortingType.LATEST,
@@ -58,7 +58,7 @@ export const Tag: FC<Props> = ({
     <>
       <PaginatedPostCardGallery
         key={ locale }
-        title={ 'tag_page:tag_posts_gallery_title' }
+        title={ 'tags:tag_posts_gallery_title' }
         subtitle={ t('tag_posts_gallery_posts_quantity',
           { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         term={ { title: 'tagName', value: tag.name } }

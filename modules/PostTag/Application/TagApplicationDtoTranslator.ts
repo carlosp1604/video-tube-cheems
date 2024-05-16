@@ -14,6 +14,7 @@ export class TagApplicationDtoTranslator {
       imageUrl: postTag.imageUrl,
       description: postTag.description,
       translations: PostTagTranslationTranslatorDto.fromDomain(postTag),
+      createdAt: postTag.createdAt.toISO(),
     }
   }
 }

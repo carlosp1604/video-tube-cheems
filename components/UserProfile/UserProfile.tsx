@@ -118,6 +118,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
     setLoading(true)
     fetchPosts()
       .then(() => setLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   let savedPostsContent: ReactElement

@@ -72,4 +72,21 @@ export class MysqlPostTagRepository implements PostTagRepositoryInterface {
 
     return PostTagModelTranslator.toDomain(tag)
   }
+
+  /**
+   * Get all tags from database
+   * @return Array of Tags
+   */
+  public async getAll (): Promise<PostTag[]> {
+    const tags = await prisma.postTag.findMany({
+      where: {
+        deletedAt: null,
+      },
+      include: {
+        translations: true,
+      },
+    })
+
+    return tags.map(PostTagModelTranslator.toDomain)
+  }
 }

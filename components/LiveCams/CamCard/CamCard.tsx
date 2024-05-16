@@ -50,7 +50,7 @@ export const CamCard: FC<Props> = ({
     params.append('embed_video_only', 'true')
 
     return `https://chaturbate.com/in/?${params}`
-  }, [username, slug])
+  }, [slug])
 
   const onReady = () => {
     setVideoReady(true)

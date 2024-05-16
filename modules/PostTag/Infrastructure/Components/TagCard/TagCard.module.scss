@@ -28,6 +28,7 @@
 
   &__name-container {
     @apply absolute bottom-0.5 left-1 font-bold text-xs;
+    text-shadow: 0 0 4px #000000;
 
     @screen tb {
       @apply text-sm;

@@ -19,14 +19,13 @@ export interface ActiveCamInterface {
 
 /** This component is dependent on chaturbate */
 export const LiveCams: FC = () => {
-  const [ip, setIp] = useState<string>('')
   const [cams, setCams] = useState<ActiveCamInterface[]>([])
   const [camsCount, setCamsCount] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(true)
 
   const { t } = useTranslation('common')
 
-  const getData = async () => {
+  const getData = async (): Promise<string | null> => {
     try {
       const response = await fetch('https://api.ipify.org/?format=json')
 
@@ -37,23 +36,25 @@ export const LiveCams: FC = () => {
 
         console.error(responseData)
 
-        return
+        return null
       }
 
       const responseData = await response.json()
 
-      setIp(responseData.ip)
+      return responseData.ip
     } catch (exception: unknown) {
       console.error(exception)
+
+      return null
     }
   }
 
-  const getActiveCams = async () => {
+  const getActiveCams = async (userIp: string) => {
     let camsResponse
 
     try {
       const response =
-        await fetch(`https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=gqexH&client_ip=${ip}&limit=20`)
+        await fetch(`https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=gqexH&client_ip=${userIp}&limit=20`)
 
       if (!response.ok) {
         setLoading(false)
@@ -96,15 +97,11 @@ export const LiveCams: FC = () => {
 
   useEffect(() => {
     getData()
+      .then((ip) => {
+        if (ip) { getActiveCams(ip).then() }
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (ip === '') {
-      return
-    }
-
-    getActiveCams()
-  }, [ip])
 
   if (!process.env.NEXT_PUBLIC_LIVE_CAMS_CAMPAIGN_URL) {
     return null

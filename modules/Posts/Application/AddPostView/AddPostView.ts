@@ -25,17 +25,13 @@ export class AddPostView {
     }
 
     try {
-      let postView: View | null = null
-
-      if (request.userId !== null) {
-        postView = new View(
-          randomUUID(),
-          post.id,
-          'Post',
-          request.userId,
-          DateTime.now()
-        )
-      }
+      const postView = new View(
+        randomUUID(),
+        post.id,
+        'Post',
+        request.userId,
+        DateTime.now()
+      )
 
       await this.postRepository.createPostView(post.id, postView)
     } catch (exception: unknown) {

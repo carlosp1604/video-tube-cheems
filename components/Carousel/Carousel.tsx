@@ -37,7 +37,8 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
 
   useEffect(() => {
     checkIfEndIsReached()
-  }, [children])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleScrollXRightClick = () => {
     if (scrollElement.current) {

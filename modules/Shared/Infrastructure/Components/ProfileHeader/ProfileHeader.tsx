@@ -37,7 +37,10 @@ export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor
                 ${styles.profileHeader__avatar}
                 ${rounded ? styles.profileHeader__avatar__rounded : ''}
               ` }
-              imageClassName={ styles.profileHeader__image }
+              imageClassName={ `
+                ${styles.profileHeader__image}
+                ${rounded ? styles.profileHeader__image__rounded : ''}
+              ` }
               avatarName={ name }
               imageAlt={ imageAlt }
               color={ customColor !== null ? customColor : undefined }

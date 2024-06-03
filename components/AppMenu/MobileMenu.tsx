@@ -2,13 +2,14 @@ import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import useTranslation from 'next-translate/useTranslation'
-import { BsBookmarks, BsClock, BsHouse, BsStar, BsTv } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags, BsTv } from 'react-icons/bs'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useRouter } from 'next/router'
 import { TfiWorld } from 'react-icons/tfi'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
+import { FaArrowTrendUp } from 'react-icons/fa6'
 
 const CSSTransition = dynamic(() =>
   import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
@@ -121,6 +122,16 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                 onClick: undefined,
               },
               {
+                title: t('menu_trending_button_title'),
+                isActive: pathname === '/posts/top',
+                action: {
+                  url: '/posts/top',
+                  blank: false,
+                },
+                picture: <FaArrowTrendUp />,
+                onClick: undefined,
+              },
+              {
                 title: t('menu_stars_button_title'),
                 isActive: pathname === '/actors',
                 action: {
@@ -140,17 +151,16 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                 picture: <BsTv />,
                 onClick: undefined,
               },
-              /**
               {
-                title: t('menu_reacted_button_title'),
-                isActive: false,
-                action: undefined,
-                picture: <BsHeart />,
-                onClick: () => {
-                  toast.success(t('user_menu_option_not_available_message'))
+                title: t('menu_tags_button_title'),
+                isActive: pathname === '/tags',
+                action: {
+                  url: '/tags',
+                  blank: false,
                 },
+                picture: <BsTags />,
+                onClick: undefined,
               },
-              */
               buildAuthenticationAction(
                 `/users/${data ? data.user.username : ''}/saved-posts`,
                 <BsBookmarks />,
@@ -172,15 +182,6 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   setOpenLanguageMenu(true)
                 },
               },
-              /**
-              {
-                title: t('menu_live_cams_button_title'),
-                isActive: false,
-                action: undefined,
-                picture: <BsCameraVideo />,
-                onClick: undefined,
-              },
-               */
             ] } />
           </div>
         </CSSTransition>

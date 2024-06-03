@@ -13,4 +13,10 @@ export interface PostTagRepositoryInterface {
    * @return Tag if found or null
    */
   findBySlug (tagSlug: PostTag['slug']): Promise<PostTag | null>
+
+  /**
+   * Get all tags from database
+   * @return Array of Tags
+   */
+  getAll(): Promise<PostTag[]>
 }

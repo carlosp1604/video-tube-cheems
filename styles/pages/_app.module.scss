@@ -4,13 +4,13 @@
   }
 
   &__main-layout {
-    @apply font-roboto;
+    @apply font-roboto transition-all;
 
     @screen lg {
-      @apply ml-[74px];
+      @apply ml-[74px] transition-all;
 
       &__open {
-        @apply ml-40;
+        @apply ml-40 transition-all;
       }
     }
   }

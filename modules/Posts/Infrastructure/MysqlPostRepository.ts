@@ -896,25 +896,89 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
+   * Get top (most viewed) posts between 2 given dates
+   * @param startDate Start Date
+   * @param endDate End Date
+   * @return Post array with the posts
+   */
+  public async getTopPostsBetweenDates (startDate: Date, endDate: Date): Promise<PostWithViewsInterface[]> {
+    /*
+     * FIXME: At the moment to write this comment, Prisma does not support order by filtered relationships
+     * FIXME: When another post type is implemented (pe. gallery), this code could not be working correctly
+     * Workaround: Group by and order by views to get most viewed posts. Finally, reorder based on first query
+     */
+    const views = await prisma.view.groupBy({
+      by: ['viewableId'],
+      _count: {
+        viewableId: true,
+      },
+      where: {
+        createdAt: {
+          gt: startDate,
+          lt: endDate,
+        },
+        // viewableType: 'Post',
+      },
+      orderBy: {
+        _count: {
+          viewableId: 'desc',
+        },
+      },
+      // TODO: Fix this hardcoded number
+      take: 60,
+    })
+
+    const posts = await prisma.post.findMany({
+      where: {
+        deletedAt: null,
+        publishedAt: {
+          not: null,
+          lte: new Date(),
+        },
+        id: {
+          in: views.map((view) => { return view.viewableId }),
+        },
+      },
+      include: {
+        meta: true,
+        producer: true,
+        actor: true,
+        translations: true,
+      },
+    })
+
+    return posts.map((post) => {
+      const postViews = views.find((view) => {
+        return view.viewableId === post.id
+      })
+
+      return {
+        post: PostModelTranslator.toDomain(post, [
+          'meta',
+          'producer',
+          'translations',
+          'actor',
+        ]),
+        postViews: postViews?._count.viewableId ?? Number.parseInt(post.viewsCount.toString()),
+      }
+    }).sort((a, b) => {
+      if (a.postViews < b.postViews) {
+        return 1
+      } else if (a.postViews > b.postViews) {
+        return -1
+      }
+
+      return 0
+    })
+  }
+
+  /**
    * Create a new post view for a post given its ID
    * @param postId Post ID
    * @param view Post View
    */
-  public async createPostView (postId: Post['id'], view: View | null): Promise<void> {
-    let createView: ViewUncheckedUpdateManyWithoutPostNestedInput | ViewUpdateManyWithoutPostNestedInput | undefined
-
-    if (view) {
-      const prismaPostView = ViewModelTranslator.toDatabase(view)
-
-      createView = {
-        create: {
-          id: prismaPostView.id,
-          viewableType: prismaPostView.viewableType,
-          userId: prismaPostView.userId,
-          createdAt: prismaPostView.createdAt,
-        },
-      }
-    }
+  public async createPostView (postId: Post['id'], view: View): Promise<void> {
+    const prismaPostView = ViewModelTranslator.toDatabase(view)
 
     await prisma.post.update({
       where: {
@@ -924,7 +988,14 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         viewsCount: {
           increment: 1,
         },
-        views: createView,
+        views: {
+          create: {
+            id: prismaPostView.id,
+            viewableType: prismaPostView.viewableType,
+            userId: prismaPostView.userId,
+            createdAt: prismaPostView.createdAt,
+          },
+        },
       },
     })
   }

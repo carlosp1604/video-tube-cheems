@@ -190,6 +190,14 @@ export interface PostRepositoryInterface {
   getRelatedPosts(postId: Post['id']): Promise<PostWithViewsInterface[]>
 
   /**
+   * Get top (most viewed) posts between 2 given dates
+   * @param startDate Start Date
+   * @param endDate End Date
+   * @return Post array with the posts
+   */
+  getTopPostsBetweenDates(startDate: Date, endDate: Date): Promise<PostWithViewsInterface[]>
+
+  /**
    * Create a new post view for a post given its ID
    * @param postId Post ID
    * @param view Post View

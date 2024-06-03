@@ -31,7 +31,6 @@ export const ActorPage: NextPage<ActorPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { asPath } = useRouter()
   const { t } = useTranslation('actors')
   const locale = useRouter().locale ?? 'en'
   const getRandomColor = useAvatarColor()

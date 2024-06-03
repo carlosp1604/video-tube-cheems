@@ -43,12 +43,14 @@ export const SearchBar: FC<Partial<Props> & Omit<Props, 'style' | 'clearBarOnSea
     if (inputRef && inputRef.current && inputRef.current !== document.activeElement) {
       inputRef.current.focus()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if (focus && inputRef && inputRef.current && inputRef.current !== document.activeElement) {
       inputRef.current.focus()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus])
 
   const handleSearch = () => {

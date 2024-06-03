@@ -1,0 +1,51 @@
+.tag-card {
+  &__container {
+    @apply aspect-w-16 aspect-h-9 rounded-md overflow-hidden
+    bg-base-800 shadow-lg shadow-base-950;
+  }
+
+  &__image-container {
+    @apply relative h-full w-full object-cover object-center
+    transition-transform;
+
+    &:hover, &:focus {
+      @apply scale-110 transition-transform;
+    }
+  }
+
+  &__avatar-container {
+    @apply relative rounded-b-none w-full h-full pb-6 text-2xl font-black
+    transition-all;
+
+    @screen tb {
+      @apply pb-8;
+    }
+
+    &:hover, &:focus {
+      @apply text-4xl transition-all;
+    }
+  }
+
+  &__name-container {
+    @apply absolute bottom-0.5 left-1 font-bold text-xs;
+    text-shadow: 0 0 4px #000000;
+
+    @screen tb {
+      @apply text-sm;
+    }
+
+    @screen md {
+      @apply text-base;
+    }
+
+    &:hover, &:focus {
+      @apply text-brand-primary-bg;
+    }
+  }
+
+  &__link {
+    &:hover, &:focus {
+      @apply text-base-100;
+    }
+  }
+}

@@ -11,24 +11,9 @@ import {
   DeletePostRequestDtoTranslator
 } from '~/modules/Posts/Infrastructure/Api/Translators/DeletePostRequestDtoTranslator'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
-import { bindings } from '~/modules/Posts/Infrastructure/Bindings'
 import {
   DeletePostCommentApplicationException
 } from '~/modules/Posts/Application/DeletePostComment/DeletePostCommentApplicationException'
-import {
-  UpdatePostCommentApiRequestDto
-} from '~/modules/Posts/Infrastructure/Api/Requests/UpdatePostCommentApiRequestDto'
-import {
-  UpdatePostCommentRequestSanitizer
-} from '~/modules/Posts/Infrastructure/Api/Sanitizers/UpdatePostCommentRequestSanitizer'
-import {
-  UpdatePostCommentApiRequestValidator
-} from '~/modules/Posts/Infrastructure/Api/Validators/UpdatePostCommentApiRequestValidator'
-import { UpdatePostRequestDtoTranslator } from '~/modules/Posts/Infrastructure/UpdatePostRequestDtoTranslator'
-import { UpdatePostComment } from '~/modules/Posts/Application/UpdatePostComment'
-import {
-  UpdatePostCommentApplicationException
-} from '~/modules/Posts/Application/UpdatePostReaction/UpdatePostCommentApplicationException'
 import {
   PostCommentApiRequestValidatorError
 } from '~/modules/Posts/Infrastructure/Api/Validators/PostCommentApiRequestValidatorError'
@@ -37,7 +22,6 @@ import {
   POST_COMMENT_AUTH_REQUIRED,
   POST_COMMENT_BAD_REQUEST,
   POST_COMMENT_CANNOT_DELETE_COMMENT,
-  POST_COMMENT_CANNOT_UPDATE_COMMENT,
   POST_COMMENT_COMMENT_NOT_FOUND,
   POST_COMMENT_FORBIDDEN,
   POST_COMMENT_METHOD,
@@ -129,63 +113,6 @@ async function handleDeleteMethod (request: NextApiRequest, response: NextApiRes
   }
 
   return response.status(200).json({})
-}
-
-// TODO: Fixme before post comment update is supported
-async function handlePatchMethod (request: NextApiRequest, response: NextApiResponse) {
-  const session = await getServerSession(request, response, authOptions)
-
-  if (session === null) {
-    return handleAuthentication(request, response)
-  }
-
-  const { postId, commentId } = request.query
-
-  let apiRequest: UpdatePostCommentApiRequestDto
-
-  try {
-    apiRequest = request.body as UpdatePostCommentApiRequestDto
-    apiRequest = UpdatePostCommentRequestSanitizer.sanitize({
-      ...apiRequest,
-      userId: session.user.id,
-      postCommentId: String(commentId),
-      postId: String(postId),
-    })
-  } catch (exception: unknown) {
-    return handleServerError(response)
-  }
-  const validationError = UpdatePostCommentApiRequestValidator.validate(apiRequest)
-
-  if (validationError) {
-    return handleValidationError(request, response, validationError)
-  }
-
-  const applicationRequest = UpdatePostRequestDtoTranslator.fromApiDto(apiRequest)
-
-  const useCase = bindings.get<UpdatePostComment>('UpdatePostComment')
-
-  try {
-    const comment = await useCase.update(applicationRequest)
-
-    return response.status(200).json(comment)
-  } catch (exception: unknown) {
-    if (!(exception instanceof UpdatePostCommentApplicationException)) {
-      console.error(exception)
-
-      return handleServerError(response)
-    }
-
-    switch (exception.id) {
-      case UpdatePostCommentApplicationException.postNotFoundId:
-        return handleNotFound(response, exception.message, POST_COMMENT_POST_NOT_FOUND)
-
-      case UpdatePostCommentApplicationException.cannotUpdateCommentId:
-        return handleConflict(response, exception.message, POST_COMMENT_CANNOT_UPDATE_COMMENT)
-
-      default:
-        return handleServerError(response)
-    }
-  }
 }
 
 function handleMethod (request: NextApiRequest, response: NextApiResponse) {

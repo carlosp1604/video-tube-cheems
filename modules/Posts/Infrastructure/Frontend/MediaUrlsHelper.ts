@@ -1,6 +1,9 @@
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
-import { sanboxableProviders } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/SanboxableProviders'
+import {
+  sanboxableProviders,
+  sandboxableIfLoggedIn
+} from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/SanboxableProviders'
 
 /**
  * Supreme Admin Uuid = f373b07d-fc3e-42a5-9543-c59d503324aa
@@ -63,8 +66,12 @@ export class MediaUrlsHelper {
     return MediaUrlsHelper.sortMediaUrl(MediaUrlsHelper.filterProviders(mediaUrls, userId))
   }
 
-  public static shouldBeSanboxed (providerId: string): boolean {
+  public static shouldBeSanboxed (providerId: string, authenticated: boolean): boolean {
     if (sanboxableProviders.includes(providerId)) {
+      return true
+    }
+
+    if (sandboxableIfLoggedIn.includes(providerId) && authenticated) {
       return true
     }
 

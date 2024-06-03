@@ -49,7 +49,7 @@ module.exports = {
       },
       colors: {
         sidebar: {
-          item: '#007880',
+          item: '#a06c3f',
           active: '#007880',
         },
         body: '#1d1d1d',

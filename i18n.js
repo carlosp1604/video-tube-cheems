@@ -49,7 +49,7 @@ const i18nConfig = {
       'sorting_menu_dropdown',
       'post_card',
       'pagination_bar',
-      'tag_page',
+      'tags',
       'api_exceptions',
     ],
     'rgx:/actors/*': [
@@ -76,6 +76,10 @@ const i18nConfig = {
       'pagination_bar',
       'search',
       'api_exceptions',
+    ],
+    '/posts/top': [
+      'top',
+      'post_card',
     ],
   },
 

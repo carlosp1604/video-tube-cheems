@@ -4,3 +4,7 @@ export const sanboxableProviders: string [] = [
   'ab535237-2262-4763-2443-dfec1a6ec1b9',
   // '35677ea5-3641-4319-ae6f-1fe145c9b797',
 ]
+
+export const sandboxableIfLoggedIn: string [] = [
+  '35677ea5-3641-4319-ae6f-1fe145c9b797',
+]

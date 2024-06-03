@@ -9,6 +9,7 @@ import { TfiWorld } from 'react-icons/tfi'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
+import { FaArrowTrendUp } from 'react-icons/fa6'
 
 const CSSTransition = dynamic(() =>
   import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
@@ -118,6 +119,16 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   blank: false,
                 },
                 picture: <BsHouse />,
+                onClick: undefined,
+              },
+              {
+                title: t('menu_trending_button_title'),
+                isActive: pathname === '/posts/top',
+                action: {
+                  url: '/posts/top',
+                  blank: false,
+                },
+                picture: <FaArrowTrendUp />,
                 onClick: undefined,
               },
               {

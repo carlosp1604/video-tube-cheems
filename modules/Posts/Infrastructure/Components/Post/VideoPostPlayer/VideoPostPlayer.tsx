@@ -152,7 +152,7 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
     embedPostMedia.urls.find((postMedia) =>
       selectedUrl.url === postMedia.url)
   ) {
-    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedUrl.provider.id)
+    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedUrl.provider.id, status === 'authenticated')
 
     playerElement = (
       <iframe

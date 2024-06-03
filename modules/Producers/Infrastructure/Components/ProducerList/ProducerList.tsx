@@ -5,6 +5,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { Carousel } from '~/components/Carousel/Carousel'
 import Link from 'next/link'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
+import { FaArrowTrendUp } from 'react-icons/fa6'
 
 interface Props {
   producers: ProducerComponentDto[]
@@ -62,12 +63,31 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer }) => {
     })
   }
 
+  // FIXME: Workaround to add a new link to producer list
+  const trendingPostsLink = (
+    <Link
+      href={ '/posts/top' }
+      shallow={ true }
+      className={ styles.producerList__trending }
+      key={ '/posts/top' }
+    >
+      <FaArrowTrendUp />
+      { t('trending_posts_button_title') }
+    </Link>
+  )
+
+  const producerList = producers.map((producer) => {
+    return buildProducerElement(producer)
+  })
+
+  producerList.unshift({ component: trendingPostsLink, key: t('trending_posts_button_title') })
+
   return (
     <Carousel
       onEndReached={ undefined }
       itemsAutoWidth={ true }
     >
-      { producers.map((producer) => { return buildProducerElement(producer) }) }
+      { producerList }
     </Carousel>
   )
 }

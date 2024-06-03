@@ -26,4 +26,13 @@
         border-[color:var(--category-color)] transition-colors cursor-default;
     }
   }
+
+  &__trending {
+    @apply flex flex-row gap-x-2 items-center text-center rounded-lg p-1.5 text-base-100
+    truncate text-sm font-bold bg-base-950 border border-base-950;
+
+    @screen md {
+      @apply p-2;
+    }
+  }
 }

@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { TfiWorld } from 'react-icons/tfi'
+import { FaArrowTrendUp } from 'react-icons/fa6'
 
 interface MenuSideBarOptionProps {
   menuOption: MenuOptionComponentInterface
@@ -127,6 +128,16 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
         blank: false,
       },
       picture: <BsHouse />,
+      onClick: undefined,
+    },
+    {
+      title: t('menu_trending_button_title'),
+      isActive: pathname === '/posts/top',
+      action: {
+        url: '/posts/top',
+        blank: false,
+      },
+      picture: <FaArrowTrendUp />,
       onClick: undefined,
     },
     /**

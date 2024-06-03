@@ -47,6 +47,7 @@ import { AddActorView } from '~/modules/Actors/Application/AddActorView/AddActor
 import { AddProducerView } from '~/modules/Producers/Application/AddProducerView/AddProducerView'
 import { OauthLoginSignUp } from '~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUp'
 import { GetAllTags } from '~/modules/PostTag/Application/GetAllTags/GetAllTags'
+import { GetTopVideoPosts } from '~/modules/Posts/Application/GetTopVideoPosts/GetTopVideoPosts'
 
 /**
  * We create a container to register our classes dependencies
@@ -157,5 +158,6 @@ container.register('getProducerBySlugUseCase', asClass(GetProducerBySlug))
 container.register('getTagBySlugUseCase', asClass(GetTagBySlug))
 container.register('getProducersUseCase', asClass(GetProducers))
 container.register('getAllTagsUseCase', asClass(GetAllTags))
+container.register('getTopVideoPostsUseCase', asClass(GetTopVideoPosts))
 
 export { container }

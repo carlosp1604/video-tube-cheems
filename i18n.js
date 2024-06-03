@@ -77,6 +77,10 @@ const i18nConfig = {
       'search',
       'api_exceptions',
     ],
+    '/posts/top': [
+      'top',
+      'post_card',
+    ],
   },
 
 }

@@ -62,6 +62,7 @@ export const PostPage: NextPage<PostPageProps> = ({
   if (process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL) {
     videoPopUnder = (
       <Script
+        data-cfasync="false"
         type={ 'text/javascript' }
         src={ process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL }
         async={ true }

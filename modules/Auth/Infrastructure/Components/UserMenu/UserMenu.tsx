@@ -4,9 +4,10 @@ import { Modal } from '~/components/Modal/Modal'
 import { signOut, useSession } from 'next-auth/react'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import useTranslation from 'next-translate/useTranslation'
-import { CiLogout, CiUser } from 'react-icons/ci'
+import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
 import { usePathname } from 'next/navigation'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
+import { useLoginContext } from '~/hooks/LoginContext'
 
 interface Props {
   setIsOpen: (isOpen: boolean) => void
@@ -15,6 +16,7 @@ interface Props {
 
 export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
   const { t } = useTranslation('user_menu')
+  const { setLoginModalOpen, setMode } = useLoginContext()
 
   const pathname = usePathname()
 
@@ -24,7 +26,19 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
     return null
   }
 
-  const menuOptions: MenuOptionComponentInterface[] = []
+  const menuOptions: MenuOptionComponentInterface[] = [
+    {
+      title: t('user_menu_change_password_button'),
+      isActive: false,
+      action: undefined,
+      picture: <CiUnlock />,
+      onClick: () => {
+        setMode('retrieve')
+        setLoginModalOpen(true)
+        setIsOpen(false)
+      },
+    },
+  ]
 
   if (pathname !== `/users/${data.user.username}`) {
     menuOptions.unshift({

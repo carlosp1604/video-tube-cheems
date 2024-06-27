@@ -8,7 +8,7 @@
   "validate_code_invalid_code_message": "Invalid code",
   "validate_code_server_error_message": "Service not available. Try later",
   "validate_code_submit_button": "Validate code",
-  "validate_code_subtitle": "Enter the code you received in your email address",
+  "validate_code_subtitle": "Enter the code you received in your email address. Check the spam and junk folder",
   "validate_code_title": "Signup",
   "verify_email_already_has_a_code_button_title": "I have a verification code",
   "verify_email_email_already_sent_message": "Email already sent. Check your inbox",

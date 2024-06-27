@@ -11,6 +11,7 @@ import {
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
+import { useRouter } from 'next/router'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -24,6 +25,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
   const [email, setEmail] = useState<string>('')
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false)
   const [resendEmail, setResendEmail] = useState<boolean>(false)
+  const locale = useRouter().locale ?? 'en'
 
   const authApiService = new AuthApiService()
 
@@ -37,7 +39,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
     try {
       setLoading(true)
 
-      const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail)
+      const result = await authApiService.verifyEmailForAccountCreation(email, resendEmail, locale)
 
       if (!result.ok) {
         switch (result.status) {

@@ -1,0 +1,10 @@
+.calickadu-banner {
+  &__container {
+    @apply relative flex flex-col items-center justify-center
+    gap-y-1 text-base-500 text-sm font-semibold overflow-hidden;
+  }
+
+  &__banner-container {
+    @apply min-h-[100px] h-auto w-[300px] bg-base-800;
+  }
+}

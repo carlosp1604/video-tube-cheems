@@ -5,6 +5,9 @@ const nextTranslate = require('next-translate-plugin')
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  experimental: {
+    scrollRestoration: true,
+  },
   // transpilePackages: ['fluid-player'],
   rewrites: async () => [
     {
@@ -18,6 +21,10 @@ const nextConfig = {
     {
       source: '/actors-sitemap.xml',
       destination: '/actors-sitemap',
+    },
+    {
+      source: '/tags-sitemap.xml',
+      destination: '/tags-sitemap',
     },
     {
       source: '/actors-sitemap-:page.xml',

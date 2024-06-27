@@ -13,6 +13,14 @@ export class DateService implements DateServiceInterface {
       }) ?? ''
   }
 
+  public formatDate (isoDate: string, locale: string): string {
+    return new Date(isoDate).toLocaleString([locale], {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+  }
+
   public formatSecondsToHHMMSSFormat (seconds: number): string {
     if (seconds < 3600) {
       return new Date(seconds * 1000).toISOString().substring(14, 19)

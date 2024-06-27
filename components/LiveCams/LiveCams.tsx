@@ -22,6 +22,8 @@ export const LiveCams: FC = () => {
   const [cams, setCams] = useState<ActiveCamInterface[]>([])
   const [camsCount, setCamsCount] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(true)
+  const [userIp, setUserIp] = useState<string>('')
+  const millisecondsBetweenRefresh = 300000
 
   const { t } = useTranslation('common')
 
@@ -49,12 +51,25 @@ export const LiveCams: FC = () => {
     }
   }
 
-  const getActiveCams = async (userIp: string) => {
+  const getActiveCams = async () => {
     let camsResponse
+    let currentUserIp: string | null = userIp
 
     try {
+      if (!userIp) {
+        currentUserIp = await getData()
+
+        if (!currentUserIp) {
+          return
+        }
+
+        setUserIp(currentUserIp)
+      }
+
       const response =
-        await fetch(`https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=gqexH&client_ip=${userIp}&limit=20`)
+        await fetch(
+          `https://chaturbate.com/api/public/affiliates/onlinerooms/?wm=gqexH&client_ip=${currentUserIp}&limit=20`
+        )
 
       if (!response.ok) {
         setLoading(false)
@@ -96,10 +111,10 @@ export const LiveCams: FC = () => {
   }
 
   useEffect(() => {
-    getData()
-      .then((ip) => {
-        if (ip) { getActiveCams(ip).then() }
-      })
+    getActiveCams()
+    const interval = setInterval(() => getActiveCams(), millisecondsBetweenRefresh)
+
+    return () => clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

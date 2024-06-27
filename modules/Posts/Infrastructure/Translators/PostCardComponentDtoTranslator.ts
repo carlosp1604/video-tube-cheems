@@ -19,11 +19,11 @@ export class PostCardComponentDtoTranslator {
   ): PostCardComponentDto {
     const animation: PostAnimationDto | null = PostAnimationDtoTranslator.fromApplication(applicationDto.meta)
 
-    // FIXME: This should be resolved with the dependencies container
     const dateService = new DateService()
-    const date = dateService.formatAgoLike(applicationDto.publishedAt, locale)
+    const date = dateService.formatDate(applicationDto.publishedAt, locale)
 
     const thumb = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'thumb')
+    const resolution = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'resolution')
     const duration = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'duration')
     const externalLink = PostCardComponentDtoTranslator.getMeta(applicationDto.meta, 'external-link')
 
@@ -74,6 +74,7 @@ export class PostCardComponentDtoTranslator {
       date,
       producer,
       thumb: thumb ? thumb.value : '',
+      resolution: resolution ? resolution.value : '',
       title: titleTranslation,
       views: postViews,
       duration: formattedDuration,

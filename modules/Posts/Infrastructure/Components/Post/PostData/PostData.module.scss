@@ -17,6 +17,10 @@
     @screen md {
       @apply flex flex-row gap-x-4 font-normal text-sm;
     }
+
+    @screen lg {
+      @apply text-base;
+    }
   }
 
   &__producer-actor-logo {

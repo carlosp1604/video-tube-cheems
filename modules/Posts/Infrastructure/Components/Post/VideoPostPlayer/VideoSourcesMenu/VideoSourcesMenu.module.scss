@@ -35,7 +35,8 @@
   }
 
   &__option-item {
-    @apply hidden;
+    @apply hidden font-semibold;
+    text-shadow: 0 0 4px #000000;
 
     &__open {
       @apply flex flex-col w-full gap-y-1 py-3 px-4 mx-auto

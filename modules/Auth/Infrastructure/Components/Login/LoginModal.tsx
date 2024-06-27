@@ -1,56 +1,73 @@
-import { FC } from 'react'
+import { FC, ReactElement, useEffect } from 'react'
 import { Modal } from '~/components/Modal/Modal'
+import { Register } from '~/modules/Auth/Infrastructure/Components/Register/Register'
+import { RetrievePassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/RetrievePassword'
 import { useLoginContext } from '~/hooks/LoginContext'
-import styles from './Login.module.scss'
-import useTranslation from 'next-translate/useTranslation'
-import { signIn } from 'next-auth/react'
-import toast from 'react-hot-toast'
-import { FcGoogle } from 'react-icons/fc'
+import { useSession } from 'next-auth/react'
+import { Login } from '~/modules/Auth/Infrastructure/Components/Login/Login'
 
 export type AuthMode = 'login' | 'retrieve' | 'register'
 
 export const LoginModal: FC = () => {
-  const { loginModalOpen, setLoginModalOpen } = useLoginContext()
-  const { t } = useTranslation('user_login')
+  const { loginModalOpen, setLoginModalOpen, mode, setMode } = useLoginContext()
 
-  const onClick = async () => {
-    const result = await signIn(
-      'google',
-      {
-        redirect: false,
-      })
+  const { status } = useSession()
 
-    if (result?.error) {
-      toast.error(t('login_error_message'))
+  let onClose: (() => void) | null = () => setLoginModalOpen(false)
+
+  let modalContent: ReactElement | null = null
+
+  useEffect(() => {
+    /** Login and register only allowed if user is not authenticated */
+    if (
+      (mode === 'login' || mode === 'register') &&
+      status === 'authenticated'
+    ) {
+      setLoginModalOpen(false)
     }
+  }, [mode])
+
+  if (mode === 'login' && status === 'unauthenticated') {
+    modalContent = (
+      <Login
+        onClickForgotPassword={ () => setMode('retrieve') }
+        onClickSignup={ () => setMode('register') }
+        onSuccessLogin={ () => {
+          setMode('login')
+          setLoginModalOpen(false)
+        } }
+      />
+    )
   }
 
-  const onClose: (() => void) | null = () => setLoginModalOpen(false)
+  if (mode === 'register' && status === 'unauthenticated') {
+    modalContent = (
+      <Register
+        onConfirm={ () => setMode('login') }
+        onCancel={ () => setMode('login') }
+      />
+    )
+
+    onClose = () => setMode('login')
+  }
+
+  if (mode === 'retrieve') {
+    modalContent = (
+      <RetrievePassword
+        onConfirm={ () => setMode('login') }
+        onCancel={ () => setMode('login') }
+      />
+    )
+
+    onClose = () => setMode('login')
+  }
 
   return (
     <Modal
       isOpen={ loginModalOpen }
       onClose={ onClose }
     >
-      <section className={ styles.login__loginWithProvidersContainer }>
-        <h1 className={ styles.login__title }>
-          { t('title') }
-          <small className={ styles.login__subtitle }>
-            { t('subtitle') }
-          </small>
-        </h1>
-        <button
-          className={ styles.login__googleButton }
-          onClick={ onClick }
-        >
-          <FcGoogle className={ styles.login__googleIcon }/>
-          { t('login_with_google') }
-        </button>
-
-        <span className={ styles.login__informationMessage }>
-          { t('login_information_message') }
-        </span>
-      </section>
+      { modalContent }
     </Modal>
   )
 }

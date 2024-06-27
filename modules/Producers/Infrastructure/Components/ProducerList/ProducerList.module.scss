@@ -1,7 +1,8 @@
 .producer-list {
   &__category {
     @apply block text-center rounded-lg p-1.5 text-base-400
-      truncate text-sm transition-colors font-normal;
+    truncate text-sm transition-colors font-normal;
+    text-shadow: 0 0 4px #000000;
 
     @screen md {
       @apply p-2;
@@ -33,6 +34,11 @@
 
     @screen md {
       @apply p-2;
+    }
+
+    &:hover {
+      @apply text-base-100 bg-brand-primary-bg border-brand-primary-bg
+      transition-all;
     }
   }
 }

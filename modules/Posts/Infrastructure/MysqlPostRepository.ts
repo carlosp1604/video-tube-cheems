@@ -261,7 +261,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
           },
         })
       }
-    })
+    }, { timeout: 100000 })
   }
 
   /**
@@ -880,6 +880,9 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       },
       // TODO: Fix this hardcoded number
       take: 20,
+      orderBy: {
+        viewsCount: 'desc',
+      },
     })
 
     return posts.map((post) => {

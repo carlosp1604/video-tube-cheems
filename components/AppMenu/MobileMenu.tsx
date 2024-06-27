@@ -2,14 +2,15 @@ import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import useTranslation from 'next-translate/useTranslation'
-import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags, BsTv } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags } from 'react-icons/bs'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useRouter } from 'next/router'
 import { TfiWorld } from 'react-icons/tfi'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
-import { FaArrowTrendUp } from 'react-icons/fa6'
+import { MdLiveTv } from 'react-icons/md'
+import { IoMdTrendingUp } from 'react-icons/io'
 
 const CSSTransition = dynamic(() =>
   import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
@@ -128,7 +129,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/posts/top',
                   blank: false,
                 },
-                picture: <FaArrowTrendUp />,
+                picture: <IoMdTrendingUp />,
                 onClick: undefined,
               },
               {
@@ -148,7 +149,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/producers',
                   blank: false,
                 },
-                picture: <BsTv />,
+                picture: <MdLiveTv />,
                 onClick: undefined,
               },
               {

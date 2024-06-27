@@ -13,6 +13,7 @@ export class VerifyEmailAddressApplicationRequestTranslator {
       type: apiRequest.type,
       email: apiRequest.email,
       sendNewToken: apiRequest.sendNewToken,
+      locale: apiRequest.locale,
     }
   }
 }

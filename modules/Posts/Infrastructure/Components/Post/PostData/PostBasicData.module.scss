@@ -4,10 +4,10 @@
   }
 
   &__post-title {
-    @apply font-black text-sm;
+    @apply font-bold text-sm;
 
     @screen tb {
-      @apply text-base;
+      @apply text-lg;
     }
 
     @screen md {
@@ -24,6 +24,10 @@
       gap-x-1 text-xs justify-center text-center;
 
     @screen tb {
+      @apply text-sm;
+    }
+
+    @screen md {
       @apply text-base;
     }
   }

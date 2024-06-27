@@ -1,23 +1,20 @@
 .menu-side-bar {
-  $parentBlock: &;
-
   &__aside-slide-out {
     @apply hidden;
 
     @screen lg {
       @apply flex flex-col fixed top-12 pt-2 pb-14 overflow-y-scroll
         scrollbar-hide h-screen w-[74px] text-base-500
-        backdrop-blur-xl bg-body/60 transition-width;
+        backdrop-blur-xl bg-body/60;
   
       &_open {
-        @apply block w-40 transition-width pr-1;
+        @apply block w-40 pr-1 transition-width;
       }
     }
   }
 
   &__menu-section-container {
-    @apply flex flex-col flex-grow gap-x-2 overflow-y-scroll
-      scrollbar-hide;
+    @apply flex flex-col flex-grow gap-x-2 scrollbar-hide;
   }
 
   &__menu-icon-container {
@@ -27,49 +24,5 @@
   &__menu-container {
     @apply flex flex-grow flex-shrink-0 flex-col gap-y-0.5
     px-0.5 w-full;
-  }
-
-  &__menu-item-content {
-    @apply flex flex-col py-3 items-center justify-center gap-y-0.5
-      font-light transition-width;
-
-    &_open {
-      @apply flex flex-row justify-start gap-x-4 px-5
-      py-3 rounded-md transition-width;
-    }
-
-    &:hover, &:focus {
-      @apply bg-sidebar-item transition-colors text-body
-      cursor-pointer rounded-md;
-
-      #{$parentBlock}__menu-item-icon {
-        @apply scale-125 transition-transform;
-      }
-    }
-
-    &_active {
-      @apply rounded-md bg-brand-primary-dark text-base-100
-      transition-colors;
-
-      #{$parentBlock}__menu-item-icon {
-        @apply scale-125 transition-transform;
-      }
-
-      &:hover, &:focus {
-        @apply bg-brand-primary-dark text-base-100 cursor-default;
-      }
-    }
-  }
-
-  &__menu-item-icon {
-    @apply text-lg;
-  }
-
-  &__menu-item-text {
-    @apply text-[10px] font-medium text-center leading-relaxed;
-
-    &_open {
-      @apply text-sm;
-    }
   }
 }

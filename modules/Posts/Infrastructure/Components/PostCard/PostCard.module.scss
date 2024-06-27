@@ -14,7 +14,9 @@
     }
 
     &:hover {
-      #{$parentBlock}__video-time, #{$parentBlock}__external-icon {
+      #{$parentBlock}__video-time,
+      #{$parentBlock}__external-icon,
+      #{$parentBlock}__video-resolution {
         @apply opacity-0 transition-all
           duration-500;
 
@@ -41,70 +43,38 @@
     grid-template-columns: auto 1fr;
   }
 
-  &__producer-actor-logo {
-    @apply rounded-full h-full w-full object-cover object-center
-    transition-transform;
-
-    &:hover {
-      @apply scale-110 transition-transform;
-    }
-  }
-
-  &__producer-actor-avatar-link {
-    @apply flex items-center mr-2 h-8 w-8;
-    grid-area: producer-logo;
-
-    &__disabled {
-      @apply pointer-events-none;
-    }
-
-    @screen md {
-      @apply h-7 w-7;
-    }
-
-    @screen lg {
-      @apply h-9 w-9;
-    }
-  }
-
-  &__producer-actor-avatar-container {
-    @apply h-full w-full text-base font-semibold transition-transform;
-
-    &:hover {
-      @apply scale-110 transition-transform text-base-50;
-    }
-  }
-
   &__post-data {
     @apply flex flex-col line-clamp-2 text-sm;
     grid-area: post-data;
   }
 
   &__video-title-link {
-    @apply line-clamp-2 text-sm;
+    @apply line-clamp-2 text-sm font-medium;
   }
 
   &__extra-data {
-    @apply flex items-center font-normal text-gray-400 text-xs gap-x-0.5
-    line-clamp-none truncate;
+    @apply flex items-center font-normal text-base-400 text-xs gap-x-0.5
+    line-clamp-none truncate mt-0.5;
   }
 
-  &__producer-name {
-    @apply text-xs overflow-x-scroll scrollbar-hide;
-
-    &__disabled {
-      @apply pointer-events-none;
-    }
+  &__icon {
+    @apply text-brand-primary-dark text-sm;
   }
 
   &__video-time {
-    @apply absolute top-1 right-1 text-sm font-normal
-    text-base-400 py-0.5 px-1 rounded-lg bg-body
-    z-post-card-video-time cursor-default;
+    @apply absolute top-1 right-1 text-sm font-medium
+    text-base-100 py-0.5 px-1 rounded-lg z-post-card-video-time
+    cursor-default bg-base-700;
+  }
+
+  &__video-resolution {
+    @apply absolute top-8 right-1 text-sm font-medium
+    text-white py-0.5 px-1 rounded-lg z-post-card-video-time
+    cursor-default bg-brand-primary-bg uppercase leading-tight;
   }
 
   &__external-icon {
-    @apply absolute top-8 right-1 text-xl font-normal
+    @apply absolute top-14 right-1 text-xl font-normal
     text-base-100 py-0.5 px-1 rounded-lg bg-brand-primary-bg
     z-post-card-video-time cursor-default transition-colors
     shadow-all shadow-brand-primary-bg;

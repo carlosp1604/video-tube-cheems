@@ -70,8 +70,14 @@ async function run () {
           console.log(`\t- Building mediaUrls for provider ${key} for post with slug ${post.slug}`)
 
           if (value.downloadUrl && value.downloadUrl !== '') {
+            let title = value.title
+
+            if (value.resolution !== null) {
+              title = `${value.resolution}p`
+            }
+
             const downloadUrl = new MediaUrl(
-              `${value.title}`,
+              title,
               value.providerData.id,
               postMediaUuid,
               value.downloadUrl,
@@ -84,8 +90,14 @@ async function run () {
           }
 
           if (value.embed && value.embed !== '') {
+            let title = value.title
+
+            if (value.resolution !== null) {
+              title = `${value.resolution}p`
+            }
+
             const embedUrl = new MediaUrl(
-              `${value.title}`,
+              title,
               value.providerData.id,
               postMediaUuid,
               value.embed,

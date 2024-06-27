@@ -1,0 +1,44 @@
+.post-card-producer-actor {
+  &__producer-actor-logo {
+    @apply rounded-full h-full w-full object-cover object-center
+    transition-transform;
+
+    &:hover {
+      @apply scale-110 transition-transform;
+    }
+  }
+
+  &__producer-actor-avatar-link {
+    @apply flex items-center mr-2 h-8 w-8 mt-1;
+    grid-area: producer-logo;
+
+    &__disabled {
+      @apply pointer-events-none;
+    }
+
+    @screen md {
+      @apply h-7 w-7;
+    }
+
+    @screen lg {
+      @apply h-9 w-9;
+    }
+  }
+
+  &__producer-actor-avatar-container {
+    @apply h-full w-full text-base font-semibold transition-transform;
+
+    &:hover {
+      @apply scale-110 transition-transform text-base-50;
+    }
+  }
+
+  &__producer-title {
+    @apply flex flex-row gap-x-2 text-xs mb-0.5 text-base-400
+    font-normal mx-auto ml-0;
+
+    &__disabled {
+      @apply pointer-events-none;
+    }
+  }
+}

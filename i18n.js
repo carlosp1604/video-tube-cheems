@@ -18,6 +18,8 @@ const i18nConfig = {
       'menu',
       'user_menu',
       'user_login',
+      'user_signup',
+      'user_retrieve_password',
       'error',
       'common',
       'carousel',

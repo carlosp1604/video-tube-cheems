@@ -11,7 +11,6 @@ import { useSession } from 'next-auth/react'
 import {
   PostCardGalleryOptions
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
-import { undefined } from 'zod'
 
 interface Props {
   posts: PostCardComponentDto[]

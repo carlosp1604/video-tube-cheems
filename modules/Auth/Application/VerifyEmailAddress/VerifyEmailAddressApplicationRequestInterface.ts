@@ -4,4 +4,5 @@ export interface VerifyEmailAddressApplicationRequestInterface {
   type: string
   email: User['email']
   sendNewToken: boolean
+  locale: string
 }

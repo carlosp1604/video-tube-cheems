@@ -20,6 +20,7 @@ export interface PostCardComponentDto {
   readonly slug: string
   readonly title: string
   readonly thumb: string
+  readonly resolution: string
   readonly animation: PostAnimationDto | null
   readonly views: number
   readonly date: string

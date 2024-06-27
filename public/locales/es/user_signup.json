@@ -8,7 +8,7 @@
   "validate_code_invalid_code_message": "Código inválido",
   "validate_code_server_error_message": "Servicio no disponible. Inténtelo más tarde",
   "validate_code_submit_button": "Validar código",
-  "validate_code_subtitle": "Introduce el código que has recibido en tu dirección de correo",
+  "validate_code_subtitle": "Introduce el código que has recibido en tu dirección de correo. Comprueba las carpetas de spam y correo no deseado",
   "validate_code_title": "Registro",
   "verify_email_already_has_a_code_button_title": "Tengo un código de verificación",
   "verify_email_email_already_sent_message": "Email ya enviado. Revisa tu bandeja de entrada",

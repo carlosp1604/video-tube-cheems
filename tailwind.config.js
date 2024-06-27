@@ -78,7 +78,7 @@ module.exports = {
             dark: '#6d3c11', // 500
           },
         },
-        tooltip: '#6d3c11',
+        tooltip: '#8e582c',
         toast: {
           error: {
             bg: '#DC143C',

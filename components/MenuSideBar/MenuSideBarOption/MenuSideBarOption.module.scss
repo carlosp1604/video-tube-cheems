@@ -1,0 +1,51 @@
+.menu-sidebar-option {
+  $parentBlock: &;
+
+  &__menu-item-content {
+    @apply flex flex-row p-2.5 items-center justify-start
+    font-light mx-auto rounded-full text-base-400;
+
+    &:hover, &:focus {
+      @apply bg-sidebar-item transition-colors
+      cursor-pointer rounded-md text-body;
+
+      #{$parentBlock}__menu-item-text {
+        @apply text-body transition-colors;
+      }
+    }
+
+    &__open {
+      @apply flex flex-row justify-start gap-x-4
+      rounded-md m-0 pl-[22.5px];
+    }
+
+    &__active {
+      @apply rounded-md bg-brand-primary-bg text-base-50
+      transition-colors;
+
+      #{$parentBlock}__menu-item-text {
+        @apply text-base-100 transition-colors;
+      }
+
+      &:hover, &:focus {
+        @apply bg-brand-primary-bg text-base-100 cursor-default;
+        #{$parentBlock}__menu-item-text {
+          @apply text-base-100;
+        }
+      }
+    }
+  }
+
+  &__menu-item-icon {
+    @apply text-2xl;
+  }
+
+  &__menu-item-text {
+    @apply text-[10px] font-medium text-center leading-relaxed
+    fixed opacity-0;
+
+    &__open {
+      @apply text-[14px] static opacity-100 transition-all;
+    }
+  }
+}

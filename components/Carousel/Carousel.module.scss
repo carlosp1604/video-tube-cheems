@@ -1,13 +1,13 @@
 .carousel {
   &__container {
-    @apply relative overflow-hidden -mx-5;
+    @apply relative overflow-x-hidden overflow-y-visible -mx-5;
     @screen lg {
       @apply mx-0 pl-0;
     }
   }
 
   &__slider {
-    @apply flex flex-row flex-nowrap items-start gap-x-2.5
+    @apply flex flex-row flex-nowrap items-start gap-x-2.5 p-1
     overflow-x-scroll scrollbar-hide px-5 scroll-smooth;
 
     @screen lg {
@@ -17,7 +17,7 @@
 
   &__slider-item {
     @apply flex-initial flex-shrink-0 basis-5/6 h-full w-full
-    p-0.5;
+    overflow-visible;
 
     @screen tb {
       @apply basis-6/12;

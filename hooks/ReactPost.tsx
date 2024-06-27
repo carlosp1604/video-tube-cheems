@@ -11,6 +11,7 @@ import {
   ReactionComponentDtoTranslator
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
+import { useRouter } from 'next/router'
 
 export interface ReactPostInterface {
   reactPost: (postId: string, type: ReactionType) => Promise<ReactionComponentDto | null>
@@ -19,6 +20,7 @@ export interface ReactPostInterface {
 
 export function useReactPost (namespace: string): ReactPostInterface {
   const { t } = useTranslation(namespace)
+  const locale = useRouter().locale ?? 'en'
   const { status } = useSession()
   const { setLoginModalOpen } = useLoginContext()
 
@@ -58,7 +60,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
 
       return null
     }
-  }, [status])
+  }, [status, locale])
 
   const removeReaction = useCallback(async (postId: string): Promise<boolean> => {
     if (status !== 'authenticated') {
@@ -95,7 +97,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
 
       return false
     }
-  }, [status])
+  }, [status, locale])
 
   return { reactPost, removeReaction }
 }

@@ -9,6 +9,7 @@ export class VerifyEmailAddressApiRequestValidator {
     type: z.string().min(1),
     email: z.string().email().min(1),
     sendNewToken: z.boolean(),
+    locale: z.string().min(1),
   })
 
   public static validate (request: VerifyEmailAddressApiRequestInterface): UserApiValidationException | void {

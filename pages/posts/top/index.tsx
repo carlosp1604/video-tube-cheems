@@ -99,7 +99,7 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
 
     return {
       props,
-      revalidate: 600, // Try to regenerate page each 10 minutes
+      revalidate: 900, // Try to regenerate page each 15 minutes
     }
   } catch (exception: unknown) {
     console.error(exception)

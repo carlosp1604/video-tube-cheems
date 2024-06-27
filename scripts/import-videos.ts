@@ -261,6 +261,12 @@ async function run (
       metaCollection.addItem(metaTrailer, metaTrailer.type)
     }
 
+    if (video.resolution) {
+      const metaResolution = buildMeta('resolution', String(video.resolution), postUuid)
+
+      metaCollection.addItem(metaResolution, metaResolution.type)
+    }
+
     console.log('\t- Done')
 
     /**
@@ -365,8 +371,14 @@ async function run (
         }
 
         if (value.downloadUrl && value.downloadUrl !== '') {
+          let title = value.title
+
+          if (value.resolution !== null) {
+            title = `${value.resolution}p`
+          }
+
           const downloadUrl = new MediaUrl(
-            `${value.title}`,
+            title,
             providerId,
             postMediaUuid,
             value.downloadUrl,
@@ -379,8 +391,14 @@ async function run (
         }
 
         if (value.embed && value.embed !== '') {
+          let title = value.title
+
+          if (value.resolution !== null) {
+            title = `${value.resolution}p`
+          }
+
           const embedUrl = new MediaUrl(
-            `${value.title}`,
+            title,
             providerId,
             postMediaUuid,
             value.embed,

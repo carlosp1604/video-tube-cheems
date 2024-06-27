@@ -56,7 +56,7 @@ export const VideoSourcesMenu: FC<Props> = ({ mediaUrls, selectedUrl, onClickOpt
                 blurDataURL={ rgbDataURL(81, 80, 80) }
               />
               <span>
-                { mediaUrl.provider.name }
+                { mediaUrl.title }
               </span>
             </button>
           )

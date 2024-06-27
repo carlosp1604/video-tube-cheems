@@ -1,27 +1,22 @@
 .app-toast-dissmisible {
   &__message-container {
-    @apply text-xs;
+    @apply text-xs pr-4 -ml-4;
 
     @screen md {
       @apply text-sm;
     }
-
-    @screen lg {
-      @apply text-base;
-    }
   }
 
   &__dismiss-button {
-    @apply ml-2 place-self-start -mr-2 -mt-1;
+    @apply ml-2 place-self-start absolute top-1 right-1;
   }
 
   &__dismiss-icon {
-    @apply text-2xl text-brand-primary-light rounded-full
+    @apply text-2xl text-base-300 rounded-full
     transition-colors;
 
     &:hover {
-      @apply bg-brand-primary-bg text-brand-secondary-bg
-      transition-colors;
+      @apply bg-toast-icon text-toast-bg transition-colors;
     }
   }
 }

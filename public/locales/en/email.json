@@ -1,0 +1,12 @@
+{
+  "email_text_subject": "Verification code",
+  "email_text_content": "This is your verification code {{verificationCode}}",
+  "email_html_title": "Verification Code",
+  "email_html_preview": "Your verification code: {{verificationCode}}",
+  "email_html_content_first_paragraph": "Hello {{userEmail}},",
+  "email_html_content_second_paragraph": "Verify your email address with the following code",
+  "email_html_content_third_paragraph": "This code is for one-time use and will expire in 30 minutes. Don't share it with anyone",
+  "email_html_content_fourth_paragraph": "If you did not request this code simply ignore this message",
+  "email_html_footer_first_paragraph": "Cheems",
+  "email_html_footer_second_paragraph": "Made with ❤\uFE0F by Cheems Team \uD83D\uDC36"
+}

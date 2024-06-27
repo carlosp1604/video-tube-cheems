@@ -5,7 +5,6 @@ import { GetUserById } from '~/modules/Auth/Application/GetUser/GetUserById'
 import { ValidateToken } from '~/modules/Auth/Application/ValidateToken/ValidateToken'
 import { GetRelatedPosts } from '~/modules/Posts/Application/GetRelatedPosts/GetRelatedPosts'
 import { GetPopularProducers } from '~/modules/Producers/Application/GetPopularProducers'
-import { MailerSendUserEmailSender } from '~/modules/Auth/Infrastructure/MailerSendUserEmailSender'
 import { VerifyEmailAddress } from '~/modules/Auth/Application/VerifyEmailAddress/VerifyEmailAddress'
 import { CreatePostReaction } from '~/modules/Posts/Application/CreatePostReaction/CreatePostReaction'
 import { MysqlUserRepository } from '~/modules/Auth/Infrastructure/MysqlUserRepository'
@@ -23,7 +22,6 @@ import { MysqlPostCommentRepository } from '~/modules/Posts/Infrastructure/Mysql
 import { GetPostPostChildComments } from '~/modules/Posts/Application/GetPostPostChildComments/GetPostPostChildComments'
 import { CreatePostComment } from '~/modules/Posts/Application/CreatePostComment/CreatePostComment'
 import { CreatePostChildComment } from '~/modules/Posts/Application/CreatePostChildComment/CreatePostChildComment'
-import { MailerSend } from 'mailersend'
 import { DeletePostComment } from '~/modules/Posts/Application/DeletePostComment/DeletePostComment'
 import { DeletePostReaction } from '~/modules/Posts/Application/DeletePostReaction/DeletePostReaction'
 import { MysqlReactionRepository } from '~/modules/Reactions/Infrastructure/MysqlReactionRepository'
@@ -48,6 +46,10 @@ import { AddProducerView } from '~/modules/Producers/Application/AddProducerView
 import { OauthLoginSignUp } from '~/modules/Auth/Application/OauthLoginSignUp/OauthLoginSignUp'
 import { GetAllTags } from '~/modules/PostTag/Application/GetAllTags/GetAllTags'
 import { GetTopVideoPosts } from '~/modules/Posts/Application/GetTopVideoPosts/GetTopVideoPosts'
+import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassword/ChangeUserPassword'
+import { Login } from '~/modules/Auth/Application/Login/Login'
+import { NodemailerUserEmailSender } from '~/modules/Auth/Infrastructure/NodemailerUserEmailSender'
+import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 
 /**
  * We create a container to register our classes dependencies
@@ -84,7 +86,7 @@ container.register('emailBrandName', asFunction(() => {
 
   return emailBrandName
 }))
-container.register('userEmailSender', asClass(MailerSendUserEmailSender))
+container.register('userEmailSender', asClass(NodemailerUserEmailSender))
 // FIXME: This was the only way to make it works...
 container.register('postRepository', asFunction(() => {
   return new MysqlPostRepository()
@@ -93,17 +95,6 @@ container.register('actorRepository', asClass(MysqlActorRepository))
 container.register('producerRepository', asClass(MysqlProducerRepository))
 container.register('dateService', asClass(DateService))
 container.register('postCommentRepository', asClass(MysqlPostCommentRepository))
-container.register('mailerSend', asFunction(() => {
-  const apiKey = process.env.EMAIL_API_TOKEN
-
-  if (!apiKey) {
-    throw Error('Missing EMAIL_API_TOKEN environment variable to build MailerSend')
-  }
-
-  return new MailerSend({
-    apiKey,
-  })
-}))
 container.register('baseUrl', asFunction(() => {
   const baseUrl = process.env.BASE_URL
 
@@ -159,5 +150,8 @@ container.register('getTagBySlugUseCase', asClass(GetTagBySlug))
 container.register('getProducersUseCase', asClass(GetProducers))
 container.register('getAllTagsUseCase', asClass(GetAllTags))
 container.register('getTopVideoPostsUseCase', asClass(GetTopVideoPosts))
+container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
+container.register('loginUseCase', asClass(Login))
+container.register('createUserUseCase', asClass(CreateUser))
 
 export { container }

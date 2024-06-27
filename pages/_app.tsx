@@ -30,7 +30,7 @@ const AppBanner = dynamic(() => import('~/modules/Shared/Infrastructure/Componen
 )
 
 const LiveCams = dynamic(() =>
-  import('~/components/LiveCams/LiveCams').then((module) => module.LiveCams), { ssr: false })
+  import('~/components/LiveCams/LiveCams').then((module) => module.LiveCams))
 
 const roboto = Roboto({
   weight: ['100', '300', '400', '500', '700', '900'],
@@ -103,6 +103,8 @@ function App ({
             <div className={
               `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
             >
+              { /** Workaround to show tooltip in the sidebar menú**/ }
+              <div id="tooltip-container"></div>
               <main className={ styles.app__container }>
                 <TopMobileMenu />
 

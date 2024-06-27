@@ -19,12 +19,10 @@ export const PostCardSkeleton: FC<Partial<Props>> = ({ showProducerImage = false
           ? <span className={ styles.postCardSkeleton__producerLogo }/>
           : null
         }
-
         <div className={ styles.postCardSkeleton__postData }>
+          <span className={ styles.postCardSkeleton__producerTitleSkeleton }/>
           <span className={ styles.postCardSkeleton__postTitleSkeleton }/>
           <div className={ styles.postCardSkeleton__postExtraDataSkeleton }>
-            <span className={ styles.postCardSkeleton__postExtraItemSkeleton }/>
-            <BsDot className={ styles.postCardSkeleton__postExtraDataSeparator }/>
             <span className={ styles.postCardSkeleton__postExtraItemSkeleton }/>
             <BsDot className={ styles.postCardSkeleton__postExtraDataSeparator }/>
             <span className={ styles.postCardSkeleton__postExtraItemSkeleton }/>

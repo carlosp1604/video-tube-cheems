@@ -20,7 +20,7 @@
   }
 
   &__producer-logo {
-    @apply rounded-full w-8 h-8 mr-2 bg-base-800;
+    @apply rounded-full w-8 h-8 mr-2 bg-base-800 mt-1;
     grid-area: producer-logo;
 
     @screen md {
@@ -37,12 +37,16 @@
     @apply w-full bg-base-700 rounded-lg h-3;
   }
 
+  &__producer-title-skeleton {
+    @apply w-2/3 bg-base-700 rounded-lg h-2.5 mb-0.5;
+  }
+
   &__post-extra-data-skeleton {
-    @apply flex flex-row gap-x-0.5 w-full rounded-lg
+    @apply flex flex-row gap-x-0.5 w-full rounded-lg mt-0.5;
   }
 
   &__post-extra-item-skeleton {
-    @apply w-1/4 bg-base-700 h-3 rounded-lg;
+    @apply w-1/4 bg-base-700 h-2.5 rounded-lg;
   }
 
   &__post-extra-data-separator {

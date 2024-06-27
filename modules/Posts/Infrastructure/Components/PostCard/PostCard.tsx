@@ -1,17 +1,20 @@
-import { FC, ReactElement } from 'react'
+import { FC, ReactElement, MouseEvent } from 'react'
 import styles from './PostCard.module.scss'
 import { BsDot, BsLink45Deg } from 'react-icons/bs'
 import Link from 'next/link'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import useTranslation from 'next-translate/useTranslation'
 import Image from 'next/image'
-import HoverVideoPlayer from 'react-hover-video-player'
-import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
-import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
-import { usePathname } from 'next/navigation'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { useRouter } from 'next/router'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
+import { getResolution } from '~/modules/Posts/Infrastructure/Frontend/PostCardHelper'
+import {
+  PostCardProducerActorNameLink
+} from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardProducerActor/PostCardProducerActorNameLink'
+import { PostCardAvatar } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardProducerActor/PostCardAvatar'
+import HoverVideoPlayer from 'react-hover-video-player'
+import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 
 interface Props {
   post: PostCardComponentDto
@@ -25,7 +28,10 @@ export const PostCard: FC<Props> = ({
   const { t } = useTranslation('post_card')
 
   const locale = useRouter().locale ?? 'en'
-  const pathname = usePathname()
+
+  const handleVideoHover = (event: MouseEvent<HTMLAnchorElement>, title: string) => {
+    event.currentTarget.setAttribute('title', title)
+  }
 
   const poster: ReactElement = (
     <Image
@@ -63,97 +69,18 @@ export const PostCard: FC<Props> = ({
   }
 
   let producerImage: ReactElement | null = null
-  let producerNameLink: ReactElement | null = null
+  const producerNameLink: ReactElement | null = (
+    <PostCardProducerActorNameLink producer={ post.producer } actor={ post.actor } />
+  )
 
-  if (post.producer !== null) {
-    const producerLink = `/producers/${post.producer.slug}`
-
-    let linkDisabled = false
-
-    if (pathname === producerLink) {
-      linkDisabled = true
-    }
-
-    if (showProducerImage) {
-      producerImage = (
-        <Link
-          className={ `
-          ${styles.postCard__producerActorAvatarLink}
-          ${linkDisabled ? styles.postCard__producerActorAvatarLink__disabled : ''}
-        ` }
-          href={ `/producers/${post.producer.slug}` }
-          title={ post.producer.name }
-        >
-          <AvatarImage
-            imageUrl={ post.producer.imageUrl }
-            imageClassName={ styles.postCard__producerActorLogo }
-            avatarName={ post.producer.name }
-            imageAlt={ post.producer.name }
-            avatarClassName={ styles.postCard__producerActorAvatarContainer }
-            color={ post.producer.brandHexColor }
-            priority={ false }
-          />
-        </Link>
-      )
-    }
-
-    producerNameLink = (
-      <Link
-        className={ `
-          ${styles.postCard__producerName}
-          ${linkDisabled ? styles.postCard__producerName__disabled : ''}
-        ` }
-        href={ `/producers/${post.producer.slug}` }
-      >
-        { post.producer.name }
-      </Link>
-    )
-  }
-
-  if (post.producer === null && post.actor !== null) {
-    const actorLink = `/actors/${post.actor.slug}`
-
-    let linkDisabled = false
-
-    if (pathname === actorLink) {
-      linkDisabled = true
-    }
-
-    if (showProducerImage) {
-      producerImage = (
-        <Link
-          className={ `
-          ${styles.postCard__producerActorAvatarLink}
-          ${linkDisabled ? styles.postCard__producerActorAvatarLink__disabled : ''}
-        ` }
-          href={ `/actors/${post.actor.slug}` }
-          title={ post.actor.name }
-        >
-          <AvatarImage
-            imageUrl={ post.actor.imageUrl }
-            imageClassName={ styles.postCard__producerActorLogo }
-            avatarName={ post.actor.name }
-            imageAlt={ post.actor.name }
-            avatarClassName={ styles.postCard__producerActorAvatarContainer }
-          />
-        </Link>
-      )
-    }
-
-    producerNameLink = (
-      <Link
-        className={ `
-          ${styles.postCard__producerName}
-          ${linkDisabled ? styles.postCard__producerName__disabled : ''}
-        ` }
-        href={ `/actors/${post.actor.slug}` }
-      >
-        { post.actor.name }
-      </Link>
+  if (showProducerImage) {
+    producerImage = (
+      <PostCardAvatar producer={ post.producer } actor={ post.actor } />
     )
   }
 
   let postCardLink = `/posts/videos/${post.slug}`
+  let resolutionIcon: ReactElement | null = null
   let externalLinkIcon: ReactElement | null = null
 
   if (post.externalLink !== null) {
@@ -169,6 +96,14 @@ export const PostCard: FC<Props> = ({
     )
   }
 
+  if (post.resolution) {
+    resolutionIcon = (
+      <span className={ styles.postCard__videoResolution } >
+        { getResolution(post.resolution) }
+      </span>
+    )
+  }
+
   return (
     <div className={ styles.postCard__container }>
       <div className={ `${styles.postCard__videoContainer} 
@@ -179,18 +114,21 @@ export const PostCard: FC<Props> = ({
           className={ styles.postCard__videoLink }
           title={ post.title }
           rel={ post.externalLink !== null ? 'nofollow' : 'follow' }
+          onMouseOver={ (event) => handleVideoHover(event, '') }
+          onMouseLeave={ (event) => handleVideoHover(event, post.title) }
         >
           { media }
           <span className={ styles.postCard__videoTime } >
             { post.duration }
           </span>
+          { resolutionIcon }
           { externalLinkIcon }
         </Link>
       </div>
-
       <div className={ styles.postCard__videoDataContainer }>
         { producerImage }
         <div className={ styles.postCard__postData }>
+          { producerNameLink }
           <Link
             href={ postCardLink }
             className={ styles.postCard__videoTitleLink }
@@ -201,8 +139,6 @@ export const PostCard: FC<Props> = ({
             { post.title }
           </Link>
           <div className={ styles.postCard__extraData }>
-            { producerNameLink }
-            { (post.producer !== null || post.actor !== null) ? <BsDot /> : '' }
             { t('post_card_post_views', { views: NumberFormatter.compatFormat(post.views, locale) }) }
             <BsDot className={ styles.postCard__separatorIcon }/>
             { post.date }

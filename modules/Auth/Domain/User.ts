@@ -5,10 +5,13 @@ import { UsernameValidator } from '~/modules/Shared/Domain/UsernameValidator'
 import { UserDomainException } from '~/modules/Auth/Domain/UserDomainException'
 import { VerificationToken, VerificationTokenType } from '~/modules/Auth/Domain/VerificationToken'
 import { RelationshipDomainException } from '~/modules/Shared/Domain/Relationship/RelationshipDomainException'
-import { NameValidator } from '~/modules/Shared/Domain/NameValidator'
 import { Collection } from '~/modules/Shared/Domain/Relationship/Collection'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { Account } from '~/modules/Auth/Domain/Account'
+import { container } from '~/awilix.container'
+import { CryptoServiceInterface } from '~/helpers/Domain/CryptoServiceInterface'
+import { ValidationException } from '~/modules/Shared/Domain/ValidationException'
+import { PasswordValidator } from '~/modules/Shared/Domain/PasswordValidator'
 
 export class User {
   public readonly id: string
@@ -61,7 +64,13 @@ export class User {
   }
 
   public async matchPasswords (password: string) {
-    throw Error('Not implemented!')
+    if (!this._password) {
+      return false
+    }
+
+    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
+
+    return cryptoService.compare(password, this._password)
   }
 
   public isAccountActive (): boolean {
@@ -164,15 +173,54 @@ export class User {
     }
   }
 
-  public async changeUserPassword (password: User['password']): Promise<void> {
-    throw Error('Not implemented!')
+  public async changeUserPassword (password: User['password'] & string): Promise<void> {
+    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
+
+    const validatedPassword = (new PasswordValidator()).validate(password)
+
+    this._password = await cryptoService.hash(validatedPassword)
+    this._updatedAt = DateTime.now()
   }
 
   private buildVerificationToken (type: VerificationTokenType): VerificationToken {
-    throw Error('Not implemented!')
+    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
+
+    const nowDate = DateTime.now()
+
+    return new VerificationToken(
+      crypto.randomUUID(),
+      cryptoService.randomNumericCode(),
+      this.email,
+      type,
+      nowDate.plus({ minute: 30 }),
+      nowDate
+    )
   }
 
   public static buildVerificationTokenForAccountCreation (email: User['email']): VerificationToken {
-    throw Error('Not implemented!')
+    const cryptoService = container.resolve<CryptoServiceInterface>('cryptoService')
+
+    const nowDate = DateTime.now()
+
+    try {
+      return new VerificationToken(
+        crypto.randomUUID(),
+        cryptoService.randomNumericCode(),
+        email,
+        VerificationTokenType.CREATE_ACCOUNT,
+        nowDate.plus({ minute: 30 }),
+        nowDate
+      )
+    } catch (exception: unknown) {
+      if (!(exception instanceof ValidationException)) {
+        throw exception
+      }
+
+      if (exception.id === ValidationException.invalidEmailId) {
+        throw UserDomainException.cannotCreateVerificationToken(email)
+      }
+
+      throw exception
+    }
   }
 }

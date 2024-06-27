@@ -17,6 +17,7 @@ import { useSession } from 'next-auth/react'
 import { HiBars3 } from 'react-icons/hi2'
 import dynamic from 'next/dynamic'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
+import { createDismissibleToast } from '~/components/AppToast/AppToastDismissible'
 
 const LoginModal = dynamic(() =>
   import('~/modules/Auth/Infrastructure/Components/Login/LoginModal').then((module) => module.LoginModal),
@@ -52,7 +53,10 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
   if (status === 'unauthenticated') {
     userAvatar = (
       <IconButton
-        onClick={ () => setLoginModalOpen(!loginModalOpen) }
+        onClick={ () => {
+          setLoginModalOpen(!loginModalOpen)
+          createDismissibleToast(t('common:user_new_login_help_message_title'))
+        } }
         icon={ <CiUser /> }
         title={ t('app_menu_user_button_title') }
         showTooltip={ true }

@@ -1,71 +1,16 @@
 import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MenuSideBar.module.scss'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
-import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags, BsTv } from 'react-icons/bs'
+import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags } from 'react-icons/bs'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { TfiWorld } from 'react-icons/tfi'
-import { FaArrowTrendUp } from 'react-icons/fa6'
-
-interface MenuSideBarOptionProps {
-  menuOption: MenuOptionComponentInterface
-  menuOpen: boolean
-}
-
-const MenuSideBarOption: FC<MenuSideBarOptionProps> = ({ menuOption, menuOpen }) => {
-  if (menuOption.action) {
-    return (
-      <Link
-        href={ menuOption.action.url }
-        className={ `
-          ${styles.menuSideBar__menuItemContent}
-          ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
-          ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
-        ` }
-        target={ menuOption.action.blank ? '_blank' : '_self' }
-      >
-      <span className={ styles.menuSideBar__menuItemIcon }>
-        { menuOption.picture }
-      </span>
-        <span className={ `
-        ${styles.menuSideBar__menuItemText}
-        ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
-      ` }>
-        { menuOption.title }
-      </span>
-      </Link>
-    )
-  }
-
-  if (menuOption.onClick) {
-    return (
-      <div
-        className={ `
-        ${styles.menuSideBar__menuItemContent}
-        ${menuOpen ? styles.menuSideBar__menuItemContent_open : ''}
-        ${menuOption.isActive ? styles.menuSideBar__menuItemContent_active : ''}
-      ` }
-        onClick={ menuOption.onClick }
-      >
-      <span className={ styles.menuSideBar__menuItemIcon }>
-        { menuOption.picture }
-      </span>
-        <span className={ `
-        ${styles.menuSideBar__menuItemText}
-        ${menuOpen ? styles.menuSideBar__menuItemText_open : ''}
-      ` }>
-        { menuOption.title }
-      </span>
-      </div>
-    )
-  }
-
-  return null
-}
+import { MenuSideBarOption } from './MenuSideBarOption/MenuSideBarOption'
+import { MdLiveTv } from 'react-icons/md'
+import { IoMdTrendingUp } from 'react-icons/io'
 
 export interface Props {
   setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
@@ -137,7 +82,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
         url: '/posts/top',
         blank: false,
       },
-      picture: <FaArrowTrendUp />,
+      picture: <IoMdTrendingUp />,
       onClick: undefined,
     },
     /**
@@ -169,7 +114,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
         url: '/producers',
         blank: false,
       },
-      picture: <BsTv />,
+      picture: <MdLiveTv />,
       onClick: undefined,
     },
     {

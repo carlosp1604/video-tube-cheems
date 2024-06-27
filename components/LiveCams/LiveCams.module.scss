@@ -21,7 +21,8 @@
   }
 
   &__live-cams-link {
-    @apply font-normal text-sm p-1 px-3 rounded-full bg-base-800;
+    @apply font-normal text-sm p-1 px-3 rounded-full bg-base-800 border
+    border-base-700 shadow-all shadow-brand-primary-bg;
 
     @screen md {
       @apply text-base;

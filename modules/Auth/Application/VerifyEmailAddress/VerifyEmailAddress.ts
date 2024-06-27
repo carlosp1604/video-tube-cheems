@@ -73,7 +73,7 @@ export class VerifyEmailAddress {
       throw VerifyEmailAddressApplicationException.cannotCreateVerificationToken(user.email)
     }
 
-    await this.sendVerificationToken(verificationToken)
+    await this.sendVerificationToken(verificationToken, request.locale)
   }
 
   private async getUser (userEmail: VerifyEmailAddressApplicationRequestInterface['email']): Promise<User> {
@@ -132,12 +132,12 @@ export class VerifyEmailAddress {
       throw VerifyEmailAddressApplicationException.cannotCreateVerificationToken(request.email)
     }
 
-    await this.sendVerificationToken(newTokenToSend)
+    await this.sendVerificationToken(newTokenToSend, request.locale)
   }
 
-  private async sendVerificationToken (verificationToken: VerificationToken): Promise<void> {
+  private async sendVerificationToken (verificationToken: VerificationToken, locale: string): Promise<void> {
     try {
-      await this.userEmailSender.sendEmailVerificationEmail(verificationToken.userEmail, verificationToken)
+      await this.userEmailSender.sendEmailVerificationEmail(verificationToken.userEmail, verificationToken, locale)
     } catch (exception: unknown) {
       console.error(exception)
 

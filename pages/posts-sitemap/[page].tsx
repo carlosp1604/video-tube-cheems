@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const fields = posts.posts.map((post) => ({
     loc: `${baseUrl}/posts/videos/${post.post.slug}`,
     // TODO: Change this for updatedAt field
-    lastmod: post.post.publishedAt,
+    lastmod: post.post.updatedAt,
     alternateRefs: [{
       href: `${baseUrl}/${locale}/posts/videos/${post.post.slug}`,
       hreflang: 'es',

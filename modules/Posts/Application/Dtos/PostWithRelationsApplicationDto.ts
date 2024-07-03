@@ -13,5 +13,6 @@ export interface PostWithRelationsApplicationDto {
   readonly actor: ActorApplicationDto | null
   readonly meta: MetaApplicationDto[]
   readonly createdAt: string
+  readonly updatedAt: string
   readonly translations: ModelTranslationsApplicationDto[]
 }

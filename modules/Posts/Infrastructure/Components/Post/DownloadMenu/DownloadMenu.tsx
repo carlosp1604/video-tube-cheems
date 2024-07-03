@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
+import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 
 interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -19,7 +20,7 @@ interface Props {
 export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen, onClickOption }) => {
   const { t } = useTranslation('post')
 
-  const menuOptions: MenuOptionComponentInterface[] = mediaUrls.map((mediaUrl) => {
+  const menuOptions: MenuOptionComponentInterface[] = MediaUrlsHelper.sortMediaUrl(mediaUrls, true).map((mediaUrl) => {
     return {
       title: `${mediaUrl.provider.name}: ${mediaUrl.title}`,
       action: {

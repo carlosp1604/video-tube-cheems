@@ -32,6 +32,7 @@ export class PostWithRelationsDtoTranslator {
     return {
       id: post.id,
       createdAt: post.createdAt.toISO(),
+      updatedAt: post.updatedAt.toISO(),
       description: post.description,
       meta,
       publishedAt,

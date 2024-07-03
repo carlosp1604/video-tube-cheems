@@ -27,6 +27,7 @@ export interface PostComponentDto {
   readonly slug: string
   readonly title: string
   readonly thumb: string
+  readonly resolution: string
   readonly duration: string
   readonly type: string
   readonly video: VideoComponentDto

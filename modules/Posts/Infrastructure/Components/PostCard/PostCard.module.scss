@@ -63,14 +63,16 @@
 
   &__video-time {
     @apply absolute top-1 right-1 text-sm font-medium
-    text-base-100 py-0.5 px-1 rounded-lg z-post-card-video-time
+    py-0.5 px-1 rounded-lg z-post-card-video-time
     cursor-default bg-base-700;
+    text-shadow: 0 0 4px #000000;
   }
 
   &__video-resolution {
     @apply absolute top-8 right-1 text-sm font-medium
     text-white py-0.5 px-1 rounded-lg z-post-card-video-time
-    cursor-default bg-brand-primary-bg uppercase leading-tight;
+    cursor-default bg-brand-primary-bg uppercase leading-tight shadow-all-sm;
+    text-shadow: 0 0 4px #000000;
   }
 
   &__external-icon {

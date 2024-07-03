@@ -94,6 +94,8 @@ export class PostComponentDtoTranslator {
 
     const duration = PostComponentDtoTranslator.getMeta(applicationDto.meta, 'duration')
 
+    const resolution = PostComponentDtoTranslator.getMeta(applicationDto.meta, 'resolution')
+
     const postMediaVideoType: PostMediaComponentDto[] = applicationDto.postMedia
       .filter((postMedia) => postMedia.type === 'Video')
       .map((postMedia) => {
@@ -125,6 +127,7 @@ export class PostComponentDtoTranslator {
       title: titleTranslation,
       type: applicationDto.type,
       thumb: thumb ? thumb.value : '',
+      resolution: resolution ? resolution.value : '',
       duration: duration ? duration.value : '0',
       actor,
       postMediaVideoType,

@@ -104,7 +104,7 @@ function App ({
               `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
             >
               { /** Workaround to show tooltip in the sidebar menú**/ }
-              <div id="tooltip-container"></div>
+              <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
               <main className={ styles.app__container }>
                 <TopMobileMenu />
 

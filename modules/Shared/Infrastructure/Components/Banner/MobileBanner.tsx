@@ -1,17 +1,17 @@
 import { createRef, FC, useEffect } from 'react'
-import styles from './Banner.module.scss'
+import styles from './MobileBanner.module.scss'
 import useTranslation from 'next-translate/useTranslation'
 
-export const Banner: FC = () => {
+export const MobileBanner: FC = () => {
   const { t } = useTranslation('common')
   const bannerRef = createRef<HTMLDivElement>()
 
   const atOptions = {
-    key: process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY ?? '',
+    key: process.env.NEXT_PUBLIC_ADSTERRA_MOBILE_BANNER_KEY ?? '',
     format: 'iframe',
-    height: 250,
-    width: 300,
-    container: `atContainer-${process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY ?? ''}`,
+    height: 50,
+    width: 320,
+    container: `atContainer-${process.env.NEXT_PUBLIC_ADSTERRA_MOBILE_BANNER_KEY ?? ''}`,
     params: {},
   }
 
@@ -25,7 +25,7 @@ export const Banner: FC = () => {
       const script = document.createElement('script')
 
       script.type = 'text/javascript'
-      script.src = `//${process.env.NEXT_PUBLIC_ADSTERRA_BANNER_DOMAIN}/${atOptions.key}/invoke.js`
+      script.src = `//${process.env.NEXT_PUBLIC_ADSTERRA_MOBILE_BANNER_DOMAIN}/${atOptions.key}/invoke.js`
       conf.innerHTML = `atOptions = ${JSON.stringify(atOptions)}`
 
       bannerRef.current.append(conf)
@@ -33,14 +33,14 @@ export const Banner: FC = () => {
     }
   }, [bannerRef])
 
-  if (!process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY || !process.env.NEXT_PUBLIC_ADSTERRA_BANNER_DOMAIN) {
+  if (!process.env.NEXT_PUBLIC_ADSTERRA_MOBILE_BANNER_KEY || !process.env.NEXT_PUBLIC_ADSTERRA_MOBILE_BANNER_DOMAIN) {
     return null
   }
 
   return (
-    <section className={ styles.banner__container }>
-      <div ref={ bannerRef } className={ styles.banner__bannerContainer } />
-      <div id ={ `atContainer-${process.env.NEXT_PUBLIC_ADSTERRA_BANNER_KEY ?? ''}` } />
+    <section className={ styles.mobileBanner__container } >
+      <div ref={ bannerRef } className={ styles.mobileBanner__bannerContainer } />
+      <div id={ `atContainer-${process.env.NEXT_PUBLIC_ADSTERRA_MOBILE_BANNER_KEY ?? ''}` } />
       { t('banner_ad_title') }
     </section>
   )

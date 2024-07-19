@@ -1,0 +1,11 @@
+.mobile-banner {
+  &__container {
+    @apply flex flex-col items-center justify-center
+    min-h-[50px] gap-y-1
+    text-base-500 text-sm font-semibold overflow-hidden;
+  }
+
+  &__banner-container {
+    @apply relative h-[50px] w-[320px] bg-base-800;
+  }
+}

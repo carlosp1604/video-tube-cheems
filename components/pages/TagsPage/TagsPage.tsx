@@ -11,7 +11,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import useTranslation from 'next-translate/useTranslation'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Banner/MobileBanner'
 
 export interface Props {
   tagCards: TagCardComponentDto[]

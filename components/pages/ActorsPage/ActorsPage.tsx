@@ -11,7 +11,7 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { Actors } from '~/modules/Actors/Infrastructure/Components/Actors/Actors'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Banner/MobileBanner'
 import { useRouter } from 'next/router'
 
 export interface ActorsPageProps {

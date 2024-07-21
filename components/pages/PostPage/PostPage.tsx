@@ -73,12 +73,18 @@ export const PostPage: NextPage<PostPageProps> = ({
         firstClickRef.current = firstClickRef.current + 1
       }
 
-      if (firstClickRef.current === 2 && process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL) {
+      if (
+        firstClickRef.current === 2 &&
+        process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL &&
+        process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_SPOT_ID
+      ) {
         const script = document.createElement('script')
 
         script.async = true
+        script.defer = true
         script.type = 'text/javascript'
         script.src = process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL
+        script.setAttribute('data-ts-spot', process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_SPOT_ID)
 
         document.body.appendChild(script)
       }

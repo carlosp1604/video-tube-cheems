@@ -18,7 +18,9 @@ import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/Languag
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import { AppToast } from '~/components/AppToast/AppToast'
-import Script from 'next/script'
+import {
+  TrafficstarsVideoSlider
+} from '~/modules/Shared/Infrastructure/Components/Trafficstars/TrafficstarsVideoSlider'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),
@@ -50,7 +52,6 @@ function App ({
 }: AppProps) {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
-  const [instantLoad, setInstanLoad] = useState<boolean>(false)
 
   const { pathname } = useRouter()
 
@@ -101,27 +102,7 @@ function App ({
               setOpenLanguageMenu={ setOpenLanguageMenu }
             />
 
-            <Script
-              src={ '//cdn.tsyndicate.com/sdk/v1/video.instant.message.js' }
-              onLoad={ () => setInstanLoad(true) }
-            />
-            {
-              instantLoad &&
-                <Script id={ 'trafficstars-outstream' } strategy={ 'afterInteractive' }>
-                  { `
-                    TSVideoInstantMessage({
-                      spot: "cfe0f815cd954751a22f9527d4ad9aeb",
-                      width: "10%",
-                      mobileWidth: "25%",
-                      displayMode: "capped",
-                      cappedAction: "click",
-                      cappedValueInMinutes: 10,
-                      showCTAButton: true,
-                      hideOnComplete: false
-                    });
-                ` }
-                </Script>
-            }
+            <TrafficstarsVideoSlider />
 
             { /** Workaround to work with the sidebar fixed **/ }
             <div className={

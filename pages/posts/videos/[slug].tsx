@@ -36,6 +36,32 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
   try {
     const postWithCount = await useCase.get({ slug })
 
+    if (postWithCount.externalLink) {
+      const pat = /^https?:\/\//i
+
+      if (pat.test(postWithCount.externalLink)) {
+        return {
+          redirect: {
+            destination: postWithCount.externalLink,
+            permanent: false,
+          },
+        }
+      }
+
+      return {
+        redirect: {
+          destination: `/${locale}/${postWithCount.externalLink}`,
+          permanent: false,
+        },
+      }
+    }
+
+    if (postWithCount.post.deletedAt) {
+      return {
+        notFound: true,
+      }
+    }
+
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
 
     let postEmbedUrl = ''

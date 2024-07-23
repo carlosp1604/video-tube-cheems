@@ -20,4 +20,5 @@ export interface PostApplicationDto {
   readonly translations: ModelTranslationsApplicationDto[]
   readonly postMedia: PostMediaApplicationDto[]
   readonly createdAt: string
+  readonly deletedAt: string | null
 }

@@ -273,7 +273,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     const postQuery = prisma.post.findFirst({
       where: {
         slug,
-        deletedAt: null,
+        // deletedAt: null,
         publishedAt: {
           not: null,
           lte: new Date(),

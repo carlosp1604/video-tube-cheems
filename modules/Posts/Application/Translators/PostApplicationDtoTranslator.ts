@@ -12,6 +12,12 @@ import {
 // NOTE: We are not testing this due to this class does not have logic to be tested
 export class PostApplicationDtoTranslator {
   public static fromDomain (post: Post): PostApplicationDto {
+    let deletedAt: string | null = null
+
+    if (post.deletedAt) {
+      deletedAt = post.deletedAt.toISO()
+    }
+
     return {
       id: post.id,
       createdAt: post.createdAt.toISO(),
@@ -39,6 +45,7 @@ export class PostApplicationDtoTranslator {
       postMedia: post.postMedia.map((postMedia) => {
         return PostMediaApplicationDtoTranslator.fromDomain(postMedia)
       }),
+      deletedAt,
     }
   }
 }

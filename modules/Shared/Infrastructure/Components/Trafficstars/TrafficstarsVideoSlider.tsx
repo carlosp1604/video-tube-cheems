@@ -20,7 +20,7 @@ export const TrafficstarsVideoSlider: FC = () => {
             { `
               TSVideoInstantMessage({
                 spot: "${process.env.NEXT_PUBLIC_TS_VIDEO_SLIDER_SPOT_ID}",
-                width: "15%",
+                width: "10%",
                 mobileWidth: "20%",
                 displayMode: "capped",
                 cappedAction: "click",

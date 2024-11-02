@@ -21,6 +21,7 @@ import { AppToast } from '~/components/AppToast/AppToast'
 import {
   TrafficstarsVideoSlider
 } from '~/modules/Shared/Infrastructure/Components/Trafficstars/TrafficstarsVideoSlider'
+import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoClickInPage'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),
@@ -102,6 +103,8 @@ function App ({
               setOpenLanguageMenu={ setOpenLanguageMenu }
             />
 
+            <OctoClickInPage />
+
             <TrafficstarsVideoSlider />
 
             { /** Workaround to work with the sidebar fixed **/ }
@@ -111,6 +114,7 @@ function App ({
               { /** Workaround to show tooltip in the sidebar menú**/ }
               <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
               <main className={ styles.app__container }>
+
                 <TopMobileMenu />
 
                 <Component { ...pageProps }/>

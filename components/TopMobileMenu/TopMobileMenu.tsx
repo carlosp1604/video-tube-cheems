@@ -11,6 +11,23 @@ export const TopMobileMenu: FC = () => {
 
   const links: ReactElement[] = []
 
+  if (
+    process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_URL &&
+    process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT
+  ) {
+    links.push(
+      <Link
+        className={ styles.topMobileMenu__offerContainer }
+        href={ process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_URL }
+        title={ process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT }
+        key={ process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT }
+        rel={ 'nofollow' }
+      >
+        { process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT }
+      </Link>
+    )
+  }
+
   if (process.env.NEXT_PUBLIC_CAMS_AD_URL) {
     links.push(
       <div

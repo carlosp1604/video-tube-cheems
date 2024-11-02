@@ -23,7 +23,7 @@ export const OctoClickInPage: FC = () => {
         setBannerRendered(true)
       }
     }
-  }, [])
+  })
 
   if (!process.env.NEXT_PUBLIC_OCTOCLICK_IN_PAGE_ZONE_ID || !process.env.NEXT_PUBLIC_OCTOCLICK_IN_PAGE_CLASS_ID) {
     return null

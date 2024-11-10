@@ -12,18 +12,18 @@ export const TopMobileMenu: FC = () => {
   const links: ReactElement[] = []
 
   if (
-    process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_URL &&
-    process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT
+    process.env.NEXT_PUBLIC_PARTNER_BACKLINK_URL &&
+    process.env.NEXT_PUBLIC_PORTNER_BACKLINK_ANCHOR_TEXT
   ) {
     links.push(
       <Link
         className={ styles.topMobileMenu__offerContainer }
-        href={ process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_URL }
-        title={ process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT }
-        key={ process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT }
-        rel={ 'nofollow' }
+        href={ process.env.NEXT_PUBLIC_PARTNER_BACKLINK_URL }
+        title={ process.env.NEXT_PUBLIC_PORTNER_BACKLINK_ANCHOR_TEXT }
+        key={ process.env.NEXT_PUBLIC_PORTNER_BACKLINK_ANCHOR_TEXT }
+        rel={ 'follow' }
       >
-        { process.env.NEXT_PUBLIC_PORNYTEEN_BACKLINK_ANCHOR_TEXT }
+        { process.env.NEXT_PUBLIC_PORTNER_BACKLINK_ANCHOR_TEXT }
       </Link>
     )
   }

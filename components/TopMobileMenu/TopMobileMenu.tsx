@@ -28,6 +28,23 @@ export const TopMobileMenu: FC = () => {
     )
   }
 
+  if (
+    process.env.NEXT_PUBLIC_PARTNER_2_BACKLINK_URL &&
+    process.env.NEXT_PUBLIC_PARTNER_2_BACKLINK_ANCHOR_TEXT
+  ) {
+    links.push(
+      <Link
+        className={ styles.topMobileMenu__offerContainer }
+        href={ process.env.NEXT_PUBLIC_PARTNER_2_BACKLINK_URL }
+        title={ process.env.NEXT_PUBLIC_PARTNER_2_BACKLINK_ANCHOR_TEXT }
+        key={ process.env.NEXT_PUBLIC_PARTNER_2_BACKLINK_ANCHOR_TEXT }
+        rel={ 'follow' }
+      >
+        { process.env.NEXT_PUBLIC_PARTNER_2_BACKLINK_ANCHOR_TEXT }
+      </Link>
+    )
+  }
+
   if (process.env.NEXT_PUBLIC_CAMS_AD_URL) {
     links.push(
       <div

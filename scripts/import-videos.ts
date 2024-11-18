@@ -267,6 +267,12 @@ async function run (
       metaCollection.addItem(metaResolution, metaResolution.type)
     }
 
+    if (video.externalUrl) {
+      const metaExternalUrl = buildMeta('external-link', String(video.externalUrl), postUuid)
+
+      metaCollection.addItem(metaExternalUrl, metaExternalUrl.type)
+    }
+
     console.log('\t- Done')
 
     /**

@@ -11,10 +11,9 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
-import { ReactElement, useEffect, useRef } from 'react'
+import { ReactElement } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
-import Script from 'next/script'
 import { useRouter } from 'next/router'
 import { SEOHelper } from '~/modules/Shared/Infrastructure/FrontEnd/SEOHelper'
 
@@ -45,7 +44,6 @@ export const PostPage: NextPage<PostPageProps> = ({
 }) => {
   const { t } = useTranslation('post_page')
   const locale = useRouter().locale ?? 'en'
-  const firstClickRef = useRef(0)
 
   const description = SEOHelper.buildDescription(
     post.title,
@@ -54,42 +52,6 @@ export const PostPage: NextPage<PostPageProps> = ({
     post.actor ? post.actor.name : '',
     post.resolution
   )
-
-  let popUnder: ReactElement | null = null
-
-  if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
-    popUnder = (
-      <Script
-        type={ 'text/javascript' }
-        src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
-        async={ true }
-      />
-    )
-  }
-
-  useEffect(() => {
-    const clickHandler = () => {
-      if (firstClickRef.current < 3) {
-        firstClickRef.current = firstClickRef.current + 1
-      }
-
-      if (
-        firstClickRef.current === 2 &&
-        process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL
-      ) {
-        const script = document.createElement('script')
-
-        script.async = true
-        script.src = process.env.NEXT_PUBLIC_VIDEO_PLAYER_POPUNDER_URL
-
-        document.body.appendChild(script)
-      }
-    }
-
-    document.addEventListener('click', clickHandler)
-
-    return () => document.addEventListener('click', clickHandler)
-  }, [])
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -164,8 +126,6 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   return (
     <>
-      { popUnder }
-
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <MobileBanner />

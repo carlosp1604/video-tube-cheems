@@ -22,6 +22,10 @@ import {
   TrafficstarsVideoSlider
 } from '~/modules/Shared/Infrastructure/Components/Trafficstars/TrafficstarsVideoSlider'
 import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoClickInPage'
+import {
+  OctoclickInitializationCode
+} from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoclickInitializationCode'
+import { OctoclickPopUnder } from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoclickPopUnder'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),
@@ -53,6 +57,7 @@ function App ({
 }: AppProps) {
   const [menuOpen, setMenuOpen] = useState<boolean>(false)
   const [openLanguageMenu, setOpenLanguageMenu] = useState<boolean>(false)
+  const [octoClickCodeInitializated, setOctoclickCodeInitializated] = useState<boolean>(false)
 
   const { pathname } = useRouter()
 
@@ -103,7 +108,9 @@ function App ({
               setOpenLanguageMenu={ setOpenLanguageMenu }
             />
 
-            <OctoClickInPage />
+            <OctoclickInitializationCode onRender={ () => setOctoclickCodeInitializated(true) }/>
+            <OctoClickInPage initCodeRendered={ octoClickCodeInitializated }/>
+            <OctoclickPopUnder initCodeRendered={ octoClickCodeInitializated }/>
 
             <TrafficstarsVideoSlider />
 

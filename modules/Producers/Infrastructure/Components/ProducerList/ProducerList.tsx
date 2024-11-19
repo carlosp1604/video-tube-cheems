@@ -6,6 +6,7 @@ import { Carousel } from '~/components/Carousel/Carousel'
 import Link from 'next/link'
 import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
 import { FaArrowTrendUp } from 'react-icons/fa6'
+import { BsWebcam } from 'react-icons/bs'
 
 interface Props {
   producers: ProducerComponentDto[]
@@ -76,10 +77,26 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer }) => {
     </Link>
   )
 
+  // FIXME: Workaround to add a new link to producer list
+  const imLiveCamsLink = (
+    <Link
+      href={
+        'https://imlive.com/wmaster2.ashx?wid=126677699010&LinkID=701&promocode=00000&QueryID=499&from=freevideo6'
+      }
+      shallow={ true }
+      className={ styles.producerList__trending }
+      key={ 'imLiveCamsLink' }
+    >
+      <BsWebcam />
+      { t('live_cams_posts_button_title') }
+    </Link>
+  )
+
   const producerList = producers.map((producer) => {
     return buildProducerElement(producer)
   })
 
+  producerList.unshift({ component: imLiveCamsLink, key: t('live_cams_posts_button_title') })
   producerList.unshift({ component: trendingPostsLink, key: t('trending_posts_button_title') })
 
   return (

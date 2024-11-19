@@ -35,7 +35,6 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
   const [videoReady, setVideoReady] = useState<boolean>(false)
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
-  const [adOpen, setAdOpen] = useState<boolean>(true)
 
   const { status, data } = useSession()
   const firstRender = useFirstRender()
@@ -187,25 +186,8 @@ export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, tit
     )
   }
 
-  const overlay = (
-    <div
-      className={ styles.videoPostPlayer__overlayContaier }
-      id={ 'video-player-overlay' }
-      onClick={ () => {
-        setAdOpen(false)
-      } }
-    />
-  )
-
-  let shouldShowExtraAds = true
-
-  if (selectedUrl) {
-    shouldShowExtraAds = MediaUrlsHelper.shouldShowExtraAdvertising(selectedUrl?.provider.id)
-  }
-
   return (
     <div className={ styles.videoPostPlayer__container }>
-      { adOpen && shouldShowExtraAds && overlay }
       { sourcesMenu }
       { !videoReady ? <VideoLoadingState /> : null }
       { playerElement }

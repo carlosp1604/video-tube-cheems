@@ -9,12 +9,11 @@ import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsAp
 import { useSession } from 'next-auth/react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
-import { PostBasicData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostBasicData'
 import { useReactPost } from '~/hooks/ReactPost'
 import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
-import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
-import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
-import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/OutstreamBanner'
+import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
+import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/DesktopBanner'
+import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/OutstreamBanner'
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
 
@@ -200,14 +199,7 @@ export const Post: FC<Props> = ({
             onClickCommentsButton,
             onClickSavePostButton,
             likesNumber,
-            optionsDisabled,
-            <PostBasicData
-              post={ post }
-              postViewsNumber={ viewsNumber }
-              postLikes={ likesNumber }
-              postDislikes={ dislikesNumber }
-              postCommentsNumber={ commentsNumber }
-            />
+            optionsDisabled
           ) }
 
           <PostData
@@ -216,17 +208,19 @@ export const Post: FC<Props> = ({
             postActors={ post.actors }
             postTags={ post.tags }
             postDescription={ post.description }
+            date={ post.formattedPublishedAt }
+            viewsNumber={ postViewsNumber }
           />
         </div>
 
         <div className={ styles.post__rightContainer }>
           <span className={ styles.post__rightContainerItem }>
-            <Banner />
-          </span>
-          <span className={ styles.post__rightContainerItem }>
-            <OutstreamBanner />
+            <AdsterraBanner />
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
+            <OutstreamBanner />
+          </span>
+          <span className={ styles.post__rightContainerItemHiddenMd }>
             <DesktopBanner />
           </span>
         </div>

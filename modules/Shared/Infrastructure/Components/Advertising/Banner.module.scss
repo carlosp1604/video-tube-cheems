@@ -1,0 +1,41 @@
+.banner {
+  &__container {
+    @apply flex flex-col items-center justify-center
+    w-full h-fit overflow-hidden text-sm text-base-500
+    font-semibold z-advertising;
+  }
+
+  &__bannerWrapper250x300 {
+    @apply relative h-[250px] min-w-[300px] bg-base-800 mb-1;
+  }
+
+  &__bannerWrapper90x729 {
+    @apply relative h-[90px] min-w-[729px] bg-base-800 mb-1;
+  }
+
+  &__bannerContainer50x320 {
+    @apply relative h-[50px] w-[320px] bg-base-800 mb-1;
+  }
+
+  &__bannerContainer100x300 {
+    @apply relative h-[100px] min-w-[300px] bg-base-800 mb-1;
+  }
+
+  &__responsiveDesktop {
+    @apply hidden;
+
+    @screen md {
+      @apply block;
+    }
+  }
+
+  &__responsiveMobile {
+    @screen md {
+      @apply hidden;
+    }
+  }
+
+  &__adIcon {
+    @apply absolute bottom-1 right-1 text-sm text-brand-primary-dark;
+  }
+}

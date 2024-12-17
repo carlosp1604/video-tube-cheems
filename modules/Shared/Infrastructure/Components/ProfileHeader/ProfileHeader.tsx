@@ -1,56 +1,52 @@
-import { CSSProperties, FC } from 'react'
+import { FC, ReactElement } from 'react'
 import styles from './ProfileHeader.module.scss'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 
 export interface Props {
   name: string
+  profileType: string
+  subtitle: string
+  icon: ReactElement
   imageUrl: string | null
   imageAlt: string
-  customColor: string
-  rounded: boolean
 }
 
-export const ProfileHeader: FC<Props> = ({ name, imageUrl, imageAlt, customColor, rounded }) => {
-  return (
-      <header className={ styles.profileHeader__container }>
-        <div
-          className={ styles.profileHeader__background }
-          style={ {
-            '--custom-color': customColor,
-          } as CSSProperties }
-        />
-        { /**
-          <Image
-            src={ actor.backgroundImage }
-            width={ 0 }
-            height={ 0 }
-            sizes={ '100vw' }
-            alt={ 'aaa' }
-            className={ styles.actorProfileHeader__backgroundImage }
-          />
-        **/ }
-        <div className={ styles.profileHeader__infoContainer }>
-          <div className={ styles.profileHeader__nameImageContainer } >
-            <AvatarImage
-              imageUrl={ imageUrl }
-              avatarClassName={ `
-                ${styles.profileHeader__avatar}
-                ${rounded ? styles.profileHeader__avatar__rounded : ''}
-              ` }
-              imageClassName={ `
-                ${styles.profileHeader__image}
-                ${rounded ? styles.profileHeader__image__rounded : ''}
-              ` }
-              avatarName={ name }
-              imageAlt={ imageAlt }
-              color={ customColor !== null ? customColor : undefined }
-              rounded={ rounded }
-            />
+export interface OptionalProfileHeaderProps {
+  color: string
+}
 
-            <h1 className={ styles.profileHeader__name }>
-              { name }
-            </h1>
-        </div>
+export const ProfileHeader: FC<Props & Partial<OptionalProfileHeaderProps>> = ({
+  name,
+  profileType,
+  subtitle,
+  icon,
+  imageUrl,
+  imageAlt,
+  color = undefined,
+}) => {
+  return (
+    <header className={ styles.profileHeader__container }>
+      <div className={ styles.profileHeader__nameImageContainer } >
+        <AvatarImage
+          imageUrl={ imageUrl }
+          avatarClassName={ styles.profileHeader__avatar }
+          imageClassName={ styles.profileHeader__image }
+          avatarName={ name }
+          imageAlt={ imageAlt }
+          rounded={ false }
+          color={ color ?? 'black' }
+        />
+
+        <h1 className={ styles.profileHeader__name }>
+          { name }
+          <small className={ styles.profileHeader__profileType }>
+            { icon }
+            { profileType }
+          </small>
+          <small className={ styles.profileHeader__subtitle }>
+            { subtitle }
+          </small>
+        </h1>
       </div>
     </header>
   )

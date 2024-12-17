@@ -10,8 +10,10 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 import { useRouter } from 'next/router'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 
 export interface SearchPageProps {
   initialSearchTerm: string
@@ -55,7 +57,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <MobileBanner />
+      <CrackrevenuePostPageBanner />
 
       <Search
         initialPage={ initialPage }

@@ -12,18 +12,15 @@ import { getResolution } from '~/modules/Posts/Infrastructure/Frontend/PostCardH
 import {
   PostCardProducerActorNameLink
 } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardProducerActor/PostCardProducerActorNameLink'
-import { PostCardAvatar } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardProducerActor/PostCardAvatar'
 import HoverVideoPlayer from 'react-hover-video-player'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
 
 interface Props {
   post: PostCardComponentDto
-  showProducerImage: boolean
 }
 
 export const PostCard: FC<Props> = ({
   post,
-  showProducerImage = true,
 }) => {
   const { t } = useTranslation('post_card')
 
@@ -68,16 +65,9 @@ export const PostCard: FC<Props> = ({
     )
   }
 
-  let producerImage: ReactElement | null = null
   const producerNameLink: ReactElement | null = (
     <PostCardProducerActorNameLink producer={ post.producer } actor={ post.actor } />
   )
-
-  if (showProducerImage) {
-    producerImage = (
-      <PostCardAvatar producer={ post.producer } actor={ post.actor } />
-    )
-  }
 
   let postCardLink = `/posts/videos/${post.slug}`
   let resolutionIcon: ReactElement | null = null
@@ -88,7 +78,7 @@ export const PostCard: FC<Props> = ({
 
     externalLinkIcon = (
       <span
-        className={ styles.postCard__externalIcon }
+        className={ `${styles.postCard__absoluteElement} ${styles.postCard__externalIcon}` }
         title={ t('post_card_external_link_title') }
       >
         <BsLink45Deg />
@@ -98,7 +88,7 @@ export const PostCard: FC<Props> = ({
 
   if (post.resolution) {
     resolutionIcon = (
-      <span className={ styles.postCard__videoResolution } >
+      <span className={ `${styles.postCard__absoluteElement} ${styles.postCard__videoResolution}` } >
         { getResolution(post.resolution) }
       </span>
     )
@@ -114,11 +104,12 @@ export const PostCard: FC<Props> = ({
           className={ styles.postCard__videoLink }
           title={ post.title }
           rel={ post.externalLink !== null ? 'nofollow' : 'follow' }
+          target={ post.externalLink !== null ? '_blank' : undefined }
           onMouseOver={ (event) => handleVideoHover(event, '') }
           onMouseLeave={ (event) => handleVideoHover(event, post.title) }
         >
           { media }
-          <span className={ styles.postCard__videoTime } >
+          <span className={ styles.postCard__absoluteElement }>
             { post.duration }
           </span>
           { resolutionIcon }
@@ -126,9 +117,9 @@ export const PostCard: FC<Props> = ({
         </Link>
       </div>
       <div className={ styles.postCard__videoDataContainer }>
-        { producerImage }
         <div className={ styles.postCard__postData }>
           { producerNameLink }
+
           <Link
             href={ postCardLink }
             className={ styles.postCard__videoTitleLink }

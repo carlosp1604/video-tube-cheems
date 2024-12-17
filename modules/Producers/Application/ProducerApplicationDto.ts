@@ -8,4 +8,5 @@ export interface ProducerApplicationDto {
   readonly brandHexColor: string
   readonly createdAt: string
   readonly parentProducer: ProducerApplicationDto | null
+  readonly viewsNumber: number
 }

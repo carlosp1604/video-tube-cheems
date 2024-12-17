@@ -7,6 +7,7 @@ export class Producer {
   public readonly name: string
   public readonly description: string | null
   public readonly imageUrl: string | null
+  public readonly viewsCount: number
   public readonly parentProducerId: string | null
   public readonly createdAt: DateTime
   public readonly brandHexColor: string
@@ -23,6 +24,7 @@ export class Producer {
     name: string,
     description: string | null,
     imageUrl: string | null,
+    viewsCount: number,
     parentProducerId: string | null,
     brandHexColor: string,
     createdAt: DateTime,
@@ -35,6 +37,7 @@ export class Producer {
     this.name = name
     this.description = description
     this.imageUrl = imageUrl
+    this.viewsCount = viewsCount
     this.parentProducerId = parentProducerId
     this.brandHexColor = brandHexColor
     this.createdAt = createdAt

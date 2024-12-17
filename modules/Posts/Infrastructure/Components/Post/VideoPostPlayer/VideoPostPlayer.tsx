@@ -1,198 +1,136 @@
-import { createRef, FC, ReactElement, useEffect, useMemo, useState } from 'react'
+import { FC, ReactElement, useEffect, useState } from 'react'
 import styles from './VideoPostPlayer.module.scss'
-import { BsFileEarmarkBreak, BsThreeDotsVertical } from 'react-icons/bs'
-import useTranslation from 'next-translate/useTranslation'
-import { v4 as uuidv4 } from 'uuid'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
-import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
-import { Tooltip } from '~/components/Tooltip/Tooltip'
-import { useSession } from 'next-auth/react'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
-import { useFirstRender } from '~/hooks/FirstRender'
 import { HtmlVideoPlayer } from '~/components/VideoPlayer/HtmlVideoPlayer'
-import ReactGA from 'react-ga4'
-import {
-  ChangeVideoPlayerSourceAction,
-  VideoPostCategory
-} from '~/modules/Shared/Infrastructure/FrontEnd/AnalyticsEvents/PostPage'
-import dynamic from 'next/dynamic'
+import { useFirstRender } from '~/hooks/FirstRender'
+import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
+import { BsGearWide, BsX } from 'react-icons/bs'
+import { IconButton } from '~/components/IconButton/IconButton'
+import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
+import Image from 'next/image'
+import useTranslation from 'next-translate/useTranslation'
+import { useSession } from 'next-auth/react'
 
 export interface Props {
   title: string
-  embedPostMedia: PostMediaComponentDto | null
-  videoPostMedia: PostMediaComponentDto | null
+  selectableUrls: MediaUrlComponentDto[]
+  sourcesMenuOpen: boolean
+  onCloseSourceMenu: () => void
 }
 
-const VideoSourcesMenu = dynamic(() =>
-  import('~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/VideoSourcesMenu/VideoSourcesMenu')
-    .then((module) => module.VideoSourcesMenu),
-{ ssr: false }
-)
-
-export const VideoPostPlayer: FC<Props> = ({ embedPostMedia, videoPostMedia, title }) => {
-  const [menuOpen, setMenuOpen] = useState<boolean>(false)
+export const VideoPostPlayer: FC<Props> = ({
+  title,
+  selectableUrls,
+  sourcesMenuOpen,
+  onCloseSourceMenu,
+}) => {
   const [videoReady, setVideoReady] = useState<boolean>(false)
-  const [mounted, setMounted] = useState<boolean>(false)
-  const [tooltipId, setTooltipId] = useState<string>('')
+  const [selectedMediaUrl, setSelectedMediaUrl] = useState<MediaUrlComponentDto>(selectableUrls[0])
+  const { status } = useSession()
 
-  const { status, data } = useSession()
   const firstRender = useFirstRender()
 
-  const selectableUrls = useMemo(
-    () => {
-      let userId: string | null = null
-
-      if (status === 'authenticated' && data) {
-        userId = data.user.id
-      }
-
-      return MediaUrlsHelper.getSelectableUrls(embedPostMedia, videoPostMedia, userId)
-    },
-    [embedPostMedia, videoPostMedia, status])
-
-  const selectedMediaUrl = useMemo(
-    () => {
-      if (selectableUrls.length > 0) {
-        return selectableUrls[0]
-      }
-
-      return null
-    },
-    [selectableUrls, status])
-
-  const [selectedUrl, setSelectedUrl] =
-    useState<MediaUrlComponentDto | null>(selectedMediaUrl)
-
   const { t } = useTranslation('post')
-
-  const iframeRef = createRef<HTMLIFrameElement>()
 
   useEffect(() => {
     if (firstRender) {
       setVideoReady(true)
     }
-
-    setMounted(true)
-    setTooltipId(uuidv4())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    setSelectedUrl(selectedMediaUrl)
-  }, [status])
-
-  if (selectableUrls.length === 0) {
-    return (
-      <div className={ styles.videoPostPlayer__noSourcesState }>
-        <BsFileEarmarkBreak className={ styles.videoPostPlayer__noSourcesStateIcon }/>
-        { t('post_video_no_sources_error_message') }
-      </div>
-    )
-  }
-
-  let sourceSelectorButton: ReactElement | null = null
-  let sourceSelectorButtonToolTip: ReactElement | null = null
-  let sourcesMenu: ReactElement | null = null
-
-  if (selectableUrls.length > 1) {
-    sourceSelectorButton = (
-      <button
-        className={ styles.videoPostPlayer__switcherButton }
-        onClick={ () => setMenuOpen(!menuOpen) }
-        title={ t('post_video_player_selector_button_title') }
-        data-tooltip-id={ tooltipId }
-        data-tooltip-content={ t('post_video_player_selector_button_title') }
-      >
-        <BsThreeDotsVertical className={ styles.videoPostPlayer__optionIcon }/>
-      </button>
-    )
-
-    const onClickOption = (mediaUrl: MediaUrlComponentDto) => {
-      if (selectedUrl !== mediaUrl) {
-        setVideoReady(false)
-        setSelectedUrl(mediaUrl)
-
-        ReactGA.event({
-          category: VideoPostCategory,
-          action: ChangeVideoPlayerSourceAction,
-          label: mediaUrl.provider.name,
-        })
-      }
-      setMenuOpen(!menuOpen)
-    }
-
-    sourcesMenu = (
-      <VideoSourcesMenu
-        mediaUrls={ selectableUrls }
-        selectedUrl={ selectedUrl }
-        onClickOption={ onClickOption }
-        menuOpen={ menuOpen }
-        onClickMenu={ () => setMenuOpen(!menuOpen) }
-      />
-    )
-
-    sourceSelectorButtonToolTip = (
-      <Tooltip
-        tooltipId={ tooltipId }
-        place={ 'left' }
-      />
-    )
-  }
-
-  const onReady = () => {
-    setVideoReady(true)
-  }
 
   let playerElement: ReactElement | null = null
 
-  if (
-    selectedUrl &&
-    embedPostMedia &&
-    embedPostMedia.urls.find((postMedia) =>
-      selectedUrl.url === postMedia.url)
-  ) {
-    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedUrl.provider.id, status === 'authenticated')
+  if (selectedMediaUrl.mediaType === 'Embed') {
+    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedMediaUrl.provider.id, status === 'authenticated')
 
     playerElement = (
       <iframe
-        key={ selectedUrl.url }
+        key={ selectedMediaUrl.url }
         className={ styles.videoPostPlayer__iframe }
-        ref={ iframeRef }
-        src={ selectedUrl.url }
+        src={ selectedMediaUrl.url }
         width={ '100%' }
         height={ '100%' }
-        onLoad={ onReady }
+        onLoad={ () => setVideoReady(true) }
         allowFullScreen={ true }
         sandbox={ sandbox ? 'allow-same-origin allow-scripts' : undefined }
         style={ { overflow: 'hidden' } }
         title={ title }
+        scrolling={ 'no' }
       />
     )
   }
 
-  if (
-    selectedUrl &&
-    videoPostMedia &&
-    videoPostMedia.urls.find((postMedia) =>
-      selectedUrl.url === postMedia.url)
-  ) {
+  if (selectedMediaUrl.mediaType === 'Video') {
     playerElement = (
       <HtmlVideoPlayer
         title={ title }
-        videoPostMedia={ videoPostMedia }
-        selectedMediaUrl={ selectedUrl }
-        onPlayerReady={ onReady }
+        videoPostMediaUrls={ selectableUrls.filter((selectableUrl) => selectableUrl.mediaType === 'Video') }
+        selectedMediaUrl={ selectedMediaUrl }
+        onPlayerReady={ () => setVideoReady(true) }
       />
     )
   }
 
+  const closeVideoSourceMenuButton = (
+    <span className={ styles.videoPostPlayer__sourcesMenuCloseButton }>
+      <IconButton
+        onClick={ onCloseSourceMenu }
+        icon={ <BsX /> }
+        title={ t('post_sources_menu_close_button_title') }
+      />
+    </span>
+  )
+
   return (
     <div className={ styles.videoPostPlayer__container }>
-      { sourcesMenu }
-      { !videoReady ? <VideoLoadingState /> : null }
+      <div
+        className={ `
+          ${styles.videoPostPlayer__sourcesMenuContainer} 
+          ${sourcesMenuOpen ? styles.videoPostPlayer__sourcesMenuContainer__visible : ''}
+        ` }
+        onClick={ onCloseSourceMenu }
+      >
+        <ModalMenuHeader
+          title={ t('post_video_player_sources_menu_title') }
+          subtitle={ t('post_video_player_sources_menu_subtitle') }
+          icon={ <BsGearWide/> }
+        />
+        <div className={ styles.videoPostPlayer__sourcesMenuList }>
+          { selectableUrls.map((selectableUrl) => (
+            <button
+              key={ selectableUrl.url }
+              className={ `
+              ${styles.videoPostPlayer__sourceOption} 
+              ${selectedMediaUrl.url === selectableUrl.url ? styles.videoPostPlayer__sourceOption__selected : ''}
+            ` }
+              onClick={ async () => {
+                setVideoReady(false)
+                setSelectedMediaUrl(selectableUrl)
+              } }
+            >
+              <div className={ styles.videoPostPlayer__sourceOptionImageWrapper }>
+                <Image
+                  src={ selectableUrl.provider.logoUrl }
+                  alt={ selectableUrl.provider.name }
+                  className={ styles.videoPostPlayer__sourceOptionImage }
+                  width={ 0 }
+                  height={ 0 }
+                  sizes={ '100vw' }
+                  placeholder={ 'blur' }
+                  blurDataURL={ rgbDataURL(81, 80, 80) }
+                />
+              </div>
+              { selectableUrl.title }
+            </button>
+          )) }
+        </div>
+      </div>
+      { sourcesMenuOpen ? closeVideoSourceMenuButton : null }
+      { !videoReady ? <VideoLoadingState/> : null }
       { playerElement }
-      { sourceSelectorButton }
-      { mounted && sourceSelectorButtonToolTip }
     </div>
   )
 }

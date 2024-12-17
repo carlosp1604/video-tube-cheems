@@ -50,4 +50,8 @@
       @apply text-base;
     }
   }
+
+  &__optionItemQuantity {
+    @apply ml-0.5 text-brand-primary-bg font-bold;
+  }
 }

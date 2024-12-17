@@ -10,6 +10,7 @@ import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCa
 import { useSavePost } from '~/hooks/SavePosts'
 import { useReactPost } from '~/hooks/ReactPost'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
+import styles from './PostCardOptions.module.scss'
 
 export type PostCardOptions = 'savePost' | 'react'
 
@@ -102,7 +103,7 @@ export function usePostCardOptions () {
         case 'savePost': {
           if (status === 'authenticated' && data) {
             options.push({
-              icon: <BsBookmark />,
+              icon: <BsBookmark className={ styles.postCardOptions__iconOption }/>,
               title: t('save_post_post_card_gallery_action_title'),
               onClick: (postCard: PostCardComponentDto) =>
                 savePostPostCardAction(postCard, optionConfiguration.onSuccess, onSuccess),
@@ -115,7 +116,7 @@ export function usePostCardOptions () {
         case 'react': {
           if (status === 'authenticated' && data) {
             options.push({
-              icon: <BiLike />,
+              icon: <BiLike className={ styles.postCardOptions__iconOption } />,
               title: t('like_post_post_card_gallery_action_title'),
               onClick: async (postCard: PostCardComponentDto) => {
                 await likePostPostCardAction(postCard, optionConfiguration.onSuccess, onSuccess)
@@ -129,7 +130,7 @@ export function usePostCardOptions () {
         case 'deleteSavedPost': {
           if (status === 'authenticated' && data && optionConfiguration.ownerId === data.user.id) {
             options.push({
-              icon: <BsTrash />,
+              icon: <BsTrash className={ styles.postCardOptions__iconOption }/>,
               title: t('delete_saved_post_option_title'),
               onClick: async (postCard: PostCardComponentDto) => {
                 await deleteSavedPostCardAction(postCard, onSuccess, optionConfiguration.onDelete)
@@ -146,5 +147,6 @@ export function usePostCardOptions () {
     }
 
     return options
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 }

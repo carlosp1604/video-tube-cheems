@@ -8,37 +8,22 @@
   }
 
   &__media-skeleton {
-    @apply aspect-w-16 aspect-h-9 rounded-lg bg-base-800;
-  }
-
-  &__video-data-skeleton {
-    @apply grid py-2;
-    grid-template-areas:
-      "producer-logo post-data";
-
-    grid-template-columns: auto 1fr;
-  }
-
-  &__producer-logo {
-    @apply rounded-full w-8 h-8 mr-2 bg-base-800 mt-1;
-    grid-area: producer-logo;
-
-    @screen md {
-      @apply w-9 h-9;
-    }
+    @apply aspect-w-16 aspect-h-9 rounded-lg bg-base-800
+    transition-colors;
   }
 
   &__post-data {
-    @apply flex flex-col text-sm gap-y-1;
+    @apply flex flex-col text-sm gap-y-1 pt-2;
     grid-area: post-data;
   }
 
   &__post-title-skeleton {
-    @apply w-full bg-base-700 rounded-lg h-3;
+    @apply w-full bg-base-700 rounded-lg h-3 transition-colors;
   }
 
   &__producer-title-skeleton {
-    @apply w-2/3 bg-base-700 rounded-lg h-2.5 mb-0.5;
+    @apply w-2/3 bg-base-700 rounded-lg h-2.5 mt-1.5 mb-0.5
+    transition-colors;
   }
 
   &__post-extra-data-skeleton {
@@ -46,11 +31,11 @@
   }
 
   &__post-extra-item-skeleton {
-    @apply w-1/4 bg-base-700 h-2.5 rounded-lg;
+    @apply w-1/4 bg-base-700 h-2.5 rounded-lg
+    transition-colors;
   }
 
   &__post-extra-data-separator {
-    @apply text-base-700;
+    @apply text-base-700 transition-colors;
   }
-
 }

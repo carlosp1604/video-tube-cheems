@@ -4,8 +4,8 @@ import { AuthApiService } from '~/modules/Auth/Infrastructure/Frontend/AuthApiSe
 import useTranslation from 'next-translate/useTranslation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
-import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   email: string
@@ -24,6 +24,7 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm, loading
   const authApiService = new AuthApiService()
 
   const { t } = useTranslation('user_retrieve_password')
+  const { error } = useToast()
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -40,22 +41,22 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm, loading
       if (!result.ok) {
         switch (result.status) {
           case 404: {
-            toast.error(t('change_password_user_not_found_message', { email }))
+            error(t('change_password_user_not_found_message', { email }))
             break
           }
 
           case 401: {
-            toast.error(t('change_password_user_not_found_message', { email }))
+            error(t('change_password_user_not_found_message', { email }))
             break
           }
 
           case 422: {
-            toast.error(t('change_password_invalid_password_message'))
+            error(t('change_password_invalid_password_message'))
             break
           }
 
           default: {
-            toast.error(t('change_password_server_error_message'))
+            error(t('change_password_server_error_message'))
             break
           }
         }
@@ -69,7 +70,7 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm, loading
       setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
-      toast.error(t('change_password_server_error_message'))
+      error(t('change_password_server_error_message'))
     }
   }
 

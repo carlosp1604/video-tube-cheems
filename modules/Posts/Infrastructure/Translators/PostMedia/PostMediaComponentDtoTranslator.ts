@@ -20,11 +20,11 @@ export abstract class PostMediaComponentDtoTranslator {
       thumbnailUrl: applicationDto.thumbnailUrl,
       urls: urls
         .map((mediaUrl) => {
-          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
+          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl, applicationDto.type)
         }),
       downloadUrls: downloadUrls
         .map((mediaUrl) => {
-          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl)
+          return MediaUrlComponentDtoTranslator.fromApplicationDto(mediaUrl, applicationDto.type)
         }),
     }
   }

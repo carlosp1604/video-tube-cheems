@@ -8,38 +8,56 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  // transpilePackages: ['fluid-player'],
-  rewrites: async () => [
-    {
-      source: '/posts-sitemap.xml',
-      destination: '/posts-sitemap',
-    },
-    {
-      source: '/posts-sitemap-:page.xml',
-      destination: '/posts-sitemap/:page',
-    },
-    {
-      source: '/actors-sitemap.xml',
-      destination: '/actors-sitemap',
-    },
-    {
-      source: '/tags-sitemap.xml',
-      destination: '/tags-sitemap',
-    },
-    {
-      source: '/actors-sitemap-:page.xml',
-      destination: '/actors-sitemap/:page',
-    },
-    {
-      source: '/producers-sitemap.xml',
-      destination: '/producers-sitemap',
-    },
-    {
-      source: '/producers-sitemap-:page.xml',
-      destination: '/producers-sitemap/:page',
-    },
-  ],
-  webpack: (config) => {
+  async rewrites () {
+    return {
+      beforeFiles: [
+        {
+          source: '/rss',
+          destination: '/api/rss',
+        },
+        {
+          source: '/posts-sitemap.xml',
+          destination: '/posts-sitemap',
+        },
+        {
+          source: '/posts-sitemap-:page.xml',
+          destination: '/posts-sitemap/:page',
+        },
+        {
+          source: '/actors-sitemap.xml',
+          destination: '/actors-sitemap',
+        },
+        {
+          source: '/tags-sitemap.xml',
+          destination: '/tags-sitemap',
+        },
+        {
+          source: '/actors-sitemap-:page.xml',
+          destination: '/actors-sitemap/:page',
+        },
+        {
+          source: '/producers-sitemap.xml',
+          destination: '/producers-sitemap',
+        },
+        {
+          source: '/producers-sitemap-:page.xml',
+          destination: '/producers-sitemap/:page',
+        },
+      ],
+    }
+  },
+  webpack: (config, { dev, isServer }) => {
+    // Replace React with Preact only in client production build
+
+    if (!dev && !isServer) {
+      Object.assign(config.resolve.alias, {
+        'react/jsx-runtime.js': 'preact/compat/jsx-runtime',
+        react: 'preact/compat',
+        'react-dom/test-utils': 'preact/test-utils',
+        'react-dom': 'preact/compat',
+      })
+    }
+
     const rules = config.module.rules
       .find((rule) => typeof rule.oneOf === 'object')
       .oneOf.filter((rule) => Array.isArray(rule.use))

@@ -5,20 +5,27 @@
     @apply relative cursor-default;
   }
 
+  &__adContainer {
+    @apply cursor-pointer;
+
+    &:hover {
+      #{$parentBlock}__video-title-link {
+        @apply text-brand-primary-light;
+      }
+    }
+  }
+
   &__video-container {
-    @apply aspect-w-16 aspect-h-9 rounded-lg
+    @apply aspect-w-16 aspect-h-9 rounded-md
     overflow-hidden z-post-card-video;
 
     &__external {
-      @apply shadow-all shadow-brand-primary-light;
+      @apply shadow-all-sm shadow-brand-primary-light;
     }
 
     &:hover {
-      #{$parentBlock}__video-time,
-      #{$parentBlock}__external-icon,
-      #{$parentBlock}__video-resolution {
-        @apply opacity-0 transition-all
-          duration-500;
+      #{$parentBlock}__absolute-element {
+        @apply opacity-0 transition-all;
 
         &:hover, &:focus {
           @apply opacity-100;
@@ -36,11 +43,7 @@
   }
 
   &__video-data-container {
-    @apply grid py-2;
-    grid-template-areas:
-      "producer-logo post-data";
-
-    grid-template-columns: auto 1fr;
+    @apply py-2;
   }
 
   &__post-data {
@@ -49,41 +52,27 @@
   }
 
   &__video-title-link {
-    @apply line-clamp-2 text-sm font-medium;
+    @apply line-clamp-2 text-sm font-medium my-1
+    transition-colors text-base-100;
   }
 
   &__extra-data {
-    @apply flex items-center font-normal text-base-400 text-xs gap-x-0.5
-    line-clamp-none truncate mt-0.5;
+    @apply flex items-center font-normal  text-xs
+    gap-x-0.5 line-clamp-none truncate mt-0.5 transition-colors
+    text-base-400;
   }
 
-  &__icon {
-    @apply text-brand-primary-dark text-sm;
-  }
-
-  &__video-time {
+  &__absolute-element {
     @apply absolute top-1 right-1 text-sm font-medium
-    py-0.5 px-1 rounded-lg z-post-card-video-time
-    cursor-default bg-base-700;
-    text-shadow: 0 0 4px #000000;
+    py-0.5 px-1 rounded-md z-post-card-video-time
+    cursor-default text-white bg-black/70;
   }
 
   &__video-resolution {
-    @apply absolute top-8 right-1 text-sm font-medium
-    text-white py-0.5 px-1 rounded-lg z-post-card-video-time
-    cursor-default bg-brand-primary-bg uppercase leading-tight shadow-all-sm;
-    text-shadow: 0 0 4px #000000;
+    @apply top-8 right-1 uppercase;
   }
 
   &__external-icon {
-    @apply absolute top-14 right-1 text-xl font-normal
-    text-base-100 py-0.5 px-1 rounded-lg bg-brand-primary-bg
-    z-post-card-video-time cursor-default transition-colors
-    shadow-all shadow-brand-primary-bg;
-
-    &:hover {
-      @apply bg-brand-secondary-bg
-      shadow-brand-secondary-bg transition-colors;
-    }
+    @apply top-[60px] right-1 text-xl bg-brand-primary-bg/70;
   }
 }

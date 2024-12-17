@@ -1,59 +1,8 @@
 .sorting-menu-dropdown {
   &__container {
-    @apply invisible relative inline-block text-left
-      whitespace-nowrap;
-
+    @apply invisible;
     &_visible {
-      @apply visible;
-    }
-  }
-
-  &__dropdown-button {
-    @apply flex flex-col items-end truncate text-brand-primary-light
-      text-xs font-normal leading-none;
-
-    @screen md {
-      @apply font-semibold;
-    }
-  }
-
-  &__current-order-title-skeleton {
-    @apply w-full h-3 bg-base-700 rounded-lg animate-pulse;
-  }
-
-  &__dropdown-container {
-    @apply absolute right-0 z-sort-menu-dropdown mt-2 rounded-md
-      w-auto h-auto transition-all hidden p-0 m-0
-      bg-base-800 text-left shadow-2xl shadow-base-800;
-
-    &_open {
-      @apply block transition-all;
-    }
-  }
-
-  &__dropdown-item {
-    @apply h-full rounded-md transition-colors m-1 overflow-hidden;
-    list-style-type: none;
-  }
-
-  &__dropdown-item-link {
-    @apply flex h-full w-full px-2 py-1 text-base-500
-    text-sm font-medium;
-
-    &:hover, &:focus {
-      @apply text-base-100 bg-base-900 cursor-pointer;
-    }
-
-    @screen lg {
-      @apply text-base;
-    }
-
-    &_active {
-      @apply bg-brand-primary-bg text-base-100 font-bold pointer-events-none;
-
-      &:hover {
-        @apply bg-brand-primary-bg text-base-100;
-      }
+      @apply visible text-base-300;
     }
   }
 }

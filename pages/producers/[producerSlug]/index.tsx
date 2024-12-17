@@ -86,6 +86,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       name: '',
       imageUrl: '',
       id: '',
+      viewsNumber: 0,
       brandHexColor: '',
     },
     initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
@@ -140,6 +141,12 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
   } catch (exception: unknown) {
     console.error(exception)
   }
+
+  // Experimental: Try to improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=50, stale-while-revalidate=10'
+  )
 
   return {
     props,

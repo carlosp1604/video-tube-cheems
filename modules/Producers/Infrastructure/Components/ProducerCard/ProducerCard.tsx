@@ -27,7 +27,7 @@ export const ProducerCard: FC<Props> = ({ producer }) => {
             avatarName={ producer.name }
             imageAlt={ t('producer_card_image_alt_title', { producerName: producer.name }) }
             rounded={ false }
-            color={ producer.brandHexColor }
+            color={ producer.brandHexColor ? producer.brandHexColor : 'black' }
           />
         </Link>
       </div>

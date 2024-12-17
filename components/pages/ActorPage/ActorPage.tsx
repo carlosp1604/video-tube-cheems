@@ -15,6 +15,8 @@ import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { useAvatarColor } from '~/hooks/AvatarColor'
+import { BsStarFill } from 'react-icons/bs'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto
@@ -81,8 +83,11 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         name={ actor.name }
         imageAlt={ t('actor_image_alt_title', { actorName: actor.name }) }
         imageUrl={ actor.imageUrl }
-        customColor={ getRandomColor(actor.name) }
-        rounded={ true }
+        profileType={ t('actor_page_profile_type_title') }
+        icon={ <BsStarFill /> }
+        subtitle={ t('actor_page_profile_count_title',
+          { viewsNumber: NumberFormatter.compatFormat(actor.viewsCount, locale) }) }
+        color={ actor.imageUrl ? undefined : 'black' }
       />
 
       <Actor

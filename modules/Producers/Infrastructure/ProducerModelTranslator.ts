@@ -28,6 +28,7 @@ export class ProducerModelTranslator {
       prismaProducerModel.name,
       prismaProducerModel.description,
       prismaProducerModel.imageUrl,
+      Number.parseInt(prismaProducerModel.viewsCount.toString()),
       prismaProducerModel.parentProducerId,
       prismaProducerModel.brandHexColor,
       DateTime.fromJSDate(prismaProducerModel.createdAt),
@@ -37,7 +38,7 @@ export class ProducerModelTranslator {
     )
   }
 
-  public static toDatabase (producer: Producer, viewsCount: number): PrismaProducerModel {
+  public static toDatabase (producer: Producer): PrismaProducerModel {
     return {
       id: producer.id,
       slug: producer.slug,
@@ -49,7 +50,7 @@ export class ProducerModelTranslator {
       createdAt: producer.createdAt.toJSDate(),
       deletedAt: producer.deletedAt?.toJSDate() ?? null,
       updatedAt: producer.updatedAt.toJSDate(),
-      viewsCount: BigInt(viewsCount),
+      viewsCount: BigInt(producer.viewsCount),
     }
   }
 }

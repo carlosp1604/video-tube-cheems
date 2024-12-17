@@ -24,6 +24,7 @@ import { ActorFilterOptions } from '~/modules/Actors/Infrastructure/Frontend/Act
 import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend/ActorQueryParamsParser'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface ActorsPagePaginationState {
   page: number
@@ -60,6 +61,7 @@ export const Actors: FC<Props> = ({
   const router = useRouter()
   const firstRender = useFirstRender()
   const { t } = useTranslation('actors')
+  const { error } = useToast()
 
   const sortingOptions: ActorsPaginationSortingType[] = [
     PaginationSortingType.POPULARITY,
@@ -86,8 +88,6 @@ export const Actors: FC<Props> = ({
   }
 
   const onSearch = async () => {
-    const toast = (await import('react-hot-toast')).default
-
     const dompurify = (await import('dompurify')).default
     const cleanTerm = dompurify.sanitize(searchBarTerm.trim())
 
@@ -100,7 +100,7 @@ export const Actors: FC<Props> = ({
     }
 
     if (currentTerm && currentTerm.value === cleanTerm) {
-      toast.error(t('already_searching_term_error_message'))
+      error(t('already_searching_term_error_message'))
 
       return
     }

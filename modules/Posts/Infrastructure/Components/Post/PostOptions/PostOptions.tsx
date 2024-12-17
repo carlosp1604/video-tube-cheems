@@ -1,6 +1,6 @@
 import styles from './PostOptions.module.scss'
 import { FC, ReactElement, useState } from 'react'
-import { BsBookmarks, BsChatSquareText, BsDownload, BsMegaphone } from 'react-icons/bs'
+import { BsGearWide } from 'react-icons/bs'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { RxDividerVertical } from 'react-icons/rx'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
@@ -17,6 +17,9 @@ import {
 } from '~/modules/Shared/Infrastructure/FrontEnd/AnalyticsEvents/PostPage'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
+import { PiChatsDuotone } from 'react-icons/pi'
+import { MdBookmarkBorder, MdFileDownload } from 'react-icons/md'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 const DownloadMenu = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
@@ -28,11 +31,13 @@ export interface Props {
   savedPost: boolean
   onClickReactButton: (type: ReactionType) => Promise<void>
   onClickCommentsButton: () => void
+  onClickSourcesButton: () => void
   onClickSaveButton: () => Promise<void>
   likesNumber: number
   optionsDisabled: boolean
   downloadUrls: MediaUrlComponentDto[]
   enableDownloads: boolean
+  sourcesNumber: number
 }
 
 export const PostOptions: FC<Props> = ({
@@ -40,11 +45,13 @@ export const PostOptions: FC<Props> = ({
   savedPost,
   onClickReactButton,
   onClickCommentsButton,
+  onClickSourcesButton,
   onClickSaveButton,
   likesNumber,
   optionsDisabled,
   downloadUrls,
   enableDownloads,
+  sourcesNumber,
 }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false)
@@ -52,12 +59,11 @@ export const PostOptions: FC<Props> = ({
   const { pathname } = useRouter()
 
   const { t } = useTranslation('post')
+  const { error } = useToast()
 
   const onClickLikeDislike = async (reactionType: ReactionType) => {
     if (loading || loadingSaveButton) {
-      const toast = (await import('react-hot-toast')).default
-
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -68,10 +74,8 @@ export const PostOptions: FC<Props> = ({
   }
 
   const onClickSave = async () => {
-    const toast = (await import('react-hot-toast')).default
-
     if (loading || loadingSaveButton) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -89,13 +93,12 @@ export const PostOptions: FC<Props> = ({
 
       return
     }
-    const toast = (await import('react-hot-toast')).default
-
-    toast.error(t('post_download_no_downloads_error_message'))
+    error(t('post_download_no_downloads_error_message'))
   }
 
   let downloadMenu: ReactElement | null = null
   let downloadButton: ReactElement | null = null
+  let sourcesButton: ReactElement | null = null
 
   if (enableDownloads) {
     downloadMenu = (
@@ -116,18 +119,36 @@ export const PostOptions: FC<Props> = ({
     downloadButton = (
       <span
         className={ styles.postOptions__optionItem }
-        onClick={ () => {
+        onClick={ async () => {
           ReactGA.event({
             category: VideoPostCategory,
             action: ClickDownloadButtonAction,
             label: pathname,
           })
-          onClickDownloadButton()
+          await onClickDownloadButton()
         } }
       >
-        <BsDownload className={ styles.postOptions__optionItemIcon }/>
-        { t('post_download_button_title', { sourcesNumber: downloadUrls.length }) }
+        <MdFileDownload className={ styles.postOptions__optionItemIcon }/>
+        { t('post_download_button_title') }
+        <span className={ styles.postOptions__optionItemQuantity }>
+          { downloadUrls.length }
+        </span>
       </span>
+    )
+  }
+
+  if (sourcesNumber > 1) {
+    sourcesButton = (
+      <button
+        className={ styles.postOptions__optionItem }
+        onClick={ onClickSourcesButton }
+      >
+        <BsGearWide className={ styles.postOptions__optionItemIcon }/>
+        { t('post_sources_button_title') }
+        <span className={ styles.postOptions__optionItemQuantity }>
+          { sourcesNumber }
+        </span>
+      </button>
     )
   }
 
@@ -154,11 +175,12 @@ export const PostOptions: FC<Props> = ({
           disabled={ loading || optionsDisabled }
         />
       </span>
+      { sourcesButton }
       <span
         className={ styles.postOptions__optionItem }
         onClick={ onClickCommentsButton }
       >
-        <BsChatSquareText className={ styles.postOptions__optionItemIcon }/>
+        <PiChatsDuotone className={ styles.postOptions__optionItemIcon }/>
         { t('post_comments_button_title') }
       </span>
       <button className={ `
@@ -170,21 +192,10 @@ export const PostOptions: FC<Props> = ({
       >
         { loadingSaveButton
           ? <AiOutlineLoading className={ styles.postOptions__loadingIcon } />
-          : <BsBookmarks className={ styles.postOptions__optionItemIcon } /> }
+          : <MdBookmarkBorder className={ styles.postOptions__optionItemIcon } /> }
         { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </button>
       { downloadButton }
-      <span
-        className={ styles.postOptions__optionItem }
-        onClick={ async () => {
-          const toast = (await import('react-hot-toast')).default
-
-          toast.success(t('post_option_feature_not_available_message'))
-        } }
-      >
-        <BsMegaphone className={ styles.postOptions__optionItemIcon }/>
-        { t('post_report_button_title') }
-      </span>
     </div>
   )
 }

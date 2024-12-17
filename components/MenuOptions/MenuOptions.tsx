@@ -23,21 +23,22 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
   const buildOptionContent = (menuOption: MenuOptionComponentInterface): ReactElement => {
     if (menuOption.action) {
       return (
-        <div className={ `
-          ${styles.menuOptions__menuItem}
-          ${menuOption.isActive ? styles.menuOptions__menuItemActive : ''}
-        ` }
-           key={ menuOption.title }
-           onClick={ menuOption.onClick }
+        <div
+          className={ styles.menuOptions__menuItemContent }
+          key={ menuOption.title }
         >
           <Link
             href={ menuOption.action.url }
-            className={ styles.menuOptions__menuItemContent }
+            className={ `
+              ${styles.menuOptions__itemContent} 
+              ${menuOption.isActive ? styles.menuOptions__itemContent_active : ''}  
+            ` }
             target={ menuOption.action.blank ? '_blank' : '_self' }
+            onClick={ menuOption.onClick }
           >
-            <span className={ styles.menuOptions__menuIcon }>
+            <div className={ styles.menuOptions__menuIconWraper }>
               { menuOption.picture }
-            </span>
+            </div>
             { menuOption.title }
           </Link>
         </div>
@@ -45,17 +46,20 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
     }
 
     return (
-      <div className={ `
-        ${styles.menuOptions__menuItem}
-        ${menuOption.isActive ? styles.menuOptions__menuItemActive : ''}
-      ` }
-       key={ menuOption.title }
-       onClick={ menuOption.onClick }
+      <div
+        className={ styles.menuOptions__menuItemContent }
+        key={ menuOption.title }
       >
-        <div className={ styles.menuOptions__menuItemContent }>
-          <span className={ styles.menuOptions__menuIcon }>
+        <div
+          className={ `
+            ${styles.menuOptions__itemContent}
+            ${menuOption.isActive ? styles.menuOptions__itemContent_active : ''}
+          ` }
+          onClick={ menuOption.onClick }
+        >
+          <div className={ styles.menuOptions__menuIconWraper }>
             { menuOption.picture }
-          </span>
+          </div>
           { menuOption.title }
         </div>
       </div>
@@ -63,10 +67,10 @@ export const MenuOptions: FC<Props> = ({ menuOptions }) => {
   }
 
   return (
-    <div className={ styles.menuOptions__menuContainer }>
-      { menuOptions.map((menuOption) => {
-        return buildOptionContent(menuOption)
-      }) }
-    </div>
+        <div className={ styles.menuOptions__menuContainer }>
+          { menuOptions.map((menuOption) => {
+            return buildOptionContent(menuOption)
+          }) }
+        </div>
   )
 }

@@ -3,12 +3,12 @@ import styles from './PostCommentOptions.module.scss'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
 import { FiTrash } from 'react-icons/fi'
-import toast from 'react-hot-toast'
 import useTranslation from 'next-translate/useTranslation'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut, useSession } from 'next-auth/react'
 import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 interface Props {
   ownerId: string
@@ -33,10 +33,11 @@ export const PostCommentOptions: FC<Props> = ({
 
   const { t } = useTranslation('post_comments')
   const { data } = useSession()
+  const { error, success } = useToast()
 
   const onClickDelete = async () => {
     if (loading) {
-      toast.error('No se puede ejecutar esta acción en este momento')
+      error('No se puede ejecutar esta acción en este momento')
 
       return
     }
@@ -47,7 +48,7 @@ export const PostCommentOptions: FC<Props> = ({
       await new CommentsApiService().delete(postId, postCommentId, parentCommentId)
       onDeleteComment(postCommentId)
 
-      toast.success(t('post_comment_deleted_success_message'))
+      success(t('post_comment_deleted_success_message'))
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
         console.error(exception)
@@ -59,7 +60,7 @@ export const PostCommentOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(`api_exceptions:${exception.translationKey}`))
+      error(t(`api_exceptions:${exception.translationKey}`))
     }
 
     setLoading(false)

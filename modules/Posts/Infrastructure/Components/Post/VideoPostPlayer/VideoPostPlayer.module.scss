@@ -1,91 +1,88 @@
 .video-post-player {
-  $parentBlock: &;
-
   &__container {
     @apply h-full w-full overflow-hidden relative;
-
-    @screen md {
-      @apply w-full h-full;
-
-      &:hover {
-        #{$parentBlock}__switcher-button {
-          @apply translate-x-0 transition-transform duration-500 delay-0;
-        }
-      }
-    }
-  }
-
-  &__overlay-contaier {
-    @apply h-full w-full absolute top-0 left-0 bg-transparent z-video-player-overlay;
-  }
-
-  &__no-sources-state {
-    @apply flex flex-col items-center justify-center bg-black w-full h-full
-      whitespace-pre-line gap-y-4 text-base-400 px-5 py-10 text-xs rounded-lg;
-
-    @screen md {
-      @apply text-base;
-    }
-
-    @screen lg {
-      @apply text-lg;
-    }
-  }
-
-  &__no-sources-state-icon {
-    @apply flex-shrink-0 h-10 w-10 text-brand-primary-bg;
-
-    @screen tb {
-      @apply h-14 w-14;
-    }
-
-    @screen md {
-      @apply h-20 w-20;
-    }
-
-    @screen lg {
-      @apply h-24 w-24;
-    }
-  }
-
-  &__switcher-button {
-    @apply translate-x-0 flex absolute top-1/2 right-1 items-center rounded-full
-      p-2 text-base-100 h-9 w-9 z-video-player-options-button
-      backdrop-blur-lg bg-brand-primary-bg bg-opacity-10 transition-all;
-    transform: translate(0, -50%);
-
-    &:hover {
-      @apply bg-brand-primary-bg transition-all;
-    }
-
-    @screen md {
-      @apply translate-x-12 bg-brand-primary-bg delay-1000 duration-1000
-      transition-all;
-
-      &:hover {
-        @apply backdrop-blur-none text-base-100 bg-brand-secondary-bg
-        transition-all;
-      }
-    }
-
-    &:active {
-      @apply bg-brand-secondary-bg text-brand-primary-light transition-colors duration-75;
-    }
-  }
-
-  &__option-icon {
-    @apply h-6 w-auto;
   }
 
   &__iframe {
-    @apply z-video-player w-full h-full;
+    @apply z-video-player w-full h-full overflow-hidden;
 
     @screen tb {
       @apply rounded-lg;
     }
+  }
+
+  &__sourcesMenuContainer {
+    @apply flex flex-col gap-y-2 p-4 pb-1 h-full w-full absolute
+    top-0 right-0 translate-y-1/2 bg-body/90 z-video-player-options
+    opacity-0 pointer-events-none transition;
 
     @screen md {
-      @apply w-full h-full;
+      @apply p-10 pb-4 gap-y-8;
     }
+
+    &__visible {
+      @apply opacity-100 pointer-events-auto transition
+      translate-y-0 duration-300;
+    }
+  }
+
+  &__sourcesMenuCloseButton {
+    @apply absolute top-1 right-1 z-video-player-options;
+
+    @screen md {
+      @apply top-2 right-2;
+    }
+  }
+
+  &__sourcesMenuList {
+    @apply grid gap-2 overflow-y-scroll scrollbar-hide
+    justify-center mx-auto;
+    grid-template-columns: repeat(2, 1fr);
+
+    @screen tb {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @screen md {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @screen xl {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  &__sourceOption {
+    @apply flex flex-col gap-y-1 items-center
+    justify-center rounded-lg p-1 px-4 border-2
+    font-bold transition-colors leading-none
+    border-white text-white;
+
+    &:hover {
+      @apply border-brand-primary-light bg-brand-primary-bg/20 transition-colors;
+    }
+
+    &__selected {
+      @apply border-brand-primary-bg bg-brand-primary-bg/50
+      transition-colors pointer-events-none
+      dark:border-brand-primary-dark;
+    }
+  }
+
+  &__sourceOptionImageWrapper {
+    @apply w-10 max-h-10 min-h-10 h-full
+    overflow-hidden;
+
+    @screen md {
+      @apply min-h-14 max-h-14 w-14;
+    }
+
+    @screen lg {
+      @apply min-h-16 max-h-16 w-16;
+    }
+  }
+
+  &__sourceOptionImage {
+    @apply h-full w-full object-contain overflow-hidden;
   }
 }

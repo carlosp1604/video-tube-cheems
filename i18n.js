@@ -22,6 +22,7 @@ const i18nConfig = {
       'user_retrieve_password',
       'error',
       'common',
+      'advertising',
       'carousel',
       'post_card_options',
       'post_card_gallery',

@@ -4,8 +4,8 @@ import useTranslation from 'next-translate/useTranslation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react'
 import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
-import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   email: string
@@ -19,6 +19,7 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm, loading, setLoading 
   const [invalidCode, setInvalidCode] = useState<boolean>(false)
 
   const { t } = useTranslation('user_retrieve_password')
+  const { error } = useToast()
 
   const authApiService = new AuthApiService()
 
@@ -37,11 +38,11 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm, loading, setLoading 
         switch (result.status) {
           case 401:
           case 404:
-            toast.error(t('validate_code_invalid_code_message'))
+            error(t('validate_code_invalid_code_message'))
             break
 
           default:
-            toast.error(t('validate_code_server_error_message'))
+            error(t('validate_code_server_error_message'))
             break
         }
 
@@ -54,7 +55,7 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm, loading, setLoading 
       setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
-      toast.error(t('validate_code_server_error_message'))
+      error(t('validate_code_server_error_message'))
     }
   }
 

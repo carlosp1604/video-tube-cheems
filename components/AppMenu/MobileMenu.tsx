@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { MdLiveTv } from 'react-icons/md'
 import { IoMdTrendingUp } from 'react-icons/io'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 const CSSTransition = dynamic(() =>
   import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
@@ -27,6 +28,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
   const { setLoginModalOpen } = useLoginContext()
   const { pathname, asPath } = useRouter()
   const { status, data } = useSession()
+  const { error } = useToast()
 
   const buildAuthenticationAction = (
     url: string,
@@ -44,9 +46,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
 
     if (status !== 'authenticated' || !data) {
       option.onClick = async () => {
-        const toast = (await import('react-hot-toast')).default
-
-        toast.error(t('user_must_be_authenticated_error_message'))
+        error(t('user_must_be_authenticated_error_message'))
 
         setLoginModalOpen(true)
       }
@@ -56,9 +56,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
 
     if (url === asPath) {
       option.onClick = async () => {
-        const toast = (await import('react-hot-toast')).default
-
-        toast.error(t('user_already_on_path'))
+        error(t('user_already_on_path'))
       }
 
       return option
@@ -119,7 +117,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/',
                   blank: false,
                 },
-                picture: <BsHouse />,
+                picture: <BsHouse className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               {
@@ -129,7 +127,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/posts/top',
                   blank: false,
                 },
-                picture: <IoMdTrendingUp />,
+                picture: <IoMdTrendingUp className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               {
@@ -139,7 +137,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/actors',
                   blank: false,
                 },
-                picture: <BsStar />,
+                picture: <BsStar className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               {
@@ -149,7 +147,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/producers',
                   blank: false,
                 },
-                picture: <MdLiveTv />,
+                picture: <MdLiveTv className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               {
@@ -159,18 +157,18 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/tags',
                   blank: false,
                 },
-                picture: <BsTags />,
+                picture: <BsTags className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               buildAuthenticationAction(
                 `/users/${data ? data.user.username : ''}/saved-posts`,
-                <BsBookmarks />,
+                <BsBookmarks className={ styles.mobileMenu__iconOption }/>,
                 asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
                 t('menu_saved_button_title')
               ),
               buildAuthenticationAction(
                 `/users/${data ? data.user.username : ''}/history`,
-                <BsClock />,
+                <BsClock className={ styles.mobileMenu__iconOption }/>,
                 asPath === `/users/${data ? data.user.username : ''}/history`,
                 t('menu_user_history_button_title')
               ),
@@ -178,7 +176,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                 title: t('menu_language_button_title'),
                 isActive: false,
                 action: undefined,
-                picture: <TfiWorld />,
+                picture: <TfiWorld className={ styles.mobileMenu__iconOption }/>,
                 onClick: () => {
                   setOpenLanguageMenu(true)
                 },

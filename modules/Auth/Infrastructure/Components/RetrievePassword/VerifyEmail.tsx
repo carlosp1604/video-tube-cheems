@@ -8,9 +8,9 @@ import {
   USER_CANNOT_SEND_VERIFICATION_EMAIL, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
   USER_TOKEN_ALREADY_ISSUED
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
-import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { useRouter } from 'next/router'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -27,6 +27,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
   const authApiService = new AuthApiService()
 
   const { t } = useTranslation('user_retrieve_password')
+  const { error } = useToast()
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -48,12 +49,12 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
             switch (jsonResponse.code) {
               case USER_TOKEN_ALREADY_ISSUED: {
                 setResendEmail(true)
-                toast.error(t('verify_email_email_already_sent_message'))
+                error(t('verify_email_email_already_sent_message'))
                 break
               }
 
               default: {
-                toast.error(t('verify_email_server_error_message'))
+                error(t('verify_email_server_error_message'))
                 break
               }
             }
@@ -61,7 +62,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
           }
 
           case 404: {
-            toast.error(t('change_password_user_not_found_message', { email }))
+            error(t('change_password_user_not_found_message', { email }))
             break
           }
 
@@ -70,18 +71,18 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
 
             switch (jsonResponse.code) {
               case USER_INVALID_EMAIL: {
-                toast.error(t('verify_email_invalid_email_message') ?? '')
+                error(t('verify_email_invalid_email_message') ?? '')
                 break
               }
 
               case USER_CANNOT_SEND_VERIFICATION_EMAIL:
               case USER_INVALID_TOKEN_TYPE: {
-                toast.error(t('verify_email_email_could_not_be_sent_message'))
+                error(t('verify_email_email_could_not_be_sent_message'))
                 break
               }
 
               default: {
-                toast.error(t('verify_email_server_error_message'))
+                error(t('verify_email_server_error_message'))
                 break
               }
             }
@@ -89,7 +90,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
             break
           }
           default: {
-            toast.error(t('verify_email_server_error_message'))
+            error(t('verify_email_server_error_message'))
             break
           }
         }
@@ -103,7 +104,7 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
       setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
-      toast.error(t('verify_email_server_error_message'))
+      error(t('verify_email_server_error_message'))
     }
   }
 

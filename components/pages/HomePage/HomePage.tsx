@@ -12,8 +12,10 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 import { useRouter } from 'next/router'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 
 export interface Props {
   page: number
@@ -70,7 +72,7 @@ export const HomePage: NextPage<Props> = (props: Props) => {
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <MobileBanner />
+      <CrackrevenuePostPageBanner />
 
       <Home
         page={ props.page }

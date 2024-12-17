@@ -31,7 +31,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
       title: t('user_menu_change_password_button'),
       isActive: false,
       action: undefined,
-      picture: <CiUnlock />,
+      picture: <CiUnlock className={ styles.userMenu__iconOption }/>,
       onClick: () => {
         setMode('retrieve')
         setLoginModalOpen(true)
@@ -48,7 +48,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
         url: `/users/${data.user.username}`,
         blank: false,
       },
-      picture: <CiUser />,
+      picture: <CiUser className={ styles.userMenu__iconOption }/>,
       onClick: () => setIsOpen(false),
     })
   }

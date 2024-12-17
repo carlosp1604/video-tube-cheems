@@ -15,6 +15,8 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 import styles from './ProducerPage.module.scss'
 import { useRouter } from 'next/router'
+import { MdLiveTv } from 'react-icons/md'
+import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 
 export interface ProducerPageProps {
   initialPage: number
@@ -84,8 +86,11 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
         name={ producer.name }
         imageAlt={ t('producer_image_alt_title', { producerName: producer.name }) }
         imageUrl={ producer.imageUrl }
-        customColor={ producer.brandHexColor }
-        rounded={ true }
+        profileType={ t('producer_page_profile_type_title') }
+        icon={ <MdLiveTv /> }
+        subtitle={ t('producer_page_profile_count_title',
+          { viewsNumber: NumberFormatter.compatFormat(producer.viewsNumber, locale) }) }
+        color={ producer.brandHexColor ? producer.brandHexColor : undefined }
       />
 
       <Producer

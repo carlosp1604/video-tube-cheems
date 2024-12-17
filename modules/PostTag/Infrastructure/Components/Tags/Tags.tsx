@@ -7,6 +7,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   tagCards: TagCardComponentDto[]
@@ -16,6 +17,7 @@ export const Tags: FC<Props> = ({ tagCards }) => {
   const [searchBarTerm, setSearchBarTerm] = useState<string>('')
   const [currentTerm, setCurrentTerm] = useState<string>('')
   const { t } = useTranslation('tags')
+  const { error } = useToast()
 
   const tagsToShow = useMemo(() => {
     return tagCards.filter((tag) => {
@@ -24,8 +26,6 @@ export const Tags: FC<Props> = ({ tagCards }) => {
   }, [currentTerm])
 
   const onSearch = async () => {
-    const toast = (await import('react-hot-toast')).default
-
     const dompurify = (await import('dompurify')).default
     const cleanTerm = dompurify.sanitize(searchBarTerm.trim())
 
@@ -34,7 +34,7 @@ export const Tags: FC<Props> = ({ tagCards }) => {
     }
 
     if (currentTerm && currentTerm === cleanTerm) {
-      toast.error(t('already_searching_term_error_message'))
+      error(t('already_searching_term_error_message'))
 
       return
     }

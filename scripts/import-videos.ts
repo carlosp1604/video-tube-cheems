@@ -42,6 +42,7 @@ const findOrCreateActor = async (actor: any): Promise<Actor | null> => {
     actor.name,
     actor.description ?? null,
     actor.image_url,
+    0,
     nowDate,
     nowDate,
     null
@@ -140,6 +141,7 @@ const findOrCreateProducer = async (video: any): Promise<Producer | null> => {
       video.producer.name,
       video.producer.description ?? null,
       video.producer.img,
+      0,
       // TODO: Add support for producers hierarchy
       null,
       video.producer.brandHexColor,

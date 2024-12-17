@@ -115,6 +115,12 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
       return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
     })
 
+    // Experimental: Try to improve performance
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=50, stale-while-revalidate=10'
+    )
+
     return {
       props,
     }

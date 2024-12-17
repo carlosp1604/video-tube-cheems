@@ -64,21 +64,27 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
 
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
 
-    let postEmbedUrl = ''
     let baseUrl = ''
 
     if (!env.BASE_URL) {
       throw Error('Missing env var: BASE_URL. Required to build post page embed URL')
     } else {
-      postEmbedUrl = `${env.BASE_URL}/${locale}/posts/videos/embed/${slug}`
       baseUrl = env.BASE_URL
     }
 
     const applicationPost = PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale)
 
+    const postComponentDto = PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale)
+
+    // Experimental: Try to improve performance
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=30, stale-while-revalidate=10'
+    )
+
     return {
       props: {
-        post: PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale),
+        post: postComponentDto,
         relatedPosts: relatedPosts.posts.map((relatedPost) => {
           return PostCardComponentDtoTranslator.fromApplication(relatedPost.post, relatedPost.postViews, locale)
         }),
@@ -87,7 +93,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
         postLikes: postWithCount.reactions.like,
         postDislikes: postWithCount.reactions.dislike,
         postCommentsNumber: postWithCount.comments,
-        postEmbedUrl,
+        postEmbedUrl: postComponentDto.postMediaEmbedType[0].urls[0].url,
         baseUrl,
         htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
       },

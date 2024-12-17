@@ -17,7 +17,7 @@
   }
 
   &__actor-avatar {
-    @apply h-full w-full text-6xl font-normal text-body
+    @apply h-full w-full text-6xl font-normal text-base-300
       transition-transform;
 
     &:hover, &:focus {

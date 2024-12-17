@@ -116,6 +116,12 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
         .fromApplicationDto(producer.producer, producer.postsNumber, producer.producerViews)
     })
 
+    // Experimental: Try to improve performance
+    context.res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=50, stale-while-revalidate=10'
+    )
+
     return {
       props,
     }

@@ -106,7 +106,6 @@ export const SearchBar: FC<Partial<Props> & Omit<Props, 'style' | 'clearBarOnSea
         className={ `${styles.searchBar__searchButton} ${style === 'sub' ? styles.searchBar__searchButtonStyle2 : ''}` }
         onClick={ handleSearch }
         data-tooltip-id={ tooltipId }
-        data-tooltip-content={ searchIconTitle }
         title={ searchIconTitle }
       >
         <CiSearch/>
@@ -114,6 +113,7 @@ export const SearchBar: FC<Partial<Props> & Omit<Props, 'style' | 'clearBarOnSea
           ? <Tooltip
             tooltipId={ tooltipId }
             place={ 'bottom' }
+            content={ searchIconTitle }
           />
           : null
         }

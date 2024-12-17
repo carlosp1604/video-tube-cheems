@@ -10,7 +10,6 @@ import dynamic from 'next/dynamic'
 interface Props {
   post: PostCardComponentDto
   showOptionsButton: boolean
-  showProducerImage: boolean
   onClickOptions: (postId: string) => void
 }
 
@@ -22,7 +21,6 @@ export const PostCardWithOptions: FC<Props> = ({
   post,
   showOptionsButton,
   onClickOptions,
-  showProducerImage,
 }) => {
   const { t } = useTranslation('post_card')
   const [mounted, setMounted] = useState<boolean>(false)
@@ -36,7 +34,6 @@ export const PostCardWithOptions: FC<Props> = ({
   return (
     <div className={ styles.postCardWithOptions__container }>
       <PostCard
-        showProducerImage={ showProducerImage }
         post={ post }
       />
       <button className={ `
@@ -45,13 +42,13 @@ export const PostCardWithOptions: FC<Props> = ({
       ` }
         onClick={ () => { if (onClickOptions) { onClickOptions(post.id) } } }
         data-tooltip-id={ tooltipId }
-        data-tooltip-content={ t('post_card_options_button_title') }
       >
         <BsThreeDotsVertical/>
         { mounted &&
           <Tooltip
             tooltipId={ tooltipId }
             place={ 'top' }
+            content={ t('post_card_options_button_title') }
           /> }
       </button>
     </div>

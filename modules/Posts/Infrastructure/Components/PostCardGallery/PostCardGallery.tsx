@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from 'react'
+import { FC, ReactElement, useEffect, useMemo, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import styles from './PostCardGallery.module.scss'
 import useTranslation from 'next-translate/useTranslation'
@@ -9,9 +9,18 @@ import {
 } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardWithOptions/PostCardWithOptions'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PostCardSkeleton } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardSkeleton/PostCardSkeleton'
-import { Banner } from '~/modules/Shared/Infrastructure/Components/Banner/Banner'
-import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/DesktopBanner'
 import dynamic from 'next/dynamic'
+import { PostCardGalleryAdsPreset } from '~/modules/Posts/Infrastructure/Frontend/PostCardGalleryAdsPreset'
+import { PaginatedPostCardGalleryHelper } from '~/modules/Posts/Infrastructure/Frontend/PaginatedPostCardGalleryHelpter'
+import { PostCardAdvertising } from '~/modules/Shared/Infrastructure/Components/Advertising/PostCardAdvertising'
+import { useToast } from '~/components/AppToast/ToastContext'
+import { nativeAdsData } from '~/nativeAdsData'
+import {
+  ExoclickResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/ExoclickResponsiveBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 const PostCardGalleryOptions = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
@@ -33,12 +42,18 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   emptyState = null,
   showAds = false,
 }) => {
+  const [mounted, setMounted] = useState<boolean>(false)
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostCard, setSelectedPostCard] = useState<PostCardComponentDto | null>(null)
   const buildOptions = usePostCardOptions()
 
   const { t } = useTranslation('post_card_gallery')
   const { status } = useSession()
+  const { error } = useToast()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const postCardGalleryOptions = buildOptions(
     postCardOptions,
@@ -50,9 +65,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   if (postCardGalleryOptions.length > 0) {
     onClickOptions = async (post: PostCardComponentDto) => {
       if (status !== 'authenticated') {
-        const toast = (await import('react-hot-toast')).default
-
-        toast.error(t('user_must_be_authenticated_error_message'))
+        error(t('user_must_be_authenticated_error_message'))
 
         return
       }
@@ -75,7 +88,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
       .map((index) => (
         <PostCardSkeleton
           key={ index }
-          showProducerImage={ true }
           loading={ loading }
         />
       ))
@@ -83,17 +95,58 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
 
   const skeletonPosts = createSkeletonList(postsSkeletonNumber)
 
-  const postCardWithOptions = posts.map((post) => {
-    return (
-      <PostCardWithOptions
-        post={ post }
-        onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
-        showOptionsButton={ !!onClickOptions }
-        key={ post.id }
-        showProducerImage={ true }
-      />
-    )
-  })
+  const postCards = useMemo(() => {
+    const postCards = posts.map((post) => {
+      return (
+        <PostCardWithOptions
+          post={ post }
+          onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
+          showOptionsButton={ !!onClickOptions }
+          key={ post.id }
+        />
+      )
+    })
+
+    if (showAds && postCards.length > 0) {
+      const firstCardViews = posts[0].views
+      const firstCardDate = posts[0].date
+
+      const indexes: Array<number> = []
+
+      for (let i = 0; i < PostCardGalleryAdsPreset.length; i++) {
+        const adPosition = PostCardGalleryAdsPreset[i]
+
+        if (adPosition > (postCards.length + 1)) {
+          break
+        }
+
+        if (mounted) {
+          const adIndex = PaginatedPostCardGalleryHelper.genRandomValue(0, nativeAdsData.length - 1, indexes)
+
+          indexes.push(adIndex)
+
+          postCards.splice(adPosition, 0, (
+            <PostCardAdvertising
+              key={ nativeAdsData[adIndex].offerUrl }
+              offerUrl={ nativeAdsData[adIndex].offerUrl }
+              thumb={ PaginatedPostCardGalleryHelper.getRandomElementFromArray(nativeAdsData[adIndex].thumbs) }
+              title={ t(`advertising:${nativeAdsData[adIndex].titleKey}`) }
+              adNetworkName={ nativeAdsData[adIndex].adNetworkName }
+              views={ firstCardViews }
+              date={ firstCardDate }
+            />
+          ))
+        } else {
+          postCards.splice(adPosition, 0, (
+            <PostCardSkeleton loading={ true } key={ adPosition }/>
+          ))
+        }
+      }
+    }
+
+    return postCards
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts, mounted])
 
   let content: ReactElement | null = (
     <div className={ `
@@ -107,7 +160,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
         onClose={ () => setPostCardOptionsMenuOpen(false) }
         selectedPostCard={ selectedPostCard as PostCardComponentDto }
       />
-      { postCardWithOptions }
+      { postCards }
       { loading ? skeletonPosts : null }
     </div>
   )
@@ -121,21 +174,21 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     let secondSkeletonList: ReactElement[] = []
     let thirdSkeletonList: ReactElement[] = []
 
-    if (postCardWithOptions.length < 12) {
-      firstPostList = postCardWithOptions
-      firstSkeletonList = createSkeletonList(12 - postCardWithOptions.length)
+    if (postCards.length < 12) {
+      firstPostList = postCards
+      firstSkeletonList = createSkeletonList(12 - postCards.length)
     } else {
-      firstPostList = postCardWithOptions.slice(0, 12)
+      firstPostList = postCards.slice(0, 12)
 
-      if (postCardWithOptions.length < 24) {
-        secondPostList = postCardWithOptions.slice(12)
-        secondSkeletonList = createSkeletonList(24 - postCardWithOptions.length)
+      if (postCards.length < 24) {
+        secondPostList = postCards.slice(12)
+        secondSkeletonList = createSkeletonList(24 - postCards.length)
       } else {
-        secondPostList = postCardWithOptions.slice(12, 24)
-        thirdPostList = postCardWithOptions.slice(24)
+        secondPostList = postCards.slice(12, 24)
+        thirdPostList = postCards.slice(24)
 
-        if (postCardWithOptions.length < defaultPerPage) {
-          thirdSkeletonList = createSkeletonList(defaultPerPage - postCardWithOptions.length)
+        if (postCards.length < defaultPerPage) {
+          thirdSkeletonList = createSkeletonList(defaultPerPage - postCards.length)
         }
       }
     }
@@ -143,7 +196,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     let exoClickBanner: ReactElement | null = null
 
     if (secondPostList.length > 0) {
-      exoClickBanner = (<DesktopBanner />)
+      exoClickBanner = (<ExoclickResponsiveBanner />)
     }
 
     content = (
@@ -163,7 +216,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           { loading ? firstSkeletonList : null }
         </div>
 
-        <Banner/>
+        <AdsterraResponsiveBanner />
 
         <div className={ `
           ${styles.postCardGallery__container}
@@ -173,7 +226,9 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           { secondPostList }
           { loading ? secondSkeletonList : null }
         </div>
+
         { exoClickBanner }
+
         <div className={ `
           ${styles.postCardGallery__container}
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}

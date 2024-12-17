@@ -9,6 +9,7 @@ export class ActorPageComponentDtoTranslator {
       imageUrl: applicationDto.imageUrl,
       name: applicationDto.name,
       description: applicationDto.description,
+      viewsCount: applicationDto.viewsNumber,
     }
   }
 }

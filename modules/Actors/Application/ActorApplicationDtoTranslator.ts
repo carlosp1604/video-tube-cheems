@@ -11,6 +11,7 @@ export class ActorApplicationDtoTranslator {
       imageUrl: actor.imageUrl,
       description: actor.description,
       createdAt: actor.createdAt.toISO(),
+      viewsNumber: actor.viewsNumber,
     }
   }
 }

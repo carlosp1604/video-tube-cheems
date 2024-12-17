@@ -27,6 +27,7 @@ export const ActorCard: FC<Props> = ({ actor }) => {
             avatarName={ actor.name }
             imageAlt={ t('actor_card_image_alt_title', { actorName: actor.name }) }
             rounded={ false }
+            color={ actor.imageUrl ? undefined : 'black' }
           />
         </Link>
       </div>

@@ -1,6 +1,6 @@
 .login {
   &__container {
-    @apply mx-auto p-5;
+    @apply mx-auto p-5 w-full;
 
     &_loading {
       @apply animate-pulse;
@@ -101,10 +101,6 @@
 
   &__login-with-providers-container {
     @apply flex flex-col justify-center mx-auto p-5 gap-y-4;
-
-    @screen tb {
-      @apply max-w-sm;
-    }
   }
 
   &__google-button {

@@ -11,7 +11,9 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import useTranslation from 'next-translate/useTranslation'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Banner/MobileBanner'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 
 export interface Props {
   tagCards: TagCardComponentDto[]
@@ -47,7 +49,7 @@ export const TagsPage: NextPage<Props> = ({ tagCards, htmlPageMetaContextProps, 
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <MobileBanner />
+      <CrackrevenuePostPageBanner />
 
       <Tags tagCards={ tagCards } />
     </>

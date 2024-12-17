@@ -7,8 +7,8 @@ import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
-import toast from 'react-hot-toast'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 interface Props {
   onAddComment: (comment: string) => void
@@ -20,7 +20,7 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
   const { t } = useTranslation('post_comments')
 
   const { setLoginModalOpen } = useLoginContext()
-
+  const { error } = useToast()
   const { status, data } = useSession()
 
   let avatar = null
@@ -63,7 +63,7 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
   if (status === 'authenticated') {
     const onClickAddComment = (comment: string) => {
       if (disabled) {
-        toast.error(t('action_cannot_be_performed_error_message'))
+        error(t('action_cannot_be_performed_error_message'))
 
         return
       }

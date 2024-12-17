@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useRef } from 'react'
+import React, { FC, ReactNode, useEffect, useRef } from 'react'
 import styles from './Modal.module.scss'
 import { CSSTransition } from 'react-transition-group'
 import { BsX } from 'react-icons/bs'
@@ -20,6 +20,14 @@ export const Modal: FC<Props> = ({
 }) => {
   const backdropRef = useRef(null)
   const slideOutRef = useRef(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'scroll'
+    }
+  }, [isOpen])
 
   const closeButton = (
     <BsX

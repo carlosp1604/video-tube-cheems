@@ -1,47 +1,38 @@
 .profile-header {
   &__container {
-    @apply h-auto mb-2;
-  }
-
-  &__background {
-    @apply bg-gradient-to-t from-body to-[color:var(--custom-color)]
-      -mx-5 -ml-10 -mt-5 h-36 overflow-x-clip;
-
-    @screen lg {
-      @apply h-40;
-    }
-  }
-
-  &__background-image {
-    @apply h-32 w-full object-cover;
-  }
-
-  &__info-container {
-    @apply -mt-[72px] flex flex-col gap-y-4;
+    @apply my-5 transition-colors cursor-default;
   }
 
   &__name-image-container {
-    @apply flex gap-x-7 gap-y-2 items-center justify-start flex-wrap;
+    @apply flex gap-x-6 gap-y-2 items-center justify-start
+    flex-wrap;
   }
 
   &__image {
     @apply place-self-center rounded-lg h-32 w-32 object-cover
-    ring-8 ring-body;
-
-    &__rounded {
-      @apply rounded-full ring-8 ring-body;
-    }
+    ring-4 ring-base-600;
   }
 
   &__avatar {
-    @apply font-bold text-4xl h-32 w-32 ring-8 rounded-lg ring-body;
-
-    &__rounded {
-      @apply rounded-full ring-8 ring-body;
-    }
+    @apply font-bold text-4xl h-32 w-32 ring-4 rounded-lg
+    ring-base-600;
   }
 
   &__name {
-    @apply text-left text-2xl font-black break-words line-clamp-4;
+    @apply flex flex-col text-left text-xl font-black break-words
+    line-clamp-4;
+
+    @screen md {
+      @apply text-2xl;
+    }
+  }
+
+  &__profileType {
+    @apply flex gap-x-2 items-center font-normal
+    text-brand-primary-bg;
+  }
+
+  &__subtitle {
+    @apply text-base font-normal text-base-500;
   }
 }

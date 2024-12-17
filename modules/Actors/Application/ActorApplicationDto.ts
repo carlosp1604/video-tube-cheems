@@ -5,4 +5,5 @@ export interface ActorApplicationDto {
   readonly description: string | null
   readonly imageUrl: string | null
   readonly createdAt: string
+  readonly viewsNumber: number
 }

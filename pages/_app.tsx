@@ -6,7 +6,6 @@ import { SessionProvider } from 'next-auth/react'
 import LoginProvider from '~/modules/Auth/Infrastructure/Components/LoginProvider'
 import { Roboto } from 'next/font/google'
 import UsingRouterProvider from '~/modules/Shared/Infrastructure/Components/UsingRouterProvider'
-import 'react-tooltip/dist/react-tooltip.css'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import ReactGA from 'react-ga4'
@@ -17,15 +16,15 @@ import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
 import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import { MobileMenu } from '~/components/AppMenu/MobileMenu'
-import { AppToast } from '~/components/AppToast/AppToast'
 import {
   TrafficstarsVideoSlider
-} from '~/modules/Shared/Infrastructure/Components/Trafficstars/TrafficstarsVideoSlider'
-import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoClickInPage'
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsVideoSlider'
+import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoClickInPage'
 import {
   OctoclickInitializationCode
-} from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoclickInitializationCode'
-import { OctoclickPopUnder } from '~/modules/Shared/Infrastructure/Components/OctoClick/OctoclickPopUnder'
+} from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoclickInitializationCode'
+import { OctoclickPopUnder } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoclickPopUnder'
+import { ToastProvider } from '~/components/AppToast/ToastProvider'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),
@@ -36,9 +35,6 @@ const AppBanner = dynamic(() => import('~/modules/Shared/Infrastructure/Componen
   .then((module) => module.AppBanner),
 { ssr: false }
 )
-
-const LiveCams = dynamic(() =>
-  import('~/components/LiveCams/LiveCams').then((module) => module.LiveCams))
 
 const roboto = Roboto({
   weight: ['100', '300', '400', '500', '700', '900'],
@@ -80,61 +76,59 @@ function App ({
   return (
     <SessionProvider session={ session }>
       <UsingRouterProvider >
-        <LoginProvider>
-          <div className={ `${styles.app__layout} ${roboto.variable}` } translate={ 'no' }>
-            <Head>
-              <link rel="icon" href="/favicon.ico" />
-            </Head>
+        <ToastProvider>
+          <LoginProvider>
+            <div className={ `${styles.app__layout} ${roboto.variable}` } translate={ 'no' }>
+              <Head>
+                <link rel="icon" href="/favicon.ico" />
+              </Head>
 
-            <AppProgressBar />
+              <AppProgressBar />
 
-            <AppToast />
+              <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) }/>
 
-            <LanguageMenu isOpen={ openLanguageMenu } onClose={ () => setOpenLanguageMenu(false) }/>
+              <MobileMenu
+                setOpenLanguageMenu={ setOpenLanguageMenu }
+                openMenu={ menuOpen }
+                setOpenMenu={ setMenuOpen }
+              />
 
-            <MobileMenu
-              setOpenLanguageMenu={ setOpenLanguageMenu }
-              openMenu={ menuOpen }
-              setOpenMenu={ setMenuOpen }
-            />
+              <AppMenu
+                onClickMenuButton={ () => setMenuOpen(!menuOpen) }
+                setOpenLanguageMenu={ setOpenLanguageMenu }
+              />
 
-            <AppMenu
-              onClickMenuButton={ () => setMenuOpen(!menuOpen) }
-              setOpenLanguageMenu={ setOpenLanguageMenu }
-            />
+              <MenuSideBar
+                menuOpen={ menuOpen }
+                setOpenLanguageMenu={ setOpenLanguageMenu }
+              />
 
-            <MenuSideBar
-              menuOpen={ menuOpen }
-              setOpenLanguageMenu={ setOpenLanguageMenu }
-            />
+              <OctoclickInitializationCode onRender={ () => setOctoclickCodeInitializated(true) }/>
+              <OctoClickInPage initCodeRendered={ octoClickCodeInitializated }/>
+              <OctoclickPopUnder initCodeRendered={ octoClickCodeInitializated }/>
 
-            <OctoclickInitializationCode onRender={ () => setOctoclickCodeInitializated(true) }/>
-            <OctoClickInPage initCodeRendered={ octoClickCodeInitializated }/>
-            <OctoclickPopUnder initCodeRendered={ octoClickCodeInitializated }/>
+              <TrafficstarsVideoSlider />
 
-            <TrafficstarsVideoSlider />
+              { /** Workaround to work with the sidebar fixed **/ }
+              <div className={
+                `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
+              >
+                { /** Workaround to show tooltip in the sidebar menú**/ }
+                <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
+                <main className={ styles.app__container }>
 
-            { /** Workaround to work with the sidebar fixed **/ }
-            <div className={
-              `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
-            >
-              { /** Workaround to show tooltip in the sidebar menú**/ }
-              <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
-              <main className={ styles.app__container }>
+                  <TopMobileMenu />
 
-                <TopMobileMenu />
+                  <Component { ...pageProps }/>
+                </main>
 
-                <Component { ...pageProps }/>
+                <AppBanner />
 
-                <LiveCams />
-              </main>
-
-              <AppBanner />
-
-              <AppFooter />
+                <AppFooter />
+              </div>
             </div>
-          </div>
-        </LoginProvider>
+          </LoginProvider>
+        </ToastProvider>
       </UsingRouterProvider>
     </SessionProvider>
   )

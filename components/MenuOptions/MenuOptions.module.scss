@@ -1,50 +1,48 @@
 .menu-options {
-  $parentBlock: &;
-
   &__menu-container {
-    @apply flex flex-col;
-  }
-
-  &__menu-item {
-    @apply text-base-400;
-
-    &:hover, &:focus {
-      @apply bg-base-900 transition-colors duration-500
-        text-base-50 cursor-pointer;
-    }
-
-    &-active {
-      @apply bg-brand-primary-bg text-base-100;
-    }
+    @apply flex flex-col gap-y-1;
   }
 
   &__menu-item-content {
-    @apply flex flex-row py-3.5 gap-x-6 items-center mx-6;
+    @apply grid gap-x-0 justify-between items-center
+    mx-2 transition-colors;
+    grid-template-areas: "content   infoButton";
+    grid-auto-columns: 1fr auto;
+  }
+
+  &__itemContent {
+    @apply flex flex-row flex-shrink gap-x-6 items-center
+    h-full py-2 px-4 rounded-lg text-base-400 cursor-pointer;
+    grid-area: content;
+
+    &:hover {
+      @apply bg-base-900 transition-colors text-white;
+    }
+
+    &_active {
+      @apply text-white bg-brand-primary-light font-bold
+      transition-colors cursor-default;
+
+      &:hover {
+        @apply bg-brand-primary-light text-white;
+      }
+    }
+  }
+
+  &__menuInfoButton {
+    @apply pr-1 text-base-400 ml-1;
+    grid-area: infoButton;
+  }
+
+  &__menu-icon-wraper {
+    @apply w-8 max-h-8 min-h-8 h-full overflow-hidden;
 
     @screen md {
-      @apply border-t border-base-700 border-opacity-30;
+      @apply min-h-10 max-h-10 w-10;
     }
 
-    &:hover, &:focus {
-      @apply text-base-100;
-    }
-  }
-
-  &__menu-icon {
-    @apply text-xl;
-  }
-
-  &__menu-item:hover, &__menu-item:focus {
-    #{$parentBlock}__menu-icon {
-      @apply scale-110 transition-transform duration-200;
-    }
-  }
-
-  &__menu-item:last-of-type {
-    #{$parentBlock}__menu-item-content {
-      @screen md {
-        @apply border-b;
-      }
+    @screen lg {
+      @apply min-h-12 max-h-12 w-12;
     }
   }
 }

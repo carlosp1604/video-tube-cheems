@@ -56,6 +56,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
       name: '',
       imageUrl: '',
       id: '',
+      viewsCount: 0,
     },
     initialPosts: [],
     initialPostsNumber: 0,
@@ -94,6 +95,12 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
   } catch (exception: unknown) {
     console.error(exception)
   }
+
+  // Experimental: Try to improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=50, stale-while-revalidate=10'
+  )
 
   return {
     props,

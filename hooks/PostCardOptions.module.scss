@@ -1,0 +1,13 @@
+.postCardOptions {
+  &__icon-option {
+    @apply p-1 w-full h-full object-center object-contain;
+
+    @screen md {
+      @apply p-2;
+    }
+
+    @screen lg {
+      @apply p-3;
+    }
+  }
+}

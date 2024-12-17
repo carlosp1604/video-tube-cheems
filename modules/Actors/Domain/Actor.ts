@@ -6,6 +6,7 @@ export class Actor {
   public readonly name: string
   public readonly description: string | null
   public readonly imageUrl: string | null
+  public readonly viewsNumber: number
   public readonly createdAt: DateTime
   public updatedAt: DateTime
   public deletedAt: DateTime | null
@@ -16,6 +17,7 @@ export class Actor {
     name: string,
     description: string | null,
     imageUrl: string | null,
+    viewsNumber: number,
     createdAt: DateTime,
     updatedAt: DateTime,
     deletedAt: DateTime | null
@@ -25,6 +27,7 @@ export class Actor {
     this.name = name
     this.description = description
     this.imageUrl = imageUrl
+    this.viewsNumber = viewsNumber
     this.createdAt = createdAt
     this.updatedAt = updatedAt
     this.deletedAt = deletedAt

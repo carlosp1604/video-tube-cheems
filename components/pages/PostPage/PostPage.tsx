@@ -12,10 +12,10 @@ import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
 import { ReactElement } from 'react'
-import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/ExoclickBanner/MobileBanner'
 import { useRouter } from 'next/router'
 import { SEOHelper } from '~/modules/Shared/Infrastructure/FrontEnd/SEOHelper'
+import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
+import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/MobileBanner'
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -116,7 +116,7 @@ export const PostPage: NextPage<PostPageProps> = ({
         <span className={ styles.postPage__relatedVideosTitle }>
           { t('video_related_videos_title') }
         </span>
-        <PostCardGallery
+        <PostCardCarousel
           posts={ relatedPosts }
           postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
         />

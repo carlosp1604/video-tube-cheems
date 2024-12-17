@@ -1,6 +1,4 @@
 .mobile-menu {
-  $parentBlock: &;
-  
   &__backdrop {
     @apply fixed inset-0 hidden z-mobile-menu;
 
@@ -9,19 +7,19 @@
     }
 
     &-enter-active {
-      @apply block bg-base-900 bg-opacity-50 transition-colors;
+      @apply block bg-base-900 backdrop-blur-sm bg-opacity-50 transition-colors;
     }
 
     &-enter-done {
-      @apply block bg-base-900 bg-opacity-50;
+      @apply block bg-base-900 backdrop-blur-sm bg-opacity-50;
     }
 
     &-exit {
-      @apply block bg-base-900 bg-opacity-50;
+      @apply block bg-base-900 bg-opacity-50 backdrop-blur-sm;
     }
 
     &-exit-active {
-      @apply block bg-transparent transition-colors;
+      @apply block bg-transparent backdrop-blur-none transition-colors;
     }
 
     &-exit-done {
@@ -35,7 +33,7 @@
 
   &__slide-out {
     @apply grid z-mobile-menu fixed bottom-0 leading-none translate-y-full
-      w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden
+      w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden pt-2
       border-base-700 overflow-y-scroll scrollbar-hide pb-5;
     grid-template-areas:
       "menu"
@@ -46,7 +44,7 @@
     @screen md {
       @apply top-0 left-0 -translate-x-full translate-y-0 w-auto
         rounded-none border-r border-base-700 backdrop-blur-2xl
-        bg-opacity-80 pb-0;
+        bg-opacity-80 pb-0 pt-0;
       grid-template-areas:
         "logo"
         "menu"
@@ -104,5 +102,17 @@
 
   &__menu-container {
     grid-area: menu;
+  }
+
+  &__icon-option {
+    @apply p-1 w-full h-full object-center object-contain;
+
+    @screen md {
+      @apply p-2;
+    }
+
+    @screen lg {
+      @apply p-3;
+    }
   }
 }

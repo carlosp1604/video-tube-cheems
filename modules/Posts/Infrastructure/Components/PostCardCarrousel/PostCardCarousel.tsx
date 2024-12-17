@@ -2,7 +2,6 @@ import { FC, useState } from 'react'
 import { Carousel } from '~/components/Carousel/Carousel'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardOptionConfiguration, usePostCardOptions } from '~/hooks/PostCardOptions'
-import toast from 'react-hot-toast'
 import {
   PostCardWithOptions
 } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardWithOptions/PostCardWithOptions'
@@ -11,6 +10,7 @@ import { useSession } from 'next-auth/react'
 import {
   PostCardGalleryOptions
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 interface Props {
   posts: PostCardComponentDto[]
@@ -24,6 +24,7 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
 
   const { t } = useTranslation('post_card_gallery')
   const { status } = useSession()
+  const { error } = useToast()
 
   const postCardGalleryOptions = buildOptions(
     postCardOptions,
@@ -35,7 +36,7 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
   if (postCardGalleryOptions.length > 0) {
     onClickOptions = (postCard: PostCardComponentDto) => {
       if (status !== 'authenticated') {
-        toast.error(t('user_must_be_authenticated_error_message'))
+        error(t('user_must_be_authenticated_error_message'))
 
         return
       }
@@ -70,7 +71,6 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
                 } }
                 showOptionsButton={ !!onClickOptions }
                 key={ post.id }
-                showProducerImage={ false }
               />,
           })
         }) }

@@ -13,8 +13,10 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { Producers } from '~/modules/Producers/Infrastructure/Components/Producers/Producers'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Banner/MobileBanner'
 import { useRouter } from 'next/router'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 
 export interface ProducersPageProps {
   initialSearchTerm: string
@@ -62,7 +64,7 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <MobileBanner />
+      <CrackrevenuePostPageBanner />
 
       <Producers
         initialSearchTerm={ initialSearchTerm }

@@ -63,7 +63,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
-  // Experimental: Try yo improve performance
+  // Experimental: Try to improve performance
   context.res.setHeader(
     'Cache-Control',
     'public, s-maxage=86400, stale-while-revalidate=300'

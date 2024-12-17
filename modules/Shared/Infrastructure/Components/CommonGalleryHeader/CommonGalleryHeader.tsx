@@ -58,11 +58,7 @@ export const CommonGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading' | 's
     }
 
     return (
-      <DynamicTag className={ `
-        ${styles.commonGalleryHeader__title}
-        ${styles.commonGalleryHeader__title__black}  
-      ` }
-      >
+      <DynamicTag className={ styles.commonGalleryHeader__title }>
         { content }
       </DynamicTag>
     )
@@ -74,9 +70,13 @@ export const CommonGalleryHeader: FC<Partial<Props> & Omit<Props, 'loading' | 's
 
       { subtitleContent }
 
-      <div className={ styles.commonGalleryHeader__sortingElement }>
-        { sortingMenu }
-      </div>
+      {
+        loading
+          ? <div className={ styles.commonGalleryHeader__sortingElementSkeleton }/>
+          : <div className={ styles.commonGalleryHeader__sortingElement }>
+            { sortingMenu }
+          </div>
+      }
     </section>
   )
 }

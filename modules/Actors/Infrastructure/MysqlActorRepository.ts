@@ -18,7 +18,7 @@ export class MysqlActorRepository implements ActorRepositoryInterface {
    * @param actor Actor to persist
    */
   public async save (actor: Actor): Promise<void> {
-    const actorModel = ActorModelTranslator.toDatabase(actor, 0)
+    const actorModel = ActorModelTranslator.toDatabase(actor)
 
     await prisma.actor.create({
       data: {

@@ -2,7 +2,7 @@ import { FC, ReactElement } from 'react'
 import styles from './AppFooter.module.scss'
 import Image from 'next/image'
 import Link from 'next/link'
-import { FaFacebookF, FaTelegramPlane, FaTiktok } from 'react-icons/fa'
+import { FaFacebookF, FaRss, FaTelegramPlane, FaTiktok } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
@@ -159,6 +159,17 @@ export const AppFooter: FC = () => {
           { xProfile }
           { tiktokProfile }
           { telegramProfile }
+          <Link
+            href={ '/rss' }
+            title={ t('rss_icon_title') }
+            target={ '_blank' }
+            className={ styles.appFooter__socialNetwork }
+            onClick={ () => {
+              onClickSocialNetworkIcon(t('rss_icon_title'))
+            } }
+          >
+            <FaRss />
+          </Link>
         </div>
       </div>
     </footer>

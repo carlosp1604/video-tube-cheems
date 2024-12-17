@@ -1,13 +1,12 @@
 import { FC, ReactElement, useEffect, useState } from 'react'
 import styles from './LikeButton.module.scss'
 import useTranslation from 'next-translate/useTranslation'
-import { BiLike, BiSolidLike } from 'react-icons/bi'
 import { useRouter } from 'next/router'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import * as uuid from 'uuid'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
-import { AiOutlineLoading } from 'react-icons/ai'
-import toast from 'react-hot-toast'
+import { AiOutlineLike, AiOutlineLoading, AiTwotoneLike } from 'react-icons/ai'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 interface Props {
   liked: boolean
@@ -23,6 +22,7 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const { error } = useToast()
 
   useEffect(() => {
     setMounted(true)
@@ -33,7 +33,7 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
 
   const onClickButton = async () => {
     if (loading || disabled) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -54,18 +54,16 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
   if (!loading) {
     if (liked) {
       iconElement = (
-        <BiSolidLike className={ styles.likeButton__likeIcon }
+        <AiTwotoneLike className={ styles.likeButton__likeIcon }
          title={ t('like_reaction_active_title_button') }
          data-tooltip-id={ tooltipId }
-         data-tooltip-content={ t('like_reaction_active_title_button') }
         />
       )
     } else {
       iconElement = (
-        <BiLike className={ styles.likeButton__likeIcon }
+        <AiOutlineLike className={ styles.likeButton__likeIcon }
           title={ t('like_reaction_title_button') }
           data-tooltip-id={ tooltipId }
-          data-tooltip-content={ t('like_reaction_title_button') }
         />
       )
     }
@@ -92,6 +90,7 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
         <Tooltip
           tooltipId={ tooltipId }
           place={ 'top' }
+          content={ liked ? t('like_reaction_active_title_button') : t('like_reaction_title_button') }
         /> }
       { NumberFormatter.compatFormat(reactionsNumber, locale) }
     </div>

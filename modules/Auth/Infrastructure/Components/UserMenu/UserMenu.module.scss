@@ -51,7 +51,7 @@
 
     &:hover, &:focus {
       @apply border-opacity-50 transition-colors bg-red bg-opacity-50
-        text-base-100;
+      text-base-100;
     }
 
     @screen md {
@@ -65,5 +65,17 @@
 
   &__menu-options-container {
     @apply -mx-5;
+  }
+
+  &__icon-option {
+    @apply p-1 w-full h-full object-center object-contain;
+
+    @screen md {
+      @apply p-2;
+    }
+
+    @screen lg {
+      @apply p-3;
+    }
   }
 }

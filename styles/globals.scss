@@ -3,3 +3,15 @@
 @tailwind utilities;
 
 @import 'styles/reset.scss';
+
+body {
+  @apply text-xs;
+
+  @screen tb {
+    @apply text-sm;
+  }
+
+  @screen md {
+    @apply text-base;
+  }
+}

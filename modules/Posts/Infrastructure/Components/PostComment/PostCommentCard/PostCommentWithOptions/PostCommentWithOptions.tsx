@@ -3,7 +3,6 @@ import styles from './PostCommentWithOptions.module.scss'
 import { PostCommentComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCommentComponentDto'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import { PostCommentCard } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentCard/PostCommentCard'
-import toast from 'react-hot-toast'
 import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/CommentsApiService'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import {
@@ -21,6 +20,7 @@ import {
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { useRouter } from 'next/router'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 interface Props {
   postComment: PostCommentComponentDto
@@ -45,6 +45,7 @@ export const PostCommentWithOptions: FC<Props> = ({
   const locale = useRouter().locale ?? 'en'
 
   const { t } = useTranslation('post_comments')
+  const { error, success } = useToast()
   const { status, data } = useSession()
 
   const onClickDelete = async () => {
@@ -53,7 +54,7 @@ export const PostCommentWithOptions: FC<Props> = ({
     }
 
     if (optionsDisabled || loading) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -64,7 +65,7 @@ export const PostCommentWithOptions: FC<Props> = ({
       await new CommentsApiService().delete(postComment.postId, postComment.id, null)
       onDeletePostComment(postComment.id)
 
-      toast.success(t('post_comment_deleted_success_message'))
+      success(t('post_comment_deleted_success_message'))
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
         console.error(exception)
@@ -76,7 +77,7 @@ export const PostCommentWithOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(`api_exceptions:${exception.translationKey}`))
+      error(t(`api_exceptions:${exception.translationKey}`))
     } finally {
       setLoading(false)
     }
@@ -84,19 +85,19 @@ export const PostCommentWithOptions: FC<Props> = ({
 
   const onReact = async () => {
     if (status !== 'authenticated') {
-      toast.error(t('user_must_be_authenticated_error_message'))
+      error(t('user_must_be_authenticated_error_message'))
 
       return
     }
 
     if (postComment.userReaction !== null) {
-      toast.error(t('post_comment_reaction_user_already_reacted'))
+      error(t('post_comment_reaction_user_already_reacted'))
 
       return
     }
 
     if (optionsDisabled || loading) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -116,7 +117,7 @@ export const PostCommentWithOptions: FC<Props> = ({
         newCommentReactionsNumber
       )
 
-      toast.success(t('post_comment_reaction_reaction_added_successfully'))
+      success(t('post_comment_reaction_reaction_added_successfully'))
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
         console.error(exception)
@@ -128,7 +129,7 @@ export const PostCommentWithOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(`api_exceptions:${exception.translationKey}`))
+      error(t(`api_exceptions:${exception.translationKey}`))
     } finally {
       setLoading(false)
     }
@@ -136,19 +137,19 @@ export const PostCommentWithOptions: FC<Props> = ({
 
   const onDeleteReaction = async () => {
     if (status !== 'authenticated') {
-      toast.error(t('user_must_be_authenticated_error_message'))
+      error(t('user_must_be_authenticated_error_message'))
 
       return
     }
 
     if (postComment.userReaction === null) {
-      toast.error(t('post_comment_reaction_user_has_not_reacted'))
+      error(t('post_comment_reaction_user_has_not_reacted'))
 
       return
     }
 
     if (optionsDisabled || loading) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -162,7 +163,7 @@ export const PostCommentWithOptions: FC<Props> = ({
 
       onClickLikeComment(postComment.id, null, newCommentReactionsNumber)
 
-      toast.success(t('post_comment_reaction_reaction_removed_successfully'))
+      success(t('post_comment_reaction_reaction_removed_successfully'))
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
         console.error(exception)
@@ -174,7 +175,7 @@ export const PostCommentWithOptions: FC<Props> = ({
         await signOut({ redirect: false })
       }
 
-      toast.error(t(`api_exceptions:${exception.translationKey}`))
+      error(t(`api_exceptions:${exception.translationKey}`))
     } finally {
       setLoading(false)
     }

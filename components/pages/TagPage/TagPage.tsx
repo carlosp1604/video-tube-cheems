@@ -16,6 +16,7 @@ import { useAvatarColor } from '~/hooks/AvatarColor'
 import styles from './TagPage.module.scss'
 import { useRouter } from 'next/router'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
+import { AiOutlineTag } from 'react-icons/ai'
 
 export interface TagPageProps {
   initialPage: number
@@ -80,10 +81,11 @@ export const TagPage: NextPage<TagPageProps> = ({
       { /* TODO: Add imageAlt when tags have imageUrl */ }
       <ProfileHeader
         name={ tag.name }
-        imageAlt={ '' }
+        imageAlt={ t('tag_image_alt_title', { tagName: tag.name }) }
         imageUrl={ tag.imageUrl }
-        customColor={ tagColor }
-        rounded={ false }
+        profileType={ t('tag_page_profile_type_title') }
+        icon={ <AiOutlineTag /> }
+        subtitle={ '' }
       />
 
       <Tag

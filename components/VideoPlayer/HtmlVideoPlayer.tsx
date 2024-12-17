@@ -1,17 +1,16 @@
 import { FC, useRef } from 'react'
-import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import styles from './VideoPlayer.module.scss'
 
 interface HTMLVideoPlayerProps {
   title: string
-  videoPostMedia: PostMediaComponentDto
+  videoPostMediaUrls: MediaUrlComponentDto[]
   onPlayerReady: () => void
   selectedMediaUrl: MediaUrlComponentDto
 }
 
 export const HtmlVideoPlayer: FC<HTMLVideoPlayerProps> = ({
-  videoPostMedia,
+  videoPostMediaUrls,
   onPlayerReady,
   title,
 }) => {
@@ -27,18 +26,14 @@ export const HtmlVideoPlayer: FC<HTMLVideoPlayerProps> = ({
         controls={ true }
         loop={ true }
       >
-        {
-          videoPostMedia.urls.map((mediaUrl) => {
-            return (
-              <source
-                src={ mediaUrl.url }
-                type="video/mp4"
-                title={ mediaUrl.title }
-                key={ mediaUrl.url }
-              />
-            )
-          })
-        }
+        { videoPostMediaUrls.map((mediaUrl) => (
+          <source
+            src={ mediaUrl.url }
+            type="video/mp4"
+            title={ mediaUrl.title }
+            key={ mediaUrl.url }
+          />
+        )) }
       </video>
     </div>
   )

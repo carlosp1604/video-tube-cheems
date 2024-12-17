@@ -5,4 +5,5 @@ export interface ProducerPageComponentDto {
   readonly imageUrl: string | null
   readonly description: string | null
   readonly brandHexColor: string
+  readonly viewsNumber: number
 }

@@ -50,6 +50,7 @@ import { ChangeUserPassword } from '~/modules/Auth/Application/RetrieveUserPassw
 import { Login } from '~/modules/Auth/Application/Login/Login'
 import { NodemailerUserEmailSender } from '~/modules/Auth/Infrastructure/NodemailerUserEmailSender'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
+import { GetPostsPublishedOnDate } from '~/modules/Posts/Application/GetPostsPublishedOnDate/GetPostsPublishedOnDate'
 
 /**
  * We create a container to register our classes dependencies
@@ -150,6 +151,7 @@ container.register('getTagBySlugUseCase', asClass(GetTagBySlug))
 container.register('getProducersUseCase', asClass(GetProducers))
 container.register('getAllTagsUseCase', asClass(GetAllTags))
 container.register('getTopVideoPostsUseCase', asClass(GetTopVideoPosts))
+container.register('getPostsPublishedOnDateUseCase', asClass(GetPostsPublishedOnDate))
 container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
 container.register('loginUseCase', asClass(Login))
 container.register('createUserUseCase', asClass(CreateUser))

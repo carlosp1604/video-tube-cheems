@@ -27,6 +27,7 @@ const findOrCreateActor = async (actor: any): Promise<void> => {
     actor.name,
     actor.description ?? null,
     actor.image_url,
+    0,
     nowDate,
     nowDate,
     null

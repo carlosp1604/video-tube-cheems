@@ -17,7 +17,7 @@ import { useSession } from 'next-auth/react'
 import { HiBars3 } from 'react-icons/hi2'
 import dynamic from 'next/dynamic'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
-import { createDismissibleToast } from '~/components/AppToast/AppToastDismissible'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 const LoginModal = dynamic(() =>
   import('~/modules/Auth/Infrastructure/Components/Login/LoginModal').then((module) => module.LoginModal),
@@ -41,6 +41,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
   const router = useRouter()
   const { status, data } = useSession()
   const locale = useRouter().locale ?? 'en'
+  const { error } = useToast()
 
   let userAvatar: ReactElement | null = (
     <IconButton
@@ -55,7 +56,6 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
       <IconButton
         onClick={ () => {
           setLoginModalOpen(!loginModalOpen)
-          createDismissibleToast(t('common:user_new_login_help_message_title'))
         } }
         icon={ <CiUser /> }
         title={ t('app_menu_user_button_title') }
@@ -89,10 +89,8 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
   }
 
   const onSearch = async () => {
-    const toast = (await import('react-hot-toast')).default
-
     if (blocked) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -101,7 +99,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
     const cleanTitle = dompurify.sanitize(title.trim())
 
     if (cleanTitle === '') {
-      toast.error(t('empty_search_error_message'))
+      error(t('empty_search_error_message'))
 
       return
     }
@@ -121,7 +119,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
 
       setOpenSearchBar(false)
     } else {
-      toast.error(t('already_searching_term_error_message'))
+      error(t('already_searching_term_error_message'))
     }
   }
 

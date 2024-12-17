@@ -4,9 +4,9 @@ import styles from './Login.module.scss'
 import { emailValidator, passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import useTranslation from 'next-translate/useTranslation'
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
-import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   onClickSignup: () => void
@@ -23,6 +23,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const { t } = useTranslation('user_login')
+  const { error } = useToast()
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -42,7 +43,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       })
 
     if (result?.error) {
-      toast.error(t('login_error_message'))
+      error(t('login_error_message'))
     } else {
       onSuccessLogin()
     }

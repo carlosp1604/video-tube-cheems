@@ -4,4 +4,5 @@ export interface ActorPageComponentDto {
   readonly name: string
   readonly imageUrl: string | null
   readonly description: string | null
+  readonly viewsCount: number
 }

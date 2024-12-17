@@ -4,13 +4,13 @@ import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
 import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags } from 'react-icons/bs'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
-import toast from 'react-hot-toast'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { TfiWorld } from 'react-icons/tfi'
 import { MenuSideBarOption } from './MenuSideBarOption/MenuSideBarOption'
 import { MdLiveTv } from 'react-icons/md'
 import { IoMdTrendingUp } from 'react-icons/io'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
@@ -23,6 +23,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
 
   const { status, data } = useSession()
   const { setLoginModalOpen } = useLoginContext()
+  const { error } = useToast()
 
   const buildAuthenticationAction = (
     url: string,
@@ -40,7 +41,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
 
     if (status !== 'authenticated' || !data) {
       option.onClick = () => {
-        toast.error(t('user_must_be_authenticated_error_message'))
+        error(t('user_must_be_authenticated_error_message'))
 
         setLoginModalOpen(true)
       }
@@ -50,7 +51,7 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
 
     if (url === asPath) {
       option.onClick = () => {
-        toast.error(t('user_already_on_path'))
+        error(t('user_already_on_path'))
       }
 
       return option

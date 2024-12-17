@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import useTranslation from 'next-translate/useTranslation'
-import toast from 'react-hot-toast'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut, useSession } from 'next-auth/react'
 import { useLoginContext } from '~/hooks/LoginContext'
@@ -12,6 +11,7 @@ import {
 } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDtoTranslator'
 import { PostsApiService } from '~/modules/Posts/Infrastructure/Frontend/PostsApiService'
 import { useRouter } from 'next/router'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface ReactPostInterface {
   reactPost: (postId: string, type: ReactionType) => Promise<ReactionComponentDto | null>
@@ -23,10 +23,11 @@ export function useReactPost (namespace: string): ReactPostInterface {
   const locale = useRouter().locale ?? 'en'
   const { status } = useSession()
   const { setLoginModalOpen } = useLoginContext()
+  const { error, success } = useToast()
 
   const reactPost = useCallback(async (postId: string, type: ReactionType): Promise<ReactionComponentDto | null> => {
     if (status !== 'authenticated') {
-      toast.error(t('user_must_be_authenticated_error_message'))
+      error(t('user_must_be_authenticated_error_message'))
       setLoginModalOpen(true)
 
       return null
@@ -36,12 +37,12 @@ export function useReactPost (namespace: string): ReactPostInterface {
       const reaction = await new PostsApiService().createPostReaction(postId, type)
       const reactionComponentDto = ReactionComponentDtoTranslator.fromApplicationDto(reaction)
 
-      toast.success(t('post_reaction_added_correctly_message'))
+      success(t('post_reaction_added_correctly_message'))
 
       return reactionComponentDto
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
-        toast.error(t('api_exceptions:something_went_wrong_error_message'))
+        error(t('api_exceptions:something_went_wrong_error_message'))
 
         console.error(exception)
 
@@ -56,7 +57,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
         setLoginModalOpen(true)
       }
 
-      toast.error(t(`api_exceptions:${exception.translationKey}`))
+      error(t(`api_exceptions:${exception.translationKey}`))
 
       return null
     }
@@ -64,7 +65,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
 
   const removeReaction = useCallback(async (postId: string): Promise<boolean> => {
     if (status !== 'authenticated') {
-      toast.error(t('user_must_be_authenticated_error_message'))
+      error(t('user_must_be_authenticated_error_message'))
       setLoginModalOpen(true)
 
       return false
@@ -73,12 +74,12 @@ export function useReactPost (namespace: string): ReactPostInterface {
     try {
       await new PostsApiService().deletePostReaction(postId)
 
-      toast.success(t('post_reaction_deleted_correctly_message'))
+      success(t('post_reaction_deleted_correctly_message'))
 
       return true
     } catch (exception: unknown) {
       if (!(exception instanceof APIException)) {
-        toast.error(t('api_exceptions:something_went_wrong_error_message'))
+        error(t('api_exceptions:something_went_wrong_error_message'))
 
         console.error(exception)
 
@@ -93,7 +94,7 @@ export function useReactPost (namespace: string): ReactPostInterface {
         setLoginModalOpen(true)
       }
 
-      toast.error(t(`api_exceptions:${exception.translationKey}`))
+      error(t(`api_exceptions:${exception.translationKey}`))
 
       return false
     }

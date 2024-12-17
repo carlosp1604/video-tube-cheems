@@ -1,5 +1,14 @@
 .tooltip {
   &__container {
-    @apply ;
+    @apply rounded-lg bg-brand-primary-bg
+    whitespace-nowrap p-2 text-white text-xs z-tooltip;
+
+    @screen md {
+      @apply text-sm;
+    }
+
+    @screen lg {
+      @apply text-base;
+    }
   }
 }

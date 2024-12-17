@@ -21,7 +21,7 @@ export const PostCardCarouselSkeleton: FC<Partial<Props> & Pick<Props, 'postCard
   for (let i = 0; i < postCardsNumber; i++) {
     postCardsSkeleton.push({
       key: uuidGenerator(),
-      component: <PostCardSkeleton showProducerImage={ true } loading={ loading }/>,
+      component: <PostCardSkeleton loading={ loading }/>,
     }
     )
   }

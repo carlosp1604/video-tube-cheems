@@ -1,11 +1,10 @@
 import { FC, ReactElement, useEffect, useState } from 'react'
 import styles from './DislikeButton.module.scss'
 import useTranslation from 'next-translate/useTranslation'
-import { BiDislike, BiSolidDislike } from 'react-icons/bi'
 import * as uuid from 'uuid'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
-import { AiOutlineLoading } from 'react-icons/ai'
-import toast from 'react-hot-toast'
+import { AiOutlineDislike, AiOutlineLoading, AiTwotoneDislike } from 'react-icons/ai'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 interface Props {
   disliked: boolean
@@ -19,6 +18,7 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike,
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const { error } = useToast()
 
   useEffect(() => {
     setMounted(true)
@@ -27,7 +27,7 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike,
 
   const onClickButton = async () => {
     if (loading || disabled) {
-      toast.error(t('action_cannot_be_performed_error_message'))
+      error(t('action_cannot_be_performed_error_message'))
 
       return
     }
@@ -48,18 +48,16 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike,
   if (!loading) {
     if (disliked) {
       iconElement = (
-        <BiSolidDislike
+        <AiTwotoneDislike
           className={ styles.dislikeButton__dislikeIcon }
           data-tooltip-id={ tooltipId }
-          data-tooltip-content={ t('dislike_reaction_active_title_button') }
         />
       )
     } else {
       iconElement = (
-        <BiDislike
+        <AiOutlineDislike
           className={ styles.dislikeButton__dislikeIcon }
           data-tooltip-id={ tooltipId }
-          data-tooltip-content={ t('dislike_reaction_title_button') }
         />
       )
     }
@@ -85,6 +83,7 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike,
         <Tooltip
           tooltipId={ tooltipId }
           place={ 'bottom' }
+          content={ disliked ? t('dislike_reaction_active_title_button') : t('dislike_reaction_title_button') }
         /> }
     </div>
   )

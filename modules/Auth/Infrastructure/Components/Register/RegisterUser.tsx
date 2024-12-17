@@ -16,8 +16,8 @@ import {
   USER_INVALID_USERNAME,
   USER_USERNAME_ALREADY_REGISTERED
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
-import toast from 'react-hot-toast'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
+import { useToast } from '~/components/AppToast/ToastContext'
 
 export interface Props {
   email: string
@@ -46,6 +46,7 @@ export const RegisterUser: FC<Props> = ({
   const authApiService = new AuthApiService()
 
   const { t } = useTranslation('user_signup')
+  const { error } = useToast()
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault()
@@ -70,7 +71,7 @@ export const RegisterUser: FC<Props> = ({
       if (!result.ok) {
         switch (result.status) {
           case 401: {
-            toast.error(t('signup_invalid_code_message'))
+            error(t('signup_invalid_code_message'))
 
             break
           }
@@ -80,14 +81,14 @@ export const RegisterUser: FC<Props> = ({
 
             switch (jsonResponse.code) {
               case USER_EMAIL_ALREADY_REGISTERED:
-                toast.error(t('signup_email_already_registered_message'))
+                error(t('signup_email_already_registered_message'))
                 break
               case USER_USERNAME_ALREADY_REGISTERED:
-                toast.error(t('signup_username_already_registered_message'))
+                error(t('signup_username_already_registered_message'))
                 break
 
               default:
-                toast.error(t('signup_server_error_message'))
+                error(t('signup_server_error_message'))
             }
 
             break
@@ -98,23 +99,23 @@ export const RegisterUser: FC<Props> = ({
 
             switch (jsonResponse.code) {
               case USER_INVALID_NAME:
-                toast.error(t('signup_invalid_name_message'))
+                error(t('signup_invalid_name_message'))
                 break
 
               case USER_INVALID_USERNAME:
-                toast.error(t('signup_invalid_username_message'))
+                error(t('signup_invalid_username_message'))
                 break
 
               case USER_INVALID_EMAIL:
-                toast.error(t('signup_invalid_email_message'))
+                error(t('signup_invalid_email_message'))
                 break
 
               case USER_INVALID_PASSWORD:
-                toast.error(t('signup_invalid_password_message'))
+                error(t('signup_invalid_password_message'))
                 break
 
               default:
-                toast.error(t('signup_server_error_message'))
+                error(t('signup_server_error_message'))
                 break
             }
 
@@ -122,7 +123,7 @@ export const RegisterUser: FC<Props> = ({
           }
 
           default: {
-            toast.error(t('signup_server_error_message'))
+            error(t('signup_server_error_message'))
 
             break
           }
@@ -137,7 +138,7 @@ export const RegisterUser: FC<Props> = ({
       setLoading(false)
     } catch (exception: unknown) {
       console.error(exception)
-      toast.error(t('signup_server_error_message'))
+      error(t('signup_server_error_message'))
     }
   }
 

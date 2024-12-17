@@ -5,10 +5,10 @@ import {
   PostComponentDtoActorDto,
   PostComponentDtoProducerDto, PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import useTranslation from 'next-translate/useTranslation'
-import { TagList } from '~/modules/Posts/Infrastructure/Components/TagList/TagList'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { MdOutlineLiveTv } from 'react-icons/md'
+import { BsStarFill } from 'react-icons/bs'
 
 export interface Props {
   producer: PostComponentDtoProducerDto | null
@@ -16,6 +16,8 @@ export interface Props {
   postActors: PostComponentDtoActorDto[]
   postTags: PostComponentDtoTagDto[]
   postDescription: string
+  date: string
+  viewsNumber: number
 }
 
 export const PostData: FC<Props> = ({
@@ -24,29 +26,26 @@ export const PostData: FC<Props> = ({
   postActors,
   postTags,
   postDescription,
+  date,
+  viewsNumber,
 }) => {
   const { t } = useTranslation('post')
-  const [extraDataOpen, setExtraDataOpen] = useState<boolean>(false)
+  const [showExtraData, setShowExtraData] = useState<boolean>(false)
 
   let producerSection: ReactElement | null = null
   let collaborationSection: ReactElement | null = null
 
   if (producer !== null) {
     producerSection = (
-      <div className={ styles.postData__producerSection }>
+      <div className={ styles.postData__dataItemContainer }>
+        { t('post_data_producer_title') }
         <Link
+          prefetch={ false }
+          className={ styles.postData__listItemContainer }
           href={ `/producers/${producer.slug}` }
           title={ producer.name }
-          className={ styles.postData__producerLink }
         >
-          <AvatarImage
-            imageUrl={ producer.imageUrl }
-            avatarClassName={ styles.postData__producerActorAvatar }
-            imageClassName={ styles.postData__producerActorLogo }
-            avatarName={ producer.name }
-            imageAlt={ producer.name }
-            color={ producer.brandHexColor }
-          />
+          <MdOutlineLiveTv className={ styles.postData__producerActorIcon }/>
           { producer.name }
         </Link>
       </div>
@@ -55,43 +54,33 @@ export const PostData: FC<Props> = ({
 
   if (producer === null && actor !== null) {
     producerSection = (
-      <div className={ styles.postData__producerSection }>
+      <div className={ styles.postData__dataItemContainer }>
+        { t('post_data_actor_title') }
         <Link
+          prefetch={ false }
+          className={ styles.postData__listItemContainer }
           href={ `/actors/${actor.slug}` }
           title={ actor.name }
-          className={ styles.postData__producerLink }
         >
-          <AvatarImage
-            imageUrl={ actor.imageUrl }
-            avatarClassName={ styles.postData__producerActorAvatar }
-            imageClassName={ styles.postData__producerActorLogo }
-            avatarName={ actor.name }
-            imageAlt={ actor.name }
-          />
+          <BsStarFill className={ styles.postData__producerActorIcon }/>
           { actor.name }
         </Link>
       </div>
-
     )
   }
 
   if (producer !== null && actor !== null) {
     collaborationSection = (
       <div className={ styles.postData__dataItem }>
-        { t('post_extra_data_collaborator_section') }
-        <div className={ styles.postData__producerSection }>
+        <div className={ styles.postData__dataItemContainer }>
+          { t('post_data_collaborator_title') }
           <Link
+            prefetch={ false }
+            className={ styles.postData__listItemContainer }
             href={ `/actors/${actor.slug}` }
-            className={ styles.postData__producerLink }
             title={ actor.name }
           >
-            <AvatarImage
-              imageUrl={ actor.imageUrl }
-              avatarClassName={ styles.postData__producerActorAvatar }
-              imageClassName={ styles.postData__producerActorLogo }
-              avatarName={ actor.name }
-              imageAlt={ actor.name }
-            />
+            <BsStarFill />
             { actor.name }
           </Link>
         </div>
@@ -100,46 +89,56 @@ export const PostData: FC<Props> = ({
   }
 
   let actorsSection: ReactElement | null = null
-  let tagsSection: ReactElement | null = null
+  let categorySection: ReactElement | null = null
   let descriptionSection: ReactElement | null = null
 
   if (postActors.length > 0) {
     actorsSection = (
       <div className={ styles.postData__dataItem }>
-        { t('post_extra_data_actors_title') }
-        <div className={ styles.postData__actorsContainer }>
-          { postActors.map((actor) => {
-            const avatarSection: ReactElement = (
-              <AvatarImage
-                imageUrl={ actor.imageUrl }
-                avatarClassName={ styles.postData__actorAvatar }
-                imageClassName={ styles.postData__actorLogo }
-                avatarName={ actor.name }
-                imageAlt={ actor.name }
-              />
-            )
-
-            return (
-              <Link
-                href={ `/actors/${actor.slug}` }
-                className={ styles.postData__actorsItemLink }
-                key={ actor.id }
-              >
-                { avatarSection }
-                { actor.name }
-              </Link>
-            )
-          }) }
+        <div className={ styles.postData__dataItemContainer }>
+          { t('post_extra_data_actors_title') }
+          <div className={ styles.postData__overflowContainer }>
+            { postActors.map((actor) => {
+              return (
+                <Link
+                  prefetch={ false }
+                  key={ actor.id }
+                  className={ styles.postData__listItemContainer }
+                  href={ `/actors/${actor.slug}` }
+                  title={ actor.name }
+                >
+                  <BsStarFill className={ styles.postData__producerActorIcon }/>
+                  { actor.name }
+                </Link>
+              )
+            }) }
+          </div>
         </div>
       </div>
     )
   }
 
   if (postTags.length > 0) {
-    tagsSection = (
+    categorySection = (
       <div className={ styles.postData__dataItem }>
-        { t('post_extra_data_tags_title') }
-        <TagList tags={ postTags } />
+        <div className={ styles.postData__dataItemContainer }>
+          { t('post_extra_data_tags_title') }
+          <div className={ styles.postData__overflowContainer }>
+            { postTags.map((tag) => {
+              return (
+                <Link
+                  prefetch={ false }
+                  className={ styles.postData__listItemContainer }
+                  href={ `/tags/${tag.slug}` }
+                  key={ tag.slug }
+                  title={ tag.name }
+                >
+                  { tag.name }
+                </Link>
+              )
+            }) }
+          </div>
+        </div>
       </div>
     )
   }
@@ -159,38 +158,46 @@ export const PostData: FC<Props> = ({
 
     descriptionSection = (
       <div className={ styles.postData__dataItem }>
-        { t('post_extra_data_description_title') }
-        { descriptionParagraphs }
+        <div className={ styles.postData__dataItemContainer }>
+          { t('post_extra_data_description_title') }
+          { descriptionParagraphs }
+        </div>
+
       </div>
     )
   }
 
-  let producerActorSection: ReactElement | null = null
-
-  if (producerSection) {
-    producerActorSection = producerSection
-  }
-
   return (
     <div className={ styles.postData__container }>
-      { producerActorSection }
-      <div className={ `
-        ${styles.postData__postExtraData}
-        ${extraDataOpen ? styles.postData__postExtraData__open : ''}
-      ` }>
-        { collaborationSection }
-        { actorsSection }
-        { tagsSection }
-        { descriptionSection }
+      <div className={ styles.postData__dataItem }>
+        <div className={ styles.postData__mainDataContainer }>
+          { producerSection ?? <div className={ styles.postData__dataItemContainerEmpty }/> }
+
+          <div className={ styles.postData__dataItemContainer }>
+            { t('post_data_published_title') }
+            <span className={ styles.postData__dataItemContent }>
+              { date }
+            </span>
+          </div>
+
+          <div className={ styles.postData__dataItemContainer }>
+            { t('post_data_views_title') }
+            <span className={ styles.postData__dataItemContent }>
+              { viewsNumber }
+            </span>
+          </div>
+          { collaborationSection ?? <div className={ styles.postData__dataItemContainerEmpty }/> }
+        </div>
       </div>
 
-      <div className={ styles.postData__showInfoSection }>
-        <CommonButton
-          title={ extraDataOpen ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }
-          disabled={ false }
-          onClick={ () => setExtraDataOpen(!extraDataOpen) }
-        />
-      </div>
+      { showExtraData ? actorsSection : null }
+      { showExtraData ? categorySection : null }
+      { showExtraData ? descriptionSection : null }
+      <CommonButton
+        title={ showExtraData ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }
+        disabled={ false }
+        onClick={ () => setShowExtraData(!showExtraData) }
+      />
     </div>
   )
 }

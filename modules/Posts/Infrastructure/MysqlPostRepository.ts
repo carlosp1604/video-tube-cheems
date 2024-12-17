@@ -899,6 +899,38 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
+   * Get posts published on the specified date
+   * @param date Date
+   * @return Post array with the posts
+   */
+  public async getPostsPublishedOnDate (date: Date): Promise<Post[]> {
+    const posts = await prisma.post.findMany({
+      where: {
+        deletedAt: null,
+        publishedAt: {
+          not: null,
+          gte: date,
+        },
+      },
+      orderBy: {
+        publishedAt: 'desc',
+      },
+      include: {
+        meta: true,
+        producer: true,
+        actor: true,
+        translations: true,
+      },
+      // FIXME: Remove hardcoded limit
+      take: 100,
+    })
+
+    return posts.map((post) => PostModelTranslator.toDomain(post,
+      ['meta', 'producer', 'translations', 'actor']
+    ))
+  }
+
+  /**
    * Get top (most viewed) posts between 2 given dates
    * @param startDate Start Date
    * @param endDate End Date

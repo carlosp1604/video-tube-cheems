@@ -1,7 +1,8 @@
-import { FC, ReactElement, useEffect, useState } from 'react'
+import { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import styles from './IconButton.module.scss'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
 import * as uuid from 'uuid'
+import { useClickAnimation } from '~/hooks/ClickAnimation/ClickAnimation'
 
 interface Props {
   onClick: (() => void) | undefined
@@ -20,6 +21,9 @@ export const IconButton: FC<Partial<Props> & Pick<Props, 'onClick' | 'icon' | 't
 }) => {
   const [mounted, setMounted] = useState<boolean>(false)
   const [tooltipId, setTooltipId] = useState<string>('')
+  const buttonRef = useRef(null)
+
+  useClickAnimation(buttonRef)
 
   useEffect(() => {
     setMounted(true)
@@ -34,16 +38,17 @@ export const IconButton: FC<Partial<Props> & Pick<Props, 'onClick' | 'icon' | 't
           onClick()
         }
       } }
+      ref={ buttonRef }
       title={ title }
       disabled={ disabled }
       data-tooltip-id={ tooltipId }
-      data-tooltip-content={ title }
     >
       { icon }
       { showTooltip && mounted
         ? <Tooltip
           tooltipId={ tooltipId }
           place={ 'bottom' }
+          content={ title }
         />
         : null
       }

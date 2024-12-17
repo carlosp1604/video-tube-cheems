@@ -10,6 +10,7 @@ export class ProducerPageComponentDtoTranslator {
       name: applicationDto.name,
       description: applicationDto.description,
       brandHexColor: applicationDto.brandHexColor,
+      viewsNumber: applicationDto.viewsNumber,
     }
   }
 }

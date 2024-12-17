@@ -35,12 +35,12 @@ export const MenuSideBarOption: FC<Props> = ({ menuOption, menuOpen }) => {
         ` }
         target={ menuOption.action.blank ? '_blank' : '_self' }
         data-tooltip-id={ tooltipId }
-        data-tooltip-content={ menuOption.title }
       >
         { !menuOpen && mounted
           ? buildPortal(<Tooltip
             tooltipId={ tooltipId }
             place={ 'right' }
+            content={ menuOption.title }
           />)
           : null
         }
@@ -67,12 +67,12 @@ export const MenuSideBarOption: FC<Props> = ({ menuOption, menuOpen }) => {
       ` }
         onClick={ menuOption.onClick }
         data-tooltip-id={ tooltipId }
-        data-tooltip-content={ menuOption.title }
       >
         { !menuOpen && mounted
           ? buildPortal(<Tooltip
             tooltipId={ tooltipId }
             place={ 'right' }
+            content={ menuOption.title }
           />)
           : null
         }

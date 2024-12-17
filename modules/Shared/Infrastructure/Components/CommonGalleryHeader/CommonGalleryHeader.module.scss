@@ -1,6 +1,7 @@
 .common-gallery-header {
   &__container {
-    @apply grid justify-between items-start gap-x-4 gap-y-2;
+    @apply grid justify-between items-start gap-x-4 gap-y-2
+    transition-colors dark:transition-colors cursor-default;
     grid-template-areas:
       "title      sort"
       "subtitle   sort";
@@ -8,9 +9,14 @@
   }
 
   &__title {
-    @apply flex flex-row flex-wrap text-2xl gap-x-1.5 gap-y-0.5 font-normal
-    line-clamp-6 break-words normal-case items-center leading-none;
+    @apply flex flex-wrap text-xl gap-x-1.5 gap-y-0.5
+    font-normal line-clamp-6 break-words normal-case
+    items-center leading-none;
     grid-area: title;
+
+    @screen md {
+      @apply text-2xl;
+    }
 
     &__black {
       @apply font-black;
@@ -18,27 +24,42 @@
   }
 
   &__title-term {
-    @apply text-brand-primary-light normal-case line-clamp-6 break-words
-    text-2xl font-bold leading-none;
-  }
-
-  &__quantity {
-    @apply normal-case text-xs text-brand-primary-light
-    font-normal;
-    grid-area: subtitle;
+    @apply text-brand-primary-light normal-case line-clamp-6
+    break-words text-xl font-bold leading-none
+    dark:text-brand-primary-bg;
 
     @screen md {
-      @apply font-semibold;
+      @apply text-2xl;
     }
   }
 
-  &__quantity-skeeleton {
-    @apply w-10 rounded-lg h-2.5 bg-base-700 mt-1
-    animate-pulse;
+  &__quantity {
+    @apply normal-case text-brand-primary-light
+    font-semibold dark:text-brand-primary-bg;
     grid-area: subtitle;
   }
 
+  &__quantity-skeeleton {
+    @apply w-10 rounded-lg h-3 bg-base-300 mt-1
+    animate-pulse dark:bg-base-700;
+    grid-area: subtitle;
+
+    @screen tb {
+      @apply mb-1;
+    }
+
+    @screen md {
+      @apply h-4 mb-1 w-12;
+    }
+  }
+
   &__sorting-element {
+    grid-area: sort;
+  }
+
+  &__sorting-element-skeleton {
+    @apply h-7 w-16 bg-base-300 rounded-lg animate-pulse
+    dark:bg-base-700;
     grid-area: sort;
   }
 }

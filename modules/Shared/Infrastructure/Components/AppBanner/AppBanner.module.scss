@@ -1,44 +1,22 @@
 .app-banner {
   &__container {
-    @apply p-5 border-t-2 border-brand-primary-bg/20 m-4;
+    @apply container p-5 border-t-2 border-brand-primary-light/50
+    mx-auto text-center cursor-default;
   }
 
   &__title {
-    @apply text-base-400 text-base font-black text-center mb-2;
-
-    @screen md {
-      @apply text-lg;
-    }
-
-    @screen lg {
-      @apply text-xl;
-    }
+    @apply text-base-400 font-black mb-2;
   }
 
   &__description {
-    @apply text-center text-base-500 text-xs leading-tight
-      whitespace-pre-line;
-
-    @screen md {
-      @apply text-sm;
-    }
-
-    @screen lg {
-      @apply text-base;
-    }
+    @apply text-base-500 leading-tight
+    whitespace-pre-line;
   }
 
   &__rta-section {
-    @apply flex flex-col items-center justify-center mt-2
-    gap-y-4 leading-tight text-xs text-base-500 text-center;
-
-    @screen md {
-      @apply text-sm;
-    }
-
-    @screen lg {
-      @apply text-base;
-    }
+    @apply flex flex-col items-center justify-center p-2
+    bg-base-800 rounded-lg mt-2 transition-colors
+    gap-y-4 leading-tight text-base-500 text-center;
   }
 
   &__rta-logo {
@@ -50,7 +28,7 @@
   }
 
   &__rta-block-access-link {
-    @apply text-brand-primary-bg font-semibold;
+    @apply text-brand-primary-dark font-semibold;
 
     @screen md {
       @apply text-sm;

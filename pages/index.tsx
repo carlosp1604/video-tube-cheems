@@ -15,7 +15,7 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { defaultPerPageWithoutAds } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   HtmlPageMetaContextService
@@ -103,7 +103,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
         filters: paginationQueryParams.filters,
         sortCriteria,
         sortOption,
-        postsPerPage: defaultPerPage,
+        postsPerPage: defaultPerPageWithoutAds,
       }),
       await getProducers.get(producerFilter ? producerFilter.value : null),
     ])
@@ -133,6 +133,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (context) => 
   } catch (exception: unknown) {
     console.error(exception)
   }
+
+  // Experimental: Try to improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=50, stale-while-revalidate=10'
+  )
 
   return {
     props,

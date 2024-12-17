@@ -1,0 +1,44 @@
+.dropdownMenu {
+  &__container {
+    @apply relative z-menu-dropdown;
+  }
+
+  &__button {
+    @apply flex flex-row gap-x-2 items-center justify-between border
+    border-base-800 px-2.5 py-1 rounded-lg leading-relaxed bg-body
+    transition-colors;
+
+    &:hover {
+      @apply border-base-700 transition-colors;
+    }
+  }
+
+  &__dropdownMenuContainer {
+    @apply hidden absolute mt-1 left-[var(--left-side)]
+    right-[var(--right-side)] p-2.5 border border-base-700
+    rounded-md bg-body whitespace-nowrap;
+
+    &__open {
+      @apply block;
+    }
+  }
+}
+
+.dropdownButton {
+  @apply flex flex-row gap-x-2 items-center justify-between border
+  border-base-200 px-2.5 py-1 rounded-lg leading-relaxed bg-body
+  shadow-md shadow-transparent transition-colors;
+
+  &:hover {
+    @apply shadow-base-200 transition-colors;
+  }
+}
+
+.dropdownMenuContainer {
+  @apply hidden absolute mt-1 left-[var(--left-side)] right-[var(--right-side)]
+  p-2.5 border border-base-200 rounded-md bg-body;
+
+  &__open {
+    @apply block;
+  }
+}

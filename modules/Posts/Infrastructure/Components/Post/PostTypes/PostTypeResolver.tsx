@@ -13,15 +13,13 @@ export class PostTypeResolver {
     onClickCommentsButton: () => void,
     onClickSaveButton: () => Promise<void>,
     likesNumber: number,
-    optionsDisabled: boolean,
-    postBasicDataElement: ReactElement
+    optionsDisabled: boolean
   ): ReactElement | null {
     switch (post.type) {
       case 'video':
         return (
           <VideoPostType
             post={ post }
-            postBasicDataElement={ postBasicDataElement }
             userReaction={ userReaction }
             savedPost={ savedPost }
             onClickReactButton={ async (type) => await onClickReactButton(type) }

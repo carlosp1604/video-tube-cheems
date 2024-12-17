@@ -1,6 +1,6 @@
 .carousel {
   &__container {
-    @apply relative overflow-x-hidden overflow-y-visible -mx-5;
+    @apply relative overflow-x-hidden overflow-y-visible -mx-5 py-1;
     @screen lg {
       @apply mx-0 pl-0;
     }
@@ -41,8 +41,9 @@
   }
 
   &__scroll-button {
-    @apply hidden absolute m-auto h-9 w-9 rounded-full
-      bg-brand-primary-bg p-2 text-base-300 cursor-pointer z-carousel-button;
+    @apply hidden absolute m-auto h-10 w-10 rounded-lg shadow-all-sm
+    shadow-base-950 bg-brand-primary-bg p-2 text-white
+    cursor-pointer z-carousel-button transition-colors;
 
     @screen md {
       @apply block opacity-100 transition-all duration-200;

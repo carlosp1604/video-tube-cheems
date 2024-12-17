@@ -1,6 +1,7 @@
 .video-player {
   &__container {
-    @apply grid h-full w-full z-video-player content-center overflow-hidden;
+    @apply grid h-full w-full z-video-player content-center
+    overflow-hidden;
   }
 
   &__player {

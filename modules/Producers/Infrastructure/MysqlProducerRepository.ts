@@ -18,7 +18,7 @@ export class MysqlProducerRepository implements ProducerRepositoryInterface {
    * @param producer Producer to persist
    */
   public async save (producer: Producer): Promise<void> {
-    const producerModel = ProducerModelTranslator.toDatabase(producer, 0)
+    const producerModel = ProducerModelTranslator.toDatabase(producer)
 
     await prisma.producer.create({
       data: {

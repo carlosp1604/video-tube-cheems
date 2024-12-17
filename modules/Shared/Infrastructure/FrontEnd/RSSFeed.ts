@@ -39,7 +39,7 @@ export const generateRssFeed = async (posts: PostWithRelationsApplicationDto[]) 
     title: rssSiteName,
     description: rssDescription,
     site_url: baseUrl,
-    feed_url: `${baseUrl}/rss.xml`,
+    feed_url: `${baseUrl}/rss`,
     image_url: `${siteImageUrl}`,
     pubDate: new Date(),
   }

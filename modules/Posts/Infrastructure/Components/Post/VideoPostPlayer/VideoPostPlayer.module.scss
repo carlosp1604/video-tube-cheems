@@ -63,9 +63,8 @@
     }
 
     &__selected {
-      @apply border-brand-primary-bg bg-brand-primary-bg/50
-      transition-colors pointer-events-none
-      dark:border-brand-primary-dark;
+      @apply border-brand-primary-dark bg-brand-primary-bg/50
+      transition-colors pointer-events-none;
     }
   }
 

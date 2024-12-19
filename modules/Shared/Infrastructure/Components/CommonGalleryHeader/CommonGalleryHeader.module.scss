@@ -1,7 +1,7 @@
 .common-gallery-header {
   &__container {
     @apply grid justify-between items-start gap-x-4 gap-y-2
-    transition-colors dark:transition-colors cursor-default;
+    transition-colors cursor-default;
     grid-template-areas:
       "title      sort"
       "subtitle   sort";
@@ -24,9 +24,8 @@
   }
 
   &__title-term {
-    @apply text-brand-primary-light normal-case line-clamp-6
-    break-words text-xl font-bold leading-none
-    dark:text-brand-primary-bg;
+    @apply text-brand-primary-bg normal-case line-clamp-6
+    break-words text-xl font-bold leading-none;
 
     @screen md {
       @apply text-2xl;
@@ -34,14 +33,14 @@
   }
 
   &__quantity {
-    @apply normal-case text-brand-primary-light
-    font-semibold dark:text-brand-primary-bg;
+    @apply normal-case text-brand-primary-bg
+    font-semibold;
     grid-area: subtitle;
   }
 
   &__quantity-skeeleton {
-    @apply w-10 rounded-lg h-3 bg-base-300 mt-1
-    animate-pulse dark:bg-base-700;
+    @apply w-10 rounded-lg h-3 bg-base-700 mt-1
+    animate-pulse;
     grid-area: subtitle;
 
     @screen tb {
@@ -58,8 +57,7 @@
   }
 
   &__sorting-element-skeleton {
-    @apply h-7 w-16 bg-base-300 rounded-lg animate-pulse
-    dark:bg-base-700;
+    @apply h-7 w-16 bg-base-700 rounded-lg animate-pulse;
     grid-area: sort;
   }
 }

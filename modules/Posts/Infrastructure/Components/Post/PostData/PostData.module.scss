@@ -36,13 +36,11 @@
   }
 
   &__data-item-container-empty {
-    @apply bg-base-200 transition-colors min-w-20
-    dark:bg-base-900 dark:transition-colors;
+    @apply bg-base-900 transition-colors min-w-20;
   }
 
   &__data-item-content {
-    @apply text-black
-    dark:text-white;
+    @apply text-white;
   }
 
   &__producer-actor-icon {

@@ -2,7 +2,7 @@
   &__producer-title {
     @apply flex flex-row items-end gap-x-1.5 text-xs my-0.5
     font-normal mx-auto ml-0 text-base-400
-    dark:transition-colors transition-colors;
+    transition-colors;
 
     &__disabled {
       @apply pointer-events-none;
@@ -14,7 +14,6 @@
   }
 
   &__producer-iconAd {
-    @apply text-lg text-sky-500 transition-colors
-    dark:transition-colors;
+    @apply text-lg text-sky-500 transition-colors;
   }
 }

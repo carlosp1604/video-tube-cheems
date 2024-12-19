@@ -1,7 +1,6 @@
 import { createRef, FC, useEffect } from 'react'
 import styles from '~/modules/Shared/Infrastructure/Components/Advertising/Banner.module.scss'
 import useTranslation from 'next-translate/useTranslation'
-import { RiAdvertisementLine } from 'react-icons/ri'
 
 export interface Props {
   showAdLegend: boolean
@@ -45,9 +44,8 @@ export const AdsterraDesktopBanner: FC<Partial<Props>> = ({ showAdLegend }) => {
 
   return (
     <section className={ styles.banner__container } >
-      <div ref={ bannerRef } className={ styles.banner__bannerWrapper90x729 } >
-        { !showAdLegend && <RiAdvertisementLine className={ styles.banner__adIcon }/> }
-      </div>
+      <div ref={ bannerRef } className={ styles.banner__bannerWrapper90x729 } />
+
       <div id={ `atContainer-${process.env.NEXT_PUBLIC_ADSTERRA_DESKTOP_BANNER_KEY ?? ''}` } />
       { showAdLegend && t('banner_ad_title') }
     </section>

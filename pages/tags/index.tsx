@@ -25,19 +25,10 @@ export const getStaticProps: GetStaticProps<TagsPageProps> = async (context) => 
     baseUrl = env.BASE_URL
   }
 
-  let url = `${baseUrl}/tags`
-
-  if (locale !== 'en') {
-    url = `${baseUrl}/${locale}/tags`
-  }
-
   const htmlPageMetaContextService = new HtmlPageMetaContextService({
     ...context,
     locale,
-    pathname: 'tags',
-    req: {
-      url,
-    },
+    resolvedUrl: '/tags',
   })
 
   const props: TagsPageProps = {

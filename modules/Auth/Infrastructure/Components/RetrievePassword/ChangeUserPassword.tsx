@@ -6,6 +6,8 @@ import { FormInputSection } from '~/components/FormInputSection/FormInputSection
 import { passwordValidator } from '~/modules/Auth/Infrastructure/Frontend/DataValidation'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
+import { ModalError } from '~/modules/Auth/Infrastructure/Components/ModalError/ModalError'
 
 export interface Props {
   email: string
@@ -104,12 +106,10 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm, loading
       ` }
       onSubmit={ onSubmit }
     >
-      <h1 className={ styles.retrievePassword__title }>
-        { t('change_password_title') }
-        <small className={ styles.retrievePassword__subtitle }>
-          { t('change_password_subtitle', { email }) }
-        </small>
-      </h1>
+      <ModalHeader
+        title={ t('change_password_title') }
+        subtitle={ t('change_password_subtitle', { email }) }
+      />
 
       <FormInputSection
         label={ t('change_password_password_input_label') }
@@ -135,16 +135,14 @@ export const ChangeUserPassword: FC<Props> = ({ email, token, onConfirm, loading
         } }
       />
 
-      <p className={ `
-        ${styles.retrievePassword__error}
-        ${showPasswordsDoesNotMatchErrorMessage() ? styles.retrievePassword__error_visible : ''}
-      ` }>
-        { t('change_password_retype_password_error_message') }
-      </p>
+      <ModalError
+        title={ t('change_password_retype_password_error_message') }
+        visible={ showPasswordsDoesNotMatchErrorMessage() }
+      />
 
       <SubmitButton
         title={ t('change_password_submit_button') }
-        enableButton={ canSubmit() }
+        disabled={ !canSubmit() }
         loading={ loading }
       />
     </form>

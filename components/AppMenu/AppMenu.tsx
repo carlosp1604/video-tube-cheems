@@ -8,7 +8,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { IconButton } from '~/components/IconButton/IconButton'
-import { CiSearch, CiUser } from 'react-icons/ci'
+import { CiSearch } from 'react-icons/ci'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import Image from 'next/image'
@@ -18,6 +18,9 @@ import { HiBars3 } from 'react-icons/hi2'
 import dynamic from 'next/dynamic'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { PiUserCircleLight } from 'react-icons/pi'
+import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
+import { IoDiceOutline } from 'react-icons/io5'
 
 const LoginModal = dynamic(() =>
   import('~/modules/Auth/Infrastructure/Components/Login/LoginModal').then((module) => module.LoginModal),
@@ -57,7 +60,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
         onClick={ () => {
           setLoginModalOpen(!loginModalOpen)
         } }
-        icon={ <CiUser /> }
+        icon={ <PiUserCircleLight /> }
         title={ t('app_menu_user_button_title') }
         showTooltip={ true }
       />
@@ -123,6 +126,31 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
     }
   }
 
+  const handleRandomButton = async () => {
+    const PostsApiService =
+      (await import('~/modules/Posts/Infrastructure/Frontend/PostsApiService')).PostsApiService
+
+    const postsApiService = new PostsApiService()
+
+    try {
+      const postSlug = await postsApiService.getRandomPostSlug()
+
+      await router.push({
+        pathname: `/posts/videos/${postSlug}`,
+      }, undefined, { shallow: false, scroll: false })
+    } catch (exception: unknown) {
+      if (!(exception instanceof APIException)) {
+        error(t('api_exceptions:something_went_wrong_error_message'))
+
+        console.error(exception)
+
+        return
+      }
+
+      error(t(`api_exceptions:${exception.translationKey}`))
+    }
+  }
+
   return (
     <>
       { userMenu }
@@ -160,6 +188,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
                 placeholder={ 'blur' }
                 blurDataURL={ rgbDataURL(81, 80, 80) }
               />
+              { locale }
             </button>
           </div>
           <div className={ `
@@ -171,10 +200,16 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
               onSearch={ onSearch }
               placeHolderTitle={ t('app_menu_search_menu_placeholder_title') }
               searchIconTitle={ t('app_menu_search_button_title') }
-              focus={ openSearchBar }
+              focus={ false }
             />
           </div>
           <div className={ styles.appMenu__rightContainer }>
+            <IconButton
+              onClick={ handleRandomButton }
+              icon={ <IoDiceOutline /> }
+              title={ t('random_icon_button_title') }
+              showTooltip={ true }
+            />
             <div className={ styles.appMenu__mobileSearchButton }>
               <IconButton
                 onClick={ () => setOpenSearchBar(!openSearchBar) }

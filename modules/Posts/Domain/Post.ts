@@ -19,6 +19,7 @@ import { applyMixins } from '~/helpers/Domain/Mixins'
 import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import { ViewableModel } from '~/modules/Views/Domain/ViewableModel'
 import { View } from '~/modules/Views/Domain/View'
+import { Report } from '~/modules/Reports/Domain/Report'
 
 export const supportedQualities = ['240p', '360p', '480p', '720p', '1080p', '1440p', '4k']
 
@@ -49,6 +50,7 @@ export class Post {
   private _producer: Relationship<Producer | null>
   private _actor: Relationship<Actor | null>
   private _postMedia: Collection<PostMedia, PostMedia['id']>
+  private _reports: Collection<Report, string>
 
   public constructor (
     id: string,
@@ -71,7 +73,8 @@ export class Post {
     producer: Relationship<Producer | null> = Relationship.notLoaded(),
     translations: Collection<Translation, Translation['language'] & Translation['field']> = Collection.notLoaded(),
     actor: Relationship<Actor | null> = Relationship.notLoaded(),
-    postMedia: Collection<PostMedia, PostMedia['id']> = Collection.notLoaded()
+    postMedia: Collection<PostMedia, PostMedia['id']> = Collection.notLoaded(),
+    reports: Collection<Report, string> = Collection.notLoaded()
   ) {
     this.id = id
     this.title = title
@@ -91,6 +94,7 @@ export class Post {
     this._producer = producer
     this._actor = actor
     this._postMedia = postMedia
+    this._reports = reports
     this.modelReactions = reactions
     this.modelTranslations = translations
     this.modelViews = views
@@ -229,6 +233,42 @@ export class Post {
     this._comments.addItem(commentToUpdate, commentToUpdate.id)
 
     return commentToUpdate
+  }
+
+  public addReport (
+    userId: string,
+    type: string,
+    content: string
+  ): Report | null {
+    const existingReport = this._reports.values
+      .find((report) => report.userId === userId && report.type === type)
+
+    if (!existingReport) {
+      const report = this.buildReport(userId, type, content)
+
+      this._reports.addItem(report, `${report.postId}${report.userId}${report.type}`)
+
+      return report
+    }
+
+    return null
+  }
+
+  private buildReport (
+    userId: string,
+    type: string,
+    content: string
+  ): Report {
+    const nowDate = DateTime.now()
+
+    return new Report(
+      this.id,
+      type,
+      userId,
+      content,
+      nowDate,
+      nowDate
+    )
   }
 
   public createComment (postComment: PostComment): void {

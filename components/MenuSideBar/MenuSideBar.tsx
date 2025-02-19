@@ -2,15 +2,17 @@ import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MenuSideBar.module.scss'
 import { useRouter } from 'next/router'
 import useTranslation from 'next-translate/useTranslation'
-import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags } from 'react-icons/bs'
+import { BsStar } from 'react-icons/bs'
 import { MenuOptionComponentInterface } from '~/components/MenuOptions/MenuOptions'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useSession } from 'next-auth/react'
 import { TfiWorld } from 'react-icons/tfi'
 import { MenuSideBarOption } from './MenuSideBarOption/MenuSideBarOption'
-import { MdLiveTv } from 'react-icons/md'
+import { MdHome, MdLiveTv } from 'react-icons/md'
 import { IoMdTrendingUp } from 'react-icons/io'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { RxBookmark, RxCounterClockwiseClock, RxListBullet } from 'react-icons/rx'
+import { AiOutlineTags } from 'react-icons/ai'
 
 export interface Props {
   setOpenLanguageMenu: Dispatch<SetStateAction<boolean>>
@@ -73,7 +75,17 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
         url: '/',
         blank: false,
       },
-      picture: <BsHouse />,
+      picture: <MdHome />,
+      onClick: undefined,
+    },
+    {
+      title: t('menu_posts_button_title'),
+      isActive: pathname === '/posts',
+      action: {
+        url: '/posts',
+        blank: false,
+      },
+      picture: <RxListBullet />,
       onClick: undefined,
     },
     {
@@ -125,18 +137,18 @@ export const MenuSideBar: FC<Props> = ({ setOpenLanguageMenu, menuOpen }) => {
         url: '/tags',
         blank: false,
       },
-      picture: <BsTags />,
+      picture: <AiOutlineTags />,
       onClick: undefined,
     },
     buildAuthenticationAction(
       `/users/${data ? data.user.username : ''}/saved-posts`,
-      <BsBookmarks />,
+      <RxBookmark />,
       asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
       t('menu_saved_button_title')
     ),
     buildAuthenticationAction(
       `/users/${data ? data.user.username : ''}/history`,
-      <BsClock />,
+      <RxCounterClockwiseClock />,
       asPath === `/users/${data ? data.user.username : ''}/history`,
       t('menu_user_history_button_title')
     ),

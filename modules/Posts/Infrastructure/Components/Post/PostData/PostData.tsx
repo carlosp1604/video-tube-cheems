@@ -6,9 +6,9 @@ import {
   PostComponentDtoProducerDto, PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import useTranslation from 'next-translate/useTranslation'
-import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
-import { MdOutlineLiveTv } from 'react-icons/md'
-import { BsStarFill } from 'react-icons/bs'
+import { BsIncognito, BsStarFill } from 'react-icons/bs'
+import { ProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/ProducerActor/ProducerActor'
+import { RxCalendar } from 'react-icons/rx'
 
 export interface Props {
   producer: PostComponentDtoProducerDto | null
@@ -37,54 +37,40 @@ export const PostData: FC<Props> = ({
 
   if (producer !== null) {
     producerSection = (
-      <div className={ styles.postData__dataItemContainer }>
-        { t('post_data_producer_title') }
-        <Link
-          prefetch={ false }
-          className={ styles.postData__listItemContainer }
-          href={ `/producers/${producer.slug}` }
-          title={ producer.name }
-        >
-          <MdOutlineLiveTv className={ styles.postData__producerActorIcon }/>
-          { producer.name }
-        </Link>
-      </div>
+      <ProducerActor
+        name={ producer.name }
+        imageUrl={ producer.imageUrl }
+        slug={ producer.slug }
+        type={ 'producer' }
+      />
     )
   }
 
   if (producer === null && actor !== null) {
     producerSection = (
-      <div className={ styles.postData__dataItemContainer }>
-        { t('post_data_actor_title') }
-        <Link
-          prefetch={ false }
-          className={ styles.postData__listItemContainer }
-          href={ `/actors/${actor.slug}` }
-          title={ actor.name }
-        >
-          <BsStarFill className={ styles.postData__producerActorIcon }/>
-          { actor.name }
-        </Link>
-      </div>
+      <Link
+        prefetch={ false }
+        className={ styles.postData__listItemContainer }
+        href={ `/actors/${actor.slug}` }
+        title={ actor.name }
+      >
+        <BsStarFill className={ styles.postData__producerActorIcon }/>
+        { actor.name }
+      </Link>
     )
   }
 
   if (producer !== null && actor !== null) {
     collaborationSection = (
-      <div className={ styles.postData__dataItem }>
-        <div className={ styles.postData__dataItemContainer }>
-          { t('post_data_collaborator_title') }
-          <Link
-            prefetch={ false }
-            className={ styles.postData__listItemContainer }
-            href={ `/actors/${actor.slug}` }
-            title={ actor.name }
-          >
-            <BsStarFill />
-            { actor.name }
-          </Link>
-        </div>
-      </div>
+      <Link
+        prefetch={ false }
+        className={ styles.postData__listItemContainer }
+        href={ `/actors/${actor.slug}` }
+        title={ actor.name }
+      >
+        <BsStarFill />
+        { actor.name }
+      </Link>
     )
   }
 
@@ -94,25 +80,20 @@ export const PostData: FC<Props> = ({
 
   if (postActors.length > 0) {
     actorsSection = (
-      <div className={ styles.postData__dataItem }>
-        <div className={ styles.postData__dataItemContainer }>
-          { t('post_extra_data_actors_title') }
-          <div className={ styles.postData__overflowContainer }>
-            { postActors.map((actor) => {
-              return (
-                <Link
-                  prefetch={ false }
-                  key={ actor.id }
-                  className={ styles.postData__listItemContainer }
-                  href={ `/actors/${actor.slug}` }
-                  title={ actor.name }
-                >
-                  <BsStarFill className={ styles.postData__producerActorIcon }/>
-                  { actor.name }
-                </Link>
-              )
-            }) }
-          </div>
+      <div className={ styles.postData__extraDataItem }>
+        { t('post_extra_data_actors_title') }
+        <div className={ styles.postData__actorListContainer }>
+          { postActors.map((actor) => {
+            return (
+              <ProducerActor
+                key={ actor.slug }
+                name={ actor.name }
+                slug={ actor.slug }
+                imageUrl={ actor.imageUrl }
+                type={ 'actor' }
+              />
+            )
+          }) }
         </div>
       </div>
     )
@@ -120,24 +101,22 @@ export const PostData: FC<Props> = ({
 
   if (postTags.length > 0) {
     categorySection = (
-      <div className={ styles.postData__dataItem }>
-        <div className={ styles.postData__dataItemContainer }>
-          { t('post_extra_data_tags_title') }
-          <div className={ styles.postData__overflowContainer }>
-            { postTags.map((tag) => {
-              return (
-                <Link
-                  prefetch={ false }
-                  className={ styles.postData__listItemContainer }
-                  href={ `/tags/${tag.slug}` }
-                  key={ tag.slug }
-                  title={ tag.name }
-                >
-                  { tag.name }
-                </Link>
-              )
-            }) }
-          </div>
+      <div className={ styles.postData__extraDataItem }>
+        { t('post_extra_data_tags_title') }
+        <div className={ styles.postData__listContainer }>
+          { postTags.map((tag) => {
+            return (
+              <Link
+                prefetch={ false }
+                className={ styles.postData__tagItem }
+                href={ `/tags/${tag.slug}` }
+                key={ tag.slug }
+                title={ tag.name }
+              >
+                { tag.name }
+              </Link>
+            )
+          }) }
         </div>
       </div>
     )
@@ -157,47 +136,49 @@ export const PostData: FC<Props> = ({
     }
 
     descriptionSection = (
-      <div className={ styles.postData__dataItem }>
-        <div className={ styles.postData__dataItemContainer }>
-          { t('post_extra_data_description_title') }
-          { descriptionParagraphs }
-        </div>
-
+      <div className={ styles.postData__extraDataItem }>
+        { t('post_extra_data_description_title') }
+        { descriptionParagraphs }
       </div>
     )
   }
 
   return (
     <div className={ styles.postData__container }>
-      <div className={ styles.postData__dataItem }>
-        <div className={ styles.postData__mainDataContainer }>
-          { producerSection ?? <div className={ styles.postData__dataItemContainerEmpty }/> }
-
-          <div className={ styles.postData__dataItemContainer }>
-            { t('post_data_published_title') }
-            <span className={ styles.postData__dataItemContent }>
-              { date }
-            </span>
+      <div className={ styles.postData__mainDataContainer }>
+        <div className={ styles.postData__producerCollaboratorSection }>
+          { producerSection }
+          { collaborationSection }
+        </div>
+        <div className={ styles.postData__basicDataContainer }>
+          <div className={ styles.postData__basicDataItem }>
+            <RxCalendar />
+            { date }
           </div>
-
-          <div className={ styles.postData__dataItemContainer }>
-            { t('post_data_views_title') }
-            <span className={ styles.postData__dataItemContent }>
-              { viewsNumber }
-            </span>
+          <div className={ styles.postData__basicDataItem }>
+            <BsIncognito />
+            { t('post_views_title', { views: viewsNumber }) }
           </div>
-          { collaborationSection ?? <div className={ styles.postData__dataItemContainerEmpty }/> }
         </div>
       </div>
 
-      { showExtraData ? actorsSection : null }
-      { showExtraData ? categorySection : null }
-      { showExtraData ? descriptionSection : null }
-      <CommonButton
-        title={ showExtraData ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }
-        disabled={ false }
-        onClick={ () => setShowExtraData(!showExtraData) }
-      />
+      {
+        showExtraData
+          ? <div className={ styles.postData__extraDataContainer }>
+              { actorsSection }
+              { categorySection }
+              { descriptionSection }
+          </div>
+          : null
+      }
+      <div className={ styles.postData__extraSection }>
+        <button
+          onClick={ () => { setShowExtraData(!showExtraData) } }
+          className={ styles.postData__extraButton }
+        >
+          { showExtraData ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }
+        </button>
+      </div>
     </div>
   )
 }

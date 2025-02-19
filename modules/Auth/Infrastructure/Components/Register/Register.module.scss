@@ -7,86 +7,26 @@
     }
 
     @screen tb {
-      @apply max-w-xs;
-    }
-  }
-
-  &__title {
-    @apply text-xl font-black mb-1.5 pb-5;
-
-    @screen md {
-      @apply text-2xl;
-    }
-  }
-
-  &__subtitle {
-    @apply block text-sm font-normal;
-
-    @screen md {
-      @apply text-base;
-    }
-  }
-
-  &__submit {
-    @apply w-full px-4 py-2 border-2 border-base-700 rounded-lg
-      text-sm font-bold text-base-700 transition-colors duration-500;
-
-    &__enabled {
-      @apply text-base-300 bg-transparent border-brand-primary-dark
-        transition-colors duration-500;
-
-      &:active, &:focus, &:hover {
-        @apply bg-brand-primary-dark;
-      }
-    }
-
-    &_resend-email {
-      @apply border-blue bg-blue;
-
-      &:active, &:focus, &:hover {
-        @apply bg-blue;
-      }
-    }
-
-    @screen md {
-      @apply text-base font-black;
-    }
-  }
-
-  &__error {
-    @apply text-xs font-light text-red opacity-0 mb-2
-    transition duration-300;
-
-    &_visible {
-      @apply opacity-100 transition duration-300
-      animate-bounce-short;
-    }
-
-    @screen md {
-      @apply text-sm;
+      @apply max-w-md;
     }
   }
 
   &__verification-code-link {
-    @apply text-xs font-bold text-base-500 mt-4 text-center w-full
-      transition-colors;
+    @apply font-bold text-secondary-text mt-4 text-center w-full
+    transition-colors;
 
     &_active {
-      @apply text-base-300;
+      @apply text-text;
 
-      &:hover, &:focus, &:active {
+      &:hover, &:focus {
         @apply text-blue transition-colors;
       }
-    }
-
-    @screen md {
-      @apply text-sm;
     }
   }
 
   &__confirming-register {
     @apply flex flex-col gap-y-4 justify-center items-center p-5
-      text-center;
+    text-center;
   }
 
   &__confirming-register-icon {
@@ -98,7 +38,7 @@
   }
 
   &__confirming-register-button {
-    @apply p-2 border-2 border-brand-primary-dark text-sm font-bold w-full
+    @apply p-2 border-2 border-brand-primary-dark font-bold w-full
       rounded-lg transition-colors duration-100;
 
     &:active, &:focus, &:hover {
@@ -106,20 +46,11 @@
     }
 
     @screen md {
-      @apply text-base font-black;
+      @apply font-black;
     }
   }
 
   &__register-container {
     @apply flex flex-col;
-  }
-
-  &__back-section {
-    @apply flex gap-x-3 font-light items-center text-xs px-4 pt-2
-    text-sm text-base-400;
-
-    @screen md {
-      @apply text-sm;
-    }
   }
 }

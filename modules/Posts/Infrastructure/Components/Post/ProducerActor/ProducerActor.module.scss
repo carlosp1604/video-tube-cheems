@@ -1,0 +1,22 @@
+.producer-actor {
+  &__container {
+    @apply flex flex-row gap-x-2 text-text
+    items-center font-bold w-fit;
+
+    &:hover {
+      &__avatar {
+        @apply text-text;
+      }
+    }
+  }
+
+  &__image {
+    @apply place-self-center h-12 w-12 border
+    border-border rounded-full object-cover;
+  }
+
+  &__avatar {
+    @apply font-normal border h-12 w-12 text-text
+    border-border rounded-full bg-body;
+  }
+}

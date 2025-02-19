@@ -1,55 +1,77 @@
 .post-comments {
   &__backdrop {
-    @apply fixed inset-0 bg-body/50 z-video-comments w-full;
+    @apply fixed inset-0 bg-body/50 z-video-comments
+    w-full cursor-default;
 
     @screen md {
-      @apply static relative h-[500px] m-auto mb-5;
+      @apply static min-h-[500px] m-auto mb-5;
     }
   }
 
   &__container {
-    @apply flex flex-col fixed bottom-0 overflow-hidden bg-body transition
-      rounded-t-lg w-full h-2/3 border-t border-base-800;
+    @apply grid fixed bottom-0 overflow-hidden
+    bg-body transition rounded-t-lg w-full h-3/4
+    border-t border-border;
+    grid-template-areas:
+    "title"
+    "comments"
+    "add-comment";
+    grid-auto-rows: auto 1fr auto;
 
-      @screen md {
-        @apply static rounded-lg border h-full;
-      }
+    @screen md {
+      @apply static grid rounded-none border-0 h-full;;
+      grid-template-areas:
+      "title"
+      "add-comment"
+      "comments";
+      grid-auto-rows: auto auto 1fr;
+
+    }
+
   }
 
   &__comments-title-bar {
-    @apply flex items-center justify-between pt-2 pb-1 border-b border-base-800 px-4;
+    @apply flex items-center justify-between pt-2 pb-1
+    border-b border-border px-4;
+    grid-area: title;
+
+    @screen md {
+      @apply border-none p-0;
+    }
   }
 
   &__comments-title {
-    @apply flex text-base gap-x-4 items-center text-base-400 font-bold;
+    @apply flex text-base gap-x-4 items-center text-text font-bold;
+
+    @screen md {
+      @apply text-xl;
+    }
   }
 
   &__comments-quantity {
-    @apply text-brand-primary-dark text-xs font-medium;
-  }
+    @apply text-brand-primary-light text-xs font-medium;
 
-  &__comments-close-icon {
-    @apply h-9 w-9 rounded-full p-1 cursor-pointer transition text-base-400;
-
-    &:hover, &:focus {
-      @apply bg-base-800 transition;
+    @screen md {
+      @apply text-base font-bold;
     }
   }
 
   &__comments {
-    @apply flex-grow overflow-y-scroll scrollbar-hide pt-4 pb-4 px-5;
+    @apply overflow-y-scroll scrollbar-hide pt-4 pb-4 px-5
+    h-auto;
+    grid-area: comments;
+
+    @screen md {
+      @apply px-0;
+    }
   }
 
-  &__load-more {
-    @apply hidden text-center bg-base-700 mt-2 py-1 px-4 font-bold text-xs
-      uppercase rounded-lg transition-colors mx-auto;
+  &__add-comment {
+    @apply border-t border-border px-4;
 
-    &:hover, &:focus {
-      @apply bg-brand-primary-dark transition-colors;
+    @screen md {
+      @apply border-none px-0;
     }
-
-    &__visible {
-      @apply flex;
-    }
+    grid-area: add-comment;
   }
 }

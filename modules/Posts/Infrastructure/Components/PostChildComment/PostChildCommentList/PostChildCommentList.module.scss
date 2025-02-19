@@ -4,7 +4,12 @@
   }
 
   &__post-comment-container {
-    @apply sticky bg-base-950 top-0 px-5 py-4 z-comment-to-reply;
+    @apply sticky top-0 z-comment-to-reply
+    border-b border-border;
+
+    @screen md {
+      @apply px-0 py-0;
+    }
   }
 
   &__post-child-comment-list-container-loading {
@@ -12,7 +17,7 @@
   }
 
   &__post-child-comment-container {
-    @apply border-b border-base-800 pl-8 pb-2 px-5 pt-4;
+    @apply border-b border-border pl-8 pb-2 px-5 pt-4;
 
     &:last-of-type {
       @apply border-0;
@@ -24,7 +29,7 @@
   }
 
   &__post-child-comment-skeleton-container {
-    @apply border-b border-base-800 pl-8 pb-4 px-5 pt-4;
+    @apply border-b border-border pl-8 pb-4 px-5 pt-4;
 
     &:last-of-type {
       @apply border-0;

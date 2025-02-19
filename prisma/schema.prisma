@@ -54,6 +54,7 @@ model Post {
   translations Translatation[] @relation("PostTranslation")
   savedPosts   SavedPost[]
   postMedia    PostMedia[]
+  reports      Report[]
 
   @@map("posts")
 }
@@ -138,6 +139,7 @@ model User {
   verificationToken VerificationToken?
   savedPosts        SavedPost[]
   accounts          Account[]
+  reports           Report[]
 
   @@map("users")
 }
@@ -321,4 +323,18 @@ model SavedPost {
 
   @@id([postId, userId])
   @@map("saved_posts")
+}
+
+model Report {
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  postId    String   @map("post_id")
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  type      String
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @map("updated_at")
+
+  @@id([userId, postId, type])
+  @@map("reports")
 }

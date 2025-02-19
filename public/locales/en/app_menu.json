@@ -10,6 +10,7 @@
   "empty_search_error_message": "Please enter a valid search term",
   "language_button_image_alt": "Current language: {{locale}}",
   "language_button_title": "Change application language",
+  "random_icon_button_title": "Random Video!",
   "search_bar_contract_title": "Contract",
   "search_bar_expand_title": "Open search"
 }

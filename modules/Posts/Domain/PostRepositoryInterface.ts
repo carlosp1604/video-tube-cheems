@@ -23,6 +23,7 @@ export type RepositoryOptions =
   'tags' |
   'actor' |
   'actors' |
+  'reports' |
   'producer' |
   'comments' |
   'postMedia' |
@@ -208,8 +209,9 @@ export interface PostRepositoryInterface {
    * Create a new post view for a post given its ID
    * @param postId Post ID
    * @param view Post View
+   * @return Post views number
    */
-  createPostView (postId: Post['id'], view: View | null): Promise<void>
+  createPostView (postId: Post['id'], view: View | null): Promise<number>
 
   /**
    * Find all user interaction with a post given its IDs
@@ -218,4 +220,10 @@ export interface PostRepositoryInterface {
    * @return PostUserInteraction
    */
   findUserInteraction (postId: Post['id'], userId: User['id']): Promise<PostUserInteraction>
+
+  /**
+   * Get a random post slug
+   * @return Post slug
+   */
+  getRandomPostSlug (): Promise<string>
 }

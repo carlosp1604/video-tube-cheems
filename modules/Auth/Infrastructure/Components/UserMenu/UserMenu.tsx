@@ -4,10 +4,12 @@ import { Modal } from '~/components/Modal/Modal'
 import { signOut, useSession } from 'next-auth/react'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import useTranslation from 'next-translate/useTranslation'
-import { CiLogout, CiUnlock, CiUser } from 'react-icons/ci'
+import { CiLogout } from 'react-icons/ci'
 import { usePathname } from 'next/navigation'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { useLoginContext } from '~/hooks/LoginContext'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
+import { PiLock, PiUserCircleLight } from 'react-icons/pi'
 
 interface Props {
   setIsOpen: (isOpen: boolean) => void
@@ -31,7 +33,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
       title: t('user_menu_change_password_button'),
       isActive: false,
       action: undefined,
-      picture: <CiUnlock className={ styles.userMenu__iconOption }/>,
+      picture: <PiLock className={ styles.userMenu__iconOption }/>,
       onClick: () => {
         setMode('retrieve')
         setLoginModalOpen(true)
@@ -48,7 +50,7 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
         url: `/users/${data.user.username}`,
         blank: false,
       },
-      picture: <CiUser className={ styles.userMenu__iconOption }/>,
+      picture: <PiUserCircleLight className={ styles.userMenu__iconOption }/>,
       onClick: () => setIsOpen(false),
     })
   }
@@ -67,12 +69,10 @@ export const UserMenu: FC<Props> = ({ setIsOpen, isOpen }) => {
             avatarName={ data.user.name }
             imageAlt={ data.user.name }
           />
-          <span className={ styles.userMenu__userDataText }>
-            { data.user.name }
-            <small className={ styles.userMenu__userEmail }>
-              { data.user.email }
-            </small>
-          </span>
+          <ModalHeader
+            title={ data.user.name }
+            subtitle={ data.user.email }
+          />
         </div>
 
         <div className={ styles.userMenu__menuOptionsContainer }>

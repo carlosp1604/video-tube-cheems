@@ -3,12 +3,12 @@ import { FC } from 'react'
 import { Modal } from '~/components/Modal/Modal'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import useTranslation from 'next-translate/useTranslation'
-import { BsDownload } from 'react-icons/bs'
 import Image from 'next/image'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
+import { MdFileDownload } from 'react-icons/md'
 
 interface Props {
   mediaUrls: MediaUrlComponentDto[]
@@ -55,7 +55,7 @@ export const DownloadMenu: FC<Props> = ({ mediaUrls, setIsOpen, isOpen, onClickO
         <ModalMenuHeader
           title={ t('post_download_section_title') }
           subtitle={ t('post_download_section_description') }
-          icon={ <BsDownload /> }
+          icon={ <MdFileDownload /> }
         />
         <div className={ styles.downloadMenu__menuOptionsContainer }>
           <MenuOptions menuOptions={ menuOptions } />

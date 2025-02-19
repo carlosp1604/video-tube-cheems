@@ -1,8 +1,7 @@
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
 import {
-  sanboxableProviders,
-  sandboxableIfLoggedIn
+  sanboxableProviders
 } from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/SanboxableProviders'
 
 /**
@@ -65,23 +64,7 @@ export class MediaUrlsHelper {
   }
 
   public static shouldBeSanboxed (providerId: string, authenticated: boolean): boolean {
-    if (sanboxableProviders.includes(providerId)) {
-      return true
-    }
-
-    if (sandboxableIfLoggedIn.includes(providerId) && authenticated) {
-      return true
-    }
-
-    return false
-  }
-
-  public static shouldShowExtraAdvertising (providerId: string): boolean {
-    if (providerId !== 'edf20c13-f085-4d0e-a124-567fdc42cf9f') { // for the moment, just ph
-      return true
-    }
-
-    return false
+    return sanboxableProviders.includes(providerId)
   }
 
   private static filterProviders (mediaUrls: MediaUrlComponentDto[], userId: string | null): MediaUrlComponentDto[] {
@@ -101,9 +84,10 @@ export class MediaUrlsHelper {
     download = false
   ): MediaUrlComponentDto[] {
     const providersAccessOrder = [
-      { id: 'ab535237-2262-4763-2443-dfec1a6ec1b9' }, // Vidhide
-      { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' }, // Direct
       { id: '8dfb8312-ab59-49df-8047-3a3413512c10' }, // Upnshare
+      { id: 'ab535237-2262-4763-2443-dfec1a6ec1b9' }, // Vidhide
+      { id: '3a0b5a54-0814-4877-9e97-27607866f7b9' }, // Bigwarp
+      { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' }, // Direct
       { id: '35677ea5-3641-4319-ae6f-1fe145c9b797' }, // Lulustream
       { id: 'b06ba1c1-4988-4b90-8271-a23a56fb0f61' }, // Filemoon
       { id: '6a594991-7364-481d-85f1-62c5ba2b6cb3' }, // Vtube
@@ -117,6 +101,7 @@ export class MediaUrlsHelper {
     const providersDownloadOrder = [
       { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' }, // Direct
       { id: 'e0f92228-068c-43a5-a61f-b7262f124868' }, // Katfile
+      { id: '3a0b5a54-0814-4877-9e97-27607866f7b9' }, // Bigwarp
       { id: 'ab535237-2262-4763-2443-dfec1a6ec1b9' }, // Vidhide
       { id: '3810a3c5-e4d1-4c99-bee0-7b611aafc89b' }, // 1fichier
       { id: 'b06ba1c1-4988-4b90-8271-a23a56fb0f61' }, // Filemoon

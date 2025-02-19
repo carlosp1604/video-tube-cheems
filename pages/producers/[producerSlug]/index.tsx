@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 import { container } from '~/awilix.container'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { defaultPerPageWithoutAds } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
@@ -131,7 +131,7 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       filters: [{ type: FilterOptions.PRODUCER_SLUG, value: String(producerSlug) }],
       sortCriteria,
       sortOption,
-      postsPerPage: defaultPerPage,
+      postsPerPage: defaultPerPageWithoutAds,
     })
 
     props.initialPosts = producerPosts.posts.map((post) => {

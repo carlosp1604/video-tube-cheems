@@ -5,7 +5,7 @@
 
   &__media-wrapper {
     @apply aspect-w-16 aspect-h-9 rounded-md
-    overflow-hidden bg-base-950 mb-1;
+    overflow-hidden bg-surface mb-1;
 
     &:hover {
       @apply cursor-pointer;
@@ -39,7 +39,7 @@
 
   &__play-button {
     @apply absolute top-2 right-2 h-fit w-fit p-2 rounded-full
-    backdrop-blur bg-brand-primary-bg/50 text-base-50;
+    backdrop-blur bg-brand-primary-bg/50 text-text;
 
     &__hidden {
       @apply hidden;
@@ -59,7 +59,7 @@
   }
 
   &__description {
-    @apply text-xs text-base-300 line-clamp-2;
+    @apply text-xs text-secondary-text line-clamp-2;
   }
 
   &__title-link {

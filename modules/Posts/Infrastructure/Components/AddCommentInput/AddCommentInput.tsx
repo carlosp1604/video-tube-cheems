@@ -1,6 +1,5 @@
 import { FC, ReactNode, useState } from 'react'
 import styles from './AddCommentInput.module.scss'
-import { BsChatDots } from 'react-icons/bs'
 import { AutoSizableTextArea } from './AutoSizableTextArea'
 import useTranslation from 'next-translate/useTranslation'
 import { useLoginContext } from '~/hooks/LoginContext'
@@ -9,6 +8,8 @@ import { AiOutlineLoading } from 'react-icons/ai'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { IconButton } from '~/components/IconButton/IconButton'
+import { BiCommentAdd } from 'react-icons/bi'
 
 interface Props {
   onAddComment: (comment: string) => void
@@ -81,14 +82,15 @@ export const AddCommentInput: FC<Props> = ({ onAddComment, disabled }) => {
           onCommentChange={ (value) => setComment(value) }
           disabled={ disabled }
         />
-        <button
-          className={ styles.addCommentInput__addCommentButton }
-          disabled={ disabled }
-          onClick={ () => onClickAddComment(comment) }
-          title={ t('add_comment_button_title') }
-        >
-          <BsChatDots className={ styles.addCommentInput__addCommentIcon }/>
-        </button>
+        <div className={ styles.addCommentInput__addCommentButton }>
+          <IconButton
+            onClick={ () => onClickAddComment(comment) }
+            icon={ <BiCommentAdd /> }
+            title={ t('add_comment_button_title') }
+            disabled={ disabled }
+            showTooltip={ true }
+          />
+        </div>
       </div>
     )
   }

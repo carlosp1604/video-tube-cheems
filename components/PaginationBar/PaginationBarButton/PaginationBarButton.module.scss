@@ -13,12 +13,12 @@
   }
 
   &__page-number-link {
-    @apply flex items-center justify-center p-1.5 px-3 rounded-md
-    h-full w-full text-base-600 text-sm border-2 border-transparent
-    transition-colors;
+    @apply flex items-center justify-center p-1.5 px-3
+    rounded-md h-full w-full text-secondary-text text-sm
+    border-2 border-transparent transition-colors;
 
     &:hover {
-      @apply text-base-100 border-brand-primary-bg bg-base-900
+      @apply text-text border-brand-primary-bg bg-surface
       transition-colors cursor-pointer;
     }
 
@@ -27,12 +27,12 @@
     }
 
     &_current-page {
-      @apply text-base-100 pointer-events-none font-black
-      border-brand-primary-bg bg-base-900 transition-colors;
+      @apply text-text pointer-events-none font-black
+      border-brand-primary-bg bg-surface transition-colors;
     }
 
     &__disabled {
-      @apply text-base-600 border-base-700 pointer-events-none
+      @apply text-disabled border-disabled pointer-events-none
       transition-colors duration-1000;
     }
   }

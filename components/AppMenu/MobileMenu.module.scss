@@ -7,15 +7,15 @@
     }
 
     &-enter-active {
-      @apply block bg-base-900 backdrop-blur-sm bg-opacity-50 transition-colors;
+      @apply block bg-body backdrop-blur-sm bg-opacity-50 transition-colors;
     }
 
     &-enter-done {
-      @apply block bg-base-900 backdrop-blur-sm bg-opacity-50;
+      @apply block bg-body backdrop-blur-sm bg-opacity-50;
     }
 
     &-exit {
-      @apply block bg-base-900 bg-opacity-50 backdrop-blur-sm;
+      @apply block bg-body bg-opacity-50 backdrop-blur-sm;
     }
 
     &-exit-active {
@@ -33,8 +33,8 @@
 
   &__slide-out {
     @apply grid z-mobile-menu fixed bottom-0 leading-none translate-y-full
-      w-screen text-base-400 bg-base-800 rounded-t-xl overflow-hidden pt-2
-      border-base-700 overflow-y-scroll scrollbar-hide pb-5;
+    w-screen text-secondary-text bg-modal rounded-t-xl overflow-hidden pt-2
+    border border-border overflow-y-scroll scrollbar-hide pb-5;
     grid-template-areas:
       "menu"
       "footer"
@@ -42,9 +42,8 @@
     grid-auto-rows: 1fr auto auto;
 
     @screen md {
-      @apply top-0 left-0 -translate-x-full translate-y-0 w-auto
-        rounded-none border-r border-base-700 backdrop-blur-2xl
-        bg-opacity-80 pb-0 pt-0;
+      @apply top-0 left-0 -translate-x-full translate-y-0 w-auto pb-0 pt-0
+      rounded-none border-r border-border bg-body;
       grid-template-areas:
         "logo"
         "menu"
@@ -88,7 +87,7 @@
   }
 
   &__logo-container {
-    @apply px-8 py-1.5 hidden;
+    @apply px-14 py-2 hidden;
     grid-area: logo;
 
     @screen md {
@@ -97,7 +96,15 @@
   }
 
   &__logo {
-    @apply h-10 w-auto;
+      @apply object-contain max-h-8 w-auto h-full transition-all;
+
+    @screen md {
+      @apply w-32 transition-all;
+    }
+
+    &:hover {
+      @apply invert transition-all;
+    }
   }
 
   &__menu-container {

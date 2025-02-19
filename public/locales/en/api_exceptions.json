@@ -20,6 +20,7 @@
   "server_error_error_message": "Service not available. Try later",
   "something_went_wrong_error_message": "Something went wrong while trying to perform the operation. Try later",
   "user_already_reacted_to_post_error_message": "User have already reacted to this post",
+  "user_already_reported_post_error_message": "User have already reported this post",
   "user_forbidden_resource_error_message": "The user does not have access to the resource",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action",
   "user_not_found_error_message": "The user who made the request does not exist. Logging out"

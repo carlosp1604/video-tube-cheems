@@ -1,8 +1,8 @@
 .error {
   &__container {
     @apply container flex flex-col gap-y-10 items-center
-      justify-center rounded-lg text-base-300
-      min-h-screen px-5;
+    justify-center rounded-lg text-secondary-text
+    min-h-screen px-5 mb-10;
 
     @screen md {
       @apply flex flex-row -mt-14;
@@ -26,7 +26,8 @@
   }
 
   &__title {
-    @apply text-3xl font-black uppercase text-center;
+    @apply text-3xl font-black uppercase text-center
+    text-text;
 
     @screen md {
       @apply text-4xl;
@@ -38,7 +39,7 @@
   }
 
   &__subtitle {
-    @apply font-light font-sans text-base normal-case whitespace-pre-line
-      text-center;
+    @apply font-light font-sans text-base normal-case
+    whitespace-pre-line text-center;
   }
 }

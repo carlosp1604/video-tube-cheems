@@ -73,12 +73,15 @@ const i18nConfig = {
       'post',
       'post_comments',
     ],
-    'rgx:/posts/search/*': [
+    'rgx:/posts/*': [
       'sorting_menu_dropdown',
       'post_card',
       'pagination_bar',
       'search',
       'api_exceptions',
+    ],
+    '/posts': [
+      'posts_page',
     ],
     '/posts/top': [
       'top',

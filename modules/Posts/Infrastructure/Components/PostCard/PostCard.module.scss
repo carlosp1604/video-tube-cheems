@@ -47,25 +47,29 @@
   }
 
   &__post-data {
-    @apply flex flex-col line-clamp-2 text-sm;
+    @apply flex flex-col line-clamp-2;
     grid-area: post-data;
   }
 
   &__video-title-link {
-    @apply line-clamp-2 text-sm font-medium my-1
-    transition-colors text-base-100;
+    @apply line-clamp-2 font-medium my-1 text-text
+    transition-colors leading-snug;
   }
 
   &__extra-data {
-    @apply flex items-center font-normal  text-xs
+    @apply flex items-center font-normal text-xs
     gap-x-0.5 line-clamp-none truncate mt-0.5 transition-colors
-    text-base-400;
+    text-secondary-text;
+
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__absolute-element {
     @apply absolute top-1 right-1 text-sm font-medium
     py-0.5 px-1 rounded-md z-post-card-video-time
-    cursor-default text-white bg-black/70;
+    cursor-default text-text bg-surface/80;
   }
 
   &__video-resolution {

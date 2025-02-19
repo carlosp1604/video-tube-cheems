@@ -28,9 +28,6 @@ import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTra
 import { View } from '~/modules/Views/Domain/View'
 import { PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
-import ViewUncheckedUpdateManyWithoutPostNestedInput = Prisma.ViewUncheckedUpdateManyWithoutPostNestedInput;
-import ViewUpdateManyWithoutPostNestedInput = Prisma.ViewUpdateManyWithoutPostNestedInput;
-import SortOrder = Prisma.SortOrder;
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 
 export class MysqlPostRepository implements PostRepositoryInterface {
@@ -444,6 +441,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         tags: includeTags,
         translations: options.includes('translations'),
         actor: options.includes('actor'),
+        reports: options.includes('reports'),
       },
     })
 
@@ -1011,13 +1009,17 @@ export class MysqlPostRepository implements PostRepositoryInterface {
    * Create a new post view for a post given its ID
    * @param postId Post ID
    * @param view Post View
+   * @return Post views number
    */
-  public async createPostView (postId: Post['id'], view: View): Promise<void> {
+  public async createPostView (postId: Post['id'], view: View): Promise<number> {
     const prismaPostView = ViewModelTranslator.toDatabase(view)
 
-    await prisma.post.update({
+    const post = await prisma.post.update({
       where: {
         id: postId,
+      },
+      select: {
+        viewsCount: true,
       },
       data: {
         viewsCount: {
@@ -1033,6 +1035,8 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         },
       },
     })
+
+    return Number.parseInt(post.viewsCount.toString())
   }
 
   /**
@@ -1069,6 +1073,27 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       reaction: userReaction,
       savedPost,
     }
+  }
+
+  /**
+   * Get a random post slug
+   * @return Post slug
+   */
+  public async getRandomPostSlug (): Promise<string> {
+    const postsCount = await prisma.post.count()
+
+    const post = await prisma.post.findFirst({
+      take: 1,
+      skip: Math.floor(Math.random() * (postsCount - 1)),
+      where: {
+        publishedAt: {
+          not: null,
+        },
+        deletedAt: null,
+      },
+    })
+
+    return post ? post.slug : ''
   }
 
   private static buildFilters (

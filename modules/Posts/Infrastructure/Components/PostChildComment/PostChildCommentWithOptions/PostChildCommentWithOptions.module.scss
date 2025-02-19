@@ -9,18 +9,18 @@
   }
 
   &__options-button {
-    @apply text-base-500 rounded-full transition-colors;
+    @apply text-secondary-text rounded-full transition-colors;
 
     &:hover, &:focus {
-      @apply text-base-100 bg-brand-primary-dark transition-colors;
+      @apply text-text bg-brand-primary-light transition-colors;
     }
 
     &_open {
-      @apply text-base-100 bg-brand-primary-dark transition-colors;
+      @apply text-text bg-brand-primary-light transition-colors;
     }
 
     &:disabled {
-      @apply text-base-600 bg-transparent cursor-auto;
+      @apply text-disabled bg-transparent cursor-auto;
     }
   }
 

@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
     // Experimental: Try to improve performance
     context.res.setHeader(
       'Cache-Control',
-      'public, s-maxage=30, stale-while-revalidate=10'
+      'public, s-maxage=86400, stale-while-revalidate=60'
     )
 
     return {

@@ -6,12 +6,13 @@ import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUr
 import { HtmlVideoPlayer } from '~/components/VideoPlayer/HtmlVideoPlayer'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
-import { BsGearWide, BsX } from 'react-icons/bs'
+import { BsX } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import { useSession } from 'next-auth/react'
+import { RxGear } from 'react-icons/rx'
 
 export interface Props {
   title: string
@@ -96,7 +97,7 @@ export const VideoPostPlayer: FC<Props> = ({
         <ModalMenuHeader
           title={ t('post_video_player_sources_menu_title') }
           subtitle={ t('post_video_player_sources_menu_subtitle') }
-          icon={ <BsGearWide/> }
+          icon={ <RxGear /> }
         />
         <div className={ styles.videoPostPlayer__sourcesMenuList }>
           { selectableUrls.map((selectableUrl) => (

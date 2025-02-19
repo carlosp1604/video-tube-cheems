@@ -3,10 +3,9 @@ import { VerifyEmail } from '~/modules/Auth/Infrastructure/Components/Register/V
 import { ValidateCode } from '~/modules/Auth/Infrastructure/Components/Register/ValidateCode'
 import { RegisterUser } from '~/modules/Auth/Infrastructure/Components/Register/RegisterUser'
 import styles from './Register.module.scss'
-import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingRegister } from '~/modules/Auth/Infrastructure/Components/Register/ConfirmingRegister'
 import useTranslation from 'next-translate/useTranslation'
-import { IconButton } from '~/components/IconButton/IconButton'
+import { ModalBackHeader } from '~/modules/Auth/Infrastructure/Components/ModalBackHeader/ModalBackHeader'
 
 type RegistrationSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'signup_completed'
 
@@ -78,14 +77,11 @@ export const Register: FC<Props> = ({ onConfirm, onCancel }) => {
 
   return (
     <div className={ styles.register__registerContainer }>
-      <span className={ styles.register__backSection }>
-        <IconButton
-          onClick={ () => { if (!loading) { onClickCancel() } } }
-          icon={ <BsArrowLeft /> }
-          title={ t('back_button_title') }
-        />
-        { t('back_button_title') }
-      </span>
+      <ModalBackHeader
+        title={ t('back_button_title') }
+        disabled={ false }
+        onClick={ () => { if (!loading) { onClickCancel() } } }
+      />
       { content }
     </div>
   )

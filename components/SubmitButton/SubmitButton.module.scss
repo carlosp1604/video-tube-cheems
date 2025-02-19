@@ -8,24 +8,22 @@
   }
 
   &__container {
-    @apply w-full px-4 py-2 border-2 border-base-700 rounded-lg
-    text-sm font-bold text-base-700 transition-colors duration-100;
+    @apply w-full px-4 py-2 border-2 border-brand-primary-light
+    bg-brand-primary-light rounded-lg text-sm font-bold text-white
+    transition-colors;
 
-    &__enabled {
-      @apply text-base-300 bg-transparent border-brand-primary-dark
-      transition-colors duration-500;
+    &:disabled {
+      @apply border-disabled text-disabled
+      bg-transparent transition-colors;
 
-      &:active, &:focus, &:hover {
-        @apply bg-brand-primary-dark;
+      &:active, &:hover {
+        @apply bg-transparent border-disabled text-disabled;
       }
     }
 
-    &__emphasize {
-      @apply border-blue bg-blue/50 text-base-100 ;
-
-      &:active, &:focus, &:hover {
-        @apply bg-blue text-base-100;
-      }
+    &:active, &:hover {
+      @apply bg-brand-primary-bg border-brand-primary-bg
+      transition-colors;
     }
 
     @screen md {

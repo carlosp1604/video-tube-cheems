@@ -11,13 +11,15 @@ import { CommentsApiService } from '~/modules/Posts/Infrastructure/Frontend/Comm
 import useTranslation from 'next-translate/useTranslation'
 import { AddCommentInput } from '~/modules/Posts/Infrastructure/Components/AddCommentInput/AddCommentInput'
 import { PostCommentList } from '~/modules/Posts/Infrastructure/Components/PostComment/PostCommentList/PostCommentList'
-import { PostChildComments } from '~/modules/Posts/Infrastructure/Components/PostChildComment/PostChildComments'
+import { PostChildComments } from '~/modules/Posts/Infrastructure/Components/PostComment/PostChildComments'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import { signOut } from 'next-auth/react'
 import { POST_COMMENT_USER_NOT_FOUND } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { IconButton } from '~/components/IconButton/IconButton'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 
 interface Props {
   postId: string
@@ -230,9 +232,9 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
             { commentsNumber }
           </span>
         </div>
-        <BsX
-          className={ styles.postComments__commentsCloseIcon }
+        <IconButton
           onClick={ () => setIsOpen(false) }
+          icon={ <BsX /> }
           title={ t('close_comment_section_button_title') }
         />
       </div>
@@ -248,21 +250,21 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           loading={ loading }
           creatingComment={ creatingComment }
         />
-        <button className={ `
-          ${styles.postComments__loadMore}
-          ${canLoadMore ? styles.postComments__loadMore__visible : ''}
-        ` }
-          onClick={ onLoadMore }
-          title={ t('comment_section_load_more') }
-        >
-          { t('comment_section_load_more') }
-        </button>
+        { canLoadMore &&
+          <CommonButton
+            title={ t('comment_section_load_more') }
+            disabled={ false }
+            onClick={ onLoadMore }
+          />
+        }
       </div>
 
-      <AddCommentInput
-        disabled={ loading }
-        onAddComment={ onAddReply }
-      />
+      <div className={ styles.postComments__addComment }>
+        <AddCommentInput
+          disabled={ loading }
+          onAddComment={ onAddReply }
+        />
+      </div>
     </div>
   )
 

@@ -1,0 +1,6 @@
+.posts {
+  &__container {
+    @apply container flex flex-col gap-y-4 px-5 mx-auto
+    pb-10 mt-5;
+  }
+}

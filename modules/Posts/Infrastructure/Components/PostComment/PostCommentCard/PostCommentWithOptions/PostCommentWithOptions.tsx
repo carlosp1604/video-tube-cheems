@@ -12,7 +12,6 @@ import {
 import { signOut, useSession } from 'next-auth/react'
 import useTranslation from 'next-translate/useTranslation'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { MenuDropdown } from '~/components/MenuDropdown/MenuDropdown'
 import { FiTrash } from 'react-icons/fi'
 import {
   ReactionComponentDtoTranslator
@@ -21,6 +20,8 @@ import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/Number
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
 import { useRouter } from 'next/router'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { IconButton } from '~/components/IconButton/IconButton'
+import { DropdownMenu } from '~/components/DropdownMenu/DropdownMenu'
 
 interface Props {
   postComment: PostCommentComponentDto
@@ -185,20 +186,17 @@ export const PostCommentWithOptions: FC<Props> = ({
 
   if (status === 'authenticated' && data && postComment.user.id === data.user.id && showOptions) {
     postCommentOptionsElement = (
-      <MenuDropdown
-        buttonIcon={
-          <button className={ `
-            ${styles.postCommentWithOptions__optionsButton}
-            ${optionsMenuOpen ? styles.postCommentWithOptions__optionsButton_open : ''}
-          ` }
-            disabled={ optionsDisabled || loading }
+      <DropdownMenu
+        customButton={
+          <IconButton
             onClick={ () => setOptionsMenuOpen(!optionsMenuOpen) }
-          >
-            <BsThreeDotsVertical className={ styles.postCommentWithOptions__optionsIcon }/>
-          </button>
+            icon={ <BsThreeDotsVertical className={ styles.postCommentWithOptions__optionsButton }/> }
+            title={ t('post_comment_menu_options_title') }
+            disabled={ optionsDisabled || loading }
+          />
         }
-        isOpen={ optionsMenuOpen }
-        setIsOpen={ setOptionsMenuOpen }
+        closeOnClickOption={ true }
+        position={ 'right' }
         options={ [{
           title: t('delete_comment_option_title'),
           icon: <FiTrash />,

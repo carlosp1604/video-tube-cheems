@@ -1,6 +1,7 @@
 .download-menu {
   &__container {
-    @apply flex flex-col gap-y-4 p-5 pt-5 overflow-hidden;
+    @apply flex flex-col gap-y-4 p-5 pt-5 overflow-hidden
+    cursor-default;
   }
 
   &__menu-options-container {

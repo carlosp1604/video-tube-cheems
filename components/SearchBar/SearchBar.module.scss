@@ -1,10 +1,10 @@
 .search-bar {
   &__container {
     @apply flex items-center w-full justify-center
-      transition-all m-0;
+    transition-all m-0 shadow-lg shadow-base-950;
 
     @screen md {
-      @apply transition-all;
+      @apply transition-all shadow-none;
 
       &__open {
         @apply transition-all;
@@ -12,45 +12,40 @@
     }
   }
 
+  &__container-style2 {
+    @apply shadow-none;
+  }
+
   &__search-input {
-    @apply text-base-100 placeholder-base-400 bg-body
-      caret-brand-primary-bg outline-0 pr-12 w-full
-      border border-base-700 px-4 h-10 rounded-md rounded-r-none
-      border-r-0 shadow-lg shadow-base-950 transition-all;
+    @apply text-text placeholder-secondary-text bg-input
+    caret-brand-primary-bg pr-12 w-full px-5 h-10 border
+    border-border rounded-md rounded-r-none transition-all
+    outline-none;
 
     &:hover, &:focus {
-      @apply bg-base-950 transition-colors border-brand-primary-bg
-        outline-none;
-      box-shadow: 2px 0 5px -2px #0c0a09;
+      @apply outline-none border-brand-primary-light transition-colors;
     }
 
     @screen md {
-      @apply rounded-full rounded-r-none border-r-0
-        shadow-none transition-all;
+      @apply rounded-full rounded-r-none shadow-none transition-all;
     }
   }
 
   &__search-input-style2 {
-    @apply shadow-none rounded-md rounded-r-none border-none
-    bg-base-800;
-
-    &:hover, &:focus {
-      @apply transition-colors outline-none shadow-none;
-    }
+    @apply rounded-md rounded-r-none border-none bg-surface;
   }
 
   &__search-button {
-    @apply bg-brand-primary-bg rounded-md rounded-l-none border
-      border-brand-primary-bg h-10 w-14 flex items-center justify-center
-      text-2xl text-body outline-0 transition-colors;
+    @apply bg-surface h-10 w-14 flex items-center outline-none
+    justify-center text-2xl text-text transition-colors
+    rounded-md rounded-l-none border border-l-0 border-border;
 
     &:hover, :focus {
-      @apply bg-brand-secondary-light border-brand-secondary-light
-      transition-colors;
+      @apply bg-hover transition-colors;
     }
 
     &:active {
-      @apply outline-none text-base-100 transition-colors;
+      @apply text-text transition-colors;
     }
 
     @screen md {
@@ -59,7 +54,11 @@
   }
 
   &__search-button-style2 {
-    @apply border-none;
+    @apply border-none bg-brand-primary-light;
+
+    &:hover, :focus {
+      @apply bg-brand-primary-bg transition-colors;
+    }
 
     @screen md {
       @apply rounded-md rounded-l-none;
@@ -71,7 +70,7 @@
   }
 
   &__clear-button {
-    @apply absolute right-0.5 text-2xl text-base-100
-      top-0 -mt-1;
+    @apply absolute right-0.5 text-base text-text/80
+    top-0 -mt-1;
   }
 }

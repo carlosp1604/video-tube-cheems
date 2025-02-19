@@ -28,19 +28,10 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
     baseUrl = env.BASE_URL
   }
 
-  let url = `${baseUrl}/posts/top`
-
-  if (locale !== 'en') {
-    url = `${baseUrl}/${locale}/posts/top`
-  }
-
   const htmlPageMetaContextService = new HtmlPageMetaContextService({
     ...context,
     locale,
-    pathname: 'posts/top',
-    req: {
-      url,
-    },
+    resolvedUrl: '/posts/top',
   })
 
   const props: TopVideoPostPageProps = {

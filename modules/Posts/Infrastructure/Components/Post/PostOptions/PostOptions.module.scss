@@ -1,42 +1,42 @@
 .post-options {
   &__container {
     @apply flex flex-nowrap gap-x-2 overflow-x-scroll scrollbar-hide
-      -mx-5 pl-5;
+    -mx-5 px-5;
   }
 
   &__option-item {
     @apply flex flex-row flex-shrink-0 items-center gap-x-2
-    rounded-full bg-base-800 py-2 cursor-pointer text-xs px-3
-    transition-colors text-base-300;
+    rounded-full bg-surface py-2 cursor-pointer text-xs px-2.5
+    transition-colors text-text/80;
 
     @screen md {
-      @apply text-base;
+      @apply text-base py-1.5;
     }
 
     &:hover, &:focus {
-      @apply text-brand-primary-bg transition-colors;
+      @apply bg-hover transition-colors;
     }
 
     &:disabled {
-      @apply bg-base-900 text-base-600 transition-colors cursor-default;
+      @apply text-disabled transition-colors cursor-default;
     }
 
     &_active {
-      @apply text-brand-primary-bg bg-base-900 transition-colors;
+      @apply text-brand-primary-bg bg-surface transition-colors;
     }
   }
 
   &__like-dislike-section {
     @apply flex flex-row flex-shrink-0 items-center gap-x-2 cursor-default
-    rounded-full bg-base-800 py-2 px-3 transition-colors;
+    rounded-full bg-surface px-2.5 transition-colors;
 
     &_disabled {
-      @apply bg-base-900 transition-colors;
+      @apply text-disabled transition-colors;
     }
   }
 
   &__like-dislike-separator {
-    @apply text-xl text-base-400;
+    @apply text-xl text-secondary-text;
   }
 
   &__loading-icon {
@@ -44,14 +44,14 @@
   }
 
   &__option-item-icon {
-    @apply text-sm;
+    @apply text-base;
 
     @screen tb {
-      @apply text-base;
+      @apply text-lg;
     }
   }
 
   &__optionItemQuantity {
-    @apply ml-0.5 text-brand-primary-bg font-bold;
+    @apply ml-0.5 text-text/90 font-normal;
   }
 }

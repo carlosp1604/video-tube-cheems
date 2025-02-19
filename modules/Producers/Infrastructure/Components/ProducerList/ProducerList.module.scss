@@ -1,44 +1,18 @@
 .producer-list {
   &__category {
-    @apply block text-center rounded-lg p-1.5 text-base-400
-    truncate text-sm transition-colors font-normal;
-    text-shadow: 0 0 4px #000000;
-
-    @screen md {
-      @apply p-2;
-    }
+    @apply block text-center rounded-full px-3 py-1.5 text-text
+    truncate text-sm transition-colors font-normal bg-surface;
 
     &:hover {
-      @apply text-base-100 transition-colors;
-    }
-
-    &:hover {
-      @apply bg-[color:var(--category-color)] border-[color:var(--category-color)]
-        transition-colors;
+      @apply bg-hover text-text transition-colors;
     }
   }
 
   &__category-active {
-    @apply font-bold bg-[color:var(--category-color)] text-base-100
-      transition border-[color:var(--category-color)] border;
+    @apply bg-brand-primary-light transition-colors cursor-default;
 
     &:hover {
-      @apply bg-[color:var(--category-color)]
-        border-[color:var(--category-color)] transition-colors cursor-default;
-    }
-  }
-
-  &__trending {
-    @apply flex flex-row gap-x-2 items-center text-center rounded-lg p-1.5 text-base-100
-    truncate text-sm font-bold bg-base-950 border border-base-950;
-
-    @screen md {
-      @apply p-2;
-    }
-
-    &:hover {
-      @apply text-base-100 bg-brand-primary-bg border-brand-primary-bg
-      transition-all;
+      @apply bg-brand-primary-light transition-colors;
     }
   }
 }

@@ -6,6 +6,7 @@ import { verificationCodeValidator } from '~/modules/Auth/Infrastructure/Fronten
 import { FormInputSection } from '~/components/FormInputSection/FormInputSection'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
 
 export interface Props {
   email: string
@@ -74,12 +75,10 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm, loading, setLoading 
       ` }
       onSubmit={ onSubmit }
     >
-      <h1 className={ styles.register__title }>
-        { t('validate_code_title') }
-        <small className={ styles.register__subtitle }>
-          { t('validate_code_subtitle') }
-        </small>
-      </h1>
+      <ModalHeader
+        title={ t('validate_code_title') }
+        subtitle={ t('validate_code_subtitle') }
+      />
 
       <FormInputSection
         label={ t('validate_code_code_input_label') }
@@ -95,7 +94,7 @@ export const ValidateCode: FC<Props> = ({ email, onConfirm, loading, setLoading 
 
       <SubmitButton
         title={ t('validate_code_submit_button') }
-        enableButton={ canSubmit() }
+        disabled={ !canSubmit() }
         loading={ loading }
       />
     </form>

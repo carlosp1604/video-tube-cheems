@@ -1,12 +1,12 @@
 .app-footer {
   &__layout {
     @apply container p-0 pt-0.5 bg-gradient-to-r border-none
-      from-body via-brand-secondary-light to-body;
+    from-body via-brand-secondary-light to-body;
   }
 
   &__container {
     @apply grid place-items-start items-center px-5 pt-10 pb-8
-      justify-between bg-base-900;
+    justify-between bg-surface;
 
     grid-template-areas:
       "social-networks    social-networks   app-logo"
@@ -16,8 +16,7 @@
     grid-column-gap: 10px;
 
     @screen lg {
-      @apply bg-base-950 bg-gradient-to-r
-      from-body via-base-950 to-body;
+      @apply bg-body;
     }
   }
 
@@ -47,8 +46,8 @@
   }
 
   &__copyright {
-    @apply flex flex-row flex-wrap font-thin items-center gap-x-1
-      text-xs mt-4 text-base-500 ;
+    @apply flex flex-row flex-wrap font-thin items-center
+    gap-x-1 text-xs mt-4 text-secondary-text;
     grid-area: copyright;
 
     @screen md {
@@ -57,7 +56,7 @@
   }
 
   &__copyright-brand-name {
-    @apply text-xs font-black uppercase text-base-50;
+    @apply text-xs font-black uppercase text-text;
 
     @screen md {
       @apply text-base;
@@ -66,7 +65,7 @@
 
   &__social-networks {
     @apply flex flex-row flex-wrap gap-x-2 gap-y-2
-      text-base uppercase items-center justify-center mt-1;
+    text-base uppercase items-center justify-center mt-1;
     grid-area: social-networks;
 
     @screen md {
@@ -93,10 +92,10 @@
   }
 
   &__language-item {
-    @apply text-base-400 font-normal uppercase text-xs;
+    @apply text-secondary-text font-normal uppercase text-xs;
 
     &__active {
-      @apply text-base-100 font-black pointer-events-none;
+      @apply text-text font-black pointer-events-none;
     }
 
     @screen md {

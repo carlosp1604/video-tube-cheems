@@ -5,8 +5,9 @@ import { useRouter } from 'next/router'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import * as uuid from 'uuid'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
-import { AiOutlineLike, AiOutlineLoading, AiTwotoneLike } from 'react-icons/ai'
+import { AiOutlineLoading } from 'react-icons/ai'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { BiLike, BiSolidLike } from 'react-icons/bi'
 
 interface Props {
   liked: boolean
@@ -54,14 +55,14 @@ export const LikeButton: FC<Props> = ({ liked, onLike, onDeleteLike, reactionsNu
   if (!loading) {
     if (liked) {
       iconElement = (
-        <AiTwotoneLike className={ styles.likeButton__likeIcon }
+        <BiSolidLike className={ styles.likeButton__likeIcon }
          title={ t('like_reaction_active_title_button') }
          data-tooltip-id={ tooltipId }
         />
       )
     } else {
       iconElement = (
-        <AiOutlineLike className={ styles.likeButton__likeIcon }
+        <BiLike className={ styles.likeButton__likeIcon }
           title={ t('like_reaction_title_button') }
           data-tooltip-id={ tooltipId }
         />

@@ -1,0 +1,31 @@
+.profile-card-skeleton {
+  &__container {
+    @apply flex flex-col items-start overflow-hidden
+    border border-border rounded-md gap-y-1;
+  }
+
+  &__image-wrapper {
+    @apply w-full aspect-h-1 aspect-w-1 overflow-hidden
+    border-b border-border;
+  }
+
+  &__image {
+    @apply h-full w-full bg-surface;
+  }
+
+  &__data-container {
+    @apply flex flex-col p-2 w-full gap-y-2;
+  }
+
+  &__name {
+    @apply h-3 w-full bg-text/30 rounded-md;
+  }
+
+  &__count-section {
+    @apply flex flex-row gap-x-1 justify-between;
+  }
+
+  &__count-item {
+    @apply h-3 w-1/4 bg-text/20 rounded-md;
+  }
+}

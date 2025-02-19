@@ -25,6 +25,7 @@ export const LoginModal: FC = () => {
     ) {
       setLoginModalOpen(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode])
 
   if (mode === 'login' && status === 'unauthenticated') {

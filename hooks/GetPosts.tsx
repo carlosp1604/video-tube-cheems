@@ -44,9 +44,7 @@ export function useGetPosts (): GetPostsInterface {
     const componentOrder = fromOrderTypeToComponentSortingOption(order)
 
     try {
-      const posts = await fetchPosts(page, componentOrder.criteria, componentOrder.option, filters)
-
-      return posts
+      return fetchPosts(page, componentOrder.criteria, componentOrder.option, filters)
     } catch (exception: unknown) {
       console.error(exception)
 

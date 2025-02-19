@@ -1,11 +1,9 @@
 import styles from './Actors.module.scss'
-import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
 import { FC, useEffect, useState } from 'react'
 import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
 import { ActorsApiService } from '~/modules/Actors/Infrastructure/Frontend/ActorsApiService'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { useRouter } from 'next/router'
 import { useFirstRender } from '~/hooks/FirstRender'
 import {
@@ -13,7 +11,6 @@ import {
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
-import { ActorCardGallery } from '~/modules/Actors/Infrastructure/Components/ActorCardGallery/ActorCardGallery'
 import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import useTranslation from 'next-translate/useTranslation'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
@@ -25,6 +22,9 @@ import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
+import { ProfileCardDtoTranslator } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDtoTranslator'
+import { ProfileCardGallery } from '~/modules/Shared/Infrastructure/Components/ProfileCardGallery/ProfileCardGallery'
 
 export interface ActorsPagePaginationState {
   page: number
@@ -36,7 +36,7 @@ export interface Props {
   initialSearchTerm: string
   initialPage: number
   initialOrder: ActorsPaginationSortingType
-  initialActors: ActorCardDto[]
+  initialActors: ProfileCardDto[]
   initialActorsNumber: number
 }
 
@@ -47,7 +47,7 @@ export const Actors: FC<Props> = ({
   initialPage,
   initialOrder,
 }) => {
-  const [actors, setActors] = useState<ActorCardDto[]>(initialActors)
+  const [actors, setActors] = useState<ProfileCardDto[]>(initialActors)
   const [actorsNumber, setActorsNumber] = useState<number>(initialActorsNumber)
   const [pagination, setPagination] = useState<ActorsPagePaginationState>({
     page: initialPage,
@@ -142,7 +142,7 @@ export const Actors: FC<Props> = ({
     if (newActors) {
       setActorsNumber(newActors.actorsNumber)
       setActors(newActors.actors.map((actor) => {
-        return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
+        return ProfileCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
       }))
     }
   }
@@ -238,8 +238,9 @@ export const Actors: FC<Props> = ({
         />
       </div>
 
-      <ActorCardGallery
-        actors={ actors }
+      <ProfileCardGallery
+        profiles={ actors }
+        type={ 'actors' }
         loading={ loading }
         emptyState={ emptyState }
       />

@@ -1,8 +1,7 @@
 import styles from './PostOptions.module.scss'
 import { FC, ReactElement, useState } from 'react'
-import { BsGearWide } from 'react-icons/bs'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
-import { RxDividerVertical } from 'react-icons/rx'
+import { RxBookmark, RxDividerVertical, RxGear } from 'react-icons/rx'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import useTranslation from 'next-translate/useTranslation'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
@@ -18,15 +17,21 @@ import {
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { PiChatsDuotone } from 'react-icons/pi'
-import { MdBookmarkBorder, MdFileDownload } from 'react-icons/md'
+import { MdFileDownload, MdOutlineFlag } from 'react-icons/md'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { useSession } from 'next-auth/react'
 
 const DownloadMenu = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
 ).then((module) => module.DownloadMenu), { ssr: false }
 )
 
+const ReportModal = dynamic(() => import(
+  '~/modules/Reports/Infrastructure/Components/ReportModal/ReportModal'
+).then((module) => module.ReportModal), { ssr: false })
+
 export interface Props {
+  postId: string
   userReaction: ReactionComponentDto | null
   savedPost: boolean
   onClickReactButton: (type: ReactionType) => Promise<void>
@@ -41,6 +46,7 @@ export interface Props {
 }
 
 export const PostOptions: FC<Props> = ({
+  postId,
   userReaction,
   savedPost,
   onClickReactButton,
@@ -56,10 +62,12 @@ export const PostOptions: FC<Props> = ({
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false)
   const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
+  const [reportMenuOpen, setReportMenuOpen] = useState<boolean>(false)
   const { pathname } = useRouter()
 
   const { t } = useTranslation('post')
   const { error } = useToast()
+  const { status } = useSession()
 
   const onClickLikeDislike = async (reactionType: ReactionType) => {
     if (loading || loadingSaveButton) {
@@ -143,7 +151,7 @@ export const PostOptions: FC<Props> = ({
         className={ styles.postOptions__optionItem }
         onClick={ onClickSourcesButton }
       >
-        <BsGearWide className={ styles.postOptions__optionItemIcon }/>
+        <RxGear className={ styles.postOptions__optionItemIcon }/>
         { t('post_sources_button_title') }
         <span className={ styles.postOptions__optionItemQuantity }>
           { sourcesNumber }
@@ -155,6 +163,11 @@ export const PostOptions: FC<Props> = ({
   return (
     <div className={ styles.postOptions__container }>
       { downloadMenu }
+      <ReportModal
+        postId={ postId }
+        isOpen={ reportMenuOpen }
+        onClose={ () => setReportMenuOpen(false) }
+      />
 
       <span className={ `
         ${styles.postOptions__likeDislikeSection}
@@ -187,15 +200,28 @@ export const PostOptions: FC<Props> = ({
         ${styles.postOptions__optionItem}
         ${savedPost ? styles.postOptions__optionItem_active : ''}
       ` }
-        onClick={ onClickSave }
-        disabled={ loading || optionsDisabled }
+          onClick={ onClickSave }
+          disabled={ loading || optionsDisabled }
       >
         { loadingSaveButton
-          ? <AiOutlineLoading className={ styles.postOptions__loadingIcon } />
-          : <MdBookmarkBorder className={ styles.postOptions__optionItemIcon } /> }
+          ? <AiOutlineLoading className={ styles.postOptions__loadingIcon }/>
+          : <RxBookmark className={ styles.postOptions__optionItemIcon }/> }
         { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </button>
       { downloadButton }
+      <button
+        className={ styles.postOptions__optionItem }
+        onClick={ () => {
+          if (status !== 'authenticated') {
+            error(t('user_must_be_authenticated_error_message'))
+
+            return
+          }
+          setReportMenuOpen(true)
+        } }>
+        <MdOutlineFlag className={ styles.postOptions__optionItemIcon }/>
+        { t('post_report_button_title') }
+      </button>
     </div>
   )
 }

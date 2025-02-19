@@ -1,6 +1,5 @@
 import { NextPage } from 'next'
 import useTranslation from 'next-translate/useTranslation'
-import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
 import {
   ProducersPaginationSortingType
 } from '~/modules/Producers/Infrastructure/Frontend/ProducersPaginationSortingType'
@@ -17,12 +16,13 @@ import { useRouter } from 'next/router'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
 
 export interface ProducersPageProps {
   initialSearchTerm: string
   initialPage: number
   initialOrder: ProducersPaginationSortingType
-  initialProducers: ProducerCardDto[]
+  initialProducers: ProfileCardDto[]
   initialProducersNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string

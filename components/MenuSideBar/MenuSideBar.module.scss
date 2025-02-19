@@ -4,9 +4,8 @@
 
     @screen lg {
       @apply flex flex-col fixed top-12 pt-2 pb-14 overflow-y-scroll
-        scrollbar-hide h-screen w-[74px] text-base-500
-        backdrop-blur-xl bg-body/60;
-  
+        scrollbar-hide h-screen w-[74px] border-r border-border;
+
       &_open {
         @apply block w-40 pr-1 transition-width;
       }

@@ -39,7 +39,7 @@
   }
 
   &__quantity-skeeleton {
-    @apply w-10 rounded-lg h-3 bg-base-700 mt-1
+    @apply w-10 rounded-lg h-3 bg-surface mt-1
     animate-pulse;
     grid-area: subtitle;
 
@@ -57,7 +57,7 @@
   }
 
   &__sorting-element-skeleton {
-    @apply h-7 w-16 bg-base-700 rounded-lg animate-pulse;
+    @apply h-7 w-16 bg-surface rounded-lg animate-pulse;
     grid-area: sort;
   }
 }

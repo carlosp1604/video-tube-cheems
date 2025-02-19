@@ -171,6 +171,7 @@ export const LiveCams: FC = () => {
       <Carousel
         itemsAutoWidth={ false }
         onEndReached={ undefined }
+        showButtons={ true }
       >
         { content }
       </Carousel>

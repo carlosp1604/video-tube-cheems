@@ -2,7 +2,7 @@
   &__container {
     @apply grid px-5 bg-toast-bg rounded-lg py-2.5 gap-x-4
     items-center cursor-default shadow-lg shadow-body
-    leading-snug text-base-50 max-w-md w-fit mx-auto ;
+    leading-snug text-text max-w-md w-fit mx-auto ;
     grid-template-areas: "icon  content   close-button";
     grid-auto-columns: auto auto 1fr;
 
@@ -20,11 +20,11 @@
     grid-area: icon;
 
     &_succes {
-      @apply text-white stroke-white bg-toast-icon rounded-full stroke-[0.5];
+      @apply text-text stroke-white bg-toast-icon rounded-full stroke-[0.5];
     }
 
     &_error {
-      @apply stroke-base-200 stroke-[0.5] bg-toast-error-icon rounded-full;
+      @apply stroke-text stroke-[0.5] bg-toast-error-icon rounded-full;
     }
   }
 
@@ -34,7 +34,7 @@
 
   &__closeButton {
     @apply -mt-1 -mr-3 self-start p-2 rounded-full
-    bg-white/10 transition-colors text-base-300;
+    bg-white/10 transition-colors text-text;
     grid-area: close-button;
 
     &:hover {

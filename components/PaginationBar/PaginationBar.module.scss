@@ -1,7 +1,7 @@
 .pagination-bar {
   &__container {
-    @apply flex px-5 -mx-5 border-t pt-2 border-base-800
-      overflow-x-scroll scrollbar-hide;
+    @apply flex px-5 -mx-5 border-t pt-2 border-border
+    overflow-x-scroll scrollbar-hide;
 
     @screen md {
       @apply mx-0;
@@ -9,7 +9,7 @@
   }
 
   &__list-container {
-    @apply flex flex-row h-full w-full
+    @apply flex flex-row h-full mx-auto
       gap-x-0.5 items-center justify-center;
 
     @screen md {
@@ -24,12 +24,12 @@
 
   &__page-number-link {
     @apply flex items-center justify-center p-1.5 px-3 rounded-md
-      h-full w-full text-base-600 text-sm border-2 border-transparent
+      h-full w-full text-secondary-text text-sm border-2 border-transparent
       transition;
 
     &:hover {
-      @apply text-base-100 transition-colors border-brand-primary-bg
-        bg-base-900;
+      @apply text-text transition-colors border-brand-primary-bg
+      bg-hover;
     }
 
     @screen md {
@@ -37,13 +37,13 @@
     }
 
     &_current-page {
-      @apply text-base-100 pointer-events-none font-black
-        border-brand-primary-bg bg-base-900;
+      @apply text-text pointer-events-none font-black
+      border-brand-primary-bg bg-surface;
     }
   }
 
   &__step-icon {
-    @apply text-base-100;
+    @apply text-text;
 
     @screen md {
       @apply text-xl;
@@ -60,7 +60,7 @@
 
   &__error-state {
     @apply flex flex-col gap-y-10 justify-center items-center text-base
-      p-5 mb-5 bg-base-800 text-base-400 rounded-lg text-center
+      p-5 mb-5 bg-surface text-secondary-text rounded-lg text-center
       whitespace-pre-wrap;
   }
 
@@ -69,17 +69,17 @@
   }
 
   &__error-button {
-    @apply border border-brand-primary-bg p-2 text-base-100 rounded-lg
+    @apply border border-brand-primary-bg p-2 text-text rounded-lg
       transition-colors text-sm;
 
     &:hover {
-      @apply text-base-100 bg-brand-primary-bg transition-colors;
+      @apply text-text bg-brand-primary-bg transition-colors;
     }
   }
 
   &__no-paginated-state {
     @apply flex justify-center items-center gap-x-3 border-b
-      border-base-800 p-2 text-base-200 font-light mt-5;
+    border-surface p-2 text-text font-light mt-5;
   }
 
   &__no-paginated-state-icon {

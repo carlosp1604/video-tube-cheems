@@ -16,6 +16,7 @@ import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/Advert
 import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/OutstreamBanner'
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
+import { useMediaQuery } from '~/hooks/MediaQuery'
 
 const PostComments = dynamic(() =>
   import('~/modules/Posts/Infrastructure/Components/PostComment/PostComments').then((module) => module.PostComments),
@@ -45,6 +46,7 @@ export const Post: FC<Props> = ({
   const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
   const [savedPost, setSavedPost] = useState<boolean>(false)
   const [optionsDisabled, setOptionsDisabled] = useState<boolean>(true)
+  const activeBreakpoint = useMediaQuery()
 
   const postsApiService = new PostsApiService()
   const commentsRef = useRef<HTMLDivElement>(null)
@@ -103,9 +105,7 @@ export const Post: FC<Props> = ({
     try {
       postsApiService.addPostView(post.id)
         .then((response) => {
-          if (response.ok) {
-            setViewsNumber(viewsNumber + 1)
-          }
+          setViewsNumber(response.postViews)
         })
     } catch (exception: unknown) {
       console.error(exception)
@@ -131,7 +131,9 @@ export const Post: FC<Props> = ({
 
     setCommentsOpen(!commentsOpen)
 
-    if (!currentValue) {
+    if (!currentValue && (
+      activeBreakpoint !== 'default' && activeBreakpoint !== 'sm' && activeBreakpoint !== 'tb')
+    ) {
       commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
@@ -209,7 +211,7 @@ export const Post: FC<Props> = ({
             postTags={ post.tags }
             postDescription={ post.description }
             date={ post.formattedPublishedAt }
-            viewsNumber={ postViewsNumber }
+            viewsNumber={ viewsNumber }
           />
         </div>
 
@@ -225,7 +227,7 @@ export const Post: FC<Props> = ({
           </span>
         </div>
       </section>
-      <div className={ styles.post__commentsContainer } ref={ commentsRef }></div>
+      <div ref={ commentsRef } />
       { commentsComponent }
     </div>
   )

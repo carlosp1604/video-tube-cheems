@@ -5,7 +5,7 @@
 
   &__avatar-container {
     @apply h-full w-full flex items-center justify-center
-      text-center bg-[color:var(--custom-color)];
+      text-center bg-body;
 
     &__rounded {
       @apply rounded-full;

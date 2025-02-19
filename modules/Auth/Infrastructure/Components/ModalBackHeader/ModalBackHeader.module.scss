@@ -1,0 +1,18 @@
+.modal-back-header {
+  &__container {
+    @apply flex gap-x-3 font-light items-center px-4 pt-2
+    text-secondary-text -mb-4 cursor-default;
+
+    &_disabled {
+      @apply hidden;
+    }
+
+    @screen md {
+      @apply text-base;
+    }
+
+    @screen lg {
+      @apply text-lg;
+    }
+  }
+}

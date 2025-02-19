@@ -4,11 +4,11 @@
   }
 
   &__icon-wrapper {
-    @apply p-6 bg-base-800 rounded-full mb-10 mt-10;
+    @apply p-6 bg-surface rounded-full mb-10 mt-10;
   }
 
   &__icon {
-    @apply h-24 w-24 text-base-400;
+    @apply h-24 w-24 text-secondary-text;
 
     @screen md {
       @apply h-40 w-40;

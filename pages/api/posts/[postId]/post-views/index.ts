@@ -51,9 +51,9 @@ export default async function handler (
   const useCase = container.resolve<AddPostView>('addPostViewUseCase')
 
   try {
-    await useCase.add(applicationRequest)
+    const postViews = await useCase.add(applicationRequest)
 
-    response.status(201).end()
+    return response.status(201).json(postViews)
   } catch (exception: unknown) {
     if (!(exception instanceof AddPostViewApplicationException)) {
       console.error(exception)

@@ -2,12 +2,11 @@ import { FC, ReactElement, useState } from 'react'
 import { VerifyEmail } from './VerifyEmail'
 import { ValidateCode } from './ValidateCode'
 import styles from './RetrievePassword.module.scss'
-import { BsArrowLeft } from 'react-icons/bs'
 import { ConfirmingPasswordChange } from './ConfirmingPasswordChange'
 import { ChangeUserPassword } from '~/modules/Auth/Infrastructure/Components/RetrievePassword/ChangeUserPassword'
 import useTranslation from 'next-translate/useTranslation'
 import { useSession } from 'next-auth/react'
-import { IconButton } from '~/components/IconButton/IconButton'
+import { ModalBackHeader } from '~/modules/Auth/Infrastructure/Components/ModalBackHeader/ModalBackHeader'
 
 type RetrieveSteps = 'verifying_email' | 'validating_token' | 'validated_token' | 'password_changed'
 
@@ -81,17 +80,12 @@ export const RetrievePassword: FC<Props> = ({ onConfirm, onCancel }) => {
 
   return (
     <div className={ styles.retrievePassword__registerContainer }>
-      <span className={ `
-        ${styles.retrievePassword__backSection}
-        ${disabledBackButton() ? styles.retrievePassword__backSection_disabled : ''}
-      ` }>
-        <IconButton
-          onClick={ () => { if (!loading) { onClickCancel() } } }
-          icon={ <BsArrowLeft /> }
-          title={ t('back_button_title') }
-        />
-        { t('back_button_title') }
-      </span>
+      <ModalBackHeader
+        title={ t('back_button_title') }
+        disabled={ disabledBackButton() }
+        onClick={ () => { if (!loading) { onClickCancel() } } }
+      />
+
       { content }
     </div>
   )

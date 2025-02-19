@@ -14,8 +14,8 @@ export const PostCardSkeleton: FC<Partial<Props>> = ({ loading = false }) => {
     ` }>
       <div className={ styles.postCardSkeleton__mediaSkeleton }/>
       <div className={ styles.postCardSkeleton__postData }>
-        <span className={ styles.postCardSkeleton__postTitleSkeleton }/>
         <span className={ styles.postCardSkeleton__producerTitleSkeleton }/>
+        <span className={ styles.postCardSkeleton__postTitleSkeleton }/>
         <div className={ styles.postCardSkeleton__postExtraDataSkeleton }>
           <span className={ styles.postCardSkeleton__postExtraItemSkeleton }/>
           <BsDot className={ styles.postCardSkeleton__postExtraDataSeparator }/>

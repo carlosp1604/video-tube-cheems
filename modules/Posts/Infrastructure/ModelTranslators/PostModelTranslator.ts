@@ -11,7 +11,7 @@ import {
   PostWithMeta,
   PostWithProducerWithParent,
   PostWithReactions,
-  PostWithTags, PostWithTranslations, PostWithPostMediaWithMediaUrlWithProvider
+  PostWithTags, PostWithTranslations, PostWithPostMediaWithMediaUrlWithProvider, PostWithReports
 } from '~/modules/Posts/Infrastructure/PrismaModels/PostModel'
 import { Post } from '~/modules/Posts/Domain/Post'
 import { ProducerModelTranslator } from '~/modules/Producers/Infrastructure/ProducerModelTranslator'
@@ -32,6 +32,8 @@ import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/Reac
 import { PostMediaModelTranslator } from '~/modules/Posts/Infrastructure/ModelTranslators/PostMediaModelTranslator'
 import { PostMedia } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import { ActorModelTranslator } from '~/modules/Actors/Infrastructure/ActorModelTranslator'
+import { ReportModelTranslator } from '~/modules/Reports/Infrastructure/ReportModelTranslator'
+import { Report } from '~/modules/Reports/Domain/Report'
 
 export class PostModelTranslator {
   public static toDomain (
@@ -58,6 +60,7 @@ export class PostModelTranslator {
     let actorRelationship: Relationship<Actor | null> = Relationship.notLoaded()
     let translationsCollection: Collection<Translation, Translation['language'] & Translation['field']> =
       Collection.notLoaded()
+    let reportsCollection: Collection<Report, string> = Collection.notLoaded()
     let postMediaCollection: Collection<PostMedia, PostMedia['id']> = Collection.notLoaded()
 
     if (options.includes('meta')) {
@@ -158,6 +161,17 @@ export class PostModelTranslator {
       })
     }
 
+    if (options.includes('reports')) {
+      reportsCollection = Collection.initializeCollection()
+      const postWithReports = prismaPostModel as PostWithReports
+
+      for (let i = 0; i < postWithReports.reports.length; i++) {
+        const reportDomain = ReportModelTranslator.toDomain(postWithReports.reports[i])
+
+        reportsCollection.addItem(reportDomain, `${reportDomain.postId}${reportDomain.userId}${reportDomain.type}`)
+      }
+    }
+
     if (options.includes('postMedia')) {
       const postWithPostMediaWithMediaUrlWithProvider = prismaPostModel as PostWithPostMediaWithMediaUrlWithProvider
 
@@ -191,7 +205,8 @@ export class PostModelTranslator {
       producerRelationship,
       translationsCollection,
       actorRelationship,
-      postMediaCollection
+      postMediaCollection,
+      reportsCollection
     )
   }
 

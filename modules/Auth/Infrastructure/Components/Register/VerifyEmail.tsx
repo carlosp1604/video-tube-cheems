@@ -12,6 +12,7 @@ import {
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { useRouter } from 'next/router'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
 
 export interface Props {
   onConfirm: (email: string) => void
@@ -129,12 +130,10 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
       ` }
       onSubmit={ onSubmit }
     >
-      <div className={ styles.register__title }>
-        { t('verify_email_title') }
-        <small className={ styles.register__subtitle }>
-          { t('verify_email_subtitle') }
-        </small>
-      </div>
+      <ModalHeader
+        title={ t('verify_email_title') }
+        subtitle={ t('verify_email_subtitle') }
+      />
 
       <FormInputSection
         label={ t('verify_email_email_input_label') }
@@ -150,9 +149,8 @@ export const VerifyEmail: FC<Props> = ({ onConfirm, loading, setLoading }) => {
 
       <SubmitButton
         title={ resendEmail ? t('verify_email_resend_email') : t('verify_email_submit_button') }
-        enableButton={ canSubmit() }
+        disabled={ !canSubmit() }
         loading={ loading }
-        emphasize={ resendEmail }
       />
 
       <button className={ `

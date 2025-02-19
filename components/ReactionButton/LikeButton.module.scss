@@ -1,15 +1,15 @@
 .like-button {
   &__container {
-    @apply flex flex-row items-center gap-x-1 text-brand-primary-bg
-    transition-all cursor-default;
+    @apply flex flex-row items-center gap-x-2 text-text/90
+    transition-all cursor-default font-normal;
 
     &_disabled {
-      @apply text-base-600 transition-colors;
+      @apply text-disabled transition-colors;
     }
   }
 
   &__like-button {
-    @apply text-base-400;
+    @apply text-base text-text/80;
 
     &:hover {
       @apply text-brand-primary-bg transition-all;
@@ -19,12 +19,12 @@
       @apply text-brand-primary-bg transition-colors outline-none;
 
       &:hover {
-        @apply text-base-100 transition-colors;
+        @apply text-text transition-colors;
       }
     }
 
     &:disabled {
-      @apply text-base-600;
+      @apply text-disabled;
     }
   }
 

@@ -1,37 +1,16 @@
 .add-comment-input {
   &__add-comment-section {
-    @apply flex items-center gap-x-4 bg-body p-2 left-0 right-0
-      border-t border-base-800 h-fit;
+    @apply flex items-center gap-x-4 h-fit;
     grid-area: add-comment;
   }
 
   &__add-comment-button {
-    @apply rounded-full bg-brand-primary-dark text-base-100 transition-colors;
-
-    &:disabled {
-      @apply bg-body;
-    }
-
-    &:hover, &:focus {
-      @apply bg-brand-secondary-bg transition-colors;
-    }
-
-    &:active {
-      @apply bg-brand-secondary-dark text-brand-primary-light transition-colors;
-    }
-  }
-
-  &__add-comment-icon {
-    @apply h-8 w-8 p-2 rounded-full transition-colors;
-
-    @screen md {
-      @apply h-10 w-10 p-3;
-    }
+    @apply flex-shrink-0;
   }
 
   &__user-avatar {
     @apply flex-shrink-0 h-8 w-8 font-semibold rounded-full
-      object-cover;
+    object-cover;
 
     @screen md {
       @apply h-10 w-10;
@@ -40,7 +19,7 @@
 
   &__login-to-comment-section {
     @apply flex gap-x-2 justify-center items-center text-center p-2
-    border-t border-base-800 text-base-400 text-xs font-bold;
+    border-t border-border text-secondary-text text-xs font-bold;
 
     @screen md {
       @apply text-sm;
@@ -48,7 +27,7 @@
   }
 
   &__loading-section {
-    @apply flex justify-center border-t border-base-800 p-2.5;
+    @apply flex justify-center border-t border-border p-2.5;
   }
 
   &__loading-icon {

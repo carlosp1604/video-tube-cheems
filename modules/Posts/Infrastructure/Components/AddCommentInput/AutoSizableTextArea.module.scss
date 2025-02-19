@@ -1,14 +1,15 @@
 .auto-sizable-text-area {
   &__comment-input {
-    @apply h-8 px-4 py-1 bg-base-800 text-base-300 rounded-lg
-    scrollbar-hide w-full outline-none caret-brand-primary-bg;
+    @apply h-8 px-4 py-1 bg-input text-text rounded-lg
+    scrollbar-hide w-full outline-none caret-brand-primary-bg
+    border border-border;
 
     &:active, &:focus, &:hover {
-      @apply outline-none border-base-700;
+      @apply outline-none border-brand-primary-light;
     }
 
     &:disabled {
-      @apply bg-body text-base-700 placeholder-base-700;
+      @apply bg-body text-disabled placeholder-disabled;
     }
   }
 }

@@ -22,7 +22,7 @@
   }
 
   &__post-options-icon {
-    @apply text-sm font-normal text-base-50 place-self-center text-center
-    transition-colors;
+    @apply text-sm font-normal text-text place-self-center
+    text-center transition-colors;
   }
 }

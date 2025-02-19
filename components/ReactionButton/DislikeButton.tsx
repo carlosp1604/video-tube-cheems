@@ -3,8 +3,9 @@ import styles from './DislikeButton.module.scss'
 import useTranslation from 'next-translate/useTranslation'
 import * as uuid from 'uuid'
 import { Tooltip } from '~/components/Tooltip/Tooltip'
-import { AiOutlineDislike, AiOutlineLoading, AiTwotoneDislike } from 'react-icons/ai'
+import { AiOutlineLoading } from 'react-icons/ai'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { BiDislike, BiSolidDislike } from 'react-icons/bi'
 
 interface Props {
   disliked: boolean
@@ -48,14 +49,14 @@ export const DislikeButton: FC<Props> = ({ disliked, onDislike, onDeleteDislike,
   if (!loading) {
     if (disliked) {
       iconElement = (
-        <AiTwotoneDislike
+        <BiSolidDislike
           className={ styles.dislikeButton__dislikeIcon }
           data-tooltip-id={ tooltipId }
         />
       )
     } else {
       iconElement = (
-        <AiOutlineDislike
+        <BiDislike
           className={ styles.dislikeButton__dislikeIcon }
           data-tooltip-id={ tooltipId }
         />

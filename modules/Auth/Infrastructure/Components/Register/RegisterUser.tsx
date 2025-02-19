@@ -18,6 +18,8 @@ import {
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ModalError } from '~/modules/Auth/Infrastructure/Components/ModalError/ModalError'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
 
 export interface Props {
   email: string
@@ -172,12 +174,10 @@ export const RegisterUser: FC<Props> = ({
       ` }
       onSubmit={ onSubmit }
     >
-      <h1 className={ styles.register__title }>
-        { t('signup_title') }
-        <small className={ styles.register__subtitle }>
-          { t('signup_subtitle', { email }) }
-        </small>
-      </h1>
+      <ModalHeader
+        title={ t('signup_title') }
+        subtitle={ t('signup_subtitle', { email }) }
+      />
 
       <FormInputSection
         label={ t('signup_name_input_label') }
@@ -227,16 +227,14 @@ export const RegisterUser: FC<Props> = ({
         } }
       />
 
-      <p className={ `
-        ${styles.register__error}
-        ${showPasswordsDoesNotMatchErrorMessage() ? styles.register__error_visible : ''}
-      ` }>
-        { t('signup_retype_password_error_message') }
-      </p>
+      <ModalError
+        title={ t('signup_retype_password_error_message') }
+        visible={ showPasswordsDoesNotMatchErrorMessage() }
+      />
 
       <SubmitButton
         title={ t('signup_submit_button') }
-        enableButton={ canSubmit() }
+        disabled={ !canSubmit() }
         loading={ loading }
       />
     </form>

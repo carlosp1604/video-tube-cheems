@@ -1,24 +1,24 @@
 .banner {
   &__container {
     @apply flex flex-col items-center justify-center
-    w-full h-fit overflow-hidden text-sm text-base-500
+    w-full h-fit overflow-hidden text-sm text-secondary-text
     font-semibold z-advertising;
   }
 
   &__bannerWrapper250x300 {
-    @apply relative h-[250px] min-w-[300px] bg-base-800 mb-1;
+    @apply relative h-[250px] min-w-[300px] bg-surface mb-1;
   }
 
   &__bannerWrapper90x729 {
-    @apply relative h-[90px] min-w-[729px] bg-base-800 mb-1;
+    @apply relative h-[90px] min-w-[729px] bg-surface mb-1;
   }
 
   &__bannerContainer50x320 {
-    @apply relative h-[50px] w-[320px] bg-base-800 mb-1;
+    @apply relative h-[50px] w-[320px] bg-surface mb-1;
   }
 
   &__bannerContainer100x300 {
-    @apply relative h-[100px] min-w-[300px] bg-base-800 mb-1;
+    @apply relative h-[100px] min-w-[300px] bg-surface mb-1;
   }
 
   &__responsiveDesktop {

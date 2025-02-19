@@ -57,6 +57,7 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
       <Carousel
         onEndReached={ undefined }
         itemsAutoWidth={ false }
+        showButtons={ true }
       >
         { posts.map((post) => {
           return ({

@@ -1,11 +1,11 @@
 .modal-menu-header {
   &__container {
-    @apply flex gap-x-2 items-center justify-center px-5;
+    @apply flex gap-x-2 items-center justify-center px-5
+    cursor-default;
   }
 
   &__title {
-    @apply flex flex-col text-base font-semibold
-      leading-none;
+    @apply flex flex-col text-base leading-none;
 
     @screen md {
       @apply text-lg;
@@ -20,17 +20,17 @@
     @apply text-xs font-light whitespace-pre-line mt-0.5 leading-tight;
 
     @screen md {
-      @apply text-sm mt-0;
+      @apply text-sm -mt-1;
     }
 
     @screen lg {
-      @apply text-base mt-0;
+      @apply text-base -mt-1;
     }
   }
 
   &__icon-wrapper {
     @apply flex items-center justify-center h-8 w-8 rounded-md
-      bg-brand-primary-dark text-xl flex-shrink-0;
+    bg-brand-primary-bg text-xl flex-shrink-0;
 
     @screen md {
       @apply h-10 w-10 text-2xl;

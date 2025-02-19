@@ -1,33 +1,13 @@
 .login {
   &__container {
-    @apply mx-auto p-5 w-full;
+    @apply mx-auto p-5 pt-0 w-full;
 
     &_loading {
       @apply animate-pulse;
     }
 
     @screen tb {
-      @apply max-w-sm;
-    }
-  }
-
-  &__title {
-    @apply text-xl font-black text-center pb-5;
-
-    @screen tb {
-      @apply text-left;
-    }
-
-    @screen md {
-      @apply text-2xl;
-    }
-  }
-
-  &__subtitle {
-    @apply block text-sm font-normal whitespace-pre-line;
-
-    @screen md {
-      @apply text-base;
+      @apply max-w-md;
     }
   }
 
@@ -36,30 +16,12 @@
   }
 
   &__show-hide-password-button {
-    @apply text-base-100 absolute -top-3.5 py-1.5
-      right-0 px-2 bg-brand-primary-bg rounded-lg transition-colors;
+    @apply text-text absolute -top-3.5 py-1.5 right-0 px-2
+    bg-brand-primary-light rounded-lg transition-colors;
 
     &:hover, &:focus {
-      @apply bg-brand-secondary-dark transition-colors
-        cursor-pointer text-base-400;
-    }
-
-    &:active {
-      @apply text-base-50 transition-colors;
-    }
-  }
-
-  &__error {
-    @apply text-xs font-light text-red opacity-0 mb-2
-    transition duration-300;
-
-    &_visible {
-      @apply opacity-100 transition duration-300
-      animate-bounce-short;
-    }
-
-    @screen md {
-      @apply text-sm;
+      @apply bg-brand-primary-bg transition-colors
+      cursor-pointer text-text;
     }
   }
 
@@ -68,34 +30,26 @@
   }
 
   &__signup-button {
-    @apply text-xs font-bold;
+    @apply font-bold;
 
     &:hover, &:focus {
       @apply text-brand-primary-light transition-colors;
     }
 
     &:disabled {
-      @apply text-base-400;
-    }
-
-    @screen md {
-      @apply text-sm;
+      @apply text-disabled;
     }
   }
 
   &__forgot-password-button {
-    @apply text-xs font-bold text-base-500;
+    @apply font-bold text-secondary-text;
 
     &:hover, &:focus {
-      @apply text-base-300 transition-colors;
+      @apply text-brand-primary-light transition-colors;
     }
 
     &:disabled {
-      @apply text-base-400;
-    }
-
-    @screen md {
-      @apply text-sm;
+      @apply text-disabled;
     }
   }
 
@@ -104,7 +58,7 @@
   }
 
   &__google-button {
-    @apply py-2 px-5 rounded-lg flex flex-row bg-base-900
+    @apply py-2 px-5 rounded-lg flex flex-row bg-surface
     gap-x-4 items-center justify-center transition-colors;
 
     &:hover, :focus {
@@ -117,12 +71,8 @@
   }
 
   &__information-message {
-    @apply text-xs text-base-400 border-t border-brand-primary-bg/40
+    @apply text-secondary-text border-t border-brand-primary-bg/40
     py-1;
-
-    @screen md {
-      @apply text-sm;
-    }
   }
 
   &__password-section {

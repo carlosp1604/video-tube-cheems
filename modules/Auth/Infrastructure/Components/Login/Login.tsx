@@ -7,6 +7,7 @@ import { FormInputSection } from '~/components/FormInputSection/FormInputSection
 import { SubmitButton } from '~/components/SubmitButton/SubmitButton'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
 
 export interface Props {
   onClickSignup: () => void
@@ -67,12 +68,10 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
       ` }
       onSubmit={ onSubmit }
     >
-      <h1 className={ styles.login__title }>
-        { t('title') }
-        <small className={ styles.login__subtitle }>
-          { t('subtitle') }
-        </small>
-      </h1>
+      <ModalHeader
+        title={ t('title') }
+        subtitle={ t('subtitle') }
+      />
 
       <FormInputSection
         label={ t('email_input_label') }
@@ -114,7 +113,7 @@ export const Login: FC<Props> = ({ onClickSignup, onClickForgotPassword, onSucce
 
       <SubmitButton
         title={ t('submit_button_title') }
-        enableButton={ canEnableSubmitButton() }
+        disabled={ !canEnableSubmitButton() }
         loading={ loading }
       />
 

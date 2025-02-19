@@ -55,6 +55,12 @@ export type PostWithTranslations = Prisma.PostGetPayload<{
   include: { translations: true }
 }>
 
+export type PostWithReports = Prisma.PostGetPayload<{
+  include: {
+    reports: true
+  }
+}>
+
 export type PostWithPostMediaWithMediaUrlWithProvider = Prisma.PostGetPayload<{
   include: {
     postMedia: {

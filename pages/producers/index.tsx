@@ -3,7 +3,6 @@ import { container } from '~/awilix.container'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import { ProducersPage, ProducersPageProps } from '~/components/pages/ProducersPage/ProducersPage'
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
-import { ProducerCardDtoTranslator } from '~/modules/Producers/Infrastructure/ProducerCardDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   InfrastructureSortingCriteria,
@@ -15,6 +14,7 @@ import {
 import { Settings } from 'luxon'
 import { ProducerQueryParamsParser } from '~/modules/Producers/Infrastructure/Frontend/ProducerQueryParamsParser'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { ProfileCardDtoTranslator } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDtoTranslator'
 
 export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
 
     props.initialProducersNumber = actors.producersNumber
     props.initialProducers = actors.producers.map((producer) => {
-      return ProducerCardDtoTranslator
+      return ProfileCardDtoTranslator
         .fromApplicationDto(producer.producer, producer.postsNumber, producer.producerViews)
     })
 

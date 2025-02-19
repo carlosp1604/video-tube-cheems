@@ -21,8 +21,8 @@
   }
 
   &__live-cams-link {
-    @apply font-normal text-sm p-1 px-3 rounded-full bg-base-800 border
-    border-base-700 shadow-all shadow-brand-primary-bg;
+    @apply font-normal text-sm p-1 px-3 rounded-full bg-surface border
+    border-border shadow-all shadow-brand-primary-bg;
 
     @screen md {
       @apply text-base;
@@ -35,6 +35,6 @@
 
   &__warning-message {
     @apply text-xs border-t mt-2 pt-1 border-brand-primary-bg
-    text-base-400 leading-none;
+    text-secondary-text leading-none;
   }
 }

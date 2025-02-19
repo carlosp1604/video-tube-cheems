@@ -1,7 +1,7 @@
 .user-profile-header {
   &__container {
     @apply flex flex-col items-center justify-center p-5
-      gap-y-4;
+    gap-y-4;
 
     @screen md {
       @apply flex flex-row gap-x-10;
@@ -18,13 +18,13 @@
   }
 
   &__user-info {
-    @apply flex flex-col border border-base-700 rounded-lg
-      bg-base-800;
+    @apply flex flex-col border border-border rounded-lg
+    bg-surface;
   }
 
   &__user-info-item {
-    @apply flex flex-row gap-x-3 justify-start items-center border-b
-      px-5 py-2 border-base-700 font-normal;
+    @apply flex flex-row gap-x-3 justify-start items-center
+    border-b px-5 py-2 border-border font-normal;
 
     &:last-child {
       @apply border-b-0;
@@ -33,7 +33,7 @@
 
   &__user-info-item-title {
     @apply flex flex-row font-normal text-sm
-      text-base-400;
+    text-secondary-text;
   }
 
   &__user-info-item-content {
@@ -44,7 +44,7 @@
   }
 
   &__user-info-item-icon {
-    @apply h-6 w-6 text-base-500;
+    @apply h-6 w-6 text-secondary-text;
   }
 
   &__user-activities {
@@ -56,7 +56,7 @@
   }
 
   &__activity-item-activity {
-    @apply font-light text-base-400;
+    @apply font-light text-secondary-text;
   }
 
   &__user-avatar {

@@ -11,26 +11,26 @@
   }
 
   &__itemContent {
-    @apply flex flex-row flex-shrink gap-x-6 items-center
-    h-full py-2 px-4 rounded-lg text-base-400 cursor-pointer;
+    @apply flex flex-row flex-shrink gap-x-4 items-center
+    h-full py-1 px-4 rounded-lg text-text/80 cursor-pointer;
     grid-area: content;
 
     &:hover {
-      @apply bg-base-900 transition-colors text-white;
+      @apply bg-hover text-text transition-colors;
     }
 
     &_active {
-      @apply text-white bg-brand-primary-light font-bold
+      @apply text-text bg-brand-primary-light font-bold
       transition-colors cursor-default;
 
       &:hover {
-        @apply bg-brand-primary-light text-white;
+        @apply bg-brand-primary-bg text-text;
       }
     }
   }
 
   &__menuInfoButton {
-    @apply pr-1 text-base-400 ml-1;
+    @apply pr-1 text-secondary-text ml-1;
     grid-area: infoButton;
   }
 

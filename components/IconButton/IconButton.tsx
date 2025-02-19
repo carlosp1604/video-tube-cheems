@@ -52,7 +52,6 @@ export const IconButton: FC<Partial<Props> & Pick<Props, 'onClick' | 'icon' | 't
         />
         : null
       }
-
     </button>
   )
 }

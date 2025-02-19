@@ -4,8 +4,8 @@
     transition-colors duration-1000 z-video-player-options;
 
     &__open {
-      @apply flex flex-col gap-y-3 items-center justify-center bg-black bg-opacity-90
-      transition-colors py-2 px-5 translate-x-0;
+      @apply flex flex-col gap-y-3 items-center justify-center bg-black
+      bg-opacity-90 transition-colors py-2 px-5 translate-x-0;
 
       @screen md {
         @apply gap-y-6 py-5;
@@ -45,7 +45,7 @@
     }
 
     &:hover {
-      @apply cursor-pointer bg-base-800 transition-colors;
+      @apply cursor-pointer bg-surface transition-colors;
     }
 
     &__selected {

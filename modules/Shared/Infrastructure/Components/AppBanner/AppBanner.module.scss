@@ -5,18 +5,18 @@
   }
 
   &__title {
-    @apply text-base-400 font-black mb-2;
+    @apply text-secondary-text font-black mb-2;
   }
 
   &__description {
-    @apply text-base-500 leading-tight
+    @apply text-secondary-text leading-tight
     whitespace-pre-line;
   }
 
   &__rta-section {
     @apply flex flex-col items-center justify-center p-2
-    bg-base-800 rounded-lg mt-2 transition-colors
-    gap-y-4 leading-tight text-base-500 text-center;
+    bg-surface rounded-lg mt-2 transition-colors
+    gap-y-4 leading-tight text-secondary-text text-center;
   }
 
   &__rta-logo {

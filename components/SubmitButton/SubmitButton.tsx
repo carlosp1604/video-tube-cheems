@@ -4,16 +4,16 @@ import { AiOutlineLoading } from 'react-icons/ai'
 
 export interface Props {
   title: string
-  enableButton: boolean
+  disabled: boolean
   loading: boolean
-  emphasize: boolean
+  onClick: () => void
 }
 
-export const SubmitButton: FC<Partial<Props> & Pick<Props, 'title' | 'enableButton'>> = ({
+export const SubmitButton: FC<Partial<Props> & Pick<Props, 'title' | 'disabled'>> = ({
   title,
-  enableButton,
+  disabled,
+  onClick = undefined,
   loading = false,
-  emphasize = false,
 }) => {
   let submitTitle: ReactElement | string = title
 
@@ -24,12 +24,9 @@ export const SubmitButton: FC<Partial<Props> & Pick<Props, 'title' | 'enableButt
   return (
     <button
       type={ 'submit' }
-      className={ `
-        ${styles.submitButton__container}
-        ${enableButton ? styles.submitButton__container__enabled : ''}
-        ${emphasize ? styles.submitButton__container__emphasize : ''}
-      ` }
-      disabled={ !enableButton }
+      className={ styles.submitButton__container }
+      disabled={ disabled }
+      onClick={ () => onClick && onClick() }
     >
       { submitTitle }
     </button>

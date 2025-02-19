@@ -1,22 +1,21 @@
 .top-mobile-menu {
   &__container {
     @apply flex items-center justify-between border-t border-b
-    border-base-800 px-5 py-0.5 my-4 backdrop-blur-lg bg-body/60
-    overflow-x-scroll scrollbar-hide gap-x-1 sticky top-[52px]
-    z-top-mobile;
+    border-border px-5 py-0.5 -mt-1 overflow-x-scroll
+     scrollbar-hide gap-x-1 z-top-mobile bg-surface;
 
     @screen md {
       @apply overflow-hidden;
     }
 
     @screen lg {
-      @apply border-r border-l py-1;
+      @apply border-t-0 py-1;
     }
   }
 
   &__offer-container {
     @apply flex-auto flex-shrink-0 items-center text-center text-xs
-    leading-none font-semibold text-base-300 border-l border-base-800
+    leading-none font-semibold text-text border-l border-border
     mx-auto px-2 py-1;
 
     @screen md {
@@ -42,6 +41,6 @@
   }
 
   &__offer-icon {
-    @apply text-xl text-base-300;
+    @apply text-xl text-text;
   }
 }

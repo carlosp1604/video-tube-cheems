@@ -13,7 +13,7 @@
 
   &__post-options-example {
     @apply flex items-center justify-center mt-2 m-auto
-    rounded-full h-7 w-7 bg-base-700 cursor-default;
+    rounded-full h-7 w-7 bg-surface cursor-default;
 
     @screen md {
       @apply m-0;
@@ -21,7 +21,7 @@
   }
 
   &__menu-item {
-    @apply mt-2 text-base-400;
+    @apply mt-2 text-secondary-text;
 
     @screen md {
       @apply m-0;
@@ -30,7 +30,7 @@
 
   &__menu-item-content {
     @apply flex flex-row py-3.5 gap-x-6 items-center border-t border-b
-    border-base-700 border-opacity-30 max-w-fit px-5 bg-base-900 m-auto;
+    border-border border-opacity-30 max-w-fit px-5 bg-surface m-auto;
   }
 
   &__menu-icon {
@@ -39,7 +39,7 @@
 
   &__option-item {
     @apply flex items-center gap-x-2 m-auto mt-2
-    rounded-full bg-base-800 py-2 text-xs px-3
+    rounded-full bg-surface py-2 text-xs px-3
     transition-colors justify-center max-w-fit place-self-center;
 
 

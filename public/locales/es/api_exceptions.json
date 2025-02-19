@@ -20,6 +20,7 @@
   "server_error_error_message": "Servicio no disponible. Inténtalo después",
   "something_went_wrong_error_message": "Algo salió mal al intentar realizar la operación. Inténtalo después",
   "user_already_reacted_to_post_error_message": "El usuario ya ha reaccionado a este post",
+  "user_already_reported_post_error_message": "El usuario ya ha reportado este post",
   "user_forbidden_resource_error_message": "El usuario no tiene acceso al recurso",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión",
   "user_not_found_error_message": "El usuario que hizo la petición no existe. Cerrando sesión"

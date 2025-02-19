@@ -1,0 +1,8 @@
+export const REPORT_VALIDATION = 'report-validation-exception'
+export const REPORT_AUTH_REQUIRED = 'report-authentication-required'
+export const REPORT_BAD_REQUEST = 'report-bad-request'
+export const REPORT_SERVER_ERROR = 'report-server-error'
+export const REPORT_METHOD = 'report-method-not-allowed'
+export const REPORT_CREATE_REPORT_POST_NOT_FOUND = 'report-create-report-post-not-found'
+export const REPORT_CREATE_REPORT_USER_NOT_FOUND = 'report-create-report-user-not-found'
+export const REPORT_CREATE_REPORT_POST_ALREADY_REPORTED = 'report-create-report-post-already-reported'

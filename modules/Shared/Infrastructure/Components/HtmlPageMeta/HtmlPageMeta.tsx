@@ -8,11 +8,19 @@ import {
   HtmlPageMetaVideoProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceProps'
 import { UrlsHelper } from '~/helpers/Domain/UrlsHelper'
+import useTranslation from 'next-translate/useTranslation'
 
 export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
+  const { t } = useTranslation('common')
   let videoMeta: ReactElement[] | null = null
   let rtaLabel: ReactElement| null = null
   let canonicalTag: ReactElement | null = null
+
+  let title = props.resourceProps.title
+
+  if (!title.startsWith(props.resourceProps.siteName)) {
+    title = t('page_title_with_language', { sitename: props.resourceProps.siteName, title: props.resourceProps.title })
+  }
 
   if (props.resourceProps.resourceType === HtmlPageMetaContextResourceType.VIDEO_MOVIE) {
     const videoProps = props.resourceProps as HtmlPageMetaVideoProps
@@ -24,7 +32,7 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
       <meta property="video:duration" content={ videoProps.duration } key="video:duration" />,
       /** Twitter card properties **/
       <meta name="twitter:card" content="player" key="twitter:card" />,
-      <meta name="twitter:title" content={ videoProps.title } key="twitter:title" />,
+      <meta name="twitter:title" content={ title } key="twitter:title" />,
       <meta name="twitter:description" content={ videoProps.description } key="twitter:description" />,
       <meta name="twitter:url" content={ UrlsHelper.deleteTrailingSlash(props.url) } key="twitter:url" />,
       <meta name="twitter:image" content={ props.resourceProps.image } key="twitter:image" />,
@@ -47,7 +55,7 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     websiteMeta = [
       /** Twitter card properties **/
       <meta name="twitter:card" content="summary" key="twitter:card" />,
-      <meta name="twitter:title" content={ props.resourceProps.title } key="twitter:title" />,
+      <meta name="twitter:title" content={ title } key="twitter:title" />,
       <meta name="twitter:description" content={ props.resourceProps.description } key="twitter:description" />,
       <meta name="twitter:image" content={ props.resourceProps.image } key="twitter:image" />,
     ]
@@ -97,9 +105,9 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     <Head>
       { rtaLabel }
       { canonicalTag }
-      <title>{ props.resourceProps.title }</title>
+      <title>{ title }</title>
       <meta name="description" content={ props.resourceProps.description } key="description" />
-      <meta property="og:title" content={ props.resourceProps.title } key="og:title" />
+      <meta property="og:title" content={ title } key="og:title" />
       <meta property="og:description" content={ props.resourceProps.description } key="og:description" />
       <meta property="og:site_name" content={ props.resourceProps.siteName } key="og:site_name" />
       <meta property="og:type" content={ props.resourceProps.resourceType } key="og:type" />

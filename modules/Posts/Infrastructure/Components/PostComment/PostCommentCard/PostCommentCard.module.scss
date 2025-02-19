@@ -1,6 +1,6 @@
 .post-comment-card {
   &__container {
-    @apply grid gap-2 items-center border-opacity-50 cursor-default;
+    @apply grid gap-2 items-center cursor-default;
     grid-template-areas:
       "user-logo  user-name-date  options"
       "user-logo  comment         options";
@@ -13,7 +13,8 @@
   }
 
   &__user-avatar {
-    @apply h-6 w-6 self-start text-sm font-bold;
+    @apply h-6 w-6 self-start text-sm font-light uppercase
+    text-text border border-border rounded-full;
     grid-area: user-logo;
   }
 
@@ -28,11 +29,11 @@
   }
 
   &__user-name {
-    @apply text-xs text-base-400 font-semibold;
+    @apply text-xs text-text/80 font-semibold;
   }
 
   &__comment-date {
-    @apply text-xs text-base-400 leading-snug font-light;
+    @apply text-xs text-secondary-text leading-snug font-light;
 
     @screen md {
       @apply font-light;
@@ -40,11 +41,12 @@
   }
 
   &__separator-icon {
-    @apply text-base-600;
+    @apply text-secondary-text;
   }
 
   &__comment {
-    @apply text-sm font-light whitespace-pre-line break-words overflow-hidden;
+    @apply text-sm font-light whitespace-pre-line break-words
+    overflow-hidden;
     grid-area: comment;
   }
 

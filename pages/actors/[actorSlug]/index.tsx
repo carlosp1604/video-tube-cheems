@@ -3,7 +3,7 @@ import { GetActorBySlug } from '~/modules/Actors/Application/GetActorBySlug/GetA
 import { ActorPageComponentDtoTranslator } from '~/modules/Actors/Infrastructure/ActorPageComponentDtoTranslator'
 import { container } from '~/awilix.container'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { defaultPerPageWithoutAds } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
@@ -85,7 +85,7 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
       filters: [{ type: FilterOptions.ACTOR_SLUG, value: String(actorSlug) }],
       sortCriteria: InfrastructureSortingCriteria.DESC,
       sortOption: InfrastructureSortingOptions.DATE,
-      postsPerPage: defaultPerPage,
+      postsPerPage: defaultPerPageWithoutAds,
     })
 
     props.initialPosts = actorPosts.posts.map((post) => {

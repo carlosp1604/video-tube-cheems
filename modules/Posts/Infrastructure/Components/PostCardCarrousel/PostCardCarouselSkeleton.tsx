@@ -30,6 +30,7 @@ export const PostCardCarouselSkeleton: FC<Partial<Props> & Pick<Props, 'postCard
     <Carousel
       onEndReached={ undefined }
       itemsAutoWidth={ false }
+      showButtons={ true }
     >
       { postCardsSkeleton }
     </Carousel>

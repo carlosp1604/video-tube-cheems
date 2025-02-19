@@ -1,19 +1,23 @@
 .post-card-producer-actor {
   &__producer-title {
-    @apply flex flex-row items-end gap-x-1.5 text-xs my-0.5
-    font-normal mx-auto ml-0 text-base-400
+    @apply flex flex-row items-end gap-x-1.5 text-xs
+    my-0.5 font-normal mx-auto ml-0 text-secondary-text
     transition-colors;
 
     &__disabled {
       @apply pointer-events-none;
     }
+
+    @screen md {
+      @apply text-sm;
+    }
   }
 
   &__producer-icon {
-    @apply text-lg text-sky-500 transition-colors;
+    @apply text-lg text-sky-500 transition-colors mb-0.5;
   }
 
   &__producer-iconAd {
-    @apply text-lg text-red transition-colors;
+    @apply text-lg text-red transition-colors mb-0.5;
   }
 }

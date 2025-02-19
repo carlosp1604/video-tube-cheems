@@ -16,7 +16,6 @@ import {
   USER_EMAIL_ALREADY_REGISTERED, USER_INVALID_EMAIL, USER_INVALID_TOKEN_TYPE,
   USER_METHOD,
   USER_SERVER_ERROR, USER_TOKEN_ALREADY_ISSUED,
-  USER_USER_NOT_FOUND,
   USER_VALIDATION
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 
@@ -119,12 +118,9 @@ function handleUnprocessableEntity (
     })
 }
 
+// Obfuscate 404 (avoid user enumeration attack)
 function handleNotFound (response: NextApiResponse) {
-  return response.status(404)
-    .json({
-      code: USER_USER_NOT_FOUND,
-      message: 'User associated to given email was not found',
-    })
+  return response.status(201).end()
 }
 
 function handleInternalError (response: NextApiResponse) {

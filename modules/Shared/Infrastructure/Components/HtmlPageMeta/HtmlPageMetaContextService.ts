@@ -9,11 +9,8 @@ import { AlternateUrl, HtmlPageMetaContextProps } from './HtmlPageMetaContextPro
  * Service to extract metadata properties which are dependent on the context.
  */
 export interface StaticContext extends GetStaticPropsContext {
-  pathname: string
   locale: string
-  req: {
-    url: string
-  }
+  resolvedUrl: string
 }
 
 export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInterface {
@@ -41,7 +38,7 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
   }
 
   private getAlternateLocaleWithAlternateUrl (): AlternateUrl[] {
-    const locales: string[] = this.context.locales?.filter((locale) => locale !== this.getLocale()) || []
+    const locales: string[] = this.context.locales || []
 
     const alternateLocale: AlternateUrl[] = []
 
@@ -55,7 +52,7 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
   }
 
   private getAlternateLocale (): string[] {
-    return this.context.locales?.filter((locale) => locale !== this.getLocale()) || []
+    return this.context.locales || []
   }
 
   private getExtendedAlternateLocale (): string[] {
@@ -66,13 +63,13 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
     const env = process.env
     const baseUrl = env.BASE_URL
 
-    return `${baseUrl}/${this.getLocale()}${this.context.req.url}`
+    return `${baseUrl}/${this.getLocale()}${this.context.resolvedUrl}`
   }
 
   private getUrlForLocale (locale: string): string {
     const env = process.env
     const baseUrl = env.BASE_URL
 
-    return `${baseUrl}/${locale}${this.context.req.url}`
+    return `${baseUrl}/${locale}${this.context.resolvedUrl}`
   }
 }

@@ -89,6 +89,7 @@ export const VideoPostType: FC<Props> = ({
       </h1>
 
       <PostOptions
+        postId={ post.id }
         userReaction={ userReaction }
         savedPost={ savedPost }
         onClickReactButton={ async (type) => await onClickReactButton(type) }

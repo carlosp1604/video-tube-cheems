@@ -2,16 +2,17 @@ import { Dispatch, FC, ReactElement, SetStateAction } from 'react'
 import styles from './MobileMenu.module.scss'
 import { MenuOptionComponentInterface, MenuOptions } from '~/components/MenuOptions/MenuOptions'
 import useTranslation from 'next-translate/useTranslation'
-import { BsBookmarks, BsClock, BsHouse, BsStar, BsTags } from 'react-icons/bs'
+import { BsStar } from 'react-icons/bs'
 import { useLoginContext } from '~/hooks/LoginContext'
 import { useRouter } from 'next/router'
-import { TfiWorld } from 'react-icons/tfi'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import dynamic from 'next/dynamic'
-import { MdLiveTv } from 'react-icons/md'
+import { MdHome, MdLiveTv, MdTranslate } from 'react-icons/md'
 import { IoMdTrendingUp } from 'react-icons/io'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { RxBookmark, RxCounterClockwiseClock, RxListBullet } from 'react-icons/rx'
+import { AiOutlineTags } from 'react-icons/ai'
 
 const CSSTransition = dynamic(() =>
   import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
@@ -117,7 +118,17 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/',
                   blank: false,
                 },
-                picture: <BsHouse className={ styles.mobileMenu__iconOption }/>,
+                picture: <MdHome className={ styles.mobileMenu__iconOption }/>,
+                onClick: undefined,
+              },
+              {
+                title: t('menu_posts_button_title'),
+                isActive: pathname === '/posts',
+                action: {
+                  url: '/posts',
+                  blank: false,
+                },
+                picture: <RxListBullet className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               {
@@ -157,18 +168,18 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                   url: '/tags',
                   blank: false,
                 },
-                picture: <BsTags className={ styles.mobileMenu__iconOption }/>,
+                picture: <AiOutlineTags className={ styles.mobileMenu__iconOption }/>,
                 onClick: undefined,
               },
               buildAuthenticationAction(
                 `/users/${data ? data.user.username : ''}/saved-posts`,
-                <BsBookmarks className={ styles.mobileMenu__iconOption }/>,
+                <RxBookmark className={ styles.mobileMenu__iconOption }/>,
                 asPath === `/users/${data ? data.user.username : ''}/saved-posts`,
                 t('menu_saved_button_title')
               ),
               buildAuthenticationAction(
                 `/users/${data ? data.user.username : ''}/history`,
-                <BsClock className={ styles.mobileMenu__iconOption }/>,
+                <RxCounterClockwiseClock className={ styles.mobileMenu__iconOption }/>,
                 asPath === `/users/${data ? data.user.username : ''}/history`,
                 t('menu_user_history_button_title')
               ),
@@ -176,7 +187,7 @@ export const MobileMenu: FC<Props> = ({ openMenu, setOpenMenu, setOpenLanguageMe
                 title: t('menu_language_button_title'),
                 isActive: false,
                 action: undefined,
-                picture: <TfiWorld className={ styles.mobileMenu__iconOption }/>,
+                picture: <MdTranslate className={ styles.mobileMenu__iconOption }/>,
                 onClick: () => {
                   setOpenLanguageMenu(true)
                 },

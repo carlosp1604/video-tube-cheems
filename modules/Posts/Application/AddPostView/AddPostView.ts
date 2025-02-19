@@ -9,6 +9,9 @@ import {
   AddPostViewApplicationException
 } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationException'
 import { View } from '~/modules/Views/Domain/View'
+import {
+  AddPostViewApplicationResponseDto
+} from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationResponseDto'
 
 export class AddPostView {
   // eslint-disable-next-line no-useless-constructor
@@ -17,7 +20,7 @@ export class AddPostView {
     private readonly userRepository: UserRepositoryInterface
   ) {}
 
-  public async add (request: AddPostViewApplicationRequest): Promise<void> {
+  public async add (request: AddPostViewApplicationRequest): Promise<AddPostViewApplicationResponseDto> {
     const post = await this.getPost(request.postId)
 
     if (request.userId !== null) {
@@ -33,7 +36,11 @@ export class AddPostView {
         DateTime.now()
       )
 
-      await this.postRepository.createPostView(post.id, postView)
+      const postViews = await this.postRepository.createPostView(post.id, postView)
+
+      return {
+        postViews,
+      }
     } catch (exception: unknown) {
       console.error(exception)
       throw AddPostViewApplicationException.cannotCreatePostView(request.postId)

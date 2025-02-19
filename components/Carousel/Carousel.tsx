@@ -1,7 +1,7 @@
-import { createRef, FC, ReactNode, useEffect, useState } from 'react'
+import { FC, ReactNode, useEffect, useRef, useState } from 'react'
 import styles from './Carousel.module.scss'
-import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import useTranslation from 'next-translate/useTranslation'
+import { TiChevronLeft, TiChevronRight } from 'react-icons/ti'
 
 export interface KeyedComponent {
   key: string
@@ -12,13 +12,13 @@ interface Props {
   children: KeyedComponent[]
   itemsAutoWidth: boolean
   onEndReached: (() => void) | undefined
+  showButtons: boolean
 }
 
-export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) => {
+export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached, showButtons }) => {
   const [scrollX, setScrollX] = useState(0)
   const [scrollXBottom, setScrollXBottom] = useState(false)
-  const [showScrollButtons, setShowScrollButtons] = useState(false)
-  const scrollElement = createRef<HTMLDivElement>()
+  const scrollElement = useRef<HTMLDivElement>(null)
 
   const { t } = useTranslation('carousel')
 
@@ -35,8 +35,19 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
     }
   }
 
+  const handleResize = () => {
+    if (scrollElement.current) {
+      setScrollX(scrollElement.current?.scrollLeft)
+      checkIfEndIsReached()
+    }
+  }
+
   useEffect(() => {
-    checkIfEndIsReached()
+    handleResize()
+
+    window.addEventListener('resize', handleResize, true)
+
+    return () => window.removeEventListener('resize', handleResize, true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -53,35 +64,44 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached }) 
   }
 
   return (
-    <div
-      className={ styles.carousel__container }
-      onMouseOver={ () => setShowScrollButtons(true) }
-      onMouseLeave={ () => setShowScrollButtons(false) }
-    >
-      <button
-        className={ `
-          ${styles.carousel__scrollButton}
-          ${styles.carousel__leftScrollButton}
-          ${scrollX === 0 ? styles.carousel__leftScrollButton_hidden : ''}        
-          ${showScrollButtons && scrollX !== 0 ? styles.carousel__scrollButton_active : ''}
-        ` }
-        onClick={ () => handleScrollXLeftClick() }
-        title={ t('carousel_left_button_title') ?? '' }
-      >
-        <BsChevronLeft className={ styles.carousel__carouselIcon }/>
-      </button>
-      <button
-        className={ `
-          ${styles.carousel__scrollButton}
-          ${styles.carousel__rightScrollButton}
-          ${scrollXBottom ? styles.carousel__rightScrollButton_hidden : ''}        
-          ${showScrollButtons && !scrollXBottom ? styles.carousel__scrollButton_active : ''}
-        ` }
-        onClick={ () => handleScrollXRightClick() }
-        title={ t('carousel_right_button_title') ?? '' }
-      >
-        <BsChevronRight className={ styles.carousel__carouselIcon }/>
-      </button>
+    <div className={ styles.carousel__container }>
+      <div className={ `
+        ${styles.carousel__gradientBorderLeft}
+        ${scrollX === 0 ? styles.carousel__gradientBorderLeft_hidden : ''}
+      ` }/>
+
+      { showButtons &&
+        <button
+          className={ `
+            ${styles.carousel__scrollButton}
+            ${styles.carousel__leftButton}
+            ${scrollX === 0 ? styles.carousel__gradientBorderLeft_hidden : ''}
+          ` }
+          onClick={ () => handleScrollXLeftClick() }
+          title={ t('carousel_left_button_title') ?? '' }
+        >
+          <TiChevronLeft className={ styles.carousel__carouselIcon }/>
+        </button>
+      }
+
+      { showButtons &&
+        <button
+          className={ `
+            ${styles.carousel__scrollButton}
+            ${styles.carousel__rightButton}
+            ${scrollXBottom ? styles.carousel__rightButton_hidden : ''}
+          ` }
+          onClick={ () => handleScrollXRightClick() }
+          title={ t('carousel_right_button_title') ?? '' }
+        >
+          <TiChevronRight className={ styles.carousel__carouselIcon }/>
+        </button>
+      }
+
+      <div className={ `
+        ${styles.carousel__gradientBorderRight}
+        ${scrollXBottom ? styles.carousel__gradientBorderRight_hidden : ''}
+      ` }/>
 
       <div
         className={ styles.carousel__slider }

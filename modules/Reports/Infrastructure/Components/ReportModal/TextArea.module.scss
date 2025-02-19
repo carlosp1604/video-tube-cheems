@@ -1,0 +1,21 @@
+.text-area {
+  &__comment-input {
+    @apply h-40 p-2 text-text bg-input w-full
+    scrollbar-hide caret-brand-primary-bg resize-none
+    border border-border rounded-lg placeholder-secondary-text;
+
+    &:active, &:focus, &:hover {
+      @apply outline-none border-brand-primary-light
+      transition-colors;
+    }
+
+    &:disabled {
+      @apply text-disabled placeholder-disabled
+      transition-colors border-disabled;
+
+      &:hover {
+        @apply border-disabled;
+      }
+    }
+  }
+}

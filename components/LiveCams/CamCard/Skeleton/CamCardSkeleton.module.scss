@@ -8,11 +8,11 @@
   }
 
   &__media {
-    @apply aspect-w-16 aspect-h-9 bg-base-800 rounded-lg;
+    @apply aspect-w-16 aspect-h-9 bg-surface rounded-lg;
   }
 
   &__title {
-    @apply h-3 w-full bg-base-700 rounded-lg;
+    @apply h-3 w-full bg-surface rounded-lg;
   }
 
   &__description {
@@ -20,6 +20,6 @@
   }
 
   &__description-line {
-    @apply h-2 w-full bg-base-800 rounded-lg;
+    @apply h-2 w-full bg-surface rounded-lg;
   }
 }

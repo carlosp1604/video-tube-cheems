@@ -9,23 +9,11 @@
   }
 
   &__options-button {
-    @apply text-base-500 rounded-full transition-colors;
-
-    &:hover, &:focus {
-      @apply text-base-100 bg-brand-primary-dark transition-colors;
-    }
-
-    &_open {
-      @apply text-base-100 bg-brand-primary-dark transition-colors;
-    }
-
-    &:disabled {
-      @apply text-base-600 bg-transparent cursor-auto;
-    }
+    @apply p-1;
   }
 
   &__options-icon {
-    @apply h-10 w-10 p-3;
+    @apply h-9 w-9 p-3;
   }
 
   &__interaction-section-container {
@@ -38,12 +26,13 @@
 
     &_actionable {
       @apply cursor-pointer;
+
       &:hover, &:focus {
         @apply text-brand-secondary-dark transition;
       }
 
       &:disabled {
-        @apply text-base-600 transition-colors cursor-auto;
+        @apply text-disabled transition-colors cursor-auto;
       }
     }
   }

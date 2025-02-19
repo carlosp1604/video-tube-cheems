@@ -37,7 +37,7 @@
   &__sourcesMenuList {
     @apply grid gap-2 overflow-y-scroll scrollbar-hide
     justify-center mx-auto;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 
     @screen tb {
       grid-template-columns: repeat(3, 1fr);
@@ -54,9 +54,13 @@
 
   &__sourceOption {
     @apply flex flex-col gap-y-1 items-center
-    justify-center rounded-lg p-1 px-4 border-2
+    justify-center rounded-lg p-1 px-2.5 border-2
     font-bold transition-colors leading-none
     border-white text-white;
+
+    @screen md {
+      @apply px-4;
+    }
 
     &:hover {
       @apply border-brand-primary-light bg-brand-primary-bg/20 transition-colors;

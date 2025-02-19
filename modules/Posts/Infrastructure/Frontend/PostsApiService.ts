@@ -12,8 +12,9 @@ import {
 } from '~/modules/Auth/Infrastructure/Api/AuthApiExceptionCodes'
 import { APIException } from '~/modules/Shared/Infrastructure/FrontEnd/ApiException'
 import {
+  POST_POST_NOT_FOUND,
   POST_REACTION_NOT_FOUND,
-  POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND
+  POST_REACTION_POST_NOT_FOUND, POST_REACTION_USER_NOT_FOUND, POST_USER_NOT_FOUND
 } from '~/modules/Posts/Infrastructure/Api/PostApiExceptionCodes'
 import { ModelReactionApplicationDto } from '~/modules/Reactions/Application/ModelReactionApplicationDto'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -21,6 +22,9 @@ import {
   PostWithRelationsAndViewsApplicationDto
 } from '~/modules/Posts/Application/Dtos/PostWithRelationsAndViewsApplicationDto'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
+import {
+  AddPostViewApplicationResponseDto
+} from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationResponseDto'
 
 export class PostsApiService {
   public async getPosts (
@@ -94,13 +98,66 @@ export class PostsApiService {
     return ((await fetch(`/api/users/${userId}/history?${params}`)).json())
   }
 
-  public async addPostView (postId: string): Promise<Response> {
-    return fetch(`/api/posts/${postId}/post-views`, {
+  public async addPostView (postId: string): Promise<AddPostViewApplicationResponseDto> {
+    const response = await fetch(`/api/posts/${postId}/post-views`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
     })
+
+    const jsonResponse = await response.json()
+
+    if (response.ok) {
+      return jsonResponse as AddPostViewApplicationResponseDto
+    }
+
+    switch (response.status) {
+      case 400:
+        throw new APIException(
+          'bad_request_error_message',
+          response.status,
+          jsonResponse.code
+        )
+
+      case 401:
+        throw new APIException(
+          'user_must_be_authenticated_error_message',
+          response.status,
+          jsonResponse.code
+        )
+
+      case 404:
+        switch (jsonResponse.code) {
+          case POST_USER_NOT_FOUND:
+            throw new APIException(
+              'user_not_found_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          case POST_POST_NOT_FOUND:
+            throw new APIException(
+              'post_not_found_error_message',
+              response.status,
+              jsonResponse.code
+            )
+
+          default:
+            throw new APIException(
+              'server_error_error_message',
+              response.status,
+              jsonResponse.code
+            )
+        }
+
+      default:
+        throw new APIException(
+          'server_error_error_message',
+          response.status,
+          jsonResponse.code
+        )
+    }
   }
 
   public async createPostReaction (postId: string, reactionType: ReactionType): Promise<ModelReactionApplicationDto> {
@@ -127,7 +184,6 @@ export class PostsApiService {
           response.status,
           jsonResponse.code
         )
-        break
 
       case 401:
         throw new APIException(
@@ -413,5 +469,17 @@ export class PostsApiService {
           jsonResponse.code
         )
     }
+  }
+
+  public async getRandomPostSlug (): Promise<string> {
+    const response = await fetch('/api/posts/random')
+
+    const jsonResponse = await response.json()
+
+    if (response.ok) {
+      return jsonResponse.postSlug as string
+    }
+
+    throw new APIException('server_error_error_message', jsonResponse.status, jsonResponse.code)
   }
 }

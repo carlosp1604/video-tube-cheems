@@ -12,7 +12,6 @@ import {
 import {
   PostsQueryParamsParser
 } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
-import { useGetPosts } from '~/hooks/GetPosts'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
 import dynamic from 'next/dynamic'
@@ -29,6 +28,7 @@ import { useUsingRouterContext } from '~/hooks/UsingRouterContext'
 import { GetPostsApplicationResponse } from '~/modules/Posts/Application/Dtos/GetPostsApplicationDto'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
+import { useGetPosts } from '~/hooks/GetPosts'
 
 const PaginationBar = dynamic(() =>
   import('~/components/PaginationBar/PaginationBar').then((module) => module.PaginationBar), { ssr: false }

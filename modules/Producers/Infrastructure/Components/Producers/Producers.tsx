@@ -9,10 +9,6 @@ import {
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
-import { ProducerCardDto } from '~/modules/Producers/Infrastructure/ProducerCardDto'
-import {
-  ProducerCardGallery
-} from '~/modules/Producers/Infrastructure/Components/ProducerCard/ProducerCardGallery/ProducerCardGallery'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import { SortingMenuDropdown } from '~/components/SortingMenuDropdown/SortingMenuDropdown'
 import { defaultPerPage, PaginationHelper } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
@@ -22,7 +18,6 @@ import {
 } from '~/modules/Producers/Infrastructure/Frontend/ProducersPaginationSortingType'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { ProducersApiService } from '~/modules/Producers/Infrastructure/Frontend/ProducersApiService'
-import { ProducerCardDtoTranslator } from '~/modules/Producers/Infrastructure/ProducerCardDtoTranslator'
 import { ProducerFilterOptions } from '~/modules/Producers/Infrastructure/Frontend/ProducerFilterOptions'
 import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
@@ -30,6 +25,9 @@ import { ProducerQueryParamsParser } from '~/modules/Producers/Infrastructure/Fr
 import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
+import { ProfileCardGallery } from '~/modules/Shared/Infrastructure/Components/ProfileCardGallery/ProfileCardGallery'
+import { ProfileCardDtoTranslator } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDtoTranslator'
 
 export interface ProducersPagePaginationState {
   page: number
@@ -41,7 +39,7 @@ export interface Props {
   initialSearchTerm: string
   initialPage: number
   initialOrder: ProducersPaginationSortingType
-  initialProducers: ProducerCardDto[]
+  initialProducers: ProfileCardDto[]
   initialProducersNumber: number
 }
 
@@ -52,7 +50,7 @@ export const Producers: FC<Props> = ({
   initialPage,
   initialOrder,
 }) => {
-  const [producers, setProducers] = useState<ProducerCardDto[]>(initialProducers)
+  const [producers, setProducers] = useState<ProfileCardDto[]>(initialProducers)
   const [producersNumber, setProducersNumber] = useState<number>(initialProducersNumber)
   const [pagination, setPagination] = useState<ProducersPagePaginationState>({
     page: initialPage,
@@ -146,7 +144,7 @@ export const Producers: FC<Props> = ({
     if (newProducers) {
       setProducersNumber(newProducers.producersNumber)
       setProducers(newProducers.producers.map((producer) => {
-        return ProducerCardDtoTranslator
+        return ProfileCardDtoTranslator
           .fromApplicationDto(producer.producer, producer.postsNumber, producer.producerViews)
       }))
     }
@@ -243,9 +241,10 @@ export const Producers: FC<Props> = ({
         />
       </div>
 
-      <ProducerCardGallery
-        producers={ producers }
+      <ProfileCardGallery
+        profiles={ producers }
         loading={ loading }
+        type={ 'producers' }
         emptyState={ emptyState }
       />
 

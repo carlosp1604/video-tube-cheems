@@ -2,7 +2,7 @@
   &__container {
     @apply invisible;
     &_visible {
-      @apply visible text-base-300;
+      @apply visible text-secondary-text;
     }
   }
 }

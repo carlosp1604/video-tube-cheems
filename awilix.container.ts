@@ -51,6 +51,9 @@ import { Login } from '~/modules/Auth/Application/Login/Login'
 import { NodemailerUserEmailSender } from '~/modules/Auth/Infrastructure/NodemailerUserEmailSender'
 import { CreateUser } from '~/modules/Auth/Application/CreateUser/CreateUser'
 import { GetPostsPublishedOnDate } from '~/modules/Posts/Application/GetPostsPublishedOnDate/GetPostsPublishedOnDate'
+import { GetRandomPostSlug } from '~/modules/Posts/Application/GetRandomPostSlug/GetRandomPostSlug'
+import { CreateReport } from '~/modules/Reports/Application/CreateReport'
+import { MysqlReportRepository } from '~/modules/Reports/Infrastructure/MysqlReportRepository'
 
 /**
  * We create a container to register our classes dependencies
@@ -64,6 +67,7 @@ const container = createContainer({ injectionMode: InjectionMode.CLASSIC })
  */
 container.register('cryptoService', asClass(BcryptCryptoService))
 container.register('userRepository', asClass(MysqlUserRepository))
+container.register('reportRepository', asClass(MysqlReportRepository))
 container.register('verificationTokenRepository', asClass(MysqlVerificationTokenRepository))
 container.register('emailFromAddress', asFunction(() => {
   const { env } = process
@@ -155,5 +159,7 @@ container.register('getPostsPublishedOnDateUseCase', asClass(GetPostsPublishedOn
 container.register('changeUserPasswordUseCase', asClass(ChangeUserPassword))
 container.register('loginUseCase', asClass(Login))
 container.register('createUserUseCase', asClass(CreateUser))
+container.register('getRandomPostSlugUseCase', asClass(GetRandomPostSlug))
+container.register('createReportUseCase', asClass(CreateReport))
 
 export { container }

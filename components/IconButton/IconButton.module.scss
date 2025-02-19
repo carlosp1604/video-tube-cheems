@@ -1,18 +1,22 @@
 .icon-button {
   &__button {
-    @apply p-3 rounded-full transition-colors text-base-400
-      text-2xl outline-none;
+    @apply flex flex-shrink-0 p-3 rounded-full transition-colors
+    text-text/80 text-2xl outline-none;
 
     &:hover {
-      @apply bg-base-800/60 transition-colors text-base-100;
-    }
-
-    &:active {
-      @apply bg-base-700/60 text-brand-primary-dark transition-colors;
+      @apply bg-hover transition-colors text-text;
     }
 
     &:disabled {
-      @apply text-base-700;
+      @apply text-disabled;
+
+      &:hover {
+        @apply bg-transparent;
+      }
+
+      &:active {
+        @apply bg-transparent;
+      }
     }
   }
 }

@@ -2,15 +2,14 @@
   &__container {
     @apply flex-col flex-grow rounded-lg hidden
     translate-y-full transition-all m-5 overflow-hidden
-    bg-base-800;
+    bg-modal;
     max-height: calc(100vh - 150px);
 
     @screen tb {
-      @apply max-w-md w-auto opacity-0 scale-50 translate-y-0;
+      @apply flex-grow-0 opacity-0 scale-50 translate-y-0;
     }
 
     @screen md {
-      @apply flex-grow-0;
       max-height: calc(100vh - 40px);
     }
 
@@ -66,14 +65,14 @@
 
   &__close-modal-button {
     @apply absolute top-1 right-1 hidden transition-colors
-    text-base-400;
+    text-secondary-text;
 
     @screen md {
-      @apply block text-2xl text-base-500;
+      @apply block text-2xl text-secondary-text;
     }
 
     &:hover, :focus {
-      @apply cursor-pointer text-base-500;
+      @apply cursor-pointer text-secondary-text/50;
     }
   }
 
@@ -94,7 +93,7 @@
     }
 
     &-exit {
-      @apply flex bg-body/30;
+      @apply flex bg-body/40;
     }
 
     &-exit-active {

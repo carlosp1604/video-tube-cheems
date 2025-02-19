@@ -1,5 +1,4 @@
 import { NextPage } from 'next'
-import { ActorCardDto } from '~/modules/Actors/Infrastructure/ActorCardDto'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
 import {
@@ -15,12 +14,13 @@ import { useRouter } from 'next/router'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
 
 export interface ActorsPageProps {
   initialSearchTerm: string
   initialPage: number
   initialOrder: ActorsPaginationSortingType
-  initialActors: ActorCardDto[]
+  initialActors: ProfileCardDto[]
   initialActorsNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string

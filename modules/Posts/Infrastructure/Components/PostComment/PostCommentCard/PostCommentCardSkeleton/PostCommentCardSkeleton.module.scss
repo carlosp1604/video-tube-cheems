@@ -1,6 +1,6 @@
 .post-comment-card-skeleton {
   &__container {
-    @apply grid gap-2 border-opacity-50 animate-pulse;
+    @apply grid gap-2 animate-pulse;
     grid-template-areas:
       "user-logo  user-name-date  options"
       "user-logo  comment         options"
@@ -11,30 +11,30 @@
   }
 
   &__user-logo {
-    @apply h-6 w-6 self-start rounded-full bg-base-700;
+    @apply h-6 w-6 self-start rounded-full bg-text/20;
     grid-area: user-logo;
   }
 
   &__user-name-date {
     @apply flex gap-x-1 justify-start
-      items-center self-start flex-wrap;
+    items-center self-start flex-wrap;
     grid-area: user-name-date;
   }
 
   &__user-name {
-    @apply h-2.5 w-20 bg-base-700 rounded-lg;
+    @apply h-2.5 w-20 bg-text/20 rounded-lg;
   }
 
   &__comment-date {
-    @apply h-2.5 w-16 bg-base-700 rounded-lg;
+    @apply h-2.5 w-16 bg-text/20 rounded-lg;
   }
 
   &__separator-icon {
-    @apply text-base-600;
+    @apply text-text/20;
   }
 
   &__comment {
-    @apply w-full rounded-lg h-4 bg-base-700;
+    @apply w-full rounded-lg h-4 bg-text/20;
 
     @screen md {
       @apply w-1/2;
@@ -48,15 +48,15 @@
   }
 
   &__response-button-skeleton {
-    @apply h-3 w-12 bg-base-700 rounded-lg;
+    @apply h-3 w-12 bg-text/20 rounded-lg;
   }
 
   &__like-button-skeleton {
-    @apply h-3 w-5 bg-base-700 rounded-lg;
+    @apply h-3 w-5 bg-text/20 rounded-lg;
   }
 
   &__options-skeleton {
-    @apply h-10 w-10 p-3 text-base-600 self-start;
+    @apply h-5 w-5 text-text/20 self-start;
     grid-area: options;
   }
 }

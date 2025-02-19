@@ -34,7 +34,7 @@ export class HtmlPageMetaResourceService implements HtmlPageMetaResourceServiceI
 
   public getProperties (): HtmlPageMetaResourceProps {
     return {
-      title: this.getTitle(),
+      title: this.title,
       description: this.description,
       siteName: this.siteName,
       resourceType: this.resourceType,

@@ -1,7 +1,7 @@
 .app-menu {
   &__layer {
     @apply fixed top-0 z-app-menu transition duration-500 w-full
-    backdrop-filter backdrop-blur-lg bg-opacity-60 bg-body;
+    backdrop-filter backdrop-blur-lg bg-opacity-60 bg-surface;
   }
 
   &__container {
@@ -10,6 +10,10 @@
 
     @screen md {
       @apply gap-x-10 justify-between;
+    }
+
+    @screen lg {
+      @apply border-b border-border;
     }
   }
 
@@ -106,36 +110,13 @@
     }
   }
 
-  &__util-link {
-    @apply flex whitespace-nowrap gap-x-1 items-center bg-base-800 rounded-2xl
-    px-3 p-2 text-xs text-base-300 mr-0 ml-0;
-
-    @screen md {
-      @apply text-sm;
-    }
-
-    &:first-child {
-      @apply ml-auto;
-    }
-
-    &:last-child {
-      @apply mr-auto;
-    }
-
-    @screen md {
-      @apply mx-0;
-      &:first-child {
-        @apply mx-0;
-      }
-
-      &:last-child {
-        @apply mx-0;
-      }
-    }
-  }
-
   &__language-button {
-    @apply h-4 self-start mt-3;
+    @apply flex flex-row gap-x-1 h-2.5 uppercase
+    rounded-sm self-start mt-3 items-center;
+
+    @screen md {
+      @apply h-4 transition-none;
+    }
 
     &:hover {
       @apply animate-pulse;
@@ -143,6 +124,6 @@
   }
 
   &__language-image {
-    @apply h-full w-auto;
+    @apply h-full w-auto rounded-sm border border-border;
   }
 }

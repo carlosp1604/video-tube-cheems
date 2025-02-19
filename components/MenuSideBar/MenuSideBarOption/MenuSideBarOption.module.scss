@@ -3,7 +3,7 @@
 
   &__menu-item-content {
     @apply flex flex-row p-2.5 items-center justify-start
-    font-light mx-auto rounded-full text-base-400;
+    font-light mx-auto rounded-full text-text/80;
 
     &:hover, &:focus {
       @apply bg-sidebar-item transition-colors
@@ -20,17 +20,17 @@
     }
 
     &__active {
-      @apply rounded-md bg-brand-primary-bg text-base-50
+      @apply rounded-md bg-sidebar-item text-text
       transition-colors;
 
       #{$parentBlock}__menu-item-text {
-        @apply text-base-100 transition-colors;
+        @apply text-text transition-colors;
       }
 
       &:hover, &:focus {
-        @apply bg-brand-primary-bg text-base-100 cursor-default;
+        @apply bg-sidebar-item text-text cursor-default;
         #{$parentBlock}__menu-item-text {
-          @apply text-base-100;
+          @apply text-text;
         }
       }
     }

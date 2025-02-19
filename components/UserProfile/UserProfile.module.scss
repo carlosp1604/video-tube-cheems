@@ -7,7 +7,7 @@
     @apply -mx-5 p-5 mt-5;
 
     @screen md {
-      @apply border border-base-800 rounded-lg m-0 p-5;
+      @apply border border-border rounded-lg m-0 p-5;
     }
   }
 
@@ -25,7 +25,7 @@
   }
 
   &__user-posts-see-all {
-    @apply h-full text-sm text-base-500 font-normal;
+    @apply h-full text-sm text-text font-normal;
 
     @screen md {
       @apply text-base;
@@ -33,7 +33,7 @@
   }
 
   &__user-posts-see-skeleton {
-    @apply h-4 w-10 rounded-lg bg-base-700 animate-pulse;
+    @apply h-4 w-10 rounded-lg bg-text/30 animate-pulse;
 
     @screen md {
       @apply w-20;
@@ -42,11 +42,11 @@
 
   &__user-posts-see-all-link {
     @apply flex items-center py-1.5 px-4 text-xs
-    text-base-100 font-medium border border-base-600 rounded-full
-    transition-colors;
+    text-text font-medium border border-border rounded-full
+    transition-colors bg-surface;
 
     &:hover {
-      @apply border-base-800 transition-colors bg-base-900;
+      @apply bg-hover transition-colors text-text;
     }
 
     @screen md {

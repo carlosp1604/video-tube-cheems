@@ -7,7 +7,6 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
-import { ActorCardDtoTranslator } from '~/modules/Actors/Infrastructure/ActorCardDtoTranslator'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
 import {
   HtmlPageMetaContextService
@@ -15,6 +14,7 @@ import {
 import { Settings } from 'luxon'
 import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend/ActorQueryParamsParser'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { ProfileCardDtoTranslator } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDtoTranslator'
 
 export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps<ActorsPageProps> = async (co
 
     props.initialActorsNumber = actors.actorsNumber
     props.initialActors = actors.actors.map((actor) => {
-      return ActorCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
+      return ProfileCardDtoTranslator.fromApplicationDto(actor.actor, actor.postsNumber, actor.actorViews)
     })
 
     // Experimental: Try to improve performance

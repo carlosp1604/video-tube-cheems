@@ -1,7 +1,7 @@
 .tag-card {
   &__container {
     @apply aspect-w-16 aspect-h-9 rounded-md overflow-hidden
-    bg-base-800 shadow-lg shadow-base-950;
+    bg-surface;
   }
 
   &__image-container {
@@ -14,8 +14,8 @@
   }
 
   &__avatar-container {
-    @apply relative rounded-b-none w-full h-full pb-6 text-2xl font-black
-    transition-all;
+    @apply relative rounded-b-none w-full h-full pb-6
+    text-2xl font-black transition-all;
 
     @screen tb {
       @apply pb-8;
@@ -45,7 +45,7 @@
 
   &__link {
     &:hover, &:focus {
-      @apply text-base-100;
+      @apply text-text;
     }
   }
 }

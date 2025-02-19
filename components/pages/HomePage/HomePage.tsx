@@ -1,8 +1,6 @@
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
-import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import useTranslation from 'next-translate/useTranslation'
-import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
@@ -13,17 +11,12 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { useRouter } from 'next/router'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import { TagCardComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagCardComponentDto'
 
 export interface Props {
-  page: number
-  order: PostsPaginationSortingType
-  initialPosts: PostCardComponentDto[]
-  initialPostsNumber: number
-  producers: ProducerComponentDto[]
-  activeProducer: ProducerComponentDto | null
+  posts: Array<PostCardComponentDto>
+  trendingPosts: Array<PostCardComponentDto>
+  tags: Array<TagCardComponentDto>
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string
 }
@@ -72,15 +65,10 @@ export const HomePage: NextPage<Props> = (props: Props) => {
     <>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
-
       <Home
-        page={ props.page }
-        activeProducer={ props.activeProducer }
-        producers={ props.producers }
-        initialPosts={ props.initialPosts }
-        initialPostsNumber={ props.initialPostsNumber }
-        order={ props.order }
+        posts={ props.posts }
+        trendingPosts={ props.trendingPosts }
+        tags={ props.tags }
       />
     </>
   )

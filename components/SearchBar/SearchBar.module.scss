@@ -1,7 +1,7 @@
 .search-bar {
   &__container {
     @apply flex items-center w-full justify-center
-    transition-all m-0 shadow-lg shadow-base-950;
+    transition-all m-0 shadow-lg shadow-body;
 
     @screen md {
       @apply transition-all shadow-none;

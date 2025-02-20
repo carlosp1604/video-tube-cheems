@@ -83,7 +83,7 @@ const i18nConfig = {
     '/posts': [
       'posts_page',
     ],
-    '/posts/top': [
+    'rgx:/posts/top/*': [
       'top',
       'post_card',
     ],

@@ -24,7 +24,7 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   let baseUrl = ''
 
   if (!env.BASE_URL) {
-    throw Error('Missing env var: BASE_URL. Required in the top posts page')
+    throw Error('Missing env var: BASE_URL. Required in the week top posts page')
   } else {
     baseUrl = env.BASE_URL
   }
@@ -32,9 +32,13 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   const dateService = container.resolve<DateServiceInterface>('dateService')
 
   const todayDate = dateService.getCurrentDayWithoutTime()
-  const resolvedUrl = '/posts/top'
+  const currentWeekMonday = dateService.getCurrentWeekFirstDay()
+  const resolvedUrl = '/posts/top/week'
+  const todayDateString = DateTime.fromJSDate(todayDate).toLocaleString({ month: 'long', day: '2-digit' })
+  const currentWeekMondayString =
+    DateTime.fromJSDate(currentWeekMonday).toLocaleString({ month: 'long', day: '2-digit' })
 
-  const currentDate = DateTime.fromJSDate(todayDate).toLocaleString({ month: 'long', day: '2-digit' })
+  const currentDate = `${currentWeekMondayString} - ${todayDateString}`
 
   const htmlPageMetaContextService = new HtmlPageMetaContextService({
     ...context,
@@ -45,7 +49,7 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   const props: TopVideoPostPageProps = {
     posts: [],
     currentDate,
-    option: 'day',
+    option: 'week',
     baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
@@ -53,7 +57,7 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   const getTopVideoPosts = container.resolve<GetTopVideoPosts>('getTopVideoPostsUseCase')
 
   try {
-    const topPosts = await getTopVideoPosts.get({ date: 'day', postsNumber: topPostsDefaultNumber })
+    const topPosts = await getTopVideoPosts.get({ date: 'week', postsNumber: topPostsDefaultNumber })
 
     props.posts =
       topPosts.map((postApplicationDto) =>

@@ -4,23 +4,23 @@
   }
 
   &__name-image-container {
-    @apply flex gap-x-6 gap-y-2 items-center justify-start
-    flex-wrap;
+    @apply flex gap-x-6 gap-y-2 items-center
+    justify-start flex-wrap;
   }
 
   &__image {
-    @apply place-self-center rounded-lg h-32 w-32 object-cover
-    ring-4 ring-base-600;
+    @apply place-self-center rounded-lg h-32 w-32
+    object-cover ring-1 ring-border;
   }
 
   &__avatar {
-    @apply font-bold text-4xl h-32 w-32 ring-4 rounded-lg
-    ring-base-600;
+    @apply font-normal text-4xl h-32 w-32 ring-1
+    rounded-lg ring-border text-text/80;
   }
 
   &__name {
-    @apply flex flex-col text-left text-xl font-black break-words
-    line-clamp-4;
+    @apply flex flex-col text-left text-xl font-light
+    break-words line-clamp-4;
 
     @screen md {
       @apply text-2xl;
@@ -28,11 +28,23 @@
   }
 
   &__profileType {
-    @apply flex gap-x-2 items-center font-normal
-    text-brand-primary-bg;
+    @apply flex gap-x-2 items-center font-light
+    text-brand-primary-light text-sm;
+
+    @screen lg {
+      @apply text-base;
+    }
+  }
+
+  &__icon {
+    @apply mb-0.5;
   }
 
   &__subtitle {
-    @apply text-base font-normal text-secondary-text;
+    @apply text-sm font-normal text-secondary-text;
+
+    @screen lg {
+      @apply text-base;
+    }
   }
 }

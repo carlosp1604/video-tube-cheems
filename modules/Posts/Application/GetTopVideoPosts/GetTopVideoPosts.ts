@@ -1,4 +1,4 @@
-import { PostRepositoryInterface } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import { PostRepositoryInterface, TopPostOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
 import {
   GetTopVideoPostsApplicationRequestDto
 } from '~/modules/Posts/Application/GetTopVideoPosts/GetTopVideoPostsApplicationRequestDto'
@@ -17,7 +17,7 @@ export class GetTopVideoPosts {
     requestDto: GetTopVideoPostsApplicationRequestDto
   ): Promise<PostWithRelationsAndViewsApplicationDto[]> {
     const posts =
-      await this.postRepository.getTopPostsBetweenDates(requestDto.startDate, requestDto.endDate)
+      await this.postRepository.getTopPosts(requestDto.date as TopPostOptions, requestDto.postsNumber)
 
     return posts.map((post) =>
       PostWithRelationsAndViewsApplicationDtoTranslator.fromDomain(post.post, post.postViews))

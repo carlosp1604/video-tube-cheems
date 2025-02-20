@@ -37,6 +37,8 @@ export type RepositoryOptions =
   'producer.parentProducer' |
   'comments.childComments.user'
 
+export type TopPostOptions = 'day' | 'week' | 'month'
+
 export interface PostRepositoryInterface {
   /**
    * Insert a Post in the persistence layer
@@ -204,6 +206,14 @@ export interface PostRepositoryInterface {
    * @return Post array with the posts
    */
   getTopPostsBetweenDates(startDate: Date, endDate: Date): Promise<PostWithViewsInterface[]>
+
+  /**
+   * Get top (most viewed) posts given an option
+   * @param option TopPostOption
+   * @param postsNumber Posts to retrieve
+   * @return Post array with the posts
+   */
+  getTopPosts(option: TopPostOptions, postsNumber: number): Promise<PostWithViewsInterface[]>
 
   /**
    * Create a new post view for a post given its ID

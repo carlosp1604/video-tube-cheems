@@ -1,4 +1,8 @@
-import { PostRepositoryInterface, RepositoryOptions } from '~/modules/Posts/Domain/PostRepositoryInterface'
+import {
+  PostRepositoryInterface,
+  RepositoryOptions,
+  TopPostOptions
+} from '~/modules/Posts/Domain/PostRepositoryInterface'
 import { PostModelTranslator } from './ModelTranslators/PostModelTranslator'
 import { PostCommentModelTranslator } from './ModelTranslators/PostCommentModelTranslator'
 import { PostMetaModelTranslator } from './ModelTranslators/PostMetaModelTranslator'
@@ -29,6 +33,10 @@ import { View } from '~/modules/Views/Domain/View'
 import { PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
+import ViewUncheckedUpdateManyWithoutPostNestedInput = Prisma.ViewUncheckedUpdateManyWithoutPostNestedInput
+import ViewUpdateManyWithoutPostNestedInput = Prisma.ViewUpdateManyWithoutPostNestedInput
+import PopularPostOrderByWithRelationInput = Prisma.PopularPostOrderByWithRelationInput
+import PopularPostSelect = Prisma.PopularPostSelect
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -1006,37 +1014,163 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
+   * Get top (most viewed) posts given an option
+   * @param option TopPostOption
+   * @param postsNumber Posts to retrieve
+   * @return Post array with the posts
+   */
+  public async getTopPosts (option: TopPostOptions, postsNumber: number): Promise<PostWithViewsInterface[]> {
+    let orderByClause: PopularPostOrderByWithRelationInput = {
+      todayViews: 'desc',
+    }
+
+    if (option === 'week') {
+      orderByClause = {
+        weekViews: 'desc',
+      }
+    }
+
+    if (option === 'month') {
+      orderByClause = {
+        monthViews: 'desc',
+      }
+    }
+
+    const topPosts = await prisma.popularPost.findMany({
+      where: {
+        post: {
+          deletedAt: null,
+          publishedAt: {
+            not: null,
+            lte: new Date(),
+          },
+        },
+      },
+      select: {
+        todayViews: true,
+        weekViews: true,
+        monthViews: true,
+        post: {
+          include: {
+            meta: true,
+            producer: true,
+            actor: true,
+            translations: true,
+          },
+        },
+      },
+      orderBy: orderByClause,
+      take: postsNumber,
+    })
+
+    let paddingPosts :PostWithViewsInterface[] = []
+
+    if (topPosts.length < postsNumber) {
+      const extraPosts = await prisma.post.findMany({
+        where: {
+          deletedAt: null,
+          publishedAt: {
+            not: null,
+            lte: new Date(),
+          },
+          id: {
+            not: {
+              in: topPosts.map((topPost) => { return topPost.post.id }),
+            },
+          },
+        },
+        include: {
+          meta: true,
+          producer: true,
+          actor: true,
+          translations: true,
+        },
+        take: postsNumber - topPosts.length,
+      })
+
+      paddingPosts = extraPosts.map((post) => {
+        return {
+          post: PostModelTranslator.toDomain(post, [
+            'meta',
+            'producer',
+            'translations',
+            'actor',
+          ]),
+          postViews: 0,
+        }
+      })
+    }
+
+    const posts = topPosts.map((post) => {
+      return {
+        post: PostModelTranslator.toDomain(post.post, [
+          'meta',
+          'producer',
+          'translations',
+          'actor',
+        ]),
+        postViews: option === 'day'
+          ? post.todayViews
+          : option === 'week'
+            ? post.weekViews
+            : post.monthViews,
+      }
+    })
+
+    return [...posts, ...paddingPosts]
+  }
+
+  /**
    * Create a new post view for a post given its ID
    * @param postId Post ID
    * @param view Post View
    * @return Post views number
    */
-  public async createPostView (postId: Post['id'], view: View): Promise<number> {
-    const prismaPostView = ViewModelTranslator.toDatabase(view)
+  public async createPostView (postId: Post['id'], view: View | null): Promise<number> {
+    let viewData: ViewUncheckedUpdateManyWithoutPostNestedInput |
+      ViewUpdateManyWithoutPostNestedInput |
+      undefined
 
-    const post = await prisma.post.update({
-      where: {
-        id: postId,
-      },
-      select: {
-        viewsCount: true,
-      },
-      data: {
-        viewsCount: {
-          increment: 1,
+    if (view) {
+      const prismaPostView = ViewModelTranslator.toDatabase(view)
+
+      viewData = {
+        create: {
+          id: prismaPostView.id,
+          viewableType: prismaPostView.viewableType,
+          userId: prismaPostView.userId,
+          createdAt: prismaPostView.createdAt,
         },
-        views: {
-          create: {
-            id: prismaPostView.id,
-            viewableType: prismaPostView.viewableType,
-            userId: prismaPostView.userId,
-            createdAt: prismaPostView.createdAt,
+      }
+    }
+
+    return prisma.$transaction(async (transaction) => {
+      const post = await transaction.post.update({
+        where: {
+          id: postId,
+        },
+        select: {
+          viewsCount: true,
+        },
+        data: {
+          viewsCount: {
+            increment: 1,
           },
+          views: viewData,
         },
-      },
-    })
+      })
 
-    return Number.parseInt(post.viewsCount.toString())
+      await transaction.$executeRaw(Prisma.sql`
+        INSERT INTO popular_posts (post_id, today_views, week_views, month_views) 
+        VALUES (${postId}, 1, 1, 1) 
+        ON DUPLICATE KEY UPDATE
+          today_views = today_views + 1,
+          week_views = week_views + 1,
+          month_views = month_views + 1;
+        `)
+
+      return Number.parseInt(post.viewsCount.toString())
+    })
   }
 
   /**

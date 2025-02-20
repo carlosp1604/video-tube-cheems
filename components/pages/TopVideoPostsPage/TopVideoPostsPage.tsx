@@ -15,23 +15,17 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 
 export interface Props {
-  todayTopPosts: PostCardComponentDto[]
-  weekTopPosts: PostCardComponentDto[]
-  monthTopPosts: PostCardComponentDto[]
-  currentDay: string
-  currentMonth: string
-  currentWeek: string
+  posts: Array<PostCardComponentDto>
+  option: string
+  currentDate: string
   baseUrl: string
   htmlPageMetaContextProps: HtmlPageMetaContextProps
 }
 
 export const TopVideoPostsPage: NextPage<Props> = ({
-  todayTopPosts,
-  weekTopPosts,
-  monthTopPosts,
-  currentDay,
-  currentMonth,
-  currentWeek,
+  posts,
+  option,
+  currentDate,
   baseUrl,
   htmlPageMetaContextProps,
 }) => {
@@ -42,6 +36,10 @@ export const TopVideoPostsPage: NextPage<Props> = ({
 
   if (locale !== 'en') {
     canonicalUrl = `${baseUrl}/${locale}/posts/top`
+  }
+
+  if (option !== 'day') {
+    canonicalUrl = `${canonicalUrl}/${option}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -65,12 +63,9 @@ export const TopVideoPostsPage: NextPage<Props> = ({
       <CrackrevenuePostPageBanner />
 
       <TopVideoPosts
-        monthTopPosts={ monthTopPosts }
-        todayTopPosts={ todayTopPosts }
-        weekTopPosts={ weekTopPosts }
-        currentDay={ currentDay }
-        currentMonth={ currentMonth }
-        currentWeek={ currentWeek }
+        posts={ posts }
+        currentDate={ currentDate }
+        currentOption={ option }
       />
     </>
   )

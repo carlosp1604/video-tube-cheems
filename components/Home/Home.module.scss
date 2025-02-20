@@ -1,7 +1,7 @@
 .home {
   &__container {
     @apply container flex flex-col gap-y-4 px-5 mx-auto
-    pb-10 mt-5;
+    pb-10 mt-5 cursor-default;
   }
 
   &__entry-container {
@@ -10,21 +10,11 @@
 
   &__entry-header {
     @apply flex flex-row gap-x-4 items-center justify-between
-    py-1 px-4 bg-surface rounded-md border border-border;
+    py-1;
   }
 
   &__entry-title {
-    @apply text-xl;
-  }
-
-  &__entry-link {
-    @apply px-4 py-2 rounded-md bg-brand-primary-light
-    transition-colors font-normal -mr-2;
-
-    &:hover {
-      @apply bg-brand-primary-bg transition-colors
-      text-text;
-    }
+    @apply text-xl pb-0.5 border-b border-brand-primary-light;
   }
 
   &__tags-gallery-container {

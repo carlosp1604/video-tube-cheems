@@ -1,8 +1,10 @@
 import { FC } from 'react'
 import styles from './RetrievePassword.module.scss'
 import useTranslation from 'next-translate/useTranslation'
-import { BsCheckCircle } from 'react-icons/bs'
 import { useSession } from 'next-auth/react'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
+import { PiCheckCircleFill } from 'react-icons/pi'
 
 export interface Props {
   onConfirm: () => void
@@ -15,26 +17,19 @@ export const ConfirmingPasswordChange: FC<Props> = ({ onConfirm }) => {
 
   return (
     <div className={ styles.retrievePassword__confirmingRegister }>
-      <BsCheckCircle className={ styles.retrievePassword__confirmingRegisterIcon }/>
-        <span className={ styles.retrievePassword__title }>
-          { t('confirming_retrieve_password_title') }
-          <small className={ styles.retrievePassword__subtitle } >
-            { status === 'unauthenticated'
-              ? t('confirming_retrieve_password_subtitle')
-              : t('confirming_retrieve_password_authenticated_user_subtitle')
-            }
-          </small>
-        </span>
-      <button
-        className={ `
-          ${styles.retrievePassword__confirmingRegisterButton}
-          ${status === 'unauthenticated' ? styles.retrievePassword__confirmingRegisterButton_enabled : ''}
-        ` }
-        onClick={ () => onConfirm() }
+      <PiCheckCircleFill className={ styles.retrievePassword__confirmingRegisterIcon }/>
+      <ModalHeader
+        title={ t('confirming_retrieve_password_title') }
+        subtitle={ status === 'unauthenticated'
+          ? t('confirming_retrieve_password_subtitle')
+          : t('confirming_retrieve_password_authenticated_user_subtitle')
+        }
+      />
+      <CommonButton
+        title={ t('confirming_retrieve_password_button_title') }
         disabled={ status !== 'unauthenticated' }
-      >
-        { t('confirming_retrieve_password_button_title') }
-      </button>
+        onClick={ () => onConfirm() }
+      />
     </div>
   )
 }

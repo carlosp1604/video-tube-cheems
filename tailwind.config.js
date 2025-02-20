@@ -67,9 +67,10 @@ module.exports = {
         border: '#303030',
         hover: '#383838',
         active: '#484848',
+        disabled: '#5C5C5C',
         icon: '#FFFFFF',
         modal: '#282828',
-        disabled: '#5C5C5C',
+        'click-animation': '#787878',
         base: {
           50: '#F2F2F2',
           100: '#E3E3E3',

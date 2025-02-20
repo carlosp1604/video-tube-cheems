@@ -55,6 +55,7 @@ model Post {
   savedPosts   SavedPost[]
   postMedia    PostMedia[]
   reports      Report[]
+  popularPost  PopularPost?
 
   @@map("posts")
 }
@@ -337,4 +338,15 @@ model Report {
 
   @@id([userId, postId, type])
   @@map("reports")
+}
+
+model PopularPost {
+  postId     String @unique @map("post_id")
+  post       Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  todayViews Int    @map("today_views")
+  weekViews  Int    @map("week_views")
+  monthViews Int    @map("month_views")
+
+  @@id([postId])
+  @@map("popular_posts")
 }

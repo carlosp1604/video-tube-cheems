@@ -1,4 +1,4 @@
 export interface GetTopVideoPostsApplicationRequestDto {
-  readonly startDate: Date
-  readonly endDate: Date
+  readonly date: string
+  readonly postsNumber: number
 }

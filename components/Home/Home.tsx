@@ -6,7 +6,6 @@ import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
 import styles from './Home.module.scss'
 import { TagCard } from '~/modules/PostTag/Infrastructure/Components/TagCard/TagCard'
-import Link from 'next/link'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
@@ -14,6 +13,7 @@ import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 import useTranslation from 'next-translate/useTranslation'
+import { CommonButtonLink } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonLinkButton'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -32,13 +32,11 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
           <span className={ styles.home__entryTitle }>
             { t('home_page_trending_posts_title') }
           </span>
-          <Link
-            href={ '/posts/top' }
-            className={ styles.home__entryLink }
+          <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
-          >
-            { t('home_page_see_all_section_title') }
-          </Link>
+            linksProps={ { href: '/posts/top' } }
+            rel={ 'follow' }
+          />
         </div>
 
         <PostCardCarousel
@@ -54,13 +52,11 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
           <span className={ styles.home__entryTitle }>
             { t('home_page_latest_posts_title') }
           </span>
-          <Link
-            href={ '/posts' }
-            className={ styles.home__entryLink }
+          <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
-          >
-            { t('home_page_see_all_section_title') }
-          </Link>
+            linksProps={ { href: '/posts' } }
+            rel={ 'follow' }
+          />
         </div>
         <PostCardGallery
           posts={ posts }
@@ -76,13 +72,11 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
           <span className={ styles.home__entryTitle }>
             { t('home_page_tags_title') }
           </span>
-          <Link
-            href={ '/tags' }
-            className={ styles.home__entryLink }
+          <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
-          >
-            { t('home_page_see_all_section_title') }
-          </Link>
+            linksProps={ { href: '/tags' } }
+            rel={ 'follow' }
+          />
         </div>
         <section className={ styles.home__tagsGalleryContainer }>
           { tags.map((tagCardDto) => (

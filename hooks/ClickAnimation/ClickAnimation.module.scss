@@ -1,11 +1,10 @@
 .effectContainer {
   @apply relative overflow-hidden;
-  --effect-color: theme('colors.base.500');
-  --effect-color-dark: theme('colors.base.600');
+  --effect-color: theme('colors.click-animation');
 
   &::before {
     @apply rounded-full absolute opacity-0 overflow-hidden
-    h-[50px] w-[50px] dark:bg-[var(--effect-color-dark)];
+    h-[50px] w-[50px];
     content: "";
     top: var(--effect-top);
     left: var(--effect-left);

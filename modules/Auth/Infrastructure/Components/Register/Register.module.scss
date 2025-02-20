@@ -30,23 +30,10 @@
   }
 
   &__confirming-register-icon {
-    @apply h-12 w-12 text-green;
+    @apply h-20 w-20 text-brand-primary-light -mb-2;
 
     @screen md {
       @apply h-20 w-20;
-    }
-  }
-
-  &__confirming-register-button {
-    @apply p-2 border-2 border-brand-primary-dark font-bold w-full
-      rounded-lg transition-colors duration-100;
-
-    &:active, &:focus, &:hover {
-      @apply bg-brand-primary-dark;
-    }
-
-    @screen md {
-      @apply font-black;
     }
   }
 

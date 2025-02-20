@@ -1,7 +1,9 @@
 import { FC } from 'react'
 import styles from './Register.module.scss'
-import { BsCheckCircle } from 'react-icons/bs'
 import useTranslation from 'next-translate/useTranslation'
+import { ModalHeader } from '~/modules/Auth/Infrastructure/Components/ModalHeader/ModalHeader'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { PiCheckCircleFill } from 'react-icons/pi'
 
 export interface Props {
   onConfirm: () => void
@@ -12,19 +14,16 @@ export const ConfirmingRegister: FC<Props> = ({ onConfirm }) => {
 
   return (
     <div className={ styles.register__confirmingRegister }>
-      <BsCheckCircle className={ styles.register__confirmingRegisterIcon }/>
-        <span className={ styles.register__title }>
-          { t('confirming_signup_title') }
-          <small className={ styles.register__subtitle } >
-            { t('confirming_signup_subtitle') }
-          </small>
-        </span>
-      <button
-        className={ styles.register__confirmingRegisterButton }
+      <PiCheckCircleFill className={ styles.register__confirmingRegisterIcon }/>
+      <ModalHeader
+        title={ t('confirming_signup_title') }
+        subtitle={ t('confirming_signup_subtitle') }
+      />
+      <CommonButton
+        title={ t('confirming_signup_button_title') }
+        disabled={ false }
         onClick={ onConfirm }
-      >
-        { t('confirming_signup_button_title') }
-      </button>
+      />
     </div>
   )
 }

@@ -17,7 +17,7 @@
 
   &__show-hide-password-button {
     @apply text-text absolute -top-3.5 py-1.5 right-0 px-2
-    bg-brand-primary-light rounded-lg transition-colors;
+    bg-brand-primary-light rounded-md transition-colors;
 
     &:hover, &:focus {
       @apply bg-brand-primary-bg transition-colors

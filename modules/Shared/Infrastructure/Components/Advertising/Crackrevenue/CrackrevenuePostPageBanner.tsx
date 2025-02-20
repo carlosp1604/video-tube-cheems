@@ -3,20 +3,20 @@ import styles from '~/modules/Shared/Infrastructure/Components/Advertising/Banne
 import { RiAdvertisementLine } from 'react-icons/ri'
 import Image from 'next/image'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
-import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 import useTranslation from 'next-translate/useTranslation'
+import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 
 export const CrackrevenuePostPageBanner: FC = () => {
   const { t } = useTranslation('advertising')
 
   return (
-    <div
-      className={ styles.banner__container }
-      onClick={ () => handleClick(
-        'https://t.ajrkm2.com/258265/8780/32514?bo=2779,2778,2777,2776,2775&aff_sub5=SF_006OG000004lmDN'
-      ) }
-    >
-      <div className={ `${styles.banner__bannerWrapper90x729} ${styles.banner__responsiveDesktop}` }>
+    <div className={ styles.banner__container }>
+      <div
+        className={ `${styles.banner__bannerWrapper90x729} ${styles.banner__responsiveDesktop}` }
+        onClick={ () => handleClick(
+          'https://t.ajrkm2.com/258265/8780/32514?bo=2779,2778,2777,2776,2775&aff_sub5=SF_006OG000004lmDN'
+        ) }
+      >
         <Image
           src={ 'https://www.imglnkx.com/8780/009379D_JRKM_18_ALL_EN_125_L.gif' }
           alt={ t('advertising_jerkmate_banner_alt_title') }
@@ -28,7 +28,12 @@ export const CrackrevenuePostPageBanner: FC = () => {
         />
         <RiAdvertisementLine className={ styles.banner__adIcon }/>
       </div>
-      <div className={ `${styles.banner__bannerContainer100x300} ${styles.banner__responsiveMobile}` }>
+      <div
+        className={ `${styles.banner__bannerContainer100x300} ${styles.banner__responsiveMobile}` }
+        onClick={ () => handleClick(
+          'https://t.ajrkm2.com/258265/8780/32514?bo=2779,2778,2777,2776,2775&aff_sub5=SF_006OG000004lmDN'
+        ) }
+      >
         <Image
           src={ 'https://www.imglnkx.com/8780/000110F_JRKM_18_ALL_EN_64_L.gif' }
           alt={ t('advertising_jerkmate_banner_alt_title') }

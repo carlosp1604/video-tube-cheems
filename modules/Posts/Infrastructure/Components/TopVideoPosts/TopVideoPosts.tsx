@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { PostCardGallery } from '~/modules/Posts/Infrastructure/Components/PostCardGallery/PostCardGallery'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
@@ -10,37 +10,17 @@ import { BsSortDown } from 'react-icons/bs'
 type TopOptions = 'day' | 'week' | 'month'
 
 interface Props {
-  todayTopPosts: PostCardComponentDto[]
-  weekTopPosts: PostCardComponentDto[]
-  monthTopPosts: PostCardComponentDto[]
-  currentDay: string
-  currentMonth: string
-  currentWeek: string
+  posts: Array<PostCardComponentDto>
+  currentDate: string
+  currentOption: string
 }
 
 export const TopVideoPosts: FC<Props> = ({
-  todayTopPosts,
-  weekTopPosts,
-  monthTopPosts,
-  currentDay,
-  currentMonth,
-  currentWeek,
+  posts,
+  currentDate,
+  currentOption,
 }) => {
   const { t } = useTranslation('top')
-  const [currentOption, setCurrentOption] = useState<TopOptions>('day')
-
-  let postsToShow = todayTopPosts
-  let date = currentDay
-
-  if (currentOption === 'week') {
-    postsToShow = weekTopPosts
-    date = currentWeek
-  }
-
-  if (currentOption === 'month') {
-    postsToShow = monthTopPosts
-    date = currentMonth
-  }
 
   const topOptions = (
     <DropdownMenu
@@ -48,17 +28,23 @@ export const TopVideoPosts: FC<Props> = ({
         {
           title: t('top_posts_day_option_button_title'),
           active: currentOption === 'day',
-          onClick: () => setCurrentOption('day'),
+          link: {
+            href: '/posts/top',
+          },
         },
         {
           title: t('top_posts_week_option_button_title'),
           active: currentOption === 'week',
-          onClick: () => setCurrentOption('week'),
+          link: {
+            href: '/posts/top/week',
+          },
         },
         {
           title: t('top_posts_month_option_button_title'),
           active: currentOption === 'month',
-          onClick: () => setCurrentOption('month'),
+          link: {
+            href: '/posts/top/month',
+          },
         },
       ] }
       title={ currentOption === 'day'
@@ -76,12 +62,12 @@ export const TopVideoPosts: FC<Props> = ({
       <CommonGalleryHeader
         title={ 'top:top_posts_title' }
         subtitle={ '' }
-        term={ { title: 'date', value: date } }
+        term={ { title: 'date', value: currentDate } }
         sortingMenu={ topOptions }
       />
 
       <PostCardGallery
-        posts={ postsToShow }
+        posts={ posts }
         postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
       />
     </div>

@@ -4,8 +4,7 @@
   }
 
   &__infoSectionTitle {
-    @apply text-xs font-semibold text-black
-    dark:text-base-300 -mb-2;
+    @apply text-xs font-semibold text-black -mb-2;
 
     @screen md {
       @apply text-sm;
@@ -22,6 +21,6 @@
 
   &__message {
     @apply text-black my-2 whitespace-pre-wrap
-    text-center dark:text-base-300;
+    text-center;
   }
 }

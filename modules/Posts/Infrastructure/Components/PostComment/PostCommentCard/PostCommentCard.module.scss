@@ -34,10 +34,6 @@
 
   &__comment-date {
     @apply text-xs text-secondary-text leading-snug font-light;
-
-    @screen md {
-      @apply font-light;
-    }
   }
 
   &__separator-icon {

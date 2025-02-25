@@ -14,6 +14,7 @@ export interface OptionalProps {
   icon: ReactElement
   target: HTMLAttributeAnchorTarget
   rel: string
+  border: boolean
 }
 
 export const CommonButtonLink: FC<Props & Partial<OptionalProps>> = ({
@@ -21,12 +22,15 @@ export const CommonButtonLink: FC<Props & Partial<OptionalProps>> = ({
   linksProps,
   onClick = undefined,
   icon = undefined,
+  border = false,
   target,
   rel,
 }) => {
   return (
     <Link
-      className={ styles.commonButton__container }
+      className={ `
+        ${styles.commonButton__container} ${border ? styles.commonButton__withBorder : ''}
+      ` }
       title={ title }
       onClick={ onClick }
       { ... linksProps }

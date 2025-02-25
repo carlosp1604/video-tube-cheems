@@ -22,8 +22,6 @@ export class GetPostBySlug {
 
     return {
       post: PostApplicationDtoTranslator.fromDomain(postWithCount.post),
-      reactions: postWithCount.reactions,
-      comments: postWithCount.postComments,
       views: postWithCount.postViews,
       externalLink,
     }

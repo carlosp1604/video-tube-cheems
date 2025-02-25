@@ -6,19 +6,23 @@
   }
 
   &__bannerWrapper250x300 {
-    @apply relative h-[250px] min-w-[300px] bg-surface mb-1;
+    @apply relative h-[250px] min-w-[300px] bg-surface mb-1
+    cursor-pointer;
   }
 
   &__bannerWrapper90x729 {
-    @apply relative h-[90px] min-w-[729px] bg-surface mb-1;
+    @apply relative h-[90px] min-w-[729px] bg-surface mb-1
+    cursor-pointer;
   }
 
   &__bannerContainer50x320 {
-    @apply relative h-[50px] w-[320px] bg-surface mb-1;
+    @apply relative h-[50px] w-[320px] bg-surface mb-1
+    cursor-pointer;
   }
 
   &__bannerContainer100x300 {
-    @apply relative h-[100px] min-w-[300px] bg-surface mb-1;
+    @apply relative h-[100px] min-w-[300px] bg-surface mb-1
+    cursor-pointer;
   }
 
   &__responsiveDesktop {

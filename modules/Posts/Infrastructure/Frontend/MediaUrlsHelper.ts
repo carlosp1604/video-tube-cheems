@@ -1,8 +1,5 @@
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { PostMediaComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/PostMediaComponentDto'
-import {
-  sanboxableProviders
-} from '~/modules/Posts/Infrastructure/Components/Post/VideoPostPlayer/SanboxableProviders'
 
 /**
  * Supreme Admin Uuid = f373b07d-fc3e-42a5-9543-c59d503324aa
@@ -45,8 +42,7 @@ export class MediaUrlsHelper {
 
   public static getSelectableUrls (
     postMediaEmbedType: PostMediaComponentDto[],
-    postMediaVideoType: PostMediaComponentDto[],
-    userId: string | null
+    postMediaVideoType: PostMediaComponentDto[]
   ):MediaUrlComponentDto[] {
     let mediaUrls: MediaUrlComponentDto[] = []
 
@@ -60,21 +56,7 @@ export class MediaUrlsHelper {
       }
     }
 
-    return MediaUrlsHelper.sortMediaUrl(MediaUrlsHelper.filterProviders(mediaUrls, userId))
-  }
-
-  public static shouldBeSanboxed (providerId: string, authenticated: boolean): boolean {
-    return sanboxableProviders.includes(providerId)
-  }
-
-  private static filterProviders (mediaUrls: MediaUrlComponentDto[], userId: string | null): MediaUrlComponentDto[] {
-    if (!userId || (userId && userId !== '00000000-0000-0000-0000-000000000000')) {
-      return mediaUrls.filter((mediaUrl) => {
-        return mediaUrl.provider.id !== '9a51b189-0cbe-4c68-822a-440b61301ec0' // Direct provider
-      })
-    }
-
-    return mediaUrls
+    return MediaUrlsHelper.sortMediaUrl(mediaUrls)
   }
 
   // TODO: This should change when user can decide its own order

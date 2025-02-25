@@ -88,4 +88,8 @@
   &__sourceOptionImage {
     @apply h-full w-full object-contain overflow-hidden;
   }
+
+  &__floatingMenuButton {
+    @apply absolute left-0 top-0;
+  }
 }

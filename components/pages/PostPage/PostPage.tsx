@@ -23,9 +23,6 @@ export interface PostPageProps {
   postEmbedUrl: string
   baseUrl: string
   postViewsNumber: number
-  postLikes: number
-  postDislikes: number
-  postCommentsNumber: number
   relatedPosts: PostCardComponentDto[]
   htmlPageMetaContextProps: HtmlPageMetaContextProps
 }
@@ -36,10 +33,7 @@ export const PostPage: NextPage<PostPageProps> = ({
   parsedDuration,
   baseUrl,
   relatedPosts,
-  postCommentsNumber,
   postViewsNumber,
-  postLikes,
-  postDislikes,
   htmlPageMetaContextProps,
 }) => {
   const { t } = useTranslation('post_page')
@@ -67,21 +61,6 @@ export const PostPage: NextPage<PostPageProps> = ({
         '@type': 'InteractionCounter',
         interactionType: { '@type': 'WatchAction' },
         userInteractionCount: postViewsNumber,
-      },
-      {
-        '@type': 'InteractionCounter',
-        interactionType: { '@type': 'LikeAction' },
-        userInteractionCount: postLikes,
-      },
-      {
-        '@type': 'InteractionCounter',
-        interactionType: { '@type': 'DislikeAction' },
-        userInteractionCount: postDislikes,
-      },
-      {
-        '@type': 'InteractionCounter',
-        interactionType: { '@type': 'CommentAction' },
-        userInteractionCount: postCommentsNumber,
       },
     ],
   }
@@ -133,9 +112,6 @@ export const PostPage: NextPage<PostPageProps> = ({
       <Post
         post={ post }
         key={ post.id }
-        postCommentsNumber={ postCommentsNumber }
-        postLikes={ postLikes }
-        postDislikes={ postDislikes }
         postViewsNumber={ postViewsNumber }
       />
 

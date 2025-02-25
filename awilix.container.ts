@@ -54,6 +54,7 @@ import { GetPostsPublishedOnDate } from '~/modules/Posts/Application/GetPostsPub
 import { GetRandomPostSlug } from '~/modules/Posts/Application/GetRandomPostSlug/GetRandomPostSlug'
 import { CreateReport } from '~/modules/Reports/Application/CreateReport'
 import { MysqlReportRepository } from '~/modules/Reports/Infrastructure/MysqlReportRepository'
+import { GetPostReactionsCount } from '~/modules/Posts/Application/GetPostReactionsCount/GetPostReactionsCount'
 
 /**
  * We create a container to register our classes dependencies
@@ -161,5 +162,6 @@ container.register('loginUseCase', asClass(Login))
 container.register('createUserUseCase', asClass(CreateUser))
 container.register('getRandomPostSlugUseCase', asClass(GetRandomPostSlug))
 container.register('createReportUseCase', asClass(CreateReport))
+container.register('getPostReactionsCountUseCase', asClass(GetPostReactionsCount))
 
 export { container }

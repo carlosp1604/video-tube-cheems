@@ -12,7 +12,6 @@ import {
 import { Tag } from '~/modules/PostTag/Infrastructure/Components/Tag/Tag'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { useAvatarColor } from '~/hooks/AvatarColor'
 import styles from './TagPage.module.scss'
 import { useRouter } from 'next/router'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
@@ -39,8 +38,6 @@ export const TagPage: NextPage<TagPageProps> = ({
 }) => {
   const { t } = useTranslation('tags')
   const locale = useRouter().locale ?? 'en'
-  const getRandomColor = useAvatarColor()
-  const tagColor = getRandomColor(tag.name)
 
   const structuredData = {
     '@context': 'http://schema.org',

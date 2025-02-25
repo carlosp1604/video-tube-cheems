@@ -25,6 +25,12 @@ import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostF
 import {
   AddPostViewApplicationResponseDto
 } from '~/modules/Posts/Application/AddPostView/AddPostViewApplicationResponseDto'
+import {
+  GetPostReactionsCountApplicationResponseDto
+} from '~/modules/Posts/Application/GetPostReactionsCount/GetPostReactionsCountApplicationResponseDto'
+import {
+  GetPostUserInteractionApplicationResponseDto
+} from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteractionApplicationResponseDto'
 
 export class PostsApiService {
   public async getPosts (
@@ -298,10 +304,40 @@ export class PostsApiService {
     }
   }
 
-  public async getPostUserInteraction (postId: string): Promise<Response> {
+  public async getPostUserInteraction (postId: string): Promise<GetPostUserInteractionApplicationResponseDto> {
     const fetchRoute = `/api/posts/${postId}/user-interaction`
 
-    return fetch(fetchRoute)
+    const response = await fetch(fetchRoute)
+
+    const jsonResponse = await response.json()
+
+    if (response.ok) {
+      return jsonResponse as GetPostUserInteractionApplicationResponseDto
+    }
+
+    throw new APIException(
+      'server_error_error_message',
+      response.status,
+      jsonResponse.code
+    )
+  }
+
+  public async getPostReactionsCount (postId: string): Promise<GetPostReactionsCountApplicationResponseDto> {
+    const fetchRoute = `/api/posts/${postId}/reactions/count`
+
+    const response = await fetch(fetchRoute)
+
+    const jsonResponse = await response.json()
+
+    if (response.ok) {
+      return jsonResponse as GetPostReactionsCountApplicationResponseDto
+    }
+
+    throw new APIException(
+      'server_error_error_message',
+      response.status,
+      jsonResponse.code
+    )
   }
 
   public async savePost (userId: string, postId: string): Promise<PostWithRelationsAndViewsApplicationDto> {

@@ -14,7 +14,6 @@ import {
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
-import { useAvatarColor } from '~/hooks/AvatarColor'
 import { BsStarFill } from 'react-icons/bs'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 
@@ -35,7 +34,6 @@ export const ActorPage: NextPage<ActorPageProps> = ({
 }) => {
   const { t } = useTranslation('actors')
   const locale = useRouter().locale ?? 'en'
-  const getRandomColor = useAvatarColor()
 
   const structuredData = {
     '@context': 'http://schema.org',

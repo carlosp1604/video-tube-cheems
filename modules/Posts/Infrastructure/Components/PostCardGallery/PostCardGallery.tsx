@@ -14,7 +14,7 @@ import { PostCardGalleryAdsPreset } from '~/modules/Posts/Infrastructure/Fronten
 import { PaginatedPostCardGalleryHelper } from '~/modules/Posts/Infrastructure/Frontend/PaginatedPostCardGalleryHelpter'
 import { PostCardAdvertising } from '~/modules/Shared/Infrastructure/Components/Advertising/PostCardAdvertising'
 import { useToast } from '~/components/AppToast/ToastContext'
-import { nativeAdsData } from '~/nativeAdsData'
+import { adsData } from '~/adsData'
 import {
   ExoclickResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/ExoclickResponsiveBanner'
@@ -121,17 +121,17 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
         }
 
         if (mounted) {
-          const adIndex = PaginatedPostCardGalleryHelper.genRandomValue(0, nativeAdsData.length - 1, indexes)
+          const adIndex = PaginatedPostCardGalleryHelper.genRandomValue(0, adsData.length - 1, indexes)
 
           indexes.push(adIndex)
 
           postCards.splice(adPosition, 0, (
             <PostCardAdvertising
-              key={ nativeAdsData[adIndex].offerUrl }
-              offerUrl={ nativeAdsData[adIndex].offerUrl }
-              thumb={ PaginatedPostCardGalleryHelper.getRandomElementFromArray(nativeAdsData[adIndex].thumbs) }
-              title={ t(`advertising:${nativeAdsData[adIndex].titleKey}`) }
-              adNetworkName={ nativeAdsData[adIndex].adNetworkName }
+              key={ adsData[adIndex].offerUrl }
+              offerUrl={ adsData[adIndex].offerUrl }
+              thumb={ PaginatedPostCardGalleryHelper.getRandomElementFromArray(adsData[adIndex].thumbs) }
+              title={ t(`advertising:${adsData[adIndex].titleKey}`) }
+              adNetworkName={ adsData[adIndex].adNetworkName }
               views={ firstCardViews }
               date={ firstCardDate }
             />

@@ -1,7 +1,7 @@
 .post-options {
   &__container {
-    @apply flex flex-nowrap gap-x-2 overflow-x-scroll scrollbar-hide
-    -mx-5 px-5;
+    @apply flex flex-nowrap gap-x-2 overflow-x-scroll
+    scrollbar-hide -mx-5 px-5;
   }
 
   &__option-item {

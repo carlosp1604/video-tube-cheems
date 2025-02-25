@@ -26,24 +26,17 @@ const PostComments = dynamic(() =>
 export interface Props {
   post: PostComponentDto
   postViewsNumber: number
-  postLikes: number
-  postDislikes: number
-  postCommentsNumber: number
 }
 
 export const Post: FC<Props> = ({
   post,
   postViewsNumber,
-  postLikes,
-  postDislikes,
-  postCommentsNumber,
 }) => {
-  const [likesNumber, setLikesNumber] = useState<number>(postLikes)
-  const [dislikesNumber, setDislikesNumber] = useState<number>(postDislikes)
+  const [likesNumber, setLikesNumber] = useState<number>(0)
+  const [dislikesNumber, setDislikesNumber] = useState<number>(0)
   const [viewsNumber, setViewsNumber] = useState<number>(postViewsNumber)
   const [userReaction, setUserReaction] = useState<ReactionComponentDto | null>(null)
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false)
-  const [commentsNumber, setCommentsNumber] = useState<number>(postCommentsNumber)
   const [savedPost, setSavedPost] = useState<boolean>(false)
   const [optionsDisabled, setOptionsDisabled] = useState<boolean>(true)
   const activeBreakpoint = useMediaQuery()
@@ -65,27 +58,17 @@ export const Post: FC<Props> = ({
 
     if (status === 'authenticated') {
       postsApiService.getPostUserInteraction(post.id)
-        .then(async (response) => {
-          if (response.ok) {
-            const jsonResponse = await response.json()
-
-            setSavedPost(jsonResponse.savedPost)
-
-            if (jsonResponse.userReaction === null) {
-              setUserReaction(null)
-
-              return
-            }
-
+        .then((response) => {
+          if (response.userReaction === null) {
+            setUserReaction(null)
+          } else {
             const userReactionDto =
-              ReactionComponentDtoTranslator.fromApplicationDto(jsonResponse.userReaction)
+              ReactionComponentDtoTranslator.fromApplicationDto(response.userReaction)
 
             setUserReaction(userReactionDto)
-          } else {
-            const jsonResponse = await response.json()
-
-            console.error(jsonResponse)
           }
+
+          setSavedPost(response.savedPost)
         })
         .catch((exception) => {
           console.error(exception)
@@ -99,17 +82,27 @@ export const Post: FC<Props> = ({
         setCommentsOpen(true)
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status])
 
   useEffect(() => {
-    try {
-      postsApiService.addPostView(post.id)
-        .then((response) => {
-          setViewsNumber(response.postViews)
-        })
-    } catch (exception: unknown) {
-      console.error(exception)
-    }
+    postsApiService.addPostView(post.id)
+      .then((response) => {
+        setViewsNumber(response.postViews)
+      })
+      .catch((exception) => {
+        console.error(exception)
+      })
+
+    postsApiService.getPostReactionsCount(post.id)
+      .then((response) => {
+        setLikesNumber(response.likes)
+        setDislikesNumber(response.dislikes)
+      })
+      .catch((exception) => {
+        console.error(exception)
+      })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   let commentsComponent: ReactElement | null = null
@@ -120,8 +113,6 @@ export const Post: FC<Props> = ({
         key={ post.id }
         postId={ post.id }
         setIsOpen={ setCommentsOpen }
-        setCommentsNumber={ setCommentsNumber }
-        commentsNumber={ commentsNumber }
       />
     )
   }

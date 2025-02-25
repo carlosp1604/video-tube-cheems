@@ -1,5 +1,6 @@
 {
   "action_cannot_be_performed_error_message": "You can't do this now, wait for the current operation to finish",
+  "actor_image_alt_title": "Profile picture of actor {{actorName}}",
   "ad_blocker_detected_message_title": "Are you using an ad blocker?\n This may affect your experience on this website.",
   "banner_ad_title": "Advertising",
   "cam_card_live_title": "Live",
@@ -14,5 +15,7 @@
   "like_reaction_active_title_button": "Remove reaction",
   "like_reaction_title_button": "Like",
   "page_title_with_language": "{{sitename}} English | {{title}}",
+  "producer_image_alt_title": "Profile picture of producer {{producerName}}",
+  "tag_image_alt_title": "Profile picture of tag {{tagName}}",
   "user_new_login_help_message_title": "If you previously created an account with Google, you just have to click on 'Forgot my password' to generate a password for your user."
 }

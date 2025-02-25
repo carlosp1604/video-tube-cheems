@@ -36,6 +36,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/posts/top' } }
             rel={ 'follow' }
+            border={ true }
           />
         </div>
 
@@ -56,6 +57,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/posts' } }
             rel={ 'follow' }
+            border={ true }
           />
         </div>
         <PostCardGallery
@@ -76,6 +78,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/tags' } }
             rel={ 'follow' }
+            border={ true }
           />
         </div>
         <section className={ styles.home__tagsGalleryContainer }>

@@ -6,14 +6,14 @@ import {
   PostReactionApplicationDtoTranslator
 } from '~/modules/Posts/Application/Translators/PostReactionApplicationDtoTranslator'
 import {
-  GetPostUserInteractionApplicationDto
-} from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteractionApplicationDto'
+  GetPostUserInteractionApplicationResponseDto
+} from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteractionApplicationResponseDto'
 
 export class GetPostUserInteraction {
   // eslint-disable-next-line no-useless-constructor
   constructor (private readonly postRepository: PostRepositoryInterface) {}
 
-  public async get (request: GetPostUserInteractionApplicationRequest): Promise<GetPostUserInteractionApplicationDto> {
+  public async get (request: GetPostUserInteractionApplicationRequest): Promise<GetPostUserInteractionApplicationResponseDto> {
     const postUserInteraction = await this.postRepository.findUserInteraction(request.postId, request.userId)
 
     return {

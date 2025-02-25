@@ -1,4 +1,4 @@
-export const nativeAdsData = [
+export const adsData = [
   {
     titleKey: 'native_ads_cams_offer_title',
     thumbs: [
@@ -70,4 +70,22 @@ export const nativeAdsData = [
     offerUrl: 'https://t.ajrkm2.com/258265/6224/0?bo=2779,2778,2777,2776,2775&aff_sub5=SF_006OG000004lmDN',
     adNetworkName: 'Jerkmate',
   },
+]
+
+export const postBannerMobileData = [
+  'https://cdn.cheemsporn.com/mobile-banner-1.gif',
+  'https://cdn.cheemsporn.com/mobile-banner-2.gif',
+  'https://cdn.cheemsporn.com/mobile-banner-3.gif',
+  'https://cdn.cheemsporn.com/mobile-banner-4.gif',
+  'https://cdn.cheemsporn.com/mobile-banner-5.gif',
+  'https://cdn.cheemsporn.com/mobile-banner-6.gif',
+]
+
+export const postBannerDesktopData = [
+  'https://cdn.cheemsporn.com/desktop-banner-1.gif',
+  'https://cdn.cheemsporn.com/desktop-banner-2.gif',
+  'https://cdn.cheemsporn.com/desktop-banner-3.gif',
+  'https://cdn.cheemsporn.com/desktop-banner-4.gif',
+  'https://cdn.cheemsporn.com/desktop-banner-5.gif',
+  'https://cdn.cheemsporn.com/desktop-banner-6.gif',
 ]

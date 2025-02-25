@@ -7,7 +7,6 @@ import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostOptions } from '~/modules/Posts/Infrastructure/Components/Post/PostOptions/PostOptions'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 import useTranslation from 'next-translate/useTranslation'
-import { useSession } from 'next-auth/react'
 import { BsFileEarmarkBreak } from 'react-icons/bs'
 import {
   CrackrevenuePostPageBanner
@@ -35,7 +34,6 @@ export const VideoPostType: FC<Props> = ({
   optionsDisabled,
 }) => {
   const { t } = useTranslation('post')
-  const { data } = useSession()
 
   const [sourcesMenuOpen, setSourcesMenuOpen] = useState<boolean>(false)
   const playerRef = useRef<HTMLDivElement>(null)
@@ -47,10 +45,9 @@ export const VideoPostType: FC<Props> = ({
   const selectableUrls = useMemo(() => {
     return MediaUrlsHelper.getSelectableUrls(
       post.postMediaEmbedType,
-      post.postMediaVideoType,
-      data ? data.user.id : null
+      post.postMediaVideoType
     )
-  }, [post.postMediaEmbedType, post.postMediaVideoType, data])
+  }, [post.postMediaEmbedType, post.postMediaVideoType])
 
   let player: ReactNode = (
     <div className={ styles.videoPostType__noSourcesState }>

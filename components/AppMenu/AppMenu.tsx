@@ -169,6 +169,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
                 className={ styles.appMenu__logoImage }
                 src={ '/img/app-logo-text.png' }
                 width={ 0 }
+                priority={ true }
                 height={ 0 }
                 sizes={ '100vw' }
               />
@@ -186,6 +187,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
                 height={ 200 }
                 sizes={ '100vw' }
                 placeholder={ 'blur' }
+                priority={ true }
                 blurDataURL={ rgbDataURL(81, 80, 80) }
               />
               { locale }

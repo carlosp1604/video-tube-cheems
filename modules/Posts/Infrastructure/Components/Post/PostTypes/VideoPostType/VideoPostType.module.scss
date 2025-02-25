@@ -14,7 +14,7 @@
 
   &__video-container {
     @apply -mx-5 aspect-h-10 aspect-w-16
-      bg-black overflow-hidden;
+    bg-body overflow-hidden;
     grid-area: video;
 
     @screen tb {

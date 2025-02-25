@@ -1,8 +1,8 @@
 .common-button {
   &__container {
-    @apply flex-shrink-0 rounded-md text-sm bg-surface
-    text-text font-semibold transition-colors p-2 border
-    border-border;
+    @apply flex flex-shrink-0 rounded-lg text-sm bg-surface
+    text-text font-semibold transition-colors p-2 gap-x-2
+    items-center justify-center;
 
     &:hover {
       @apply text-text bg-hover transition-colors;
@@ -15,5 +15,9 @@
     &:disabled {
       @apply text-disabled;
     }
+  }
+
+  &__withBorder {
+    @apply border border-border;
   }
 }

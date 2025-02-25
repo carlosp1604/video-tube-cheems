@@ -2,7 +2,7 @@ import { CSSProperties, FC, ReactElement, useRef, useState } from 'react'
 import { DropdownMenuOption, DropdownMenuOptionProps } from './DropdownMenuOption/DropdownMenuOption'
 import styles from './DropdownMenu.module.scss'
 import { useClickOutside } from '~/hooks/ClickOutside'
-import { useClickAnimation } from '~/hooks/ClickAnimation/ClickAnimation'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 
 export type DropdownMenuPosition = 'left' | 'right'
 
@@ -25,7 +25,6 @@ export const DropdownMenu: FC<Partial<Props> & Pick<Props, 'options' | 'title' >
 }) => {
   const [open, setOpen] = useState<boolean>(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef(null)
 
   const handleClickOutside = () => {
     if (open) {
@@ -34,18 +33,14 @@ export const DropdownMenu: FC<Partial<Props> & Pick<Props, 'options' | 'title' >
   }
 
   useClickOutside(containerRef, handleClickOutside)
-  useClickAnimation(buttonRef)
 
   let button = (
-    <button
-      ref={ buttonRef }
-      className={ styles.dropdownMenu__button }
-      onClick={ () => { setOpen(!open) } }
+    <CommonButton
       title={ title }
-    >
-      { icon }
-      { title }
-    </button>
+      disabled={ false }
+      onClick={ () => { setOpen(!open) } }
+      icon={ icon }
+    />
   )
 
   if (customButton) {

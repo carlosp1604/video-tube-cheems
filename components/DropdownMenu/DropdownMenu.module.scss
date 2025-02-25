@@ -3,16 +3,6 @@
     @apply relative z-menu-dropdown outline-none;
   }
 
-  &__button {
-    @apply flex flex-row gap-x-2 items-center justify-between
-    px-2.5 py-1 rounded-lg leading-relaxed text-text
-    bg-surface transition-colors outline-none;
-
-    &:hover {
-      @apply bg-hover transition-colors;
-    }
-  }
-
   &__dropdownMenuContainer {
     @apply hidden absolute mt-1 left-[var(--left-side)]
     right-[var(--right-side)] p-1 py-1.5

@@ -15,13 +15,13 @@ import {
   PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
 import { PostSortingOption } from '~/modules/Shared/Domain/Posts/PostSorting'
-import { Reaction, ReactionableType } from '~/modules/Reactions/Domain/Reaction'
+import { Reaction, ReactionableType, ReactionType } from '~/modules/Reactions/Domain/Reaction'
 import { PostComment } from '~/modules/Posts/Domain/PostComments/PostComment'
 import { PostChildComment } from '~/modules/Posts/Domain/PostComments/PostChildComment'
 import { User } from '~/modules/Auth/Domain/User'
 import { ReactionModelTranslator } from '~/modules/Reactions/Infrastructure/ReactionModelTranslator'
 import { DefaultArgs } from '@prisma/client/runtime/library'
-import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
+import { PostReactionsInterface, PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 import { PostFilterOptionInterface } from '~/modules/Shared/Domain/Posts/PostFilterOption'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { TranslationModelTranslator } from '~/modules/Translations/Infrastructure/TranslationModelTranslator'
@@ -32,11 +32,9 @@ import { ViewModelTranslator } from '~/modules/Views/Infrastructure/ViewModelTra
 import { View } from '~/modules/Views/Domain/View'
 import { PostMediaType } from '~/modules/Posts/Domain/PostMedia/PostMedia'
 import PostOrderByWithRelationInput = Prisma.PostOrderByWithRelationInput;
-import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import ViewUncheckedUpdateManyWithoutPostNestedInput = Prisma.ViewUncheckedUpdateManyWithoutPostNestedInput
 import ViewUpdateManyWithoutPostNestedInput = Prisma.ViewUpdateManyWithoutPostNestedInput
 import PopularPostOrderByWithRelationInput = Prisma.PopularPostOrderByWithRelationInput
-import PopularPostSelect = Prisma.PopularPostSelect
 
 export class MysqlPostRepository implements PostRepositoryInterface {
   /**
@@ -270,12 +268,12 @@ export class MysqlPostRepository implements PostRepositoryInterface {
   }
 
   /**
-   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its Slug
+   * Find a Post (with producer,tags,meta,actors relationships loaded and comments count) given its Slug
    * @param slug Post Slug
    * @return PostWithCount if found or null
    */
   public async findBySlugWithCount (slug: Post['slug']): Promise<PostWithViewsCommentsReactionsInterface | null> {
-    const postQuery = prisma.post.findFirst({
+    const post = await prisma.post.findFirst({
       where: {
         slug,
         // deletedAt: null,
@@ -285,11 +283,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         },
       },
       include: {
-        _count: {
-          select: {
-            comments: true,
-          },
-        },
         producer: true,
         actors: {
           include: {
@@ -320,30 +313,6 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       },
     })
 
-    const countLikesQuery = prisma.reaction.count({
-      where: {
-        post: {
-          slug,
-        },
-        reactionType: ReactionType.LIKE,
-      },
-    })
-
-    const countDislikesQuery = prisma.reaction.count({
-      where: {
-        post: {
-          slug,
-        },
-        reactionType: ReactionType.DISLIKE,
-      },
-    })
-
-    const [post, likes, dislikes] = await prisma.$transaction([
-      postQuery,
-      countLikesQuery,
-      countDislikesQuery,
-    ])
-
     if (post === null) {
       return null
     }
@@ -358,12 +327,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         'translations',
         'postMedia',
       ]),
-      postComments: post._count.comments,
       postViews: Number.parseInt(post.viewsCount.toString()),
-      reactions: {
-        dislike: dislikes,
-        like: likes,
-      },
     }
   }
 
@@ -1206,6 +1170,37 @@ export class MysqlPostRepository implements PostRepositoryInterface {
     return {
       reaction: userReaction,
       savedPost,
+    }
+  }
+
+  /**
+   * Find all post reactions count given its ID
+   * @param postId Post ID
+   * @return PostReactionsInterface
+   */
+  public async findPostReactionsCount (postId: Post['id']): Promise<PostReactionsInterface> {
+    const [likesCount, dislikesCount] = await prisma.$transaction([
+      prisma.reaction.count({
+        where: {
+          post: {
+            id: postId,
+          },
+          reactionType: ReactionType.LIKE,
+        },
+      }),
+      prisma.reaction.count({
+        where: {
+          post: {
+            id: postId,
+          },
+          reactionType: ReactionType.DISLIKE,
+        },
+      }),
+    ])
+
+    return {
+      likes: likesCount,
+      dislikes: dislikesCount,
     }
   }
 

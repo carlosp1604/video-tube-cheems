@@ -6,7 +6,7 @@
     max-height: calc(100vh - 150px);
 
     @screen tb {
-      @apply flex-grow-0 opacity-0 scale-50 translate-y-0;
+        @apply flex-grow-0 opacity-0 scale-50 translate-y-0;
     }
 
     @screen md {

@@ -11,7 +11,6 @@ interface Props {
 export const CommonAvatar: FC<Partial<Props> & Omit<Props, 'color' | 'rounded'>> = ({
   className,
   avatarName,
-  color = undefined,
   rounded = true,
 }) => {
   const nameParts = avatarName.split(' ')

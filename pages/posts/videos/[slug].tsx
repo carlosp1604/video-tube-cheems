@@ -20,11 +20,17 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
   }
 
   const { env } = process
+
+  let baseUrl = ''
+
+  if (!env.BASE_URL) {
+    throw Error('Missing env var: BASE_URL. Required to build post page embed URL')
+  } else {
+    baseUrl = env.BASE_URL
+  }
+
   const slug = String(context.query.slug)
   const locale = context.locale ?? 'en'
-
-  Settings.defaultLocale = locale
-  Settings.defaultZone = 'Europe/Madrid'
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
@@ -63,17 +69,6 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
     }
 
     const relatedPosts = await getRelatedPosts.get(postWithCount.post.id)
-
-    let baseUrl = ''
-
-    if (!env.BASE_URL) {
-      throw Error('Missing env var: BASE_URL. Required to build post page embed URL')
-    } else {
-      baseUrl = env.BASE_URL
-    }
-
-    const applicationPost = PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale)
-
     const postComponentDto = PostComponentDtoTranslator.fromApplicationDto(postWithCount.post, locale)
 
     // Experimental: Try to improve performance
@@ -88,12 +83,9 @@ export const getServerSideProps: GetServerSideProps<PostPageProps> = async (cont
         relatedPosts: relatedPosts.posts.map((relatedPost) => {
           return PostCardComponentDtoTranslator.fromApplication(relatedPost.post, relatedPost.postViews, locale)
         }),
-        parsedDuration: Duration.fromMillis(Number.parseInt(applicationPost.duration) * 1000).toString(),
+        parsedDuration: Duration.fromMillis(Number.parseInt(postComponentDto.duration) * 1000).toString(),
         postViewsNumber: postWithCount.views,
-        postLikes: postWithCount.reactions.like,
-        postDislikes: postWithCount.reactions.dislike,
-        postCommentsNumber: postWithCount.comments,
-        postEmbedUrl: postComponentDto.postMediaEmbedType[0].urls[0].url,
+        postEmbedUrl: `${baseUrl}/${locale}/posts/videos/embed/${slug}`,
         baseUrl,
         htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
       },

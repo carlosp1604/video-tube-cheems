@@ -24,17 +24,16 @@ import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonB
 interface Props {
   postId: string
   setIsOpen: Dispatch<SetStateAction<boolean>>
-  setCommentsNumber: Dispatch<SetStateAction<number>>
-  commentsNumber: number
 }
 
-export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, commentsNumber }) => {
+export const PostComments: FC<Props> = ({ postId, setIsOpen }) => {
   const [repliesOpen, setRepliesOpen] = useState<boolean>(false)
   const [commentToReply, setCommentToReply] = useState<PostCommentComponentDto | null>(null)
   const [comments, setComments] = useState<PostCommentComponentDto[]>([])
   const [canLoadMore, setCanLoadMore] = useState<boolean>(false)
   const [pageNumber, setPageNumber] = useState<number>(1)
   const [loading, setLoading] = useState<boolean>(false)
+  const [commentsNumber, setCommentsNumber] = useState<number>(0)
   const [creatingComment, setCreatingComment] = useState<boolean>(false)
 
   const commentsAreaRef = useRef<HTMLDivElement>(null)
@@ -122,6 +121,7 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
 
   useEffect(() => {
     updatePostComments()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onClickLikeComment = (
@@ -228,13 +228,17 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
       <div className={ styles.postComments__commentsTitleBar }>
         <div className={ styles.postComments__commentsTitle }>
           { t('comment_section_title') }
-          <span className={ styles.postComments__commentsQuantity }>
-            { commentsNumber }
-          </span>
+          { loading
+            ? <span className={ styles.postComments__commentsQuantitySkeleton }/>
+            : <span className={ styles.postComments__commentsQuantity }>
+                { commentsNumber }
+              </span>
+          }
+
         </div>
         <IconButton
           onClick={ () => setIsOpen(false) }
-          icon={ <BsX /> }
+          icon={ <BsX/> }
           title={ t('close_comment_section_button_title') }
         />
       </div>
@@ -258,7 +262,6 @@ export const PostComments: FC<Props> = ({ postId, setIsOpen, setCommentsNumber, 
           />
         }
       </div>
-
       <div className={ styles.postComments__addComment }>
         <AddCommentInput
           disabled={ loading }

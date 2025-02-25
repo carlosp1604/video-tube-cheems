@@ -5,7 +5,7 @@ import {
   GetPostUserInteractionApplicationRequest
 } from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteractionApplicationRequest'
 
-export class GetPostUserInteractionDtoTranslator {
+export class GetPostUserInteractionRequestDtoTranslator {
   public static fromApiDto (request: GetPostUserInteractionApiRequestDto): GetPostUserInteractionApplicationRequest {
     return {
       postId: request.postId,

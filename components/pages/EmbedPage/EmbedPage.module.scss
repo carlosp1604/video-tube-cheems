@@ -1,0 +1,32 @@
+.embed-page {
+  &__no-sources-state {
+    @apply flex flex-col items-center justify-center
+    w-full h-full whitespace-pre-line gap-y-4  px-5 py-10
+    text-xs rounded-lg
+    bg-black text-white;
+
+    @screen md {
+      @apply text-base;
+    }
+
+    @screen lg {
+      @apply text-lg;
+    }
+  }
+
+  &__no-sources-state-icon {
+    @apply flex-shrink-0 h-10 w-10 text-brand-primary-bg;
+
+    @screen tb {
+      @apply h-14 w-14;
+    }
+
+    @screen md {
+      @apply h-20 w-20;
+    }
+
+    @screen lg {
+      @apply h-24 w-24;
+    }
+  }
+}

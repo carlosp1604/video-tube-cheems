@@ -1,17 +1,14 @@
 import { FC, ReactElement, useEffect, useState } from 'react'
 import styles from './VideoPostPlayer.module.scss'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
-import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
-import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
 import { HtmlVideoPlayer } from '~/components/VideoPlayer/HtmlVideoPlayer'
 import { useFirstRender } from '~/hooks/FirstRender'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
-import { BsX } from 'react-icons/bs'
+import { BsThreeDots, BsX } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
-import { useSession } from 'next-auth/react'
 import { RxGear } from 'react-icons/rx'
 
 export interface Props {
@@ -21,15 +18,19 @@ export interface Props {
   onCloseSourceMenu: () => void
 }
 
-export const VideoPostPlayer: FC<Props> = ({
+export interface VideoPostPlayerOptionalProps {
+  setSourcesMenuOpen: (open: boolean) => void
+}
+
+export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> = ({
   title,
   selectableUrls,
   sourcesMenuOpen,
   onCloseSourceMenu,
+  setSourcesMenuOpen = undefined,
 }) => {
   const [videoReady, setVideoReady] = useState<boolean>(false)
   const [selectedMediaUrl, setSelectedMediaUrl] = useState<MediaUrlComponentDto>(selectableUrls[0])
-  const { status } = useSession()
 
   const firstRender = useFirstRender()
 
@@ -45,8 +46,6 @@ export const VideoPostPlayer: FC<Props> = ({
   let playerElement: ReactElement | null = null
 
   if (selectedMediaUrl.mediaType === 'Embed') {
-    const sandbox = MediaUrlsHelper.shouldBeSanboxed(selectedMediaUrl.provider.id, status === 'authenticated')
-
     playerElement = (
       <iframe
         key={ selectedMediaUrl.url }
@@ -56,7 +55,6 @@ export const VideoPostPlayer: FC<Props> = ({
         height={ '100%' }
         onLoad={ () => setVideoReady(true) }
         allowFullScreen={ true }
-        sandbox={ sandbox ? 'allow-same-origin allow-scripts' : undefined }
         style={ { overflow: 'hidden' } }
         title={ title }
         scrolling={ 'no' }
@@ -87,6 +85,19 @@ export const VideoPostPlayer: FC<Props> = ({
 
   return (
     <div className={ styles.videoPostPlayer__container }>
+      {
+        setSourcesMenuOpen
+          ? <span className={ styles.videoPostPlayer__floatingMenuButton }>
+            <IconButton
+              onClick={ () => setSourcesMenuOpen(!sourcesMenuOpen) }
+              icon={ <BsThreeDots /> }
+              title={ t('post_sources_button_title') }
+              showTooltip={ true }
+            />
+          </span>
+          : null
+      }
+
       <div
         className={ `
           ${styles.videoPostPlayer__sourcesMenuContainer} 
@@ -130,7 +141,6 @@ export const VideoPostPlayer: FC<Props> = ({
         </div>
       </div>
       { sourcesMenuOpen ? closeVideoSourceMenuButton : null }
-      { !videoReady ? <VideoLoadingState/> : null }
       { playerElement }
     </div>
   )

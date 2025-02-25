@@ -2,6 +2,7 @@ import { FC } from 'react'
 import styles from './ProducerActor.module.scss'
 import { AvatarImage } from '~/components/AvatarImage/AvatarImage'
 import Link from 'next/link'
+import useTranslation from 'next-translate/useTranslation'
 
 export type ProducerActorType = 'actor' | 'producer'
 
@@ -13,10 +14,14 @@ export interface Props {
 }
 
 export const ProducerActor: FC<Props> = ({ name, slug, imageUrl, type }) => {
+  const { t } = useTranslation('common')
+
   let href = `/producers/${slug}`
+  let altTitle = t('producer_image_alt_title', { producerName: name })
 
   if (type === 'actor') {
     href = `/actors/${slug}`
+    altTitle = t('actor_image_alt_title', { actorName: name })
   }
 
   return (
@@ -30,7 +35,7 @@ export const ProducerActor: FC<Props> = ({ name, slug, imageUrl, type }) => {
         avatarClassName={ styles.producerActor__avatar }
         imageClassName={ styles.producerActor__image }
         avatarName={ name }
-        imageAlt={ name }
+        imageAlt={ altTitle }
       />
       { name }
     </Link>

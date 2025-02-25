@@ -95,6 +95,8 @@ async function handleGET (request: NextApiRequest, response: NextApiResponse) {
   try {
     const comments = await useCase.get(applicationRequest)
 
+    response.setHeader('Cache-Control', 'no-store')
+
     return response.status(200).json(comments)
   } catch (exception: unknown) {
     if (!(exception instanceof GetPostPostCommentsApplicationException)) {

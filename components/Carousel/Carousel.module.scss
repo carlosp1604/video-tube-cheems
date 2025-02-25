@@ -24,8 +24,8 @@
     @apply flex-initial flex-shrink-0 basis-5/6 h-full w-full
     overflow-visible;
 
-    @screen tb {
-      @apply basis-6/12;
+    @screen sm {
+      @apply basis-[60%];
     }
 
     @screen md {

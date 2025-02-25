@@ -18,8 +18,8 @@ import {
 } from '~/modules/Posts/Infrastructure/Api/Validators/GetPostUserInteractionApiRequestValidator'
 import { GetPostUserInteraction } from '~/modules/Posts/Application/GetPostUserInteraction/GetPostUserInteraction'
 import {
-  GetPostUserInteractionDtoTranslator
-} from '~/modules/Posts/Infrastructure/Translators/GetPostUserInteractionDtoTranslator'
+  GetPostUserInteractionRequestDtoTranslator
+} from '~/modules/Posts/Infrastructure/Api/Translators/GetPostUserInteractionRequestDtoTranslator'
 
 export default async function handler (
   request: NextApiRequest,
@@ -52,12 +52,14 @@ export default async function handler (
     return handleValidationError(response, validationError)
   }
 
-  const applicationRequest = GetPostUserInteractionDtoTranslator.fromApiDto(apiRequest)
+  const applicationRequest = GetPostUserInteractionRequestDtoTranslator.fromApiDto(apiRequest)
 
   const useCase = container.resolve<GetPostUserInteraction>('getPostUserInteractionUseCase')
 
   try {
     const interaction = await useCase.get(applicationRequest)
+
+    response.setHeader('Cache-Control', 'no-store')
 
     return response.status(200).json(interaction)
   } catch (exception: unknown) {

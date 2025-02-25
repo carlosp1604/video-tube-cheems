@@ -14,7 +14,7 @@ import {
   PostWithViewsCommentsReactionsInterface,
   PostWithViewsInterface
 } from '~/modules/Posts/Domain/PostWithCountInterface'
-import { PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
+import { PostReactionsInterface, PostUserInteraction } from '~/modules/Posts/Domain/PostUserInteraction'
 import { SortingCriteria } from '~/modules/Shared/Domain/SortingCriteria'
 import { View } from '~/modules/Views/Domain/View'
 
@@ -71,7 +71,7 @@ export interface PostRepositoryInterface {
   findById(postId: Post['id'], options?: RepositoryOptions[]): Promise<Post | PostWithViewsInterface | null>
 
   /**
-   * Find a Post (with producer,tags,meta,actors relationships loaded and reactions/comments count) given its Slug
+   * Find a Post (with producer,tags,meta,actors relationships loaded and comments count) given its Slug
    * @param slug Post Slug
    * @return PostWithCount if found or null
    */
@@ -230,6 +230,13 @@ export interface PostRepositoryInterface {
    * @return PostUserInteraction
    */
   findUserInteraction (postId: Post['id'], userId: User['id']): Promise<PostUserInteraction>
+
+  /**
+   * Find all post reactions count given its ID
+   * @param postId Post ID
+   * @return PostReactionsInterface
+   */
+  findPostReactionsCount (postId: Post['id']): Promise<PostReactionsInterface>
 
   /**
    * Get a random post slug

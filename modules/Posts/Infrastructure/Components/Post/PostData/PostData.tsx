@@ -48,15 +48,12 @@ export const PostData: FC<Props> = ({
 
   if (producer === null && actor !== null) {
     producerSection = (
-      <Link
-        prefetch={ false }
-        className={ styles.postData__listItemContainer }
-        href={ `/actors/${actor.slug}` }
-        title={ actor.name }
-      >
-        <BsStarFill className={ styles.postData__producerActorIcon }/>
-        { actor.name }
-      </Link>
+      <ProducerActor
+        name={ actor.name }
+        imageUrl={ actor.imageUrl }
+        slug={ actor.slug }
+        type={ 'actor' }
+      />
     )
   }
 

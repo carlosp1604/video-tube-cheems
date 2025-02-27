@@ -19,12 +19,12 @@ import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import {
   TrafficstarsVideoSlider
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsVideoSlider'
-import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoClickInPage'
 import {
   OctoclickInitializationCode
 } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoclickInitializationCode'
 import { OctoclickPopUnder } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoclickPopUnder'
 import { ToastProvider } from '~/components/AppToast/ToastProvider'
+import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoClickInPage'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),

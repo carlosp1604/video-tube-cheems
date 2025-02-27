@@ -7,8 +7,6 @@ import useTranslation from 'next-translate/useTranslation'
 import { DropdownMenu } from '~/components/DropdownMenu/DropdownMenu'
 import { BsSortDown } from 'react-icons/bs'
 
-type TopOptions = 'day' | 'week' | 'month'
-
 interface Props {
   posts: Array<PostCardComponentDto>
   currentDate: string

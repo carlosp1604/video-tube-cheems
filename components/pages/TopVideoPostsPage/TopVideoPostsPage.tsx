@@ -42,9 +42,19 @@ export const TopVideoPostsPage: NextPage<Props> = ({
     canonicalUrl = `${canonicalUrl}/${option}`
   }
 
+  let pageTitle = t('top_posts_page_title', { option: t('top_posts_option_day_title') })
+
+  if (option === 'week') {
+    pageTitle = t('top_posts_page_title', { option: t('top_posts_option_week_title') })
+  }
+
+  if (option === 'month') {
+    pageTitle = t('top_posts_page_title', { option: t('top_posts_option_month_title') })
+  }
+
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
-      t('top_posts_page_title'),
+      pageTitle,
       t('top_posts_page_description'),
       HtmlPageMetaContextResourceType.ARTICLE,
       canonicalUrl

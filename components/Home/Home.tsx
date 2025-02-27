@@ -31,7 +31,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
         <div className={ styles.home__entryHeader }>
           <span className={ styles.home__entryTitle }>
             { t('home_page_trending_posts_title') }
-          </span>
+          </span>sad
           <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/posts/top' } }

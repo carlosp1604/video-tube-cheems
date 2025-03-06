@@ -67,16 +67,16 @@ export class MediaUrlsHelper {
     download = false
   ): MediaUrlComponentDto[] {
     const providersAccessOrder = [
-      { id: 'baa39748-8402-4378-b296-3ca653e97f9a' }, // Doodstream
-      { id: '35677ea5-3641-4319-ae6f-1fe145c9b797' }, // Lulustream
       { id: '6a594991-7364-481d-85f1-62c5ba2b6cb3' }, // Vtube
+      { id: '35677ea5-3641-4319-ae6f-1fe145c9b797' }, // Lulustream
+      { id: 'baa39748-8402-4378-b296-3ca653e97f9a' }, // Doodstream
       { id: '8dfb8312-ab59-49df-8047-3a3413512c10' }, // Upnshare
       { id: 'ab535237-2262-4763-2443-dfec1a6ec1b9' }, // Vidhide
       { id: '3a0b5a54-0814-4877-9e97-27607866f7b9' }, // Bigwarp
+      { id: '9327efd9-4ac5-4ddc-a7e0-bae8c46eb189' }, // Vidguard
+      { id: '70802e86-7a26-463b-8036-81d7d4ceac1a' }, // Voe
       { id: '9a51b189-0cbe-4c68-822a-440b61301ec0' }, // Direct
       { id: 'b06ba1c1-4988-4b90-8271-a23a56fb0f61' }, // Filemoon
-      { id: '70802e86-7a26-463b-8036-81d7d4ceac1a' }, // Voe
-      { id: '9327efd9-4ac5-4ddc-a7e0-bae8c46eb189' }, // Vidguard
       { id: '2fef1a77-a1f8-42a3-9293-437a6f4fc5cc' }, // Wolfstream
       { id: 'd460ba6c-5b2e-4cc9-a09e-eda5d5a7e12c' }, // Fastream
     ]

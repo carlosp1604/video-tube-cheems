@@ -13,10 +13,12 @@ import { useReactPost } from '~/hooks/ReactPost'
 import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
 import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
 import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/DesktopBanner'
-import { OutstreamBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/OutstreamBanner'
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
 import { useMediaQuery } from '~/hooks/MediaQuery'
+import {
+  CherryTv300x250Banner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CherryTv300x250Banner'
 
 const PostComments = dynamic(() =>
   import('~/modules/Posts/Infrastructure/Components/PostComment/PostComments').then((module) => module.PostComments),
@@ -211,7 +213,7 @@ export const Post: FC<Props> = ({
             <AdsterraBanner />
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
-            <OutstreamBanner />
+            <CherryTv300x250Banner />
           </span>
           <span className={ styles.post__rightContainerItemHiddenMd }>
             <DesktopBanner />

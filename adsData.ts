@@ -1,16 +1,10 @@
 export const adsData = [
   {
     titleKey: 'native_ads_cams_offer_title',
-    thumbs: [
-      'https://cdn.cheemsporn.com/img/banner-cams-advertising-native.jpg',
-      'https://cdn.cheemsporn.com/img/banner-cams-advertising-native_1.jpg',
-      'https://cdn.cheemsporn.com/img/banner-cams-advertising-native_2.jpg',
-      'https://cdn.cheemsporn.com/img/banner-cams-advertising-native_3.jpg',
-      'https://cdn.cheemsporn.com/img/banner-cams-advertising-native_4.jpg',
-      'https://cdn.cheemsporn.com/img/banner-cams-advertising-native_5.jpg',
-    ],
-    offerUrl: 'https://t.ajrkm.link/258265/6224/0?bo=2779,2778,2777,2776,2775&aff_sub5=SF_006OG000004lmDN',
-    adNetworkName: 'Royal Cams',
+    thumbs: ['https://cherry.tv/embed/top?ref_affid=6240&ref_oid=119'],
+    offerUrl: 'https://www.trackcherry.com/C497FC9/6W84K8/',
+    adNetworkName: 'Cherry TV',
+    iframeMode: true,
   },
   {
     titleKey: 'native_ads_dating_offer_title',
@@ -27,20 +21,7 @@ export const adsData = [
     ],
     offerUrl: 'https://t.anchat.link/258265/5165?bo=2753,2754,2755,2756&popUnder=true&aff_sub5=SF_006OG000004lmDN',
     adNetworkName: 'Adult Friend Finder',
-  },
-  {
-    titleKey: 'native_ads_porn_games_offer_title',
-    thumbs: [
-      'https://cdn.cheemsporn.com/img/banner-porn-games-advertising-native.jpg',
-      'https://cdn.cheemsporn.com/img/banner-porn-games-advertising-native_1.jpg',
-      'https://cdn.cheemsporn.com/img/banner-porn-games-advertising-native_2.jpg',
-      'https://cdn.cheemsporn.com/img/banner-porn-games-advertising-native_3.jpg',
-      'https://cdn.cheemsporn.com/img/banner-porn-games-advertising-native_4.jpg',
-      'https://cdn.cheemsporn.com/img/banner-porn-games-advertising-native_5.jpg',
-    ],
-    // eslint-disable-next-line max-len
-    offerUrl: 'https://t.aagm.link/58qbufimio?url_id=0&aff_id=258265&offer_id=7930&bo=3511,3512,3521,3522&aff_sub5=SF_006OG000004lmDN',
-    adNetworkName: 'Comix Harem',
+    iframeMode: false,
   },
   {
     titleKey: 'native_ads_ia_offer_title',
@@ -54,6 +35,7 @@ export const adsData = [
     ],
     offerUrl: 'https://t.ajump.link/258265/6646?popUnder=false&aff_sub5=SF_006OG000004lmDN',
     adNetworkName: 'Candy.ai',
+    iframeMode: false,
   },
   {
     titleKey: 'native_ads_partner_jerkmate_offer_title',
@@ -69,6 +51,7 @@ export const adsData = [
     ],
     offerUrl: 'https://t.ajrkm2.com/258265/6224/0?bo=2779,2778,2777,2776,2775&aff_sub5=SF_006OG000004lmDN',
     adNetworkName: 'Jerkmate',
+    iframeMode: false,
   },
 ]
 
@@ -88,4 +71,13 @@ export const postBannerDesktopData = [
   'https://cdn.cheemsporn.com/desktop-banner-4.gif',
   'https://cdn.cheemsporn.com/desktop-banner-5.gif',
   'https://cdn.cheemsporn.com/desktop-banner-6.gif',
+]
+
+export const cherryTV300x250Data = [
+  'https://cdn.cheemsporn.com/cherry-300x250-banner-1.gif',
+  'https://cdn.cheemsporn.com/cherry-300x250-banner-2.gif',
+  'https://cdn.cheemsporn.com/cherry-300x250-banner-3.gif',
+  'https://cdn.cheemsporn.com/cherry-300x250-banner-4.gif',
+  'https://cdn.cheemsporn.com/cherry-300x250-banner-5.gif',
+  'https://cdn.cheemsporn.com/cherry-300x250-banner-6.gif',
 ]

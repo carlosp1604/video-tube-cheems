@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     page,
     postsPerPage: urlsPerPage,
     filters: [],
-    sortCriteria: InfrastructureSortingCriteria.DESC,
+    sortCriteria: InfrastructureSortingCriteria.ASC,
     sortOption: InfrastructureSortingOptions.DATE,
   })
 

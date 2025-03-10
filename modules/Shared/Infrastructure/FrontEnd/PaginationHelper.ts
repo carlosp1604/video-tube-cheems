@@ -1,7 +1,7 @@
 export const minPerPage = 10
 export const maxPerPage = 256
 export const defaultPerPage = 36
-export const defaultPerPageWithoutAds = 31
+export const defaultPerPageWithoutAds = 312
 export const topPostsDefaultNumber = 60
 
 export class PaginationHelper {

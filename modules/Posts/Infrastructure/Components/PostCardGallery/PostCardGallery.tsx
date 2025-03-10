@@ -134,6 +134,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
               adNetworkName={ adsData[adIndex].adNetworkName }
               views={ firstCardViews }
               date={ firstCardDate }
+              iframeMode={ adsData[adIndex].iframeMode }
             />
           ))
         } else {

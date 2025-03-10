@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const actors = await getActors.get({
     page,
     actorsPerPage: urlsPerPage,
-    sortCriteria: InfrastructureSortingCriteria.DESC,
+    sortCriteria: InfrastructureSortingCriteria.ASC,
     sortOption: InfrastructureSortingOptions.NAME,
     filters: [],
   })

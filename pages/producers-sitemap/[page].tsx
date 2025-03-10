@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const producers = await getProducers.get({
     page,
     producersPerPage: urlsPerPage,
-    sortCriteria: InfrastructureSortingCriteria.DESC,
+    sortCriteria: InfrastructureSortingCriteria.ASC,
     sortOption: InfrastructureSortingOptions.NAME,
     filters: [],
   })

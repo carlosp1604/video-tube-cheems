@@ -7,7 +7,9 @@ import { useRouter } from 'next/router'
 import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrlHelper'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
-import { PostCardAdvertisingName } from '~/modules/Shared/Infrastructure/Components/Advertising/PostCardAdvertisingName'
+import {
+  PostCardAdvertisingName
+} from '~/modules/Shared/Infrastructure/Components/Advertising/PostCardAdvertisingName'
 
 interface Props {
   offerUrl: string
@@ -16,10 +18,11 @@ interface Props {
   adNetworkName: string
   views: number
   date: string
+  iframeMode: boolean
 }
 
-export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetworkName, views, date }) => {
-  const { t } = useTranslation('post_card')
+export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetworkName, views, date, iframeMode }) => {
+  const { t } = useTranslation('common')
 
   const locale = useRouter().locale ?? 'en'
 
@@ -29,24 +32,33 @@ export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetwo
       onClick={ () => handleClick(offerUrl) }
     >
       <div className={ styles.postCard__videoContainer }>
-        <Image
-          src={ thumb }
-          alt={ title }
-          className={ styles.postCard__media }
-          width={ 200 }
-          height={ 200 }
-          sizes={ '100vw' }
-          placeholder={ 'blur' }
-          blurDataURL={ rgbDataURL(81, 80, 80) }
-        />
+        { iframeMode
+          ? <iframe
+            src={ thumb }
+            allowFullScreen={ false }
+            loading={ 'lazy' }
+            title={ title }
+          />
+          : <Image
+            src={ thumb }
+            alt={ title }
+            className={ styles.postCard__media }
+            width={ 200 }
+            height={ 200 }
+            sizes={ '100vw' }
+            placeholder={ 'blur' }
+            priority={ true }
+            blurDataURL={ rgbDataURL(81, 80, 80) }
+          />
+        }
+
       </div>
       <div className={ styles.postCard__videoDataContainer }>
-        <PostCardAdvertisingName name={ adNetworkName } />
-
         <div className={ styles.postCard__postData }>
           <span className={ styles.postCard__videoTitleLink } >
             { title }
           </span>
+          <PostCardAdvertisingName name={ adNetworkName } />
           <div className={ styles.postCard__extraData }>
             { t('post_card_post_views',
               { views: NumberFormatter.compatFormat(Math.floor(views), locale) })

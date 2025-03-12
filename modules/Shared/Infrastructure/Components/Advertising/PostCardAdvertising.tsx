@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetworkName, views, date, iframeMode }) => {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('post_card')
 
   const locale = useRouter().locale ?? 'en'
 

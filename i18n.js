@@ -1,6 +1,9 @@
-const i18nConfig = {
-  defaultLocale: 'en',
-  locales: ['en', 'es'],
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+const { i18nConfig } = require('./i18n.config.js')
+
+const config = {
+  defaultLocale: i18nConfig.defaultLocale,
+  locales: i18nConfig.locales,
   loadLocaleFrom: (lang, ns) => {
     return new Promise((resolve, reject) => {
       import(`./public/locales/${lang}/${ns}.json`)
@@ -91,4 +94,4 @@ const i18nConfig = {
 
 }
 
-module.exports = i18nConfig
+module.exports = config

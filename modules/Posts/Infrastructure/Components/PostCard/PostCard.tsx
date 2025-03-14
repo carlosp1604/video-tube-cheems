@@ -12,8 +12,14 @@ import { getResolution } from '~/modules/Posts/Infrastructure/Frontend/PostCardH
 import {
   PostCardProducerActorNameLink
 } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardProducerActor/PostCardProducerActorNameLink'
-import HoverVideoPlayer from 'react-hover-video-player'
-import { VideoLoadingState } from '~/components/VideoLoadingState/VideoLoadingState'
+import dynamic from 'next/dynamic'
+
+const HoverVideoPlayer = dynamic(() => import('react-hover-video-player')
+  .then((module) => module.default), { ssr: false }
+)
+
+const VideoLoadingState = dynamic(() => import('~/components/VideoLoadingState/VideoLoadingState')
+  .then((module) => module.VideoLoadingState), { ssr: false })
 
 interface Props {
   post: PostCardComponentDto

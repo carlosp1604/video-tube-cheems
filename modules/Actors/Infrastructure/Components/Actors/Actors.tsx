@@ -15,7 +15,6 @@ import { PaginationBar } from '~/components/PaginationBar/PaginationBar'
 import useTranslation from 'next-translate/useTranslation'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
-import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
 import { ActorFilterOptions } from '~/modules/Actors/Infrastructure/Frontend/ActorFilterOptions'
 import { ActorQueryParamsParser } from '~/modules/Actors/Infrastructure/Frontend/ActorQueryParamsParser'
@@ -25,6 +24,11 @@ import { useToast } from '~/components/AppToast/ToastContext'
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
 import { ProfileCardDtoTranslator } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDtoTranslator'
 import { ProfileCardGallery } from '~/modules/Shared/Infrastructure/Components/ProfileCardGallery/ProfileCardGallery'
+import dynamic from 'next/dynamic'
+
+const SearchBar = dynamic(() =>
+  import('~/components/SearchBar/SearchBar').then((module) => module.SearchBar), { ssr: true }
+)
 
 export interface ActorsPagePaginationState {
   page: number
@@ -202,6 +206,7 @@ export const Actors: FC<Props> = ({
         loading={ loading }
         sortingMenu={ sortingMenu }
         term={ { title: 'searchTerm', value: pagination.searchTerm } }
+        tag={ 'h1' }
       />
     )
   } else {
@@ -211,6 +216,7 @@ export const Actors: FC<Props> = ({
         subtitle={ t('actors_gallery_subtitle', { actorsNumber }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h1' }
       />
     )
   }

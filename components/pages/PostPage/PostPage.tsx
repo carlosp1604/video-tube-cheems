@@ -92,9 +92,9 @@ export const PostPage: NextPage<PostPageProps> = ({
   if (relatedPosts.length > 0) {
     relatedPostsSection = (
       <div className={ styles.postPage__relatedVideos }>
-        <span className={ styles.postPage__relatedVideosTitle }>
+        <h2 className={ styles.postPage__relatedVideosTitle }>
           { t('video_related_videos_title') }
-        </span>
+        </h2>
         <PostCardCarousel
           posts={ relatedPosts }
           postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }

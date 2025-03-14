@@ -1,9 +1,9 @@
 {
-  "delete_saved_post_option_title": "Delete saved post",
+  "delete_saved_post_option_title": "Delete saved video",
   "like_post_post_card_gallery_action_title": "Like",
   "post_reaction_added_correctly_message": "Thanks for your reaction!",
-  "post_save_post_successfully_removed_from_saved_post": "Post was removed from the user's saved post list",
-  "post_save_post_successfully_saved": "Post was added to the user's saved post list",
+  "post_save_post_successfully_removed_from_saved_post": "Video was removed from the user's saved video list",
+  "post_save_post_successfully_saved": "Video was added to the user's saved video list",
   "save_post_post_card_gallery_action_title": "Save",
   "user_must_be_authenticated_error_message": "You must sign in to perform this action"
 }

@@ -62,6 +62,7 @@ export const TopVideoPosts: FC<Props> = ({
         subtitle={ '' }
         term={ { title: 'date', value: currentDate } }
         sortingMenu={ topOptions }
+        tag={ 'h1' }
       />
 
       <PostCardGallery

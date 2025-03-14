@@ -7,6 +7,7 @@ import {
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { getServerSideSitemapLegacy } from 'next-sitemap'
 import { urlsPerPage } from '~/modules/Shared/Infrastructure/SitemapPagination'
+import { i18nConfig } from '~/i18n.config'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!context.params?.page || isNaN(Number(context.params?.page))) {
@@ -42,16 +43,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const locale = context.locale ?? 'en'
-
   const fields = posts.posts.map((post) => ({
     loc: `${baseUrl}/posts/videos/${post.post.slug}`,
-    // TODO: Change this for updatedAt field
-    lastmod: post.post.updatedAt,
-    alternateRefs: [{
-      href: `${baseUrl}/${locale}/posts/videos/${post.post.slug}`,
-      hreflang: 'es',
-    }],
+    alternateRefs: i18nConfig.locales.map((locale) => ({
+      href: `${baseUrl}${locale === i18nConfig.defaultLocale ? '' : `/${locale}`}/posts/videos/${post.post.slug}`,
+      hreflang: locale,
+    })),
   }))
 
   return getServerSideSitemapLegacy(context, fields)

@@ -7,6 +7,7 @@ import {
 import { getServerSideSitemapLegacy } from 'next-sitemap'
 import { urlsPerPage } from '~/modules/Shared/Infrastructure/SitemapPagination'
 import { GetProducers } from '~/modules/Producers/Application/GetProducers/GetProducers'
+import { i18nConfig } from '~/i18n.config'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   if (!context.params?.page || isNaN(Number(context.params?.page))) {
@@ -42,16 +43,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const locale = context.locale ?? 'en'
-
   const fields = producers.producers.map((producer) => ({
     loc: `${baseUrl}/producers/${producer.producer.slug}`,
-    // TODO: Change this for updatedAt field
-    lastmod: producer.producer.createdAt,
-    alternateRefs: [{
-      href: `${baseUrl}/${locale}/producers/${producer.producer.slug}`,
-      hreflang: 'es',
-    }],
+    alternateRefs: i18nConfig.locales.map((locale) => ({
+      href: `${baseUrl}${locale === i18nConfig.defaultLocale ? '' : `/${locale}`}/producers/${producer.producer.slug}`,
+      hreflang: locale,
+    })),
   }))
 
   return getServerSideSitemapLegacy(context, fields)

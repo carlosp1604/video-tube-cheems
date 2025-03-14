@@ -1,8 +1,12 @@
 import { FC, ReactElement, useEffect, useRef, useState } from 'react'
 import styles from './IconButton.module.scss'
-import { Tooltip } from '~/components/Tooltip/Tooltip'
 import * as uuid from 'uuid'
 import { useClickAnimation } from '~/hooks/ClickAnimation/ClickAnimation'
+import dynamic from 'next/dynamic'
+
+const Tooltip = dynamic(() =>
+  import('~/components/Tooltip/Tooltip').then((module) => module.Tooltip), { ssr: false }
+)
 
 interface Props {
   onClick: (() => void) | undefined

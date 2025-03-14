@@ -50,7 +50,7 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
   let canonicalUrl = props.baseUrl + '/posts'
 
   if (locale !== 'en') {
-    canonicalUrl = `${props.baseUrl}/${locale}`
+    canonicalUrl = `${props.baseUrl}/${locale}/posts`
   }
 
   const htmlPageMetaUrlProps = (

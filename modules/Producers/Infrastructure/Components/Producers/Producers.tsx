@@ -22,12 +22,16 @@ import { ProducerFilterOptions } from '~/modules/Producers/Infrastructure/Fronte
 import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 import { ProducerQueryParamsParser } from '~/modules/Producers/Infrastructure/Frontend/ProducerQueryParamsParser'
-import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { useToast } from '~/components/AppToast/ToastContext'
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
 import { ProfileCardGallery } from '~/modules/Shared/Infrastructure/Components/ProfileCardGallery/ProfileCardGallery'
 import { ProfileCardDtoTranslator } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDtoTranslator'
+import dynamic from 'next/dynamic'
+
+const SearchBar = dynamic(() =>
+  import('~/components/SearchBar/SearchBar').then((module) => module.SearchBar), { ssr: true }
+)
 
 export interface ProducersPagePaginationState {
   page: number
@@ -205,6 +209,7 @@ export const Producers: FC<Props> = ({
         loading={ loading }
         sortingMenu={ sortingMenu }
         term={ { title: 'searchTerm', value: pagination.searchTerm } }
+        tag={ 'h1' }
       />
     )
   } else {
@@ -214,6 +219,7 @@ export const Producers: FC<Props> = ({
         subtitle={ t('producers_gallery_subtitle', { producersNumber }) }
         loading={ loading }
         sortingMenu={ sortingMenu }
+        tag={ 'h1' }
       />
     )
   }

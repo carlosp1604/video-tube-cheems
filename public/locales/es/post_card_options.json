@@ -1,9 +1,9 @@
 {
-  "delete_saved_post_option_title": "Eliminar post guardado",
+  "delete_saved_post_option_title": "Eliminar video guardado",
   "like_post_post_card_gallery_action_title": "Me gusta",
   "post_reaction_added_correctly_message": "¡Gracias por reaccionar!",
-  "post_save_post_successfully_removed_from_saved_post": "El post fue eliminado de la lista de videos guardados del usuario",
-  "post_save_post_successfully_saved": "El post fue agregado a la lista de videos guardados del usuario",
+  "post_save_post_successfully_removed_from_saved_post": "El video fue eliminado de la lista de videos guardados del usuario",
+  "post_save_post_successfully_saved": "El video fue agregado a la lista de videos guardados del usuario",
   "save_post_post_card_gallery_action_title": "Guardar",
   "user_must_be_authenticated_error_message": "Para realizar esta acción necesitas iniciar sesión"
 }

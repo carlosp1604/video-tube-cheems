@@ -12,6 +12,7 @@ import {
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { useRouter } from 'next/router'
 import { TagCardComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagCardComponentDto'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -70,6 +71,8 @@ export const HomePage: NextPage<Props> = (props: Props) => {
         trendingPosts={ props.trendingPosts }
         tags={ props.tags }
       />
+
+      <AppBanner />
     </>
   )
 }

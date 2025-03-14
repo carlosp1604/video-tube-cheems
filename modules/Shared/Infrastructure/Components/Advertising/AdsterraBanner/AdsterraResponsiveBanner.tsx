@@ -1,9 +1,9 @@
 import { FC, useEffect, useState } from 'react'
+import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
 import {
   AdsterraDesktopBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraDesktopBanner'
-import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
-import { useMediaQuery } from '~/hooks/MediaQuery'
+import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 
 export const AdsterraResponsiveBanner: FC = () => {
   const [showMobile, setShowMobile] = useState(false)
@@ -12,17 +12,12 @@ export const AdsterraResponsiveBanner: FC = () => {
   const activeBreakpoint = useMediaQuery()
 
   useEffect(() => {
-    if (activeBreakpoint === 'default' || activeBreakpoint === 'sm' || activeBreakpoint === 'tb') {
+    if (activeBreakpoint <= MediaQueryBreakPoints.TB) {
       setShowMobile(true)
       setShowDesktop(false)
     }
 
-    if (
-      activeBreakpoint === 'md' ||
-      activeBreakpoint === 'lg' ||
-      activeBreakpoint === 'xl' ||
-      activeBreakpoint === '2xl'
-    ) {
+    if (activeBreakpoint >= MediaQueryBreakPoints.MD) {
       setShowDesktop(true)
       setShowMobile(false)
     }

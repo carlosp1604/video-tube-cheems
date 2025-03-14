@@ -12,10 +12,7 @@ import ReactGA from 'react-ga4'
 import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
-import { MenuSideBar } from '~/components/MenuSideBar/MenuSideBar'
-import { LanguageMenu } from '~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
-import { MobileMenu } from '~/components/AppMenu/MobileMenu'
 import {
   TrafficstarsVideoSlider
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsVideoSlider'
@@ -31,10 +28,17 @@ const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
 { ssr: false }
 )
 
-const AppBanner = dynamic(() => import('~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner')
-  .then((module) => module.AppBanner),
-{ ssr: false }
-)
+const MobileMenu = dynamic(() => import('~/components/AppMenu/MobileMenu')
+  .then((module) => module.MobileMenu),
+{ ssr: false })
+
+const MenuSideBar = dynamic(() => import('~/components/MenuSideBar/MenuSideBar')
+  .then((module) => module.MenuSideBar),
+{ ssr: false })
+
+const LanguageMenu = dynamic(() => import('~/modules/Shared/Infrastructure/Components/LanguageMenu/LanguageMenu')
+  .then((module) => module.LanguageMenu),
+{ ssr: false })
 
 const roboto = Roboto({
   weight: ['100', '300', '400', '500', '700', '900'],
@@ -121,8 +125,6 @@ function App ({
 
                   <Component { ...pageProps }/>
                 </main>
-
-                <AppBanner />
 
                 <AppFooter />
               </div>

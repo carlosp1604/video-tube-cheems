@@ -37,7 +37,7 @@ export const ProfileHeader: FC<Props & Partial<OptionalProfileHeaderProps>> = ({
           color={ color ?? 'black' }
         />
 
-        <h1 className={ styles.profileHeader__name }>
+        <div className={ styles.profileHeader__name }>
           { name }
           <small className={ styles.profileHeader__profileType }>
             <span className={ styles.profileHeader__icon }>
@@ -48,7 +48,7 @@ export const ProfileHeader: FC<Props & Partial<OptionalProfileHeaderProps>> = ({
           <small className={ styles.profileHeader__subtitle }>
             { subtitle }
           </small>
-        </h1>
+        </div>
       </div>
     </header>
   )

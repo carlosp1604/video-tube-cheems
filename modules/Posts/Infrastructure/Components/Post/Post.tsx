@@ -15,7 +15,7 @@ import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Adver
 import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/DesktopBanner'
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
-import { useMediaQuery } from '~/hooks/MediaQuery'
+import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 import {
   CherryTv300x250Banner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CherryTv300x250Banner'
@@ -124,9 +124,7 @@ export const Post: FC<Props> = ({
 
     setCommentsOpen(!commentsOpen)
 
-    if (!currentValue && (
-      activeBreakpoint !== 'default' && activeBreakpoint !== 'sm' && activeBreakpoint !== 'tb')
-    ) {
+    if (!currentValue && (activeBreakpoint <= MediaQueryBreakPoints.TB)) {
       commentsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }

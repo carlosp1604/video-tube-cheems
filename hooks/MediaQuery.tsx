@@ -1,25 +1,35 @@
 import { useEffect, useState } from 'react'
 
+export enum MediaQueryBreakPoints {
+  DEFAULT_BREAKPOINT = 0,
+  SM = 1,
+  TB = 2,
+  MD = 3,
+  LG = 4,
+  XL = 5,
+  XXL = 6
+}
+
 export const useMediaQuery = () => {
-  const [mediaQuery, setMediaQuery] = useState<string>('default')
+  const [mediaQuery, setMediaQuery] = useState<MediaQueryBreakPoints>(MediaQueryBreakPoints.DEFAULT_BREAKPOINT)
 
   useEffect(() => {
     const handleResize = () => {
-      function getActiveBreakpoint () {
+      function getActiveBreakpoint (): MediaQueryBreakPoints {
         if (window.matchMedia('(min-width: 1536px)').matches) {
-          return '2xl'
+          return MediaQueryBreakPoints.XXL
         } else if (window.matchMedia('(min-width: 1280px)').matches) {
-          return 'xl'
+          return MediaQueryBreakPoints.XL
         } else if (window.matchMedia('(min-width: 1024px)').matches) {
-          return 'lg'
+          return MediaQueryBreakPoints.LG
         } else if (window.matchMedia('(min-width: 768px)').matches) {
-          return 'md'
+          return MediaQueryBreakPoints.MD
         } else if (window.matchMedia('(min-width: 600px)').matches) {
-          return 'tb'
+          return MediaQueryBreakPoints.TB
         } else if (window.matchMedia('(min-width: 500px)').matches) {
-          return 'sm'
+          return MediaQueryBreakPoints.SM
         } else {
-          return 'default'
+          return MediaQueryBreakPoints.DEFAULT_BREAKPOINT
         }
       }
 

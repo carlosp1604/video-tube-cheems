@@ -28,6 +28,10 @@ const nextConfig = {
           destination: '/actors-sitemap',
         },
         {
+          source: '/sitemap.xml',
+          destination: '/sitemap',
+        },
+        {
           source: '/tags-sitemap.xml',
           destination: '/tags-sitemap',
         },

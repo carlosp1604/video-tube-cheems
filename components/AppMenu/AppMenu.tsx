@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import styles from './AppMenu.module.scss'
 import { UserMenu } from '~/modules/Auth/Infrastructure/Components/UserMenu/UserMenu'
-import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { useRouter } from 'next/router'
 import { Dispatch, FC, ReactElement, SetStateAction, useState } from 'react'
 import useTranslation from 'next-translate/useTranslation'
@@ -25,6 +24,10 @@ import { IoDiceOutline } from 'react-icons/io5'
 const LoginModal = dynamic(() =>
   import('~/modules/Auth/Infrastructure/Components/Login/LoginModal').then((module) => module.LoginModal),
 { ssr: false }
+)
+
+const SearchBar = dynamic(() =>
+  import('~/components/SearchBar/SearchBar').then((module) => module.SearchBar), { ssr: false }
 )
 
 export interface Props {

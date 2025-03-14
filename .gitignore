@@ -48,3 +48,6 @@ next-env.d.ts
 public/BingSiteAuth.xml
 public/8d4965fc778c76b51084fb083d672fa3.txt
 public/yandex_1f89b6e50c3cdf1e.html
+
+# robots
+public/robots.txt

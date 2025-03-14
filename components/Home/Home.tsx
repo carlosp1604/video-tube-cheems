@@ -29,9 +29,9 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
     <section className={ styles.home__container }>
       <div className={ styles.home__entryContainer }>
         <div className={ styles.home__entryHeader }>
-          <span className={ styles.home__entryTitle }>
+          <h2 className={ styles.home__entryTitle }>
             { t('home_page_trending_posts_title') }
-          </span>
+          </h2>
           <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/posts/top' } }
@@ -50,9 +50,9 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
 
       <div className={ styles.home__entryContainer }>
         <div className={ styles.home__entryHeader }>
-          <span className={ styles.home__entryTitle }>
+          <h2 className={ styles.home__entryTitle }>
             { t('home_page_latest_posts_title') }
-          </span>
+          </h2>
           <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/posts' } }
@@ -71,9 +71,9 @@ export const Home: FC<Props> = ({ posts, trendingPosts, tags }) => {
 
       <div className={ styles.home__entryContainer }>
         <div className={ styles.home__entryHeader }>
-          <span className={ styles.home__entryTitle }>
+          <h2 className={ styles.home__entryTitle }>
             { t('home_page_tags_title') }
-          </span>
+          </h2>
           <CommonButtonLink
             title={ t('home_page_see_all_section_title') }
             linksProps={ { href: '/tags' } }

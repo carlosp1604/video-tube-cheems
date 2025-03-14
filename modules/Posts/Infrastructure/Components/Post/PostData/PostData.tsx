@@ -149,28 +149,28 @@ export const PostData: FC<Props> = ({
         </div>
         <div className={ styles.postData__basicDataContainer }>
           <div className={ styles.postData__basicDataItem }>
-            <RxCalendar />
+            <RxCalendar/>
             { date }
           </div>
           <div className={ styles.postData__basicDataItem }>
-            <BsIncognito />
+            <BsIncognito/>
             { t('post_views_title', { views: viewsNumber }) }
           </div>
         </div>
       </div>
-
-      {
-        showExtraData
-          ? <div className={ styles.postData__extraDataContainer }>
-              { actorsSection }
-              { categorySection }
-              { descriptionSection }
-          </div>
-          : null
-      }
+      <div className={ `
+        ${styles.postData__extraDataContainer}
+        ${showExtraData ? styles.postData__extraDataContainer_visible : ''}
+      ` }>
+        { actorsSection }
+        { categorySection }
+        { descriptionSection }
+      </div>
       <div className={ styles.postData__extraSection }>
         <button
-          onClick={ () => { setShowExtraData(!showExtraData) } }
+          onClick={ () => {
+            setShowExtraData(!showExtraData)
+          } }
           className={ styles.postData__extraButton }
         >
           { showExtraData ? t('post_extra_data_section_show_less') : t('post_extra_data_section_show_more') }

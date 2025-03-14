@@ -20,7 +20,11 @@
   }
 
   &__extra-data-container {
-    @apply mb-4 border-t border-border;
+    @apply mb-4 border-t border-border hidden;
+
+    &_visible {
+      @apply block;
+    }
   }
 
   &__post-description {

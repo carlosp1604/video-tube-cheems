@@ -4,10 +4,14 @@ import { TagCardComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagCa
 import { TagCard } from '~/modules/PostTag/Infrastructure/Components/TagCard/TagCard'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
 import useTranslation from 'next-translate/useTranslation'
-import { SearchBar } from '~/components/SearchBar/SearchBar'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useToast } from '~/components/AppToast/ToastContext'
+import dynamic from 'next/dynamic'
+
+const SearchBar = dynamic(() =>
+  import('~/components/SearchBar/SearchBar').then((module) => module.SearchBar), { ssr: true }
+)
 
 export interface Props {
   tagCards: TagCardComponentDto[]
@@ -48,6 +52,7 @@ export const Tags: FC<Props> = ({ tagCards }) => {
   if (currentTerm) {
     galleryHeader = (
       <CommonGalleryHeader
+        tag={ 'h1' }
         title={ 'tags:tags_search_result_title' }
         subtitle={ t('tags_gallery_subtitle', { tagsNumber: tagsToShow.length }) }
         term={ { title: 'searchTerm', value: currentTerm } }
@@ -58,6 +63,7 @@ export const Tags: FC<Props> = ({ tagCards }) => {
       <CommonGalleryHeader
         title={ t('tags_gallery_title') }
         subtitle={ t('tags_gallery_subtitle', { tagsNumber: tagsToShow.length }) }
+        tag={ 'h1' }
       />
     )
   }

@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next'
 import { container } from '~/awilix.container'
 import { getServerSideSitemapLegacy } from 'next-sitemap'
 import { GetAllTags } from '~/modules/PostTag/Application/GetAllTags/GetAllTags'
+import { i18nConfig } from '~/i18n.config'
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const getTags = container.resolve<GetAllTags>('getAllTagsUseCase')
@@ -23,16 +24,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const locale = context.locale ?? 'en'
-
   const fields = tags.map((tag) => ({
     loc: `${baseUrl}/tags/${tag.slug}`,
-    // TODO: Change this for updatedAt field
-    lastmod: tag.createdAt,
-    alternateRefs: [{
-      href: `${baseUrl}/${locale}/tags/${tag.slug}`,
-      hreflang: 'es',
-    }],
+    alternateRefs: i18nConfig.locales.map((locale) => ({
+      href: `${baseUrl}${locale === i18nConfig.defaultLocale ? '' : `/${locale}`}/tags/${tag.slug}`,
+      hreflang: locale,
+    })),
   }))
 
   return getServerSideSitemapLegacy(context, fields)

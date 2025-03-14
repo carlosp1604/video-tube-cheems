@@ -1,8 +1,19 @@
 import { FC, Ref } from 'react'
 import { Toast as ToastInterface } from '~/components/AppToast/Toast'
-import { Toast } from '~/components/AppToast/Toast/Toast'
 import styles from './ToastsContainer.module.scss'
-import { CSSTransition, TransitionGroup } from 'react-transition-group'
+import dynamic from 'next/dynamic'
+
+const CSSTransition = dynamic(() =>
+  import('react-transition-group').then((module) => module.CSSTransition), { ssr: false }
+)
+
+const TransitionGroup = dynamic(() =>
+  import('react-transition-group').then((module) => module.TransitionGroup), { ssr: false }
+)
+
+const Toast = dynamic(() =>
+  import('~/components/AppToast/Toast/Toast').then((module) => module.Toast), { ssr: false }
+)
 
 export interface ToastWithNodeRef {
   toast: ToastInterface

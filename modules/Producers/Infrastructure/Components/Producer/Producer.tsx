@@ -71,7 +71,7 @@ export const Producer: FC<Props> = ({
         subtitle={ t('producer_posts_gallery_posts_quantity',
           { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
         term={ { title: 'producerName', value: producer.name } }
-        headerTag={ 'h2' }
+        headerTag={ 'h1' }
         page={ initialPage }
         order={ initialOrder }
         initialPosts={ initialPosts }

@@ -47,7 +47,7 @@ export const EmbedPage: NextPage<EmbedPageProps> = ({ post }) => {
     <>
       <Head>
         <title>{ post.title }</title>
-        <meta name={ 'robots' } content={ 'noindex' } />
+        <meta name={ 'robots' } content={ 'index' } />
       </Head>
 
       { player }

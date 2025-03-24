@@ -1,3 +1,4 @@
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { NextPage } from 'next'
 import useTranslation from 'next-translate/useTranslation'
 import {
@@ -17,6 +18,9 @@ import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface ProducersPageProps {
   initialSearchTerm: string
@@ -61,7 +65,7 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <CrackrevenuePostPageBanner />
@@ -73,6 +77,8 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
         initialOrder={ initialOrder }
         initialProducersNumber={ initialProducersNumber }
       />
-    </>
+
+      <AdsterraResponsiveBanner />
+    </div>
   )
 }

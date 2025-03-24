@@ -64,28 +64,26 @@ export const Producer: FC<Props> = ({
   )
 
   return (
-    <>
-      <PaginatedPostCardGallery
-        key={ locale }
-        title={ 'producers:producer_posts_gallery_title' }
-        subtitle={ t('producer_posts_gallery_posts_quantity',
-          { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
-        term={ { title: 'producerName', value: producer.name } }
-        headerTag={ 'h1' }
-        page={ initialPage }
-        order={ initialOrder }
-        initialPosts={ initialPosts }
-        initialPostsNumber={ initialPostsNumber }
-        filters={ [{ type: FilterOptions.PRODUCER_SLUG, value: producer.slug }] }
-        filtersToParse={ [FilterOptions.PRODUCER_SLUG] }
-        paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        linkMode={ linkMode }
-        sortingOptions={ sortingOptions }
-        defaultSortingOption={ PaginationSortingType.LATEST }
-        onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
-        emptyState={ emptyState }
-        onPaginationStateChanges={ undefined }
-      />
-    </>
+    <PaginatedPostCardGallery
+      key={ locale }
+      title={ 'producers:producer_posts_gallery_title' }
+      subtitle={ t('producer_posts_gallery_posts_quantity',
+        { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
+      term={ { title: 'producerName', value: producer.name } }
+      headerTag={ 'h1' }
+      page={ initialPage }
+      order={ initialOrder }
+      initialPosts={ initialPosts }
+      initialPostsNumber={ initialPostsNumber }
+      filters={ [{ type: FilterOptions.PRODUCER_SLUG, value: producer.slug }] }
+      filtersToParse={ [FilterOptions.PRODUCER_SLUG] }
+      paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+      linkMode={ linkMode }
+      sortingOptions={ sortingOptions }
+      defaultSortingOption={ PaginationSortingType.LATEST }
+      onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
+      emptyState={ emptyState }
+      onPaginationStateChanges={ undefined }
+    />
   )
 }

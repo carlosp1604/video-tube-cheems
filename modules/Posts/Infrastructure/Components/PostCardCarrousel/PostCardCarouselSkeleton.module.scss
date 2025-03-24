@@ -1,0 +1,39 @@
+.post-card-carousel-skeleton {
+  &__slider {
+    @apply flex flex-row flex-nowrap items-start gap-x-2.5 p-1
+    overflow-x-scroll scrollbar-hide scroll-smooth px-5 -mx-5;
+
+    @screen md {
+      @apply px-0 mx-0;
+    }
+
+    @screen lg {
+      @apply mx-0 pl-0;
+    }
+  }
+
+  &__slider-item {
+    @apply flex-initial flex-shrink-0 basis-5/6 h-full w-full
+    overflow-visible;
+
+    @screen sm {
+      @apply basis-3/5;
+    }
+
+    @screen md {
+      @apply basis-1/3;
+    }
+
+    @screen lg {
+      @apply basis-1/4;
+    }
+
+    @screen xl {
+      @apply basis-1/4;
+    }
+
+    @screen 2xl {
+      @apply basis-1/5;
+    }
+  }
+}

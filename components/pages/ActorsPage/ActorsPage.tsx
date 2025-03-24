@@ -1,3 +1,4 @@
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { NextPage } from 'next'
 import { ActorsPaginationSortingType } from '~/modules/Actors/Infrastructure/Frontend/ActorsPaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
@@ -10,11 +11,13 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { Actors } from '~/modules/Actors/Infrastructure/Components/Actors/Actors'
-import { useRouter } from 'next/router'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface ActorsPageProps {
   initialSearchTerm: string
@@ -35,13 +38,12 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { t } = useTranslation('actors')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('actors')
 
   let canonicalUrl = `${baseUrl}/actors`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/actors`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/actors`
   }
 
   const htmlPageMetaUrlProps = (
@@ -59,7 +61,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <CrackrevenuePostPageBanner />
@@ -71,6 +73,8 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
         initialActors={ initialActors }
         initialActorsNumber={ initialActorsNumber }
       />
-    </>
+
+      <AdsterraResponsiveBanner />
+    </div>
   )
 }

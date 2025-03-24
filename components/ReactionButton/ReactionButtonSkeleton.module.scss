@@ -1,0 +1,11 @@
+.reaction-button-skeleton {
+  &__container {
+    @apply flex flex-row items-center gap-x-1.5
+    cursor-default animate-pulse;
+  }
+
+  &__icon-skeleton {
+    @apply h-4 w-4 bg-text/20
+    rounded-md;
+  }
+}

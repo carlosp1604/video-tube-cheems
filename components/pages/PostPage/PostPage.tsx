@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
-import styles from './PostPage.module.scss'
+import styles from '~/styles/pages/CommonPage.module.scss'
+import postPageStyles from './PostPage.module.scss'
 import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import useTranslation from 'next-translate/useTranslation'
@@ -12,10 +13,29 @@ import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
 import { ReactElement } from 'react'
-import { useRouter } from 'next/router'
 import { SEOHelper } from '~/modules/Shared/Infrastructure/FrontEnd/SEOHelper'
-import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel'
-import { MobileBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/MobileBanner'
+import dynamic from 'next/dynamic'
+import {
+  PostCardCarouselSkeleton
+} from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+
+const PostCardCarousel =
+  dynamic(() => import('~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel')
+    .then((module) => module.PostCardCarousel), {
+    ssr: false,
+    loading: () => {
+      return (
+        <PostCardCarouselSkeleton
+          showData={ false }
+          postCardsNumber={ 6 }
+          loading={ true }
+        />
+      )
+    },
+  })
 
 export interface PostPageProps {
   post: PostComponentDto
@@ -36,8 +56,7 @@ export const PostPage: NextPage<PostPageProps> = ({
   postViewsNumber,
   htmlPageMetaContextProps,
 }) => {
-  const { t } = useTranslation('post_page')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('post_page')
 
   const description = SEOHelper.buildDescription(
     post.title,
@@ -67,8 +86,8 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   let canonicalUrl = `${baseUrl}/posts/videos/${post.slug}`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/posts/videos/${post.slug}`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/posts/videos/${post.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -91,23 +110,22 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   if (relatedPosts.length > 0) {
     relatedPostsSection = (
-      <div className={ styles.postPage__relatedVideos }>
-        <h2 className={ styles.postPage__relatedVideosTitle }>
+      <div className={ postPageStyles.postPage__relatedVideos }>
+        <h2 className={ postPageStyles.postPage__relatedVideosTitle }>
           { t('video_related_videos_title') }
         </h2>
         <PostCardCarousel
           posts={ relatedPosts }
           postCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+          preloadImages={ false }
         />
       </div>
     )
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
-
-      <MobileBanner />
 
       <Post
         post={ post }
@@ -115,7 +133,9 @@ export const PostPage: NextPage<PostPageProps> = ({
         postViewsNumber={ postViewsNumber }
       />
 
+      <AdsterraResponsiveBanner />
+
       { relatedPostsSection }
-    </>
+    </div>
   )
 }

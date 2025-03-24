@@ -1,3 +1,4 @@
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
@@ -13,10 +14,15 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import styles from './ProducerPage.module.scss'
 import { useRouter } from 'next/router'
 import { MdLiveTv } from 'react-icons/md'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface ProducerPageProps {
   initialPage: number
@@ -79,8 +85,10 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
   }
 
   return (
-    <div className={ styles.producerPage__container }>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <CrackrevenuePostPageBanner />
 
       <ProfileHeader
         name={ producer.name }
@@ -100,6 +108,8 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
         initialPosts={ initialPosts }
         initialPostsNumber={ initialPostsNumber }
       />
+
+      <AdsterraResponsiveBanner />
     </div>
   )
 }

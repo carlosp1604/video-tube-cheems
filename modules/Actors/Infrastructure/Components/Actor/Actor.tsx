@@ -57,25 +57,23 @@ export const Actor: FC<Props> = ({
   )
 
   return (
-    <>
-      <PaginatedPostCardGallery
-        key={ locale }
-        headerTag={ 'h1' }
-        initialPosts={ initialPosts }
-        initialPostsNumber={ initialPostsNumber }
-        title={ 'actors:actor_posts_gallery_title' }
-        subtitle={ t('actor_posts_gallery_posts_quantity', { postsNumber }) }
-        term={ { title: 'actorName', value: actorName } }
-        page={ 1 }
-        order={ PaginationSortingType.LATEST }
-        filters={ [{ type: FilterOptions.ACTOR_SLUG, value: actorSlug }] }
-        filtersToParse={ [FilterOptions.ACTOR_SLUG] }
-        paginatedPostCardGalleryPostCardOptions={ postCardOptions }
-        sortingOptions={ sortingOptions }
-        defaultSortingOption={ PaginationSortingType.LATEST }
-        onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
-        emptyState={ emptyState }
-      />
-    </>
+    <PaginatedPostCardGallery
+      key={ locale }
+      headerTag={ 'h1' }
+      initialPosts={ initialPosts }
+      initialPostsNumber={ initialPostsNumber }
+      title={ 'actors:actor_posts_gallery_title' }
+      subtitle={ t('actor_posts_gallery_posts_quantity', { postsNumber }) }
+      term={ { title: 'actorName', value: actorName } }
+      page={ 1 }
+      order={ PaginationSortingType.LATEST }
+      filters={ [{ type: FilterOptions.ACTOR_SLUG, value: actorSlug }] }
+      filtersToParse={ [FilterOptions.ACTOR_SLUG] }
+      paginatedPostCardGalleryPostCardOptions={ postCardOptions }
+      sortingOptions={ sortingOptions }
+      defaultSortingOption={ PaginationSortingType.LATEST }
+      onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
+      emptyState={ emptyState }
+    />
   )
 }

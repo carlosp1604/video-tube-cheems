@@ -135,6 +135,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
     } else {
       savedPostsContent = (
         <PostCardCarousel
+          preloadImages={ false }
           posts={ savedPosts }
           postCardOptions={ [
             { type: 'deleteSavedPost', ownerId: userComponentDto.id, onDelete: onDeleteSavedPost },
@@ -159,6 +160,7 @@ export const UserProfile: FC<Props> = ({ userComponentDto }) => {
     } else {
       postsHistoryContent = (
         <PostCardCarousel
+          preloadImages={ false }
           posts={ postsHistory }
           postCardOptions={ [
             { type: 'savePost', onSuccess: onSavePost },

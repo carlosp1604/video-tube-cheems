@@ -1,7 +1,6 @@
-import styles from '~/components/pages/ActorPage/ActorPage.module.scss'
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { Actor } from '~/modules/Actors/Infrastructure/Components/Actor/Actor'
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 import useTranslation from 'next-translate/useTranslation'
@@ -16,6 +15,12 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { BsStarFill } from 'react-icons/bs'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 
 export interface ActorPageProps {
   actor: ActorPageComponentDto
@@ -32,8 +37,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { t } = useTranslation('actors')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('actors')
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -42,19 +46,19 @@ export const ActorPage: NextPage<ActorPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('actors_breadcrumb_list_title'),
-      item: `${baseUrl}/${locale}/actors`,
+      item: `${baseUrl}/${lang}/actors`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: actor.name,
-      item: `${baseUrl}/${locale}/actors/${actor.slug}`,
+      item: `${baseUrl}/${lang}/actors/${actor.slug}`,
     }],
   }
 
   let canonicalUrl = `${baseUrl}/actors/${actor.slug}`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/actors/${actor.slug}`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/actors/${actor.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -74,8 +78,10 @@ export const ActorPage: NextPage<ActorPageProps> = ({
   }
 
   return (
-    <div className={ styles.actorPage__container }>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <CrackrevenuePostPageBanner />
 
       <ProfileHeader
         name={ actor.name }
@@ -84,7 +90,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         profileType={ t('actor_page_profile_type_title') }
         icon={ <BsStarFill /> }
         subtitle={ t('actor_page_profile_count_title',
-          { viewsNumber: NumberFormatter.compatFormat(actor.viewsCount, locale) }) }
+          { viewsNumber: NumberFormatter.compatFormat(actor.viewsCount, lang) }) }
         color={ actor.imageUrl ? undefined : 'black' }
       />
 
@@ -95,6 +101,8 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         initialPosts={ initialPosts }
         initialPostsNumber={ initialPostsNumber }
       />
+
+      <AdsterraResponsiveBanner />
     </div>
   )
 }

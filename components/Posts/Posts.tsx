@@ -1,7 +1,6 @@
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
 import useTranslation from 'next-translate/useTranslation'
-import { useRouter } from 'next/router'
 import styles from './Posts.module.scss'
 import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList/ProducerList'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
@@ -36,9 +35,7 @@ export const Posts: FC<Props> = ({
   activeProducer,
 }) => {
   const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
-  const { t } = useTranslation('posts_page')
-  const router = useRouter()
-  const locale = router.locale ?? 'en'
+  const { t, lang } = useTranslation('posts_page')
 
   const [selectedProducer, setSelectedProducer] = useState<ProducerComponentDto | null>(activeProducer)
 
@@ -105,9 +102,9 @@ export const Posts: FC<Props> = ({
 
       <PaginatedPostCardGallery
         headerTag={ 'h1' }
-        key={ locale }
+        key={ lang }
         title={ galleryTitle }
-        subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
+        subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, lang) }) }
         page={ page }
         order={ order }
         initialPosts={ initialPosts }

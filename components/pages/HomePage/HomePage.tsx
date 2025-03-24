@@ -1,3 +1,4 @@
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import useTranslation from 'next-translate/useTranslation'
@@ -10,21 +11,17 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { useRouter } from 'next/router'
-import { TagCardComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagCardComponentDto'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
   trendingPosts: Array<PostCardComponentDto>
-  tags: Array<TagCardComponentDto>
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string
 }
 
 export const HomePage: NextPage<Props> = (props: Props) => {
-  const { t } = useTranslation('home_page')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('home_page')
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -35,7 +32,7 @@ export const HomePage: NextPage<Props> = (props: Props) => {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${props.baseUrl}/${locale}/posts/search?search={search_term_string}`,
+        urlTemplate: `${props.baseUrl}/${lang}/posts/search?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -43,8 +40,8 @@ export const HomePage: NextPage<Props> = (props: Props) => {
 
   let canonicalUrl = props.baseUrl
 
-  if (locale !== 'en') {
-    canonicalUrl = `${props.baseUrl}/${locale}`
+  if (lang !== 'en') {
+    canonicalUrl = `${props.baseUrl}/${lang}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -63,16 +60,17 @@ export const HomePage: NextPage<Props> = (props: Props) => {
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <Home
         posts={ props.posts }
         trendingPosts={ props.trendingPosts }
-        tags={ props.tags }
       />
 
-      <AppBanner />
-    </>
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner />
+      </div>
+    </div>
   )
 }

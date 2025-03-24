@@ -1,5 +1,4 @@
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import styles from './Search.module.scss'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import useTranslation from 'next-translate/useTranslation'
 import { FC, useState } from 'react'
@@ -65,25 +64,23 @@ export const Search: FC<Props> = ({
   }
 
   return (
-    <div className={ styles.search__container }>
-      <PaginatedPostCardGallery
-        key={ locale }
-        headerTag={ 'h1' }
-        title={ 'search:search_result_title' }
-        subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
-        term={ { title: 'searchTerm', value: searchTerm } }
-        page={ initialPage }
-        order={ initialSortingOption }
-        filters={ [{ type: FilterOptions.SEARCH, value: initialSearchTerm }] }
-        filtersToParse={ [FilterOptions.SEARCH] }
-        paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
-        linkMode={ linkMode }
-        sortingOptions={ sortingOptions }
-        defaultSortingOption={ PaginationSortingType.LATEST }
-        onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
-        emptyState={ emptyState }
-        onPaginationStateChanges={ (_page, _order, filters) => onFetchNewPosts(filters) }
-      />
-    </div>
+    <PaginatedPostCardGallery
+      key={ locale }
+      headerTag={ 'h1' }
+      title={ 'search:search_result_title' }
+      subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, locale) }) }
+      term={ { title: 'searchTerm', value: searchTerm } }
+      page={ initialPage }
+      order={ initialSortingOption }
+      filters={ [{ type: FilterOptions.SEARCH, value: initialSearchTerm }] }
+      filtersToParse={ [FilterOptions.SEARCH] }
+      paginatedPostCardGalleryPostCardOptions={ [{ type: 'savePost' }, { type: 'react' }] }
+      linkMode={ linkMode }
+      sortingOptions={ sortingOptions }
+      defaultSortingOption={ PaginationSortingType.LATEST }
+      onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
+      emptyState={ emptyState }
+      onPaginationStateChanges={ (_page, _order, filters) => onFetchNewPosts(filters) }
+    />
   )
 }

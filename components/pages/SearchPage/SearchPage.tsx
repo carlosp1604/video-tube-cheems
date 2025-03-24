@@ -1,3 +1,4 @@
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { NextPage } from 'next'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
@@ -10,10 +11,12 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { useRouter } from 'next/router'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface SearchPageProps {
   initialSearchTerm: string
@@ -30,13 +33,12 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { t } = useTranslation('search')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('search')
 
   let canonicalUrl = `${baseUrl}/posts/search/${initialSearchTerm}`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/posts/search/${initialSearchTerm}`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/posts/search/${initialSearchTerm}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -54,7 +56,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <CrackrevenuePostPageBanner />
@@ -64,6 +66,8 @@ export const SearchPage: NextPage<SearchPageProps> = ({
         initialSearchTerm={ initialSearchTerm }
         initialSortingOption={ initialSortingOption }
       />
-    </>
+
+      <AdsterraResponsiveBanner />
+    </div>
   )
 }

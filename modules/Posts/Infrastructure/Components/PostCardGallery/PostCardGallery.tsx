@@ -16,11 +16,12 @@ import { PostCardAdvertising } from '~/modules/Shared/Infrastructure/Components/
 import { useToast } from '~/components/AppToast/ToastContext'
 import { adsData } from '~/adsData'
 import {
-  ExoclickResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/ExoclickResponsiveBanner'
-import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
+import {
+  CheerryTvResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CheerryTvResponsiveBanner'
 
 const PostCardGalleryOptions = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
@@ -46,6 +47,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostCard, setSelectedPostCard] = useState<PostCardComponentDto | null>(null)
   const buildOptions = usePostCardOptions()
+  const activeBreakpoint = useMediaQuery()
 
   const { t } = useTranslation('post_card_gallery')
   const { status } = useSession()
@@ -96,13 +98,24 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   const skeletonPosts = createSkeletonList(postsSkeletonNumber)
 
   const postCards = useMemo(() => {
-    const postCards = posts.map((post) => {
+    let imagesToPreload = 3
+
+    if (activeBreakpoint === MediaQueryBreakPoints.TB) {
+      imagesToPreload = 8
+    }
+
+    if (activeBreakpoint > MediaQueryBreakPoints.TB) {
+      imagesToPreload = 12
+    }
+
+    const postCards = posts.map((post, index) => {
       return (
         <PostCardWithOptions
           post={ post }
           onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
           showOptionsButton={ !!onClickOptions }
           key={ post.id }
+          preloadImage={ index < imagesToPreload }
         />
       )
     })
@@ -197,7 +210,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     let exoClickBanner: ReactElement | null = null
 
     if (secondPostList.length > 0) {
-      exoClickBanner = (<ExoclickResponsiveBanner />)
+      exoClickBanner = (<CheerryTvResponsiveBanner />)
     }
 
     content = (

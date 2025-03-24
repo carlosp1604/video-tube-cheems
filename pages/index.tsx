@@ -2,10 +2,6 @@ import { GetStaticProps } from 'next'
 import { container } from '~/awilix.container'
 import { Settings } from 'luxon'
 import { Props as HomePageProps, HomePage } from '~/components/pages/HomePage/HomePage'
-import { GetAllTags } from '~/modules/PostTag/Application/GetAllTags/GetAllTags'
-import {
-  TagCardComponentDtoTranslator
-} from '~/modules/PostTag/Infrastructure/Translators/TagCardComponentDtoTranslator'
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
@@ -39,17 +35,14 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => 
   const props: HomePageProps = {
     posts: [],
     trendingPosts: [],
-    tags: [],
     baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
 
-  const getTags = container.resolve<GetAllTags>('getAllTagsUseCase')
   const getPosts = container.resolve<GetPosts>('getPostsUseCase')
   const getTrendingPosts = container.resolve<GetTopVideoPosts>('getTopVideoPostsUseCase')
 
   try {
-    const tags = await getTags.get()
     const posts = await getPosts.get({
       page: 1,
       filters: [],
@@ -58,9 +51,6 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => 
       postsPerPage: 24,
     })
     const trendingPosts = await getTrendingPosts.get({ date: 'day', postsNumber: 24 })
-
-    props.tags = tags.slice(0, 24)
-      .map((tagApplicationDto) => TagCardComponentDtoTranslator.fromApplicationDto(tagApplicationDto, locale))
 
     props.trendingPosts =
       trendingPosts.map((postApplicationDto) =>
@@ -72,7 +62,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => 
 
     return {
       props,
-      revalidate: 600, // Try to regenerate page each 10 minutes
+      revalidate: 300, // Try to regenerate page each 5 minutes
     }
   } catch (exception: unknown) {
     console.error(exception)

@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import styles from './PostCardWithOptions.module.scss'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { PostCard } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
+import { PostCard, PostCardOptionalProps } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
 import { v4 as uuidv4 } from 'uuid'
 import useTranslation from 'next-translate/useTranslation'
 import dynamic from 'next/dynamic'
@@ -17,10 +17,13 @@ const Tooltip = dynamic(() => import(
   '~/components/Tooltip/Tooltip').then((module) => module.Tooltip), { ssr: false }
 )
 
-export const PostCardWithOptions: FC<Props> = ({
+export const PostCardWithOptions: FC<Props & Partial<PostCardOptionalProps>> = ({
   post,
   showOptionsButton,
   onClickOptions,
+  showExtraData = true,
+  showData = true,
+  preloadImage = false,
 }) => {
   const { t } = useTranslation('post_card')
   const [mounted, setMounted] = useState<boolean>(false)
@@ -35,6 +38,9 @@ export const PostCardWithOptions: FC<Props> = ({
     <div className={ styles.postCardWithOptions__container }>
       <PostCard
         post={ post }
+        showData={ showData }
+        showExtraData={ showExtraData }
+        preloadImage={ preloadImage }
       />
       <button className={ `
         ${styles.postCardWithOptions__postOptions}

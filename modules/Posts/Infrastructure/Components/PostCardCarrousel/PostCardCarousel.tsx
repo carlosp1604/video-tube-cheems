@@ -11,16 +11,26 @@ import {
   PostCardGalleryOptions
 } from '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
 import { useToast } from '~/components/AppToast/ToastContext'
+import { PostCardOptionalProps } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCard'
+import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 
 interface Props {
   posts: PostCardComponentDto[]
   postCardOptions: PostCardOptionConfiguration[]
+  preloadImages: boolean
 }
 
-export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
+export const PostCardCarousel: FC<Props & Partial<PostCardOptionalProps>> = ({
+  posts,
+  postCardOptions,
+  preloadImages,
+  showExtraData = true,
+  showData = true,
+}) => {
   const [postCardOptionsMenuOpen, setPostCardOptionsMenuOpen] = useState<boolean>(false)
   const [selectedPostCard, setSelectedPostCard] = useState<PostCardComponentDto | null>(null)
   const buildOptions = usePostCardOptions()
+  const activeBreakpoint = useMediaQuery()
 
   const { t } = useTranslation('post_card_gallery')
   const { status } = useSession()
@@ -46,6 +56,16 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
     }
   }
 
+  let imagesToPreload = 2
+
+  if (activeBreakpoint === MediaQueryBreakPoints.TB) {
+    imagesToPreload = 3
+  }
+
+  if (activeBreakpoint > MediaQueryBreakPoints.TB) {
+    imagesToPreload = 4
+  }
+
   return (
     <>
       <PostCardGalleryOptions
@@ -59,7 +79,7 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
         itemsAutoWidth={ false }
         showButtons={ true }
       >
-        { posts.map((post) => {
+        { posts.map((post, index) => {
           return ({
             key: post.id,
             component:
@@ -72,6 +92,9 @@ export const PostCardCarousel: FC<Props> = ({ posts, postCardOptions }) => {
                 } }
                 showOptionsButton={ !!onClickOptions }
                 key={ post.id }
+                showData={ showData }
+                showExtraData={ showExtraData }
+                preloadImage={ (index < imagesToPreload) && preloadImages }
               />,
           })
         }) }

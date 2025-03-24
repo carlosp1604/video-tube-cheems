@@ -1,7 +1,6 @@
 .post {
   &__container {
-    @apply container flex flex-col gap-y-4 mx-auto
-    pt-5 px-5 w-full overflow-hidden pb-5;
+    @apply flex flex-col gap-y-4 w-full;
   }
 
   &__post-with-ads {

@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import styles from '~/styles/pages/CommonPage.module.scss'
 import useTranslation from 'next-translate/useTranslation'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { TopVideoPosts } from '~/modules/Posts/Infrastructure/Components/TopVideoPosts/TopVideoPosts'
@@ -13,6 +13,9 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -29,13 +32,12 @@ export const TopVideoPostsPage: NextPage<Props> = ({
   baseUrl,
   htmlPageMetaContextProps,
 }) => {
-  const locale = useRouter().locale ?? 'en'
-  const { t } = useTranslation('top')
+  const { t, lang } = useTranslation('top')
 
   let canonicalUrl = `${baseUrl}/posts/top`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/posts/top`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/posts/top`
   }
 
   if (option !== 'day') {
@@ -67,16 +69,18 @@ export const TopVideoPostsPage: NextPage<Props> = ({
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <CrackrevenuePostPageBanner/>
 
       <TopVideoPosts
         posts={ posts }
         currentDate={ currentDate }
         currentOption={ option }
       />
-    </>
+
+      <AdsterraResponsiveBanner/>
+    </div>
   )
 }

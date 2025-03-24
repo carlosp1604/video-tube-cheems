@@ -1,0 +1,10 @@
+.common-page {
+  &__container {
+    @apply container px-5 mx-auto flex flex-col
+    gap-y-4 py-5 min-h-screen h-full;
+  }
+
+  &__page-banner {
+    @apply place-self-stretch mt-auto;
+  }
+}

@@ -1,11 +1,9 @@
 import styles from './PostOptions.module.scss'
 import { FC, ReactElement, useState } from 'react'
 import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
-import { RxBookmark, RxDividerVertical, RxGear } from 'react-icons/rx'
+import { RxBookmark, RxGear } from 'react-icons/rx'
 import { ReactionComponentDto } from '~/modules/Reactions/Infrastructure/Components/ReactionComponentDto'
 import useTranslation from 'next-translate/useTranslation'
-import { LikeButton } from '~/components/ReactionButton/LikeButton'
-import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUrlsHelper'
@@ -20,6 +18,8 @@ import { PiChatsDuotone } from 'react-icons/pi'
 import { MdFileDownload, MdOutlineFlag } from 'react-icons/md'
 import { useToast } from '~/components/AppToast/ToastContext'
 import { useSession } from 'next-auth/react'
+import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
+import { LikeButton } from '~/components/ReactionButton/LikeButton'
 
 const DownloadMenu = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
@@ -180,7 +180,7 @@ export const PostOptions: FC<Props> = ({
           reactionsNumber={ likesNumber }
           disabled={ loading || optionsDisabled }
         />
-        <RxDividerVertical className={ styles.postOptions__likeDislikeSeparator }/>
+        <span className={ styles.postOptions__likeDislikeSeparator }>|</span>
         <DislikeButton
           disliked={ userReaction !== null && userReaction.reactionType === ReactionType.DISLIKE }
           onDislike={ () => onClickLikeDislike(ReactionType.DISLIKE) }

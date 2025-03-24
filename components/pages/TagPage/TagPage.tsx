@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import useTranslation from 'next-translate/useTranslation'
@@ -12,10 +13,14 @@ import {
 import { Tag } from '~/modules/PostTag/Infrastructure/Components/Tag/Tag'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import styles from './TagPage.module.scss'
-import { useRouter } from 'next/router'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
 import { AiOutlineTag } from 'react-icons/ai'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface TagPageProps {
   initialPage: number
@@ -36,8 +41,7 @@ export const TagPage: NextPage<TagPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { t } = useTranslation('tags')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('tags')
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -46,14 +50,14 @@ export const TagPage: NextPage<TagPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: tag.name,
-      item: `${baseUrl}/${locale}/tags/${tag.slug}`,
+      item: `${baseUrl}/${lang}/tags/${tag.slug}`,
     }],
   }
 
   let canonicalUrl = `${baseUrl}/tags/${tag.slug}`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/tags/${tag.slug}`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/tags/${tag.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -72,10 +76,11 @@ export const TagPage: NextPage<TagPageProps> = ({
   }
 
   return (
-    <div className={ styles.tagPage__container }>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      { /* TODO: Add imageAlt when tags have imageUrl */ }
+      <CrackrevenuePostPageBanner />
+
       <ProfileHeader
         name={ tag.name }
         imageAlt={ t('tag_image_alt_title', { tagName: tag.name }) }
@@ -92,6 +97,8 @@ export const TagPage: NextPage<TagPageProps> = ({
         initialPosts={ initialPosts }
         initialPostsNumber={ initialPostsNumber }
       />
+
+      <AdsterraResponsiveBanner />
     </div>
   )
 }

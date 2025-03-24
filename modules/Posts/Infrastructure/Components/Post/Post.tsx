@@ -12,7 +12,6 @@ import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post
 import { useReactPost } from '~/hooks/ReactPost'
 import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
 import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
-import { DesktopBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/Exoclick/DesktopBanner'
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
@@ -208,17 +207,16 @@ export const Post: FC<Props> = ({
 
         <div className={ styles.post__rightContainer }>
           <span className={ styles.post__rightContainerItem }>
-            <AdsterraBanner />
+            <AdsterraBanner/>
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
-            <CherryTv300x250Banner />
+            <CherryTv300x250Banner/>
           </span>
-          <span className={ styles.post__rightContainerItemHiddenMd }>
-            <DesktopBanner />
+          <span className={ styles.post__rightContainerItemHiddenMobile }>
           </span>
         </div>
       </section>
-      <div ref={ commentsRef } />
+      <div ref={ commentsRef }/>
       { commentsComponent }
     </div>
   )

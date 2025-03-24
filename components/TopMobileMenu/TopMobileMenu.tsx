@@ -45,6 +45,23 @@ export const TopMobileMenu: FC = () => {
     )
   }
 
+  if (
+    process.env.NEXT_PUBLIC_PARTNER_3_BACKLINK_URL &&
+    process.env.NEXT_PUBLIC_PARTNER_3_BACKLINK_ANCHOR_TEXT
+  ) {
+    links.push(
+      <Link
+        className={ styles.topMobileMenu__offerContainer }
+        href={ process.env.NEXT_PUBLIC_PARTNER_3_BACKLINK_URL }
+        title={ process.env.NEXT_PUBLIC_PARTNER_3_BACKLINK_ANCHOR_TEXT }
+        key={ process.env.NEXT_PUBLIC_PARTNER_3_BACKLINK_ANCHOR_TEXT }
+        rel={ 'follow' }
+      >
+        { process.env.NEXT_PUBLIC_PARTNER_3_BACKLINK_ANCHOR_TEXT }
+      </Link>
+    )
+  }
+
   if (process.env.NEXT_PUBLIC_CAMS_AD_URL) {
     links.push(
       <div
@@ -116,6 +133,7 @@ export const TopMobileMenu: FC = () => {
 
   return (
     <div className={ styles.topMobileMenu__container }>
+      { links }
       <Link
         className={ styles.topMobileMenu__offerContainer }
         href={ 'https://theporndude.com/' }
@@ -125,7 +143,6 @@ export const TopMobileMenu: FC = () => {
       >
         { t('the_porn_dude_link_title') }
       </Link>
-      { links }
     </div>
   )
 }

@@ -36,7 +36,8 @@
   }
 
   &__like-dislike-separator {
-    @apply text-xl text-secondary-text;
+    @apply text-xl text-secondary-text
+    mx-1.5;
   }
 
   &__loading-icon {

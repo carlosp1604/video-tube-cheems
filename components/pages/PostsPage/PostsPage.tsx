@@ -1,3 +1,4 @@
+import styles from '~/styles/pages/CommonPage.module.scss'
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
@@ -11,7 +12,6 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { useRouter } from 'next/router'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
@@ -29,8 +29,7 @@ export interface Props {
 }
 
 export const PostsPage: NextPage<Props> = (props: Props) => {
-  const { t } = useTranslation('posts_page')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('posts_page')
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -41,7 +40,7 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${props.baseUrl}/${locale}/posts/search?search={search_term_string}`,
+        urlTemplate: `${props.baseUrl}/${lang}/posts/search?search={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -49,8 +48,8 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
 
   let canonicalUrl = props.baseUrl + '/posts'
 
-  if (locale !== 'en') {
-    canonicalUrl = `${props.baseUrl}/${locale}/posts`
+  if (lang !== 'en') {
+    canonicalUrl = `${props.baseUrl}/${lang}/posts`
   }
 
   const htmlPageMetaUrlProps = (
@@ -69,7 +68,7 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
   }
 
   return (
-    <>
+    <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <CrackrevenuePostPageBanner />
@@ -82,6 +81,6 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
         initialPostsNumber={ props.initialPostsNumber }
         order={ props.order }
       />
-    </>
+    </div>
   )
 }

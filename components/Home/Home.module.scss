@@ -1,7 +1,6 @@
 .home {
   &__container {
-    @apply container flex flex-col gap-y-4 px-5 mx-auto
-    pb-10 mt-5 cursor-default;
+    @apply flex flex-col gap-y-4 cursor-default;
   }
 
   &__entry-container {
@@ -15,18 +14,5 @@
 
   &__entry-title {
     @apply text-xl pb-0.5 border-b border-brand-primary-light;
-  }
-
-  &__tags-gallery-container {
-    @apply grid gap-4;
-    grid-template-columns: repeat(2, 1fr);
-
-    @screen md {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    @screen lg {
-      grid-template-columns: repeat(6, 1fr);
-    }
   }
 }

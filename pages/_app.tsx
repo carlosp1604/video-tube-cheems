@@ -19,7 +19,6 @@ import {
 import {
   OctoclickInitializationCode
 } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoclickInitializationCode'
-import { OctoclickPopUnder } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoclickPopUnder'
 import { ToastProvider } from '~/components/AppToast/ToastProvider'
 import { OctoClickInPage } from '~/modules/Shared/Infrastructure/Components/Advertising/OctoClick/OctoClickInPage'
 
@@ -109,7 +108,6 @@ function App ({
 
               <OctoclickInitializationCode onRender={ () => setOctoclickCodeInitializated(true) }/>
               <OctoClickInPage initCodeRendered={ octoClickCodeInitializated }/>
-              <OctoclickPopUnder initCodeRendered={ octoClickCodeInitializated }/>
 
               <TrafficstarsVideoSlider />
 

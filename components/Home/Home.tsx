@@ -73,7 +73,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts }) => {
         </div>
         <PostCardGallery
           posts={ posts }
-          showAds={ false }
+          showAds={ true }
           postCardOptions={ postCardOptions }
         />
         <PaginationBar

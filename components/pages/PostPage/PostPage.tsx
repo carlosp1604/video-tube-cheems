@@ -133,9 +133,9 @@ export const PostPage: NextPage<PostPageProps> = ({
         postViewsNumber={ postViewsNumber }
       />
 
-      <AdsterraResponsiveBanner />
-
       { relatedPostsSection }
+
+      <AdsterraResponsiveBanner />
     </div>
   )
 }

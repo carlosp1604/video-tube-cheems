@@ -13,7 +13,7 @@ import {
 } from '~/adsData'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 
-export const CheerryTvResponsiveBanner: FC = () => {
+export const CherryTvResponsiveBanner: FC = () => {
   const [mounted, setMounted] = useState<boolean>(false)
   const [mobileBannerImage, setMobileBannerImage] = useState<string>('')
   const [desktopBannerImage, setDesktopBannerImage] = useState<string>('')

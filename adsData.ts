@@ -27,22 +27,20 @@ export const postBannerDesktopData = [
 ]
 
 export const cherryTvBannerMobileData = [
-  'https://cdn.cheemsporn.com/mobile-banner-1.webp',
-  'https://cdn.cheemsporn.com/mobile-banner-2.webp',
-  'https://cdn.cheemsporn.com/mobile-banner-3.webp',
-  'https://cdn.cheemsporn.com/mobile-banner-4.webp',
-  'https://cdn.cheemsporn.com/mobile-banner-5.webp',
+  'https://cdn.cheemsporn.com/responsive-mobile-banner-1.jpg',
+  'https://cdn.cheemsporn.com/responsive-mobile-banner-2.jpg',
+  'https://cdn.cheemsporn.com/responsive-mobile-banner-3.jpg',
+  'https://cdn.cheemsporn.com/responsive-mobile-banner-4.jpg',
 ]
 
 export const cherryTvBannerDesktopData = [
-  'https://cdn.cheemsporn.com/desktop-banner-1.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-2.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-3.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-4.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-5.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-6.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-7.webp',
-  'https://cdn.cheemsporn.com/desktop-banner-8.webp',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-1.jpg',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-2.jpg',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-3.jpg',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-4.jpg',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-5.jpg',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-6.jpg',
+  'https://cdn.cheemsporn.com/responsive-desktop-banner-7.jpg',
 ]
 
 export const cherryTV300x250Data = [

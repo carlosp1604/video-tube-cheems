@@ -20,8 +20,8 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 import {
-  CheerryTvResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CheerryTvResponsiveBanner'
+  CherryTvResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CherryTvResponsiveBanner'
 
 const PostCardGalleryOptions = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
@@ -210,7 +210,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     let exoClickBanner: ReactElement | null = null
 
     if (secondPostList.length > 0) {
-      exoClickBanner = (<CheerryTvResponsiveBanner />)
+      exoClickBanner = (<CherryTvResponsiveBanner />)
     }
 
     content = (

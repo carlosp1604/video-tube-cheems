@@ -48,7 +48,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => 
       filters: [],
       sortCriteria: 'desc',
       sortOption: 'date',
-      postsPerPage: 24,
+      postsPerPage: 35,
     })
     const trendingPosts = await getTrendingPosts.get({ date: 'day', postsNumber: 24 })
 

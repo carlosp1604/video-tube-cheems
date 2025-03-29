@@ -38,7 +38,7 @@ export const PostData: FC<Props> = ({
   if (producer !== null) {
     producerSection = (
       <div>
-        <h2 className={ styles.postData__hiddenHeading }>{ t('post_data_actor_title') }</h2>
+        <h2 className={ styles.postData__hiddenHeading }>{ t('post_data_producer_title') }</h2>
         <ProducerActor
           name={ producer.name }
           imageUrl={ producer.imageUrl }

@@ -98,8 +98,13 @@ const nextConfig = {
 
     return [
       {
-        key: 'Strict-Transport-Security',
-        value: 'max-age=63072000; includeSubDomains; preload',
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+        ],
       },
       {
         source: '/:all*(css|js|gif|svg|jpg|jpeg|png|woff|woff2)',

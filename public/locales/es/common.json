@@ -2,6 +2,7 @@
   "action_cannot_be_performed_error_message": "No puedes hacer esto ahora, espera a que termine la operación actual",
   "actor_image_alt_title": "Imagen de perfil del actor {{actorName}}",
   "ad_blocker_detected_message_title": "Estás usando un bloqueador de anuncios? Esto puede afectar a tu experiencia en esta web.",
+  "app_banner_title": "Videos porno y peliculas porno gratis en Full HD",
   "banner_ad_title": "Publicidad",
   "cam_card_live_title": "En vivo",
   "cam_card_play_button": "Toca aquí para reproducir el show",
@@ -16,6 +17,8 @@
   "like_reaction_title_button": "Me gusta",
   "page_title_with_language": "{{sitename}} | {{title}}",
   "producer_image_alt_title": "Imagen de perfil de la productora {{producerName}}",
+  "rta_logo_alt_title": "RTA: Restringido a adultos",
+  "rta_description_title": "Esta web está restringida a adultos. Si estás aquí juras que tienes la edad legal (la edad considerada legal en su país de origen) para consumir contenido para adultos. Aprende como <0>bloquear el acceso a este sitio web</0>",
   "tag_image_alt_title": "Imagen de perfil de la etiqueta {{tagName}}",
   "user_new_login_help_message_title": "Si anteriormente creaste una cuenta con Google solo tienes que hacer click en 'Olvidé mi contraseña' para generar una contraseña para tu usuario"
 }

@@ -163,8 +163,8 @@ export const PostCard: FC<Props & Partial<PostCardOptionalProps>> = ({
         >
           { media }
           <span className={ styles.postCard__absoluteElement }>
-              { post.duration }
-            </span>
+            { post.duration }
+          </span>
           { resolutionIcon }
           { externalLinkIcon }
         </Link>

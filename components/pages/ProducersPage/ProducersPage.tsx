@@ -13,7 +13,6 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { Producers } from '~/modules/Producers/Infrastructure/Components/Producers/Producers'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { useRouter } from 'next/router'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
@@ -21,6 +20,7 @@ import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/Profile
 import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface ProducersPageProps {
   initialSearchTerm: string
@@ -41,13 +41,12 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
-  const { t } = useTranslation('producers')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('producers')
 
   let canonicalUrl = `${baseUrl}/producers`
 
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/producers`
+  if (lang !== 'en') {
+    canonicalUrl = `${baseUrl}/${lang}/producers`
   }
 
   const htmlPageMetaUrlProps = (
@@ -68,7 +67,7 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <CrackrevenuePostPageBanner/>
 
       <Producers
         initialSearchTerm={ initialSearchTerm }
@@ -78,7 +77,15 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
         initialProducersNumber={ initialProducersNumber }
       />
 
-      <AdsterraResponsiveBanner />
+      <AdsterraResponsiveBanner/>
+
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          description={ t('producers_page_banner_description') }
+          headerTag={ 'h2' }
+        />
+      </div>
     </div>
   )
 }

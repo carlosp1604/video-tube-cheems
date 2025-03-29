@@ -77,6 +77,10 @@
   }
 
   &__external-icon {
-    @apply top-[60px] right-1 text-xl bg-brand-primary-bg/70;
+    @apply top-[60px] right-1 text-xl bg-brand-primary-bg/90;
+  }
+
+  &__separator-icon {
+    @apply text-center text-base text-text/60 mx-1.5;
   }
 }

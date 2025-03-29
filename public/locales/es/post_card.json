@@ -1,5 +1,5 @@
 {
-  "post_card_external_link_title": "Link externo",
+  "post_card_external_link_title": "Mira {{videoTitle}} en {{sitename}}",
   "post_card_options_button_title": "Opciones del video",
   "post_card_post_views": "{{views}} vistas"
 }

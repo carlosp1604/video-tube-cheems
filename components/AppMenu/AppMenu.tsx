@@ -121,7 +121,7 @@ export const AppMenu: FC<Props> = ({ onClickMenuButton, setOpenLanguageMenu }) =
         query: {
           search: cleanTitle,
         },
-      }, undefined, { shallow: true, scroll: true })
+      }, undefined, { shallow: false, scroll: true })
 
       setOpenSearchBar(false)
     } else {

@@ -1,5 +1,6 @@
-import { FC, useMemo, useState } from 'react'
+import dynamic from 'next/dynamic'
 import styles from './Tags.module.scss'
+import { FC, useMemo, useState } from 'react'
 import { TagCardComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagCardComponentDto'
 import { TagCard } from '~/modules/PostTag/Infrastructure/Components/TagCard/TagCard'
 import { CommonGalleryHeader } from '~/modules/Shared/Infrastructure/Components/CommonGalleryHeader/CommonGalleryHeader'
@@ -7,7 +8,6 @@ import useTranslation from 'next-translate/useTranslation'
 import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { useToast } from '~/components/AppToast/ToastContext'
-import dynamic from 'next/dynamic'
 
 const SearchBar = dynamic(() =>
   import('~/components/SearchBar/SearchBar').then((module) => module.SearchBar), { ssr: true }

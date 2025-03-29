@@ -16,7 +16,6 @@ const config = {
   pages: {
     '*': [
       'app_menu',
-      'app_banner',
       'footer',
       'menu',
       'user_menu',

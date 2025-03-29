@@ -10,6 +10,7 @@ import { GetTopVideoPosts } from '~/modules/Posts/Application/GetTopVideoPosts/G
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { defaultPerPageWithoutAds } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 
 export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => {
   const locale = context.locale ?? 'en'
@@ -26,11 +27,16 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => 
     baseUrl = env.BASE_URL
   }
 
-  const htmlPageMetaContextService = new HtmlPageMetaContextService({
-    ...context,
-    locale,
-    resolvedUrl: '/',
-  })
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(
+    {
+      ...context,
+      locale,
+      pathname: '',
+      resolvedUrl: '',
+    },
+    { includeLocale: true, includeQuery: false },
+    { index: true, follow: true }
+  )
 
   const props: HomePageProps = {
     posts: [],
@@ -48,7 +54,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async (context) => 
       filters: [],
       sortCriteria: 'desc',
       sortOption: 'date',
-      postsPerPage: 35,
+      postsPerPage: defaultPerPageWithoutAds,
     })
     const trendingPosts = await getTrendingPosts.get({ date: 'day', postsNumber: 24 })
 

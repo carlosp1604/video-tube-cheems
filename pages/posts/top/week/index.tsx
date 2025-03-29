@@ -20,20 +20,10 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const { env } = process
-  let baseUrl = ''
-
-  if (!env.BASE_URL) {
-    throw Error('Missing env var: BASE_URL. Required in the week top posts page')
-  } else {
-    baseUrl = env.BASE_URL
-  }
-
   const dateService = container.resolve<DateServiceInterface>('dateService')
 
   const todayDate = dateService.getCurrentDayWithoutTime()
   const currentWeekMonday = dateService.getCurrentWeekFirstDay()
-  const resolvedUrl = '/posts/top/week'
   const todayDateString = DateTime.fromJSDate(todayDate).toLocaleString({ month: 'long', day: '2-digit' })
   const currentWeekMondayString =
     DateTime.fromJSDate(currentWeekMonday).toLocaleString({ month: 'long', day: '2-digit' })
@@ -43,14 +33,17 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   const htmlPageMetaContextService = new HtmlPageMetaContextService({
     ...context,
     locale,
-    resolvedUrl,
-  })
+    pathname: '/posts/top/week',
+    resolvedUrl: '/posts/top/week',
+  },
+  { includeLocale: true, includeQuery: false },
+  { index: true, follow: true }
+  )
 
   const props: TopVideoPostPageProps = {
     posts: [],
     currentDate,
     option: 'week',
-    baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
 

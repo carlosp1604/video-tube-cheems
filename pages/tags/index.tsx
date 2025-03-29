@@ -28,8 +28,12 @@ export const getStaticProps: GetStaticProps<TagsPageProps> = async (context) => 
   const htmlPageMetaContextService = new HtmlPageMetaContextService({
     ...context,
     locale,
+    pathname: '/tags',
     resolvedUrl: '/tags',
-  })
+  },
+  { includeLocale: true, includeQuery: false },
+  { index: true, follow: true }
+  )
 
   const props: TagsPageProps = {
     tagCards: [],

@@ -1,17 +1,17 @@
 import styles from '~/styles/pages/CommonPage.module.scss'
-import { NextPage } from 'next'
-import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import useTranslation from 'next-translate/useTranslation'
+import { Home } from '~/components/Home/Home'
+import { NextPage } from 'next'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
+import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
-import { Home } from '~/components/Home/Home'
 import {
   HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
-import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -69,7 +69,11 @@ export const HomePage: NextPage<Props> = (props: Props) => {
       />
 
       <div className={ styles.commonPage__pageBanner }>
-        <AppBanner />
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          description={ t('home_page_banner_description') }
+          headerTag={ 'h1' }
+        />
       </div>
     </div>
   )

@@ -40,7 +40,7 @@ export const ProducerList: FC<Props> = ({ producers, activeProducer }) => {
         <Link
           href={ href }
           scroll={ false }
-          shallow={ true }
+          shallow={ false }
           className={ `${styles.producerList__category}
           ${activeProducer?.id === producer.id ? styles.producerList__categoryActive : ''}
           ` }

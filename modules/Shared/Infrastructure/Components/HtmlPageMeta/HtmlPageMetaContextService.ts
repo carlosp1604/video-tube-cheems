@@ -1,49 +1,58 @@
-import { ParsedUrlQuery } from 'querystring'
-import { GetServerSidePropsContext, GetStaticPropsContext, PreviewData } from 'next'
-import nextTranslatei18nConfig from '~/i18n'
-import { localeWithTerritory } from '~/modules/Shared/Domain/Locale'
+import { GetServerSidePropsContext, GetStaticPropsContext } from 'next'
+import { i18nConfig } from '~/i18n.config'
 import { HtmlPageMetaContextServiceInterface } from './HtmlPageMetaContextServiceInterface'
-import { AlternateUrl, HtmlPageMetaContextProps } from './HtmlPageMetaContextProps'
+import {
+  AlternateUrl, CanonicalUrl,
+  HtmlPageMetaContextProps,
+  HtmlPageMetaRobots
+} from './HtmlPageMetaContextProps'
 
-/**
- * Service to extract metadata properties which are dependent on the context.
- */
 export interface StaticContext extends GetStaticPropsContext {
+  pathname: string
   locale: string
   resolvedUrl: string
 }
 
 export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInterface {
-  private context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData> | StaticContext
-
-  public constructor (context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData> | StaticContext) {
+  public constructor (
+    private context: GetServerSidePropsContext | StaticContext,
+    private readonly canonicalUrl: CanonicalUrl = null,
+    private readonly robots: HtmlPageMetaRobots = { index: true, follow: true }
+  ) {
     this.context = context
+    this.canonicalUrl = canonicalUrl
+    this.robots = robots
   }
 
   public getProperties (): HtmlPageMetaContextProps {
     return {
-      url: this.getCurrentUrl(),
+      url: this.getFullUrl(this.getLocale()),
       locale: this.getExtendedLocale(),
-      alternateLocaleWithTerritory: this.getExtendedAlternateLocale(),
       alternateLocale: this.getAlternateLocaleWithAlternateUrl(),
+      canonicalUrl: this.getCanonicalUrl(),
+      robots: this.robots,
     }
   }
 
   private getLocale (): string {
-    return this.context.locale ? this.context.locale : nextTranslatei18nConfig.defaultLocale
+    return this.context.locale ? this.context.locale : i18nConfig.defaultLocale
   }
 
   private getExtendedLocale (): string {
-    return localeWithTerritory(this.getLocale())
+    return this.getLocale()
+  }
+
+  private getAlternateLocale (): string[] {
+    return i18nConfig.locales
   }
 
   private getAlternateLocaleWithAlternateUrl (): AlternateUrl[] {
-    const locales: string[] = this.context.locales || []
+    const locales = this.getAlternateLocale()
 
     const alternateLocale: AlternateUrl[] = []
 
     locales.forEach((locale) => {
-      const alternateUrl = this.getUrlForLocale(locale)
+      const alternateUrl = this.getFullUrl(locale === i18nConfig.defaultLocale ? null : locale)
 
       alternateLocale.push({ locale, alternateUrl })
     })
@@ -51,25 +60,41 @@ export class HtmlPageMetaContextService implements HtmlPageMetaContextServiceInt
     return alternateLocale
   }
 
-  private getAlternateLocale (): string[] {
-    return this.context.locales || []
-  }
-
-  private getExtendedAlternateLocale (): string[] {
-    return this.getAlternateLocale().map(localeWithTerritory)
-  }
-
-  private getCurrentUrl (): string {
+  private getFullUrl (locale: string | null): string {
     const env = process.env
     const baseUrl = env.BASE_URL
 
-    return `${baseUrl}/${this.getLocale()}${this.context.resolvedUrl}`
-  }
-
-  private getUrlForLocale (locale: string): string {
-    const env = process.env
-    const baseUrl = env.BASE_URL
+    if (!locale) {
+      return `${baseUrl}${this.context.resolvedUrl}`
+    }
 
     return `${baseUrl}/${locale}${this.context.resolvedUrl}`
+  }
+
+  private getCanonicalUrl (): string | null {
+    if (!this.canonicalUrl) {
+      return null
+    }
+
+    const env = process.env
+    const baseUrl = env.BASE_URL
+
+    if (typeof this.canonicalUrl === 'string') {
+      return `${baseUrl}/${this.canonicalUrl}`
+    }
+
+    let canonicalUrl = baseUrl
+
+    if (this.canonicalUrl.includeLocale && this.getLocale() !== i18nConfig.defaultLocale) {
+      canonicalUrl = `${canonicalUrl}/${this.getLocale()}`
+    }
+
+    if (this.canonicalUrl.includeQuery) {
+      canonicalUrl = `${canonicalUrl}${this.context.resolvedUrl}`
+    } else {
+      canonicalUrl = `${canonicalUrl}${(this.context.resolvedUrl ?? '').split('?')[0]}`
+    }
+
+    return canonicalUrl
   }
 }

@@ -9,7 +9,7 @@
   }
 
   &__description {
-    @apply text-secondary-text leading-tight
+    @apply text-secondary-text leading-none text-xs
     whitespace-pre-line;
   }
 
@@ -20,7 +20,7 @@
   }
 
   &__rta-logo {
-    @apply object-cover w-24 h-auto transition-all;
+    @apply object-cover w-24 h-[43px] transition-all;
 
     &:hover {
       @apply invert transition-all;

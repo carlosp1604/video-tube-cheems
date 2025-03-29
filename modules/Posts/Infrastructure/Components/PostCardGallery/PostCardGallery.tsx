@@ -88,10 +88,10 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   const createSkeletonList = (skeletonNumber: number): ReactElement[] => {
     return Array.from(Array(skeletonNumber).keys())
       .map((index) => (
-        <PostCardSkeleton
-          key={ index }
-          loading={ loading }
-        />
+        <li key={ index }>
+          <PostCardSkeleton loading={ loading }/>
+        </li>
+
       ))
   }
 
@@ -110,13 +110,15 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
 
     const postCards = posts.map((post, index) => {
       return (
-        <PostCardWithOptions
-          post={ post }
-          onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
-          showOptionsButton={ !!onClickOptions }
-          key={ post.id }
-          preloadImage={ index < imagesToPreload }
-        />
+        <li key={ post.id }>
+          <PostCardWithOptions
+            post={ post }
+            onClickOptions={ () => { if (onClickOptions) { onClickOptions(post) } } }
+            showOptionsButton={ !!onClickOptions }
+            key={ post.id }
+            preloadImage={ index < imagesToPreload }
+          />
+        </li>
       )
     })
 
@@ -139,20 +141,24 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           indexes.push(adIndex)
 
           postCards.splice(adPosition, 0, (
-            <PostCardAdvertising
-              key={ adsData[adIndex].offerUrl }
-              offerUrl={ adsData[adIndex].offerUrl }
-              thumb={ PaginatedPostCardGalleryHelper.getRandomElementFromArray(adsData[adIndex].thumbs) }
-              title={ t(`advertising:${adsData[adIndex].titleKey}`) }
-              adNetworkName={ adsData[adIndex].adNetworkName }
-              views={ firstCardViews }
-              date={ firstCardDate }
-              iframeMode={ adsData[adIndex].iframeMode }
-            />
+            <li key={ adsData[adIndex].offerUrl }>
+              <PostCardAdvertising
+                offerUrl={ adsData[adIndex].offerUrl }
+                thumb={ PaginatedPostCardGalleryHelper.getRandomElementFromArray(adsData[adIndex].thumbs) }
+                title={ t(`advertising:${adsData[adIndex].titleKey}`) }
+                adNetworkName={ adsData[adIndex].adNetworkName }
+                views={ firstCardViews }
+                date={ firstCardDate }
+                iframeMode={ adsData[adIndex].iframeMode }
+              />
+            </li>
+
           ))
         } else {
           postCards.splice(adPosition, 0, (
-            <PostCardSkeleton loading={ true } key={ adPosition }/>
+            <li key={ adPosition }>
+              <PostCardSkeleton loading={ true }/>
+            </li>
           ))
         }
       }
@@ -163,7 +169,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
   }, [posts, mounted])
 
   let content: ReactElement | null = (
-    <div className={ `
+    <ul className={ `
       ${styles.postCardGallery__container}
       ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
     ` }
@@ -176,7 +182,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
       />
       { postCards }
       { loading ? skeletonPosts : null }
-    </div>
+    </ul>
   )
 
   // Code depends on defaultPerPage
@@ -221,36 +227,36 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           onClose={ () => setPostCardOptionsMenuOpen(false) }
           selectedPostCard={ selectedPostCard as PostCardComponentDto }
         />
-        <div className={ `
+        <ul className={ `
           ${styles.postCardGallery__container}
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
         ` }
         >
           { firstPostList }
           { loading ? firstSkeletonList : null }
-        </div>
+        </ul>
 
         <AdsterraResponsiveBanner />
 
-        <div className={ `
+        <ul className={ `
           ${styles.postCardGallery__container}
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
         ` }
         >
           { secondPostList }
           { loading ? secondSkeletonList : null }
-        </div>
+        </ul>
 
         { exoClickBanner }
 
-        <div className={ `
+        <ul className={ `
           ${styles.postCardGallery__container}
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
         ` }
         >
           { thirdPostList }
           { loading ? thirdSkeletonList : null }
-        </div>
+        </ul>
       </>)
   }
 

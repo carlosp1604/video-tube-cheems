@@ -20,33 +20,26 @@ export const getStaticProps: GetStaticProps<TopVideoPostPageProps> = async (cont
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const { env } = process
-  let baseUrl = ''
-
-  if (!env.BASE_URL) {
-    throw Error('Missing env var: BASE_URL. Required in the top posts page')
-  } else {
-    baseUrl = env.BASE_URL
-  }
-
   const dateService = container.resolve<DateServiceInterface>('dateService')
 
   const todayDate = dateService.getCurrentDayWithoutTime()
-  const resolvedUrl = '/posts/top'
 
   const currentDate = DateTime.fromJSDate(todayDate).toLocaleString({ month: 'long', day: '2-digit' })
 
   const htmlPageMetaContextService = new HtmlPageMetaContextService({
     ...context,
     locale,
-    resolvedUrl,
-  })
+    pathname: '/posts/top',
+    resolvedUrl: '/posts/top',
+  },
+  { includeLocale: true, includeQuery: false },
+  { index: true, follow: true }
+  )
 
   const props: TopVideoPostPageProps = {
     posts: [],
     currentDate,
     option: 'day',
-    baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
   }
 

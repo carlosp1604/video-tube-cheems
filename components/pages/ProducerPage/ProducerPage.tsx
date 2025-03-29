@@ -14,37 +14,35 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { useRouter } from 'next/router'
 import { MdLiveTv } from 'react-icons/md'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface ProducerPageProps {
-  initialPage: number
-  initialOrder: PostsPaginationSortingType
+  page: number
+  order: PostsPaginationSortingType
   producer: ProducerPageComponentDto
-  initialPosts: PostCardComponentDto[]
-  initialPostsNumber: number
+  posts: PostCardComponentDto[]
+  postsNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string
+  asPath: string
 }
 
 export const ProducerPage: NextPage<ProducerPageProps> = ({
-  initialPage,
-  initialOrder,
+  page,
+  order,
   producer,
-  initialPosts,
-  initialPostsNumber,
+  posts,
+  postsNumber,
   htmlPageMetaContextProps,
   baseUrl,
+  asPath,
 }) => {
-  const { t } = useTranslation('producers')
-  const locale = useRouter().locale ?? 'en'
+  const { t, lang } = useTranslation('producers')
 
   const structuredData = {
     '@context': 'http://schema.org',
@@ -53,19 +51,13 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       '@type': 'ListItem',
       position: 1,
       name: t('producers_breadcrumb_list_title'),
-      item: `${baseUrl}/${locale}/producers`,
+      item: `${baseUrl}/${lang}/producers`,
     }, {
       '@type': 'ListItem',
       position: 2,
       name: producer.name,
-      item: `${baseUrl}/${locale}/producers/${producer.slug}`,
+      item: `${baseUrl}/${lang}/producers/${producer.slug}`,
     }],
-  }
-
-  let canonicalUrl = `${baseUrl}/producers/${producer.slug}`
-
-  if (locale !== 'en') {
-    canonicalUrl = `${baseUrl}/${locale}/producers/${producer.slug}`
   }
 
   const htmlPageMetaUrlProps = (
@@ -73,7 +65,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
       t('producer_page_title', { producerName: producer.name }),
       t('producer_page_description', { producerName: producer.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      canonicalUrl,
+      htmlPageMetaContextProps.canonicalUrl,
       producer.imageUrl ?? undefined
     )
   ).getProperties()
@@ -88,28 +80,35 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <CrackrevenuePostPageBanner/>
 
       <ProfileHeader
         name={ producer.name }
         imageAlt={ t('producer_image_alt_title', { producerName: producer.name }) }
         imageUrl={ producer.imageUrl }
         profileType={ t('producer_page_profile_type_title') }
-        icon={ <MdLiveTv /> }
+        icon={ <MdLiveTv/> }
         subtitle={ t('producer_page_profile_count_title',
-          { viewsNumber: NumberFormatter.compatFormat(producer.viewsNumber, locale) }) }
+          { viewsNumber: NumberFormatter.compatFormat(producer.viewsNumber, lang) }) }
         color={ producer.brandHexColor ? producer.brandHexColor : undefined }
       />
 
       <Producer
-        initialPage={ initialPage }
-        initialOrder={ initialOrder }
+        key={ asPath }
+        page={ page }
+        order={ order }
         producer={ producer }
-        initialPosts={ initialPosts }
-        initialPostsNumber={ initialPostsNumber }
+        posts={ posts }
+        postsNumber={ postsNumber }
       />
 
-      <AdsterraResponsiveBanner />
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          headerTag={ 'h2' }
+          description={ t('producer_page_banner_description', { producerName: producer.name }) }
+        />
+      </div>
     </div>
   )
 }

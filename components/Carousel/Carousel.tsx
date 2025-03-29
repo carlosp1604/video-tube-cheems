@@ -18,7 +18,7 @@ interface Props {
 export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached, showButtons }) => {
   const [scrollX, setScrollX] = useState(0)
   const [scrollXBottom, setScrollXBottom] = useState(false)
-  const scrollElement = useRef<HTMLDivElement>(null)
+  const scrollElement = useRef<HTMLUListElement>(null)
 
   const { t } = useTranslation('carousel')
 
@@ -103,7 +103,7 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached, sh
         ${scrollXBottom ? styles.carousel__gradientBorderRight_hidden : ''}
       ` }/>
 
-      <div
+      <ul
         className={ styles.carousel__slider }
         ref={ scrollElement }
         onScroll={ () => {
@@ -115,14 +115,14 @@ export const Carousel: FC<Props> = ({ children, itemsAutoWidth, onEndReached, sh
       >
         { children.map((child) => {
           return (
-            <div
+            <li
               key={ child.key }
               className={ itemsAutoWidth ? `${styles.carousel__sliderItem_auto}` : `${styles.carousel__sliderItem}` }>
               { child.component }
-            </div>
+            </li>
           )
         }) }
-      </div>
+      </ul>
     </div>
   )
 }

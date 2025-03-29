@@ -10,9 +10,6 @@ import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 const PaginationBar = dynamic(() =>
   import('~/components/PaginationBar/PaginationBar').then((module) => module.PaginationBar)
@@ -83,8 +80,6 @@ export const Home: FC<Props> = ({ posts, trendingPosts }) => {
           onPageChange={ onClickPaginationBar }
         />
       </div>
-
-      <AdsterraResponsiveBanner />
     </div>
   )
 }

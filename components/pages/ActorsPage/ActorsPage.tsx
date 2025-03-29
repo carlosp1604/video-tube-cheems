@@ -18,6 +18,7 @@ import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/Profile
 import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface ActorsPageProps {
   initialSearchTerm: string
@@ -64,7 +65,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <CrackrevenuePostPageBanner/>
 
       <Actors
         initialSearchTerm={ initialSearchTerm }
@@ -74,7 +75,15 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
         initialActorsNumber={ initialActorsNumber }
       />
 
-      <AdsterraResponsiveBanner />
+      <AdsterraResponsiveBanner/>
+
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          headerTag={ 'h2' }
+          description={ t('actors_page_banner_description') }
+        />
+      </div>
     </div>
   )
 }

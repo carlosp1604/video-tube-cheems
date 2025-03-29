@@ -12,9 +12,12 @@ import useTranslation from 'next-translate/useTranslation'
 
 export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
   const { t } = useTranslation('common')
+
   let videoMeta: ReactElement[] | null = null
   let rtaLabel: ReactElement| null = null
   let canonicalTag: ReactElement | null = null
+  const robotsTagContent =
+    `${props.robots.follow ? 'follow' : 'nofollow'}, ${props.robots.index ? 'index' : 'noindex'}`
 
   let title = props.resourceProps.title
 
@@ -105,23 +108,24 @@ export const HtmlPageMeta: FC<HtmlPageMetaProps> = (props) => {
     <Head>
       { rtaLabel }
       { canonicalTag }
+      <meta name="robots" content={ robotsTagContent }/>
       <title>{ title }</title>
-      <meta name="description" content={ props.resourceProps.description } key="description" />
-      <meta property="og:title" content={ title } key="og:title" />
-      <meta property="og:description" content={ props.resourceProps.description } key="og:description" />
-      <meta property="og:site_name" content={ props.resourceProps.siteName } key="og:site_name" />
-      <meta property="og:type" content={ props.resourceProps.resourceType } key="og:type" />
-      <meta property="og:url" content={ UrlsHelper.deleteTrailingSlash(props.url) } key="og:url" />
-      <meta property="og:image" content={ props.resourceProps.image } key="og:image" />
-      <meta property="og:locale" content={ props.locale } key="og:locale" />
+      <meta name="description" content={ props.resourceProps.description } key="description"/>
+      <meta property="og:title" content={ title } key="og:title"/>
+      <meta property="og:description" content={ props.resourceProps.description } key="og:description"/>
+      <meta property="og:site_name" content={ props.resourceProps.siteName } key="og:site_name"/>
+      <meta property="og:type" content={ props.resourceProps.resourceType } key="og:type"/>
+      <meta property="og:url" content={ UrlsHelper.deleteTrailingSlash(props.url) } key="og:url"/>
+      <meta property="og:image" content={ props.resourceProps.image } key="og:image"/>
+      <meta property="og:locale" content={ props.locale } key="og:locale"/>
       { websiteMeta }
       { videoMeta }
       {
-        props.alternateLocaleWithTerritory.map((locale) => (
+        props.alternateLocale.map((alternate) => (
           <meta
             property="og:locale:alternate"
-            content={ locale }
-            key={ locale }
+            content={ alternate.locale }
+            key={ alternate.locale }
           />
         ))
       }

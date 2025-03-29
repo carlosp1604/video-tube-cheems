@@ -16,24 +16,27 @@ import {
 import { BsStarFill } from 'react-icons/bs'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
 import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
-import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 
 export interface ActorPageProps {
+  page: number
+  order: PostsPaginationSortingType
   actor: ActorPageComponentDto
-  initialPosts: PostCardComponentDto[]
-  initialPostsNumber: number
+  posts: PostCardComponentDto[]
+  postsNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string
 }
 
 export const ActorPage: NextPage<ActorPageProps> = ({
+  page,
+  order,
   actor,
-  initialPosts,
-  initialPostsNumber,
+  posts,
+  postsNumber,
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
@@ -55,18 +58,12 @@ export const ActorPage: NextPage<ActorPageProps> = ({
     }],
   }
 
-  let canonicalUrl = `${baseUrl}/actors/${actor.slug}`
-
-  if (lang !== 'en') {
-    canonicalUrl = `${baseUrl}/${lang}/actors/${actor.slug}`
-  }
-
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('actor_page_title', { actorName: actor.name }),
       t('actor_page_description', { actorName: actor.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      canonicalUrl,
+      htmlPageMetaContextProps.canonicalUrl,
       actor.imageUrl ?? undefined
     )
   ).getProperties()
@@ -81,14 +78,14 @@ export const ActorPage: NextPage<ActorPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <CrackrevenuePostPageBanner/>
 
       <ProfileHeader
         name={ actor.name }
         imageAlt={ t('actor_image_alt_title', { actorName: actor.name }) }
         imageUrl={ actor.imageUrl }
         profileType={ t('actor_page_profile_type_title') }
-        icon={ <BsStarFill /> }
+        icon={ <BsStarFill/> }
         subtitle={ t('actor_page_profile_count_title',
           { viewsNumber: NumberFormatter.compatFormat(actor.viewsCount, lang) }) }
         color={ actor.imageUrl ? undefined : 'black' }
@@ -98,11 +95,19 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         actorId={ actor.id }
         actorName={ actor.name }
         actorSlug={ actor.slug }
-        initialPosts={ initialPosts }
-        initialPostsNumber={ initialPostsNumber }
+        posts={ posts }
+        postsNumber={ postsNumber }
+        page={ page }
+        order={ order }
       />
 
-      <AdsterraResponsiveBanner />
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          headerTag={ 'h2' }
+          description={ t('actor_page_banner_description', { actorName: actor.name }) }
+        />
+      </div>
     </div>
   )
 }

@@ -5,17 +5,27 @@ import Trans from 'next-translate/Trans'
 import Link from 'next/link'
 import Image from 'next/image'
 
-export const AppBanner: FC = () => {
-  const { t } = useTranslation('app_banner')
+export type HeaderTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+
+export interface AppBannerProps {
+  title: string
+  headerTag: HeaderTag
+  description: string
+}
+
+export const AppBanner: FC<AppBannerProps> = ({ title, headerTag, description }) => {
+  const { t } = useTranslation('common')
 
   let rtaSection: ReactElement | null = null
+
+  const DynamicTag = headerTag
 
   if (process.env.NEXT_PUBLIC_RTA_LABEL) {
     rtaSection = (
       <div className={ styles.appBanner__rtaSection }>
         <span>
           <Trans
-            i18nKey={ 'app_banner:rta_description_title' }
+            i18nKey={ 'common:rta_description_title' }
             components={ [
               <Link
                 key={ t('rta_description_title') }
@@ -31,9 +41,9 @@ export const AppBanner: FC = () => {
           <Image
             alt={ t('rta_logo_alt_title') }
             className={ styles.appBanner__rtaLogo }
-            src={ '/img/rta-image.png' }
-            width={ 0 }
-            height={ 0 }
+            src={ '/img/rta-image.webp' }
+            width={ 308 }
+            height={ 140 }
             sizes={ '100vw' }
           />
         </Link>
@@ -42,16 +52,14 @@ export const AppBanner: FC = () => {
   }
 
   return (
-    <section className={ styles.appBanner__container }>
-      <h1 className={ styles.appBanner__title }>
-        { t('banner_title') }
-      </h1>
-
+    <div className={ styles.appBanner__container }>
+      <DynamicTag className={ styles.appBanner__title }>
+        { title }
+      </DynamicTag>
       <p className={ styles.appBanner__description }>
-        { t('banner_description') }
+        { description }
       </p>
-
       { rtaSection }
-    </section>
+    </div>
   )
 }

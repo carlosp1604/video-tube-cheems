@@ -1,8 +1,8 @@
 import styles from '~/styles/pages/CommonPage.module.scss'
+import useTranslation from 'next-translate/useTranslation'
 import { NextPage } from 'next'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { ProducerComponentDto } from '~/modules/Producers/Infrastructure/Dtos/ProducerComponentDto'
-import useTranslation from 'next-translate/useTranslation'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import {
   HtmlPageMetaContextProps
@@ -16,12 +16,14 @@ import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { Posts } from '~/components/Posts/Posts'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface Props {
+  asPath: string
   page: number
   order: PostsPaginationSortingType
-  initialPosts: PostCardComponentDto[]
-  initialPostsNumber: number
+  posts: PostCardComponentDto[]
+  postsNumber: number
   producers: ProducerComponentDto[]
   activeProducer: ProducerComponentDto | null
   htmlPageMetaContextProps: HtmlPageMetaContextProps
@@ -46,18 +48,12 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
     },
   }
 
-  let canonicalUrl = props.baseUrl + '/posts'
-
-  if (lang !== 'en') {
-    canonicalUrl = `${props.baseUrl}/${lang}/posts`
-  }
-
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('posts_page_title'),
       t('posts_page_description'),
       HtmlPageMetaContextResourceType.WEBSITE,
-      canonicalUrl
+      props.htmlPageMetaContextProps.canonicalUrl
     )
   ).getProperties()
 
@@ -71,16 +67,25 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <CrackrevenuePostPageBanner/>
 
       <Posts
+        key={ props.asPath }
         page={ props.page }
         activeProducer={ props.activeProducer }
         producers={ props.producers }
-        initialPosts={ props.initialPosts }
-        initialPostsNumber={ props.initialPostsNumber }
+        posts={ props.posts }
+        postsNumber={ props.postsNumber }
         order={ props.order }
       />
+
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          description={ t('posts_page_banner_description') }
+          headerTag={ 'h2' }
+        />
+      </div>
     </div>
   )
 }

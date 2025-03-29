@@ -19,11 +19,18 @@ import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
-import { Settings } from 'luxon'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { i18nConfig } from '~/i18n.config'
 
 export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (context) => {
-  const producerSlug = context.query.producerSlug
+  if (!context.params) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const producerSlug = context.params.producerSlug
+  const locale = context.locale ?? i18nConfig.defaultLocale
 
   if (!producerSlug) {
     return {
@@ -31,10 +38,14 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     }
   }
 
-  const locale = context.locale ?? 'en'
-
-  Settings.defaultLocale = locale
-  Settings.defaultZone = 'Europe/Madrid'
+  if (Object.entries(context.params).length > 1) {
+    return {
+      redirect: {
+        destination: `/${locale}/producers/${producerSlug}`,
+        permanent: false,
+      },
+    }
+  }
 
   const paginationQueryParams = new PostsQueryParamsParser(
     context.query,
@@ -64,6 +75,11 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
 
   const { env } = process
   let baseUrl = ''
+  let localizedUrl = context.resolvedUrl
+
+  if (locale !== i18nConfig.defaultLocale) {
+    localizedUrl = `/${locale}${localizedUrl}`
+  }
 
   if (!env.BASE_URL) {
     throw Error('Missing env var: BASE_URL. Required in the producer page')
@@ -71,13 +87,17 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
     baseUrl = env.BASE_URL
   }
 
-  // Experimental: Try yo improve performance
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  )
+  let shouldIndexPage = true
 
-  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  if (paginationQueryParams.getParsedQueryString() !== '') {
+    shouldIndexPage = false
+  }
+
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(
+    context,
+    { includeQuery: false, includeLocale: true },
+    { index: shouldIndexPage, follow: true }
+  )
 
   const props: ProducerPageProps = {
     producer: {
@@ -89,10 +109,11 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       viewsNumber: 0,
       brandHexColor: '',
     },
-    initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
-    initialPage: paginationQueryParams.page ?? 1,
-    initialPosts: [],
-    initialPostsNumber: 0,
+    asPath: localizedUrl,
+    order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
+    page: paginationQueryParams.page ?? 1,
+    posts: [],
+    postsNumber: 0,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
   }
@@ -134,10 +155,10 @@ export const getServerSideProps: GetServerSideProps<ProducerPageProps> = async (
       postsPerPage: defaultPerPageWithoutAds,
     })
 
-    props.initialPosts = producerPosts.posts.map((post) => {
+    props.posts = producerPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.initialPostsNumber = producerPosts.postsNumber
+    props.postsNumber = producerPosts.postsNumber
   } catch (exception: unknown) {
     console.error(exception)
   }

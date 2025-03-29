@@ -41,6 +41,10 @@
     }
   }
 
+  &__hidden-heading {
+    @apply hidden;
+  }
+
   &__list-container {
     @apply flex flex-row gap-2 flex-wrap;
   }

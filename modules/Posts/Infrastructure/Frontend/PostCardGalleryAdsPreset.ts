@@ -1,1 +1,1 @@
-export const PostCardGalleryAdsPreset: Array<number> = [3]
+export const PostCardGalleryAdsPreset: Array<number> = [11]

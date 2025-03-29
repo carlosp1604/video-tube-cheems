@@ -17,9 +17,19 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import { Settings } from 'luxon'
 import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
+import { i18nConfig } from '~/i18n.config'
 
 export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (context) => {
-  const actorSlug = context.query.actorSlug
+  if (!context.params) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const actorSlug = context.params.actorSlug
+  const locale = context.locale ?? i18nConfig.defaultLocale
 
   if (!actorSlug) {
     return {
@@ -27,12 +37,44 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
     }
   }
 
-  const locale = context.locale ?? 'en'
+  if (Object.entries(context.params).length > 1) {
+    return {
+      redirect: {
+        destination: `/${locale}/actors/${actorSlug}`,
+        permanent: false,
+      },
+    }
+  }
+
+  const paginationQueryParams = new PostsQueryParamsParser(
+    context.query,
+    {
+      sortingOptionType: {
+        defaultValue: PaginationSortingType.LATEST,
+        parseableOptionTypes: [
+          PaginationSortingType.LATEST,
+          PaginationSortingType.OLDEST,
+          PaginationSortingType.MOST_VIEWED,
+        ],
+      },
+      page: { defaultValue: 1, minValue: 1, maxValue: Infinity },
+    }
+  )
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
 
-  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  let shouldIndexPage = true
+
+  if (paginationQueryParams.getParsedQueryString() !== '') {
+    shouldIndexPage = false
+  }
+
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(
+    context,
+    { includeQuery: false, includeLocale: true },
+    { index: shouldIndexPage, follow: true }
+  )
 
   const { env } = process
   let baseUrl = ''
@@ -58,8 +100,10 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
       id: '',
       viewsCount: 0,
     },
-    initialPosts: [],
-    initialPostsNumber: 0,
+    order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
+    page: paginationQueryParams.page ?? 1,
+    posts: [],
+    postsNumber: 0,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
   }
@@ -80,18 +124,31 @@ export const getServerSideProps: GetServerSideProps<ActorPageProps> = async (con
   }
 
   try {
+    let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC
+    let sortOption: InfrastructureSortingOptions = InfrastructureSortingOptions.DATE
+    let page = 1
+
+    if (paginationQueryParams.componentSortingOption) {
+      sortOption = paginationQueryParams.componentSortingOption.option
+      sortCriteria = paginationQueryParams.componentSortingOption.criteria
+    }
+
+    if (paginationQueryParams.page) {
+      page = paginationQueryParams.page
+    }
+
     const actorPosts = await getPosts.get({
-      page: 1,
+      page,
       filters: [{ type: FilterOptions.ACTOR_SLUG, value: String(actorSlug) }],
-      sortCriteria: InfrastructureSortingCriteria.DESC,
-      sortOption: InfrastructureSortingOptions.DATE,
+      sortCriteria,
+      sortOption,
       postsPerPage: defaultPerPageWithoutAds,
     })
 
-    props.initialPosts = actorPosts.posts.map((post) => {
+    props.posts = actorPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.initialPostsNumber = actorPosts.postsNumber
+    props.postsNumber = actorPosts.postsNumber
   } catch (exception: unknown) {
     console.error(exception)
   }

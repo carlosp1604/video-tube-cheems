@@ -1,43 +1,38 @@
-import { NextPage } from 'next'
 import styles from '~/styles/pages/CommonPage.module.scss'
+import useTranslation from 'next-translate/useTranslation'
+import { NextPage } from 'next'
+import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import useTranslation from 'next-translate/useTranslation'
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
+import {
+  CrackrevenuePostPageBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import {
   HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { Tag } from '~/modules/PostTag/Infrastructure/Components/Tag/Tag'
-import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
-import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
-import { AiOutlineTag } from 'react-icons/ai'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface TagPageProps {
-  initialPage: number
-  initialOrder: PostsPaginationSortingType
+  page: number
+  order: PostsPaginationSortingType
   tag: TagPageComponentDto
-  initialPosts: PostCardComponentDto[]
-  initialPostsNumber: number
+  posts: PostCardComponentDto[]
+  postsNumber: number
   htmlPageMetaContextProps: HtmlPageMetaContextProps
   baseUrl: string
 }
 
 export const TagPage: NextPage<TagPageProps> = ({
-  initialPage,
-  initialOrder,
+  page,
+  order,
   tag,
-  initialPosts,
-  initialPostsNumber,
+  posts,
+  postsNumber,
   htmlPageMetaContextProps,
   baseUrl,
 }) => {
@@ -54,18 +49,12 @@ export const TagPage: NextPage<TagPageProps> = ({
     }],
   }
 
-  let canonicalUrl = `${baseUrl}/tags/${tag.slug}`
-
-  if (lang !== 'en') {
-    canonicalUrl = `${baseUrl}/${lang}/tags/${tag.slug}`
-  }
-
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
       t('tag_page_title', { tagName: tag.name }),
       t('tag_page_description', { tagName: tag.name }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      canonicalUrl
+      htmlPageMetaContextProps.canonicalUrl
     )
   ).getProperties()
 
@@ -79,26 +68,24 @@ export const TagPage: NextPage<TagPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
-
-      <ProfileHeader
-        name={ tag.name }
-        imageAlt={ t('tag_image_alt_title', { tagName: tag.name }) }
-        imageUrl={ tag.imageUrl }
-        profileType={ t('tag_page_profile_type_title') }
-        icon={ <AiOutlineTag /> }
-        subtitle={ '' }
-      />
+      <CrackrevenuePostPageBanner/>
 
       <Tag
-        initialPage={ initialPage }
-        initialOrder={ initialOrder }
-        tag={ tag }
-        initialPosts={ initialPosts }
-        initialPostsNumber={ initialPostsNumber }
-      />
+        page={ page }
+        order={ order }
+        tagName={ tag.name }
+        tagSlug={ tag.slug }
+        posts={ posts }
+        postsNumber={ postsNumber }
+        />
 
-      <AdsterraResponsiveBanner />
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          description={ t('tag_page_banner_description', { tagName: tag.name }) }
+          headerTag={ 'h2' }
+        />
+      </div>
     </div>
   )
 }

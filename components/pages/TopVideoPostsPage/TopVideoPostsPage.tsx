@@ -16,12 +16,12 @@ import {
 import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
   option: string
   currentDate: string
-  baseUrl: string
   htmlPageMetaContextProps: HtmlPageMetaContextProps
 }
 
@@ -29,37 +29,25 @@ export const TopVideoPostsPage: NextPage<Props> = ({
   posts,
   option,
   currentDate,
-  baseUrl,
   htmlPageMetaContextProps,
 }) => {
-  const { t, lang } = useTranslation('top')
+  const { t } = useTranslation('top')
 
-  let canonicalUrl = `${baseUrl}/posts/top`
-
-  if (lang !== 'en') {
-    canonicalUrl = `${baseUrl}/${lang}/posts/top`
-  }
-
-  if (option !== 'day') {
-    canonicalUrl = `${canonicalUrl}/${option}`
-  }
-
-  let pageTitle = t('top_posts_page_title', { option: t('top_posts_option_day_title') })
+  let optionTitle = t('top_posts_option_day_title')
 
   if (option === 'week') {
-    pageTitle = t('top_posts_page_title', { option: t('top_posts_option_week_title') })
+    optionTitle = t('top_posts_option_week_title')
   }
 
   if (option === 'month') {
-    pageTitle = t('top_posts_page_title', { option: t('top_posts_option_month_title') })
+    optionTitle = t('top_posts_option_month_title')
   }
-
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaResourceService(
-      pageTitle,
-      t('top_posts_page_description'),
+      t('top_posts_page_title', { option: optionTitle }),
+      t('top_posts_page_description', { option: optionTitle }),
       HtmlPageMetaContextResourceType.ARTICLE,
-      canonicalUrl
+      htmlPageMetaContextProps.canonicalUrl
     )
   ).getProperties()
 
@@ -81,6 +69,14 @@ export const TopVideoPostsPage: NextPage<Props> = ({
       />
 
       <AdsterraResponsiveBanner/>
+
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          description={ t('top_posts_page_banner_description', { option: optionTitle }) }
+          headerTag={ 'h2' }
+        />
+      </div>
     </div>
   )
 }

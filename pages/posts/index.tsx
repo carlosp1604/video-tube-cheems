@@ -56,10 +56,26 @@ export const getServerSideProps: GetServerSideProps<PostsPageProps> = async (con
     }
   }
 
-  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  let shouldIndexPage = true
+
+  if (paginationQueryParams.getParsedQueryString() !== '') {
+    shouldIndexPage = false
+  }
+
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(
+    context,
+    { includeLocale: true, includeQuery: false },
+    { index: shouldIndexPage, follow: true }
+  )
+
   const { env } = process
 
   let baseUrl = ''
+  let localizedUrl = context.resolvedUrl
+
+  if (locale !== i18nConfig.defaultLocale) {
+    localizedUrl = `/${locale}${localizedUrl}`
+  }
 
   if (!env.BASE_URL) {
     throw Error('Missing env var: BASE_URL. Required in the home page')
@@ -68,11 +84,12 @@ export const getServerSideProps: GetServerSideProps<PostsPageProps> = async (con
   }
 
   const props: PostsPageProps = {
+    asPath: localizedUrl,
     order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
     page: paginationQueryParams.page ?? 1,
-    initialPosts: [],
+    posts: [],
     producers: [],
-    initialPostsNumber: 0,
+    postsNumber: 0,
     activeProducer: null,
     baseUrl,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
@@ -125,10 +142,10 @@ export const getServerSideProps: GetServerSideProps<PostsPageProps> = async (con
       props.activeProducer = allPostsProducerDto
     }
 
-    props.initialPosts = posts.posts.map((post) => {
+    props.posts = posts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.initialPostsNumber = posts.postsNumber
+    props.postsNumber = posts.postsNumber
     props.producers = producerComponents
   } catch (exception: unknown) {
     console.error(exception)

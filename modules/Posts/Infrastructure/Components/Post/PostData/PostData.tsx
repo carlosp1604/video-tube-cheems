@@ -6,7 +6,7 @@ import {
   PostComponentDtoProducerDto, PostComponentDtoTagDto
 } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
 import useTranslation from 'next-translate/useTranslation'
-import { BsIncognito, BsStarFill } from 'react-icons/bs'
+import { BsIncognito } from 'react-icons/bs'
 import { ProducerActor } from '~/modules/Posts/Infrastructure/Components/Post/ProducerActor/ProducerActor'
 import { RxCalendar } from 'react-icons/rx'
 
@@ -37,37 +37,43 @@ export const PostData: FC<Props> = ({
 
   if (producer !== null) {
     producerSection = (
-      <ProducerActor
-        name={ producer.name }
-        imageUrl={ producer.imageUrl }
-        slug={ producer.slug }
-        type={ 'producer' }
-      />
+      <div>
+        <h2 className={ styles.postData__hiddenHeading }>{ t('post_data_actor_title') }</h2>
+        <ProducerActor
+          name={ producer.name }
+          imageUrl={ producer.imageUrl }
+          slug={ producer.slug }
+          type={ 'producer' }
+        />
+      </div>
     )
   }
 
   if (producer === null && actor !== null) {
     producerSection = (
-      <ProducerActor
-        name={ actor.name }
-        imageUrl={ actor.imageUrl }
-        slug={ actor.slug }
-        type={ 'actor' }
-      />
+      <div>
+        <h2 className={ styles.postData__hiddenHeading }>{ t('post_data_actor_title') }</h2>
+        <ProducerActor
+          name={ actor.name }
+          imageUrl={ actor.imageUrl }
+          slug={ actor.slug }
+          type={ 'actor' }
+        />
+      </div>
     )
   }
 
   if (producer !== null && actor !== null) {
     collaborationSection = (
-      <Link
-        prefetch={ false }
-        className={ styles.postData__listItemContainer }
-        href={ `/actors/${actor.slug}` }
-        title={ actor.name }
-      >
-        <BsStarFill />
-        { actor.name }
-      </Link>
+      <div>
+        <h2 className={ styles.postData__hiddenHeading }>{ t('post_data_actor_title') }</h2>
+        <ProducerActor
+          name={ actor.name }
+          imageUrl={ actor.imageUrl }
+          slug={ actor.slug }
+          type={ 'actor' }
+        />
+      </div>
     )
   }
 
@@ -78,7 +84,7 @@ export const PostData: FC<Props> = ({
   if (postActors.length > 0) {
     actorsSection = (
       <div className={ styles.postData__extraDataItem }>
-        { t('post_extra_data_actors_title') }
+        <h2>{ t('post_extra_data_actors_title') }</h2>
         <div className={ styles.postData__actorListContainer }>
           { postActors.map((actor) => {
             return (
@@ -99,7 +105,7 @@ export const PostData: FC<Props> = ({
   if (postTags.length > 0) {
     categorySection = (
       <div className={ styles.postData__extraDataItem }>
-        { t('post_extra_data_tags_title') }
+        <h2>{ t('post_extra_data_tags_title') }</h2>
         <div className={ styles.postData__listContainer }>
           { postTags.map((tag) => {
             return (
@@ -134,7 +140,7 @@ export const PostData: FC<Props> = ({
 
     descriptionSection = (
       <div className={ styles.postData__extraDataItem }>
-        { t('post_extra_data_description_title') }
+        <h2>{ t('post_extra_data_description_title') }</h2>
         { descriptionParagraphs }
       </div>
     )

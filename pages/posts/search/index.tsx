@@ -5,11 +5,22 @@ import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
 import DOMPurify from 'isomorphic-dompurify'
-import { Settings } from 'luxon'
 import { QueryParamsParserConfiguration } from '~/modules/Shared/Infrastructure/FrontEnd/QueryParamsParser'
 import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
 import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
+import { i18nConfig } from '~/i18n.config'
+import { container } from '~/awilix.container'
+import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
+import {
+  InfrastructureSortingCriteria,
+  InfrastructureSortingOptions
+} from '~/modules/Shared/Infrastructure/InfrastructureSorting'
+import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import {
+  PostCardComponentDtoTranslator
+} from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (context) => {
   const search = context.query.search
@@ -28,10 +39,7 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
-  const locale = context.locale ?? 'en'
-
-  Settings.defaultLocale = locale
-  Settings.defaultZone = 'Europe/Madrid'
+  const locale = context.locale ?? i18nConfig.defaultLocale
 
   const configuration:
     Omit<QueryParamsParserConfiguration<PostFilterOptions, PostsPaginationSortingType>, 'filters' | 'perPage'> = {
@@ -63,31 +71,68 @@ export const getServerSideProps: GetServerSideProps<SearchPageProps> = async (co
     }
   }
 
-  // Experimental: Try to improve performance
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=86400, stale-while-revalidate=300'
-  )
+  let localizedUrl = context.resolvedUrl
 
-  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
-  const { env } = process
-
-  let baseUrl = ''
-
-  if (!env.BASE_URL) {
-    throw Error('Missing env var: BASE_URL. Required in the search page')
-  } else {
-    baseUrl = env.BASE_URL
+  if (locale !== i18nConfig.defaultLocale) {
+    localizedUrl = `/${locale}${localizedUrl}`
   }
 
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(
+    context,
+    { includeQuery: true, includeLocale: true },
+    { index: false, follow: true }
+  )
+
+  const props: SearchPageProps = {
+    initialSearchTerm: DOMPurify.sanitize(search.toLocaleString()),
+    initialSortingOption: paginationQueryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
+    initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
+    posts: [],
+    postsNumber: 0,
+    asPath: localizedUrl,
+    htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
+  }
+
+  const getPosts = container.resolve<GetPosts>('getPostsUseCase')
+
+  try {
+    let sortCriteria: InfrastructureSortingCriteria = InfrastructureSortingCriteria.DESC
+    let sortOption: InfrastructureSortingOptions = InfrastructureSortingOptions.DATE
+    let page = 1
+
+    if (paginationQueryParams.componentSortingOption) {
+      sortOption = paginationQueryParams.componentSortingOption.option
+      sortCriteria = paginationQueryParams.componentSortingOption.criteria
+    }
+
+    if (paginationQueryParams.page) {
+      page = paginationQueryParams.page
+    }
+
+    const posts = await getPosts.get({
+      page,
+      filters: [{ type: FilterOptions.POST_TITLE, value: cleanSearchTerm }],
+      sortCriteria,
+      sortOption,
+      postsPerPage: defaultPerPage,
+    })
+
+    props.posts = posts.posts.map((post) => {
+      return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
+    })
+    props.postsNumber = posts.postsNumber
+  } catch (exception: unknown) {
+    console.error(exception)
+  }
+
+  // Experimental: Try yo improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=59, stale-while-revalidate=1'
+  )
+
   return {
-    props: {
-      initialSearchTerm: DOMPurify.sanitize(search.toLocaleString()),
-      initialSortingOption: paginationQueryParams.sortingOptionType ?? configuration.sortingOptionType.defaultValue,
-      initialPage: paginationQueryParams.page ?? configuration.page.defaultValue,
-      htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
-      baseUrl,
-    },
+    props,
   }
 }
 

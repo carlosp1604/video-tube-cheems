@@ -1,10 +1,12 @@
-import { NextPage } from 'next'
 import styles from '~/styles/pages/CommonPage.module.scss'
+import dynamic from 'next/dynamic'
 import postPageStyles from './PostPage.module.scss'
-import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
-import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import useTranslation from 'next-translate/useTranslation'
 import { Post } from '~/modules/Posts/Infrastructure/Components/Post/Post'
+import { NextPage } from 'next'
+import { SEOHelper } from '~/modules/Shared/Infrastructure/FrontEnd/SEOHelper'
+import { PostComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostComponentDto'
+import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
@@ -13,14 +15,13 @@ import {
   HtmlPageMetaVideoService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaVideoService'
 import { ReactElement } from 'react'
-import { SEOHelper } from '~/modules/Shared/Infrastructure/FrontEnd/SEOHelper'
-import dynamic from 'next/dynamic'
 import {
   PostCardCarouselSkeleton
 } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
 import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
+import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 const PostCardCarousel =
   dynamic(() => import('~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel')
@@ -58,24 +59,32 @@ export const PostPage: NextPage<PostPageProps> = ({
 }) => {
   const { t, lang } = useTranslation('post_page')
 
+  const title = SEOHelper.buildTitle(post.title)
+
   const description = SEOHelper.buildDescription(
+    title,
+    t,
+    post.producer ? post.producer.name : null,
+    post.actor ? post.actor.name : null
+  )
+
+  const bannerDescription = SEOHelper.buildBannerDescription(
     post.title,
     t,
-    post.producer ? post.producer.name : '',
-    post.actor ? post.actor.name : '',
-    post.resolution
+    post.producer ? post.producer.name : null,
+    post.actor ? post.actor.name : null
   )
 
   const structuredData = {
     '@context': 'http://schema.org',
     '@type': 'VideoObject',
-    name: post.title,
+    name: title,
     description,
     thumbnailUrl: [post.thumb],
     uploadDate: post.publishedAt,
     duration: parsedDuration,
     embedUrl: postEmbedUrl,
-    interactionStatistics: [
+    interactionStatistic: [
       {
         '@type': 'InteractionCounter',
         interactionType: { '@type': 'WatchAction' },
@@ -92,7 +101,7 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaVideoService(
-      post.title,
+      title,
       description,
       post.thumb,
       canonicalUrl,
@@ -100,6 +109,7 @@ export const PostPage: NextPage<PostPageProps> = ({
       post.duration
     )
   ).getProperties()
+
   const htmlPageMetaProps = {
     ...htmlPageMetaContextProps,
     resourceProps: htmlPageMetaUrlProps,
@@ -135,7 +145,15 @@ export const PostPage: NextPage<PostPageProps> = ({
 
       { relatedPostsSection }
 
-      <AdsterraResponsiveBanner />
+      <AdsterraResponsiveBanner/>
+
+      <div className={ styles.commonPage__pageBanner }>
+        <AppBanner
+          title={ t('common:app_banner_title') }
+          headerTag={ 'h2' }
+          description={ bannerDescription }
+        />
+      </div>
     </div>
   )
 }

@@ -5,39 +5,32 @@ import styles from './Posts.module.scss'
 import { ProducerList } from '~/modules/Producers/Infrastructure/Components/ProducerList/ProducerList'
 import { EmptyState } from '~/components/EmptyState/EmptyState'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
-import { FC, ReactElement, useState } from 'react'
-import { ElementLinkMode } from '~/modules/Shared/Infrastructure/FrontEnd/ElementLinkMode'
-import { PostFilterOptions } from '~/modules/Posts/Infrastructure/Frontend/PostFilterOptions'
+import { FC, ReactElement } from 'react'
 import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import {
-  PaginatedPostCardGallery, PaginatedPostCardGalleryConfiguration
-} from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallery'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
-import { FetchFilter } from '~/modules/Shared/Infrastructure/FrontEnd/FetchFilter'
-import { allPostsProducerDto } from '~/modules/Producers/Infrastructure/Components/AllPostsProducerDto'
-import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
+import {
+  PaginatedPostCardGallerySSR
+} from '~/modules/Shared/Infrastructure/Components/PaginatedPostCardGallery/PaginatedPostCardGallerySSR'
 
 export interface Props {
   page: number
   order: PostsPaginationSortingType
-  initialPosts: PostCardComponentDto[]
-  initialPostsNumber: number
+  posts: PostCardComponentDto[]
+  postsNumber: number
   producers: ProducerComponentDto[]
   activeProducer: ProducerComponentDto | null
 }
 
 export const Posts: FC<Props> = ({
-  initialPostsNumber,
-  initialPosts,
+  postsNumber,
+  posts,
   producers,
   page,
   order,
   activeProducer,
 }) => {
-  const [postsNumber, setPostsNumber] = useState<number>(initialPostsNumber)
   const { t, lang } = useTranslation('posts_page')
-
-  const [selectedProducer, setSelectedProducer] = useState<ProducerComponentDto | null>(activeProducer)
 
   const sortingOptions: PostsPaginationSortingType[] = [
     PaginationSortingType.LATEST,
@@ -45,13 +38,7 @@ export const Posts: FC<Props> = ({
     PaginationSortingType.MOST_VIEWED,
   ]
 
-  const linkMode: ElementLinkMode = {
-    replace: false,
-    shallowNavigation: true,
-    scrollOnClick: true,
-  }
-
-  const postCardOptions: PaginatedPostCardGalleryConfiguration[] = [{ type: 'savePost' }, { type: 'react' }]
+  const postCardOptions: PostCardOptionConfiguration[] = [{ type: 'savePost' }, { type: 'react' }]
 
   const emptyState: ReactElement = (
     <EmptyState
@@ -60,66 +47,37 @@ export const Posts: FC<Props> = ({
     />
   )
 
-  const onFetchNewPosts = (filters: FetchFilter<PostFilterOptions>[]) => {
-    const producerFilter = filters.find((filter) =>
-      filter.type === FilterOptions.PRODUCER_SLUG
-    )
-
-    if (!producerFilter) {
-      setSelectedProducer(allPostsProducerDto)
-
-      return
-    }
-
-    const foundProducer = producers.find((producer) => producer.slug === producerFilter.value)
-
-    if (foundProducer) {
-      setSelectedProducer(foundProducer)
-    } else {
-      setSelectedProducer(null)
-    }
-  }
-
   let galleryTitle: string
 
-  if (!selectedProducer) {
+  if (!activeProducer) {
     galleryTitle = t('post_gallery_no_producer_title')
   } else {
-    if (selectedProducer.id === '') {
+    if (activeProducer.id === '') {
       galleryTitle = t('all_producers_title')
     } else {
-      galleryTitle = selectedProducer.name
+      galleryTitle = activeProducer.name
     }
   }
 
-  // FIXME: Find the way to pass the default producer's name translated from serverside
   return (
     <div className={ styles.posts__container }>
       <ProducerList
         producers={ producers }
-        activeProducer={ selectedProducer }
+        activeProducer={ activeProducer }
       />
 
-      <PaginatedPostCardGallery
+      <PaginatedPostCardGallerySSR
         headerTag={ 'h1' }
-        key={ lang }
         title={ galleryTitle }
+        paginatedPostCardGalleryPostCardOptions={ postCardOptions }
         subtitle={ t('post_gallery_subtitle', { postsNumber: NumberFormatter.compatFormat(postsNumber, lang) }) }
         page={ page }
         order={ order }
-        initialPosts={ initialPosts }
-        initialPostsNumber={ initialPostsNumber }
-        filters={ !activeProducer || activeProducer.slug === allPostsProducerDto.slug
-          ? []
-          : [{ type: FilterOptions.PRODUCER_SLUG, value: activeProducer.slug }] }
-        filtersToParse={ [FilterOptions.PRODUCER_SLUG] }
-        paginatedPostCardGalleryPostCardOptions={ postCardOptions }
-        linkMode={ linkMode }
+        posts={ posts }
+        postsNumber={ postsNumber }
         sortingOptions={ sortingOptions }
-        defaultSortingOption={ PaginationSortingType.LATEST }
-        onPostsFetched={ (postsNumber, _posts) => setPostsNumber(postsNumber) }
         emptyState={ emptyState }
-        onPaginationStateChanges={ (_page, _order, filters) => onFetchNewPosts(filters) }
+        term={ undefined }
       />
     </div>
   )

@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 import { container } from '~/awilix.container'
 import { GetPosts } from '~/modules/Posts/Application/GetPosts/GetPosts'
-import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
+import { defaultPerPageWithoutAds } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationHelper'
 import {
   PostCardComponentDtoTranslator
 } from '~/modules/Posts/Infrastructure/Translators/PostCardComponentDtoTranslator'
@@ -10,20 +10,21 @@ import {
   InfrastructureSortingOptions
 } from '~/modules/Shared/Infrastructure/InfrastructureSorting'
 import { PostsQueryParamsParser } from '~/modules/Posts/Infrastructure/Frontend/PostsQueryParamsParser'
+import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
+import {
+  HtmlPageMetaContextService
+} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
+import { i18nConfig } from '~/i18n.config'
 import { GetTagBySlug } from '~/modules/PostTag/Application/GetTagBySlug/GetTagBySlug'
 import { TagPage, TagPageProps } from '~/components/pages/TagPage/TagPage'
 import {
   TagPageComponentDtoTranslator
 } from '~/modules/PostTag/Infrastructure/Translators/TagPageComponentDtoTranslator'
-import { PaginationSortingType } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import {
-  HtmlPageMetaContextService
-} from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
-import { Settings } from 'luxon'
-import { FilterOptions } from '~/modules/Shared/Infrastructure/FrontEnd/FilterOptions'
 
 export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
   const tagSlug = context.query.tagSlug
+  const locale = context.locale ?? i18nConfig.defaultLocale
 
   if (!tagSlug) {
     return {
@@ -31,10 +32,14 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     }
   }
 
-  const locale = context.locale ?? 'en'
-
-  Settings.defaultLocale = locale
-  Settings.defaultZone = 'Europe/Madrid'
+  if (Object.entries(context.query).length > 1) {
+    return {
+      redirect: {
+        destination: `/${locale}/tags/${tagSlug}`,
+        permanent: false,
+      },
+    }
+  }
 
   const paginationQueryParams = new PostsQueryParamsParser(
     context.query,
@@ -71,13 +76,14 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     baseUrl = env.BASE_URL
   }
 
-  // Experimental: Try yo improve performance
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  )
-
-  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  const htmlPageMetaContextService =
+    new HtmlPageMetaContextService(context, {
+      includeQuery: true,
+      includeLocale: true,
+    }, {
+      follow: false,
+      index: false,
+    })
 
   const props: TagPageProps = {
     tag: {
@@ -86,10 +92,10 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
       name: '',
       id: '',
     },
-    initialOrder: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
-    initialPage: paginationQueryParams.page ?? 1,
-    initialPosts: [],
-    initialPostsNumber: 0,
+    order: paginationQueryParams.sortingOptionType ?? PaginationSortingType.LATEST,
+    page: paginationQueryParams.page ?? 1,
+    posts: [],
+    postsNumber: 0,
     htmlPageMetaContextProps: htmlPageMetaContextService.getProperties(),
     baseUrl,
   }
@@ -128,16 +134,22 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
       filters: [{ type: FilterOptions.TAG_SLUG, value: String(tagSlug) }],
       sortCriteria,
       sortOption,
-      postsPerPage: defaultPerPage,
+      postsPerPage: defaultPerPageWithoutAds,
     })
 
-    props.initialPosts = producerPosts.posts.map((post) => {
+    props.posts = producerPosts.posts.map((post) => {
       return PostCardComponentDtoTranslator.fromApplication(post.post, post.postViews, locale)
     })
-    props.initialPostsNumber = producerPosts.postsNumber
+    props.postsNumber = producerPosts.postsNumber
   } catch (exception: unknown) {
     console.error(exception)
   }
+
+  // Experimental: Try yo improve performance
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=50, stale-while-revalidate=10'
+  )
 
   return {
     props,

@@ -62,13 +62,17 @@ export const getServerSideProps: GetServerSideProps<ProducersPageProps> = async 
     baseUrl = env.BASE_URL
   }
 
-  // Experimental: Try yo improve performance
-  context.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=60, stale-while-revalidate=300'
-  )
+  let shouldIndexPage = true
 
-  const htmlPageMetaContextService = new HtmlPageMetaContextService(context)
+  if (paginationQueryParams.getParsedQueryString() !== '') {
+    shouldIndexPage = false
+  }
+
+  const htmlPageMetaContextService = new HtmlPageMetaContextService(
+    context,
+    { includeQuery: false, includeLocale: true },
+    { index: shouldIndexPage, follow: true }
+  )
 
   const props: ProducersPageProps = {
     initialSearchTerm: '',

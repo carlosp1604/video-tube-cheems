@@ -166,7 +166,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
 
     return postCards
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [posts, mounted])
+  }, [posts, mounted, activeBreakpoint])
 
   let content: ReactElement | null = (
     <ul className={ `

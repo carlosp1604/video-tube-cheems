@@ -100,6 +100,5 @@ export const PostCardCarousel: FC<Props & Partial<PostCardOptionalProps>> = ({
         }) }
       </Carousel>
     </>
-
   )
 }

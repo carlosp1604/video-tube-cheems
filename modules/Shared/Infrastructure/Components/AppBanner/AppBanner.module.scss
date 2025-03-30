@@ -1,22 +1,22 @@
 .app-banner {
   &__container {
-    @apply container p-5 border-t-2 border-brand-primary-light/50
-    mx-auto text-center cursor-default;
+    @apply border-t-2 border-brand-primary-light/50
+    text-center cursor-default;
   }
 
   &__title {
-    @apply text-secondary-text font-black mb-2;
+    @apply text-secondary-text font-black my-2;
   }
 
   &__description {
-    @apply text-secondary-text leading-none text-xs
-    whitespace-pre-line;
+    @apply text-secondary-text leading-none text-sm
+    mb-6 whitespace-pre-line;
   }
 
   &__rta-section {
     @apply flex flex-col items-center justify-center p-2
     bg-surface rounded-lg mt-2 transition-colors
-    gap-y-4 leading-tight text-secondary-text text-center;
+    gap-y-2 leading-tight text-secondary-text text-center;
   }
 
   &__rta-logo {
@@ -29,13 +29,5 @@
 
   &__rta-block-access-link {
     @apply text-brand-primary-dark font-semibold;
-
-    @screen md {
-      @apply text-sm;
-    }
-
-    @screen lg {
-      @apply text-base;
-    }
   }
 }

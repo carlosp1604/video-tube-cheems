@@ -7,9 +7,7 @@ import useTranslation from 'next-translate/useTranslation'
 import { handleClick } from '~/modules/Shared/Infrastructure/FrontEnd/AntiAdBlockHelper'
 import {
   cherryTvBannerDesktopData,
-  cherryTvBannerMobileData,
-  postBannerDesktopData,
-  postBannerMobileData
+  cherryTvBannerMobileData
 } from '~/adsData'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 
@@ -21,8 +19,8 @@ export const CherryTvResponsiveBanner: FC = () => {
   const activeBreakPoint = useMediaQuery()
 
   const selectImages = () => {
-    const mobileRandomNumber = Math.floor(Math.random() * postBannerMobileData.length)
-    const desktopRandomNumber = Math.floor(Math.random() * postBannerDesktopData.length)
+    const mobileRandomNumber = Math.floor(Math.random() * cherryTvBannerMobileData.length)
+    const desktopRandomNumber = Math.floor(Math.random() * cherryTvBannerDesktopData.length)
 
     setMobileBannerImage(cherryTvBannerMobileData[mobileRandomNumber])
     setDesktopBannerImage(cherryTvBannerDesktopData[desktopRandomNumber])

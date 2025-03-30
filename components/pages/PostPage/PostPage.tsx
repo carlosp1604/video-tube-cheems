@@ -18,10 +18,10 @@ import { ReactElement } from 'react'
 import {
   PostCardCarouselSkeleton
 } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import {
+  CherryTvResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CherryTvResponsiveBanner'
 
 const PostCardCarousel =
   dynamic(() => import('~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel')
@@ -145,7 +145,7 @@ export const PostPage: NextPage<PostPageProps> = ({
 
       { relatedPostsSection }
 
-      <AdsterraResponsiveBanner/>
+      <CherryTvResponsiveBanner/>
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

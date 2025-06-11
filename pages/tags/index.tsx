@@ -9,9 +9,10 @@ import {
 import {
   HtmlPageMetaContextService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextService'
+import { i18nConfig } from '~/i18n.config'
 
 export const getStaticProps: GetStaticProps<TagsPageProps> = async (context) => {
-  const locale = context.locale ?? 'en'
+  const locale = context.locale ?? i18nConfig.defaultLocale
 
   Settings.defaultLocale = locale
   Settings.defaultZone = 'Europe/Madrid'
@@ -30,10 +31,7 @@ export const getStaticProps: GetStaticProps<TagsPageProps> = async (context) => 
     locale,
     pathname: '/tags',
     resolvedUrl: '/tags',
-  },
-  { includeLocale: true, includeQuery: false },
-  { index: true, follow: true }
-  )
+  }, { includeLocale: true, includeQuery: false }, { index: true, follow: true })
 
   const props: TagsPageProps = {
     tagCards: [],

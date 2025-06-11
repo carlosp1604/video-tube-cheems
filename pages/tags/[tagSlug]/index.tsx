@@ -23,7 +23,13 @@ import {
 } from '~/modules/PostTag/Infrastructure/Translators/TagPageComponentDtoTranslator'
 
 export const getServerSideProps: GetServerSideProps<TagPageProps> = async (context) => {
-  const tagSlug = context.query.tagSlug
+  if (!context.params) {
+    return {
+      notFound: true,
+    }
+  }
+
+  const tagSlug = context.params.tagSlug
   const locale = context.locale ?? i18nConfig.defaultLocale
 
   if (!tagSlug) {
@@ -32,7 +38,7 @@ export const getServerSideProps: GetServerSideProps<TagPageProps> = async (conte
     }
   }
 
-  if (Object.entries(context.query).length > 1) {
+  if (Object.entries(context.params).length > 1) {
     return {
       redirect: {
         destination: `/${locale}/tags/${tagSlug}`,

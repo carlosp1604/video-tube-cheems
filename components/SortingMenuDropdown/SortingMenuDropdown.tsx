@@ -7,7 +7,6 @@ import {
   fromOrderTypeToComponentSortingOption,
   PaginationSortingType
 } from '~/modules/Shared/Infrastructure/FrontEnd/PaginationSortingType'
-import { usePathname } from 'next/navigation'
 import { DropdownMenu } from '~/components/DropdownMenu/DropdownMenu'
 import { DropdownMenuOptionProps } from '~/components/DropdownMenu/DropdownMenuOption/DropdownMenuOption'
 import { BsSortDown } from 'react-icons/bs'
@@ -33,8 +32,7 @@ export const SortingMenuDropdown: FC<Props & Partial<OptionalProps>> = ({
   onClickOption = undefined,
 }) => {
   const { t } = useTranslation('sorting_menu_dropdown')
-  const { query } = useRouter()
-  const pathname = usePathname()
+  const { pathname, query } = useRouter()
 
   const componentActiveSortingOption = useMemo(() =>
     fromOrderTypeToComponentSortingOption(activeOption),
@@ -49,17 +47,14 @@ export const SortingMenuDropdown: FC<Props & Partial<OptionalProps>> = ({
       delete newQuery.page
       newQuery.order = String(option)
 
-      const search = new URLSearchParams()
-
-      Object.entries(newQuery).forEach(([key, value]) => {
-        search.append(key, `${value}`)
-      })
-
       return {
         title: t(componentOption.translationKey),
         active: componentOption.translationKey === componentActiveSortingOption.translationKey,
         link: {
-          href: `${pathname}?${search.toString()}`,
+          href: {
+            pathname,
+            query: newQuery,
+          },
           scroll: linkMode.scrollOnClick,
           shallow: linkMode.shallowNavigation,
           replace: linkMode.replace,

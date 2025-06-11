@@ -18,10 +18,9 @@ interface Props {
   adNetworkName: string
   views: number
   date: string
-  iframeMode: boolean
 }
 
-export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetworkName, views, date, iframeMode }) => {
+export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetworkName, views, date }) => {
   const { t } = useTranslation('post_card')
 
   const locale = useRouter().locale ?? 'en'
@@ -32,26 +31,17 @@ export const PostCardAdvertising: FC<Props> = ({ offerUrl, thumb, title, adNetwo
       onClick={ () => handleClick(offerUrl) }
     >
       <div className={ styles.postCard__videoContainer }>
-        { iframeMode
-          ? <iframe
-            src={ thumb }
-            allowFullScreen={ false }
-            loading={ 'lazy' }
-            title={ title }
-          />
-          : <Image
-            src={ thumb }
-            alt={ title }
-            className={ styles.postCard__media }
-            width={ 200 }
-            height={ 200 }
-            sizes={ '100vw' }
-            placeholder={ 'blur' }
-            priority={ true }
-            blurDataURL={ rgbDataURL(81, 80, 80) }
-          />
-        }
-
+        <Image
+          src={ thumb }
+          alt={ title }
+          className={ styles.postCard__media }
+          width={ 200 }
+          height={ 200 }
+          sizes={ '100vw' }
+          placeholder={ 'blur' }
+          priority={ true }
+          blurDataURL={ rgbDataURL(81, 80, 80) }
+        />
       </div>
       <div className={ styles.postCard__videoDataContainer }>
         <div className={ styles.postCard__postData }>

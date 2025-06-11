@@ -56,7 +56,7 @@ export const TagsPage: NextPage<Props> = ({ tagCards, htmlPageMetaContextProps, 
 
       <CrackrevenuePostPageBanner/>
 
-      <Tags tagCards={ tagCards }/>
+      <Tags key={ locale } tagCards={ tagCards }/>
 
       <AdsterraResponsiveBanner/>
 

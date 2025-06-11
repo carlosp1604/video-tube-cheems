@@ -11,10 +11,7 @@ import { defaultPerPage } from '~/modules/Shared/Infrastructure/FrontEnd/Paginat
 import { PostCardSkeleton } from '~/modules/Posts/Infrastructure/Components/PostCard/PostCardSkeleton/PostCardSkeleton'
 import dynamic from 'next/dynamic'
 import { PostCardGalleryAdsPreset } from '~/modules/Posts/Infrastructure/Frontend/PostCardGalleryAdsPreset'
-import { PaginatedPostCardGalleryHelper } from '~/modules/Posts/Infrastructure/Frontend/PaginatedPostCardGalleryHelpter'
-import { PostCardAdvertising } from '~/modules/Shared/Infrastructure/Components/Advertising/PostCardAdvertising'
 import { useToast } from '~/components/AppToast/ToastContext'
-import { adsData } from '~/adsData'
 import {
   AdsterraResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
@@ -123,10 +120,10 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     })
 
     if (showAds && postCards.length > 0) {
-      const firstCardViews = posts[0].views
-      const firstCardDate = posts[0].date
+      // const firstCardViews = posts[0].views
+      // const firstCardDate = posts[0].date
 
-      const indexes: Array<number> = []
+      // const indexes: Array<number> = []
 
       for (let i = 0; i < PostCardGalleryAdsPreset.length; i++) {
         const adPosition = PostCardGalleryAdsPreset[i]
@@ -135,6 +132,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           break
         }
 
+        /**
         if (mounted) {
           const adIndex = PaginatedPostCardGalleryHelper.genRandomValue(0, adsData.length - 1, indexes)
 
@@ -152,7 +150,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
                 iframeMode={ adsData[adIndex].iframeMode }
               />
             </li>
-
           ))
         } else {
           postCards.splice(adPosition, 0, (
@@ -161,6 +158,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
             </li>
           ))
         }
+        */
       }
     }
 

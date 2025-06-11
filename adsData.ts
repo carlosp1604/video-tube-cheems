@@ -1,12 +1,4 @@
-export const adsData = [
-  {
-    titleKey: 'native_ads_cams_offer_title',
-    thumbs: ['https://cherry.tv/embed/top?ref_affid=6240&ref_oid=119'],
-    offerUrl: 'https://www.trackcherry.com/C497FC9/6W84K8/',
-    adNetworkName: 'Cherry TV',
-    iframeMode: true,
-  },
-]
+export const adsData = []
 
 export const postBannerMobileData = [
   'https://cdn.cheemsporn.com/mobile-banner-1.webm',

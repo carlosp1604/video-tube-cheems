@@ -11,7 +11,6 @@ import { ReactionType } from '~/modules/Reactions/Infrastructure/ReactionType'
 import { PostTypeResolver } from '~/modules/Posts/Infrastructure/Components/Post/PostTypes/PostTypeResolver'
 import { useReactPost } from '~/hooks/ReactPost'
 import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostData/PostData'
-import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
@@ -207,7 +206,6 @@ export const Post: FC<Props> = ({
 
         <div className={ styles.post__rightContainer }>
           <span className={ styles.post__rightContainerItem }>
-            <AdsterraBanner/>
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
             <CherryTv300x250Banner/>

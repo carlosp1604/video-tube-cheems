@@ -15,9 +15,6 @@ import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface ActorsPageProps {
@@ -74,8 +71,6 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
         initialActors={ initialActors }
         initialActorsNumber={ initialActorsNumber }
       />
-
-      <AdsterraResponsiveBanner/>
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

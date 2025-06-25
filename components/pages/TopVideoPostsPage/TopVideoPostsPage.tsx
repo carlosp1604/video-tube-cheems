@@ -13,9 +13,6 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import {
   CrackrevenuePostPageBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 
 export interface Props {
@@ -67,8 +64,6 @@ export const TopVideoPostsPage: NextPage<Props> = ({
         currentDate={ currentDate }
         currentOption={ option }
       />
-
-      <AdsterraResponsiveBanner/>
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

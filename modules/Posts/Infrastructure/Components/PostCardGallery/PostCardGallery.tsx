@@ -12,9 +12,6 @@ import { PostCardSkeleton } from '~/modules/Posts/Infrastructure/Components/Post
 import dynamic from 'next/dynamic'
 import { PostCardGalleryAdsPreset } from '~/modules/Posts/Infrastructure/Frontend/PostCardGalleryAdsPreset'
 import { useToast } from '~/components/AppToast/ToastContext'
-import {
-  AdsterraResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 import {
   CherryTvResponsiveBanner
@@ -233,8 +230,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           { firstPostList }
           { loading ? firstSkeletonList : null }
         </ul>
-
-        <AdsterraResponsiveBanner />
 
         <ul className={ `
           ${styles.postCardGallery__container}

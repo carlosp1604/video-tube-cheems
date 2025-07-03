@@ -8,8 +8,8 @@ import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/Post
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 
 const PaginationBar = dynamic(() =>
   import('~/components/PaginationBar/PaginationBar').then((module) => module.PaginationBar)
@@ -54,7 +54,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts }) => {
         />
       </div>
 
-      <CrackrevenuePostPageBanner />
+      <AdCashResponsiveBanner />
 
       <div className={ styles.home__entryContainer }>
         <div className={ styles.home__entryHeader }>

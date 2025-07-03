@@ -11,10 +11,10 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 
 export interface SearchPageProps {
   initialSearchTerm: string
@@ -55,7 +55,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner />
+      <AdCashResponsiveBanner />
 
       <Search
         key={ asPath }

@@ -17,6 +17,8 @@ import {
   TrafficstarsVideoSlider
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsVideoSlider'
 import { ToastProvider } from '~/components/AppToast/ToastProvider'
+import { AdCashProvider } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashScript'
+import ClickAduStaticCode from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduStaticCode'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),
@@ -103,21 +105,25 @@ function App ({
 
               <TrafficstarsVideoSlider />
 
-              { /** Workaround to work with the sidebar fixed **/ }
-              <div className={
-                `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
-              >
-                { /** Workaround to show tooltip in the sidebar menú**/ }
-                <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
-                <main className={ styles.app__container }>
+              <ClickAduStaticCode />
 
-                  <TopMobileMenu />
+              <AdCashProvider>
+                { /** Workaround to work with the sidebar fixed **/ }
+                <div className={
+                  `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
+                >
+                  { /** Workaround to show tooltip in the sidebar menú**/ }
+                  <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
+                  <main className={ styles.app__container }>
 
-                  <Component { ...pageProps }/>
-                </main>
+                    <TopMobileMenu />
 
-                <AppFooter />
-              </div>
+                    <Component { ...pageProps }/>
+                  </main>
+
+                  <AppFooter />
+                </div>
+              </AdCashProvider>
             </div>
           </LoginProvider>
         </ToastProvider>

@@ -12,11 +12,11 @@ import {
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { Posts } from '~/components/Posts/Posts'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 
 export interface Props {
   asPath: string
@@ -67,7 +67,7 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner/>
+      <AdCashResponsiveBanner />
 
       <Posts
         key={ props.asPath }

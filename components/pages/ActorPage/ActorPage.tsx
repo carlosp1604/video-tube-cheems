@@ -15,11 +15,14 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { BsStarFill } from 'react-icons/bs'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import { PostsPaginationSortingType } from '~/modules/Posts/Infrastructure/Frontend/PostsPaginationSortingType'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+import {
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 export interface ActorPageProps {
   page: number
@@ -78,7 +81,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner/>
+      <AdCashResponsiveBanner />
 
       <ProfileHeader
         name={ actor.name }
@@ -100,6 +103,8 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         page={ page }
         order={ order }
       />
+
+      <ClickAduResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

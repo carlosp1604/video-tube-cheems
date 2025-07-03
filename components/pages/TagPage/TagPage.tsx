@@ -8,15 +8,18 @@ import {
   HtmlPageMetaContextProps
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
-import {
   HtmlPageMetaContextResourceType,
   HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { Tag } from '~/modules/PostTag/Infrastructure/Components/Tag/Tag'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import { TagPageComponentDto } from '~/modules/PostTag/Infrastructure/Dtos/TagPageComponentDto'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+import {
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 export interface TagPageProps {
   page: number
@@ -69,7 +72,7 @@ export const TagPage: NextPage<TagPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner/>
+      <AdCashResponsiveBanner />
 
       <Tag
         page={ page }
@@ -78,7 +81,9 @@ export const TagPage: NextPage<TagPageProps> = ({
         tagSlug={ tag.slug }
         posts={ posts }
         postsNumber={ postsNumber }
-        />
+      />
+
+      <ClickAduResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

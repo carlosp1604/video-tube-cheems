@@ -13,11 +13,14 @@ import {
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaContextProps'
 import { Producers } from '~/modules/Producers/Infrastructure/Components/Producers/Producers'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+import {
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 export interface ProducersPageProps {
   initialSearchTerm: string
@@ -64,7 +67,7 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner/>
+      <AdCashResponsiveBanner />
 
       <Producers
         initialSearchTerm={ initialSearchTerm }
@@ -73,6 +76,8 @@ export const ProducersPage: NextPage<ProducersPageProps> = ({
         initialOrder={ initialOrder }
         initialProducersNumber={ initialProducersNumber }
       />
+
+      <ClickAduResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

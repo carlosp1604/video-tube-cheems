@@ -16,10 +16,13 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import { ProfileHeader } from '~/modules/Shared/Infrastructure/Components/ProfileHeader/ProfileHeader'
 import { MdLiveTv } from 'react-icons/md'
 import { NumberFormatter } from '~/modules/Shared/Infrastructure/FrontEnd/NumberFormatter'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+import {
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 export interface ProducerPageProps {
   page: number
@@ -80,7 +83,7 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner/>
+      <AdCashResponsiveBanner />
 
       <ProfileHeader
         name={ producer.name }
@@ -101,6 +104,8 @@ export const ProducerPage: NextPage<ProducerPageProps> = ({
         posts={ posts }
         postsNumber={ postsNumber }
       />
+
+      <ClickAduResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

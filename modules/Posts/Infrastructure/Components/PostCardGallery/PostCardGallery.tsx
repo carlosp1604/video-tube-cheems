@@ -14,8 +14,8 @@ import { PostCardGalleryAdsPreset } from '~/modules/Posts/Infrastructure/Fronten
 import { useToast } from '~/components/AppToast/ToastContext'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
 import {
-  CherryTvResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CherryTvResponsiveBanner'
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 const PostCardGalleryOptions = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/PaginatedPostCardGallery/PostCardGalleryHeader/PostCardGalleryOptions'
@@ -211,7 +211,7 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
     let exoClickBanner: ReactElement | null = null
 
     if (secondPostList.length > 0) {
-      exoClickBanner = (<CherryTvResponsiveBanner />)
+      exoClickBanner = (<ClickAduResponsiveBanner />)
     }
 
     content = (

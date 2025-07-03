@@ -9,8 +9,8 @@ import { MediaUrlsHelper } from '~/modules/Posts/Infrastructure/Frontend/MediaUr
 import useTranslation from 'next-translate/useTranslation'
 import { BsFileEarmarkBreak } from 'react-icons/bs'
 import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 
 export interface Props {
   post: PostComponentDto
@@ -77,7 +77,7 @@ export const VideoPostType: FC<Props> = ({
           { player }
         </div>
         <div className={ styles.videoPostType__advertising }>
-          <CrackrevenuePostPageBanner />
+          <AdCashResponsiveBanner />
         </div>
       </div>
 

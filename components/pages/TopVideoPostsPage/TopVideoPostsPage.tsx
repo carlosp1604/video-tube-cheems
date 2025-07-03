@@ -10,10 +10,13 @@ import {
   HtmlPageMetaContextResourceType, HtmlPageMetaResourceService
 } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMetaResourceService/HtmlPageMetaResourceService'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
-import {
-  CrackrevenuePostPageBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Crackrevenue/CrackrevenuePostPageBanner'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
+import {
+  AdCashResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+import {
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -57,13 +60,15 @@ export const TopVideoPostsPage: NextPage<Props> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <CrackrevenuePostPageBanner/>
+      <AdCashResponsiveBanner />
 
       <TopVideoPosts
         posts={ posts }
         currentDate={ currentDate }
         currentOption={ option }
       />
+
+      <ClickAduResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

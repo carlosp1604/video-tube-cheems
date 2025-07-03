@@ -20,8 +20,8 @@ import {
 } from '~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarouselSkeleton'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import {
-  CherryTvResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/CheeryTvBanner/CherryTvResponsiveBanner'
+  ClickAduResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
 
 const PostCardCarousel =
   dynamic(() => import('~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel')
@@ -145,7 +145,7 @@ export const PostPage: NextPage<PostPageProps> = ({
 
       { relatedPostsSection }
 
-      <CherryTvResponsiveBanner/>
+      <ClickAduResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

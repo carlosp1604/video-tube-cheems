@@ -291,7 +291,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         },
         actor: true,
         meta: true,
-        translations: true,
+        // translations: true,
         tags: {
           include: {
             tag: {
@@ -1326,7 +1326,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
       meta: true,
       producer: true,
       actor: true,
-      translations: true,
+      // translations: true,
     }
 
     for (const filter of filters) {

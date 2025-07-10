@@ -115,7 +115,6 @@ function App ({
                   { /** Workaround to show tooltip in the sidebar menú**/ }
                   <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
                   <main className={ styles.app__container }>
-
                     <TopMobileMenu />
 
                     <Component { ...pageProps }/>

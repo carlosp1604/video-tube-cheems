@@ -148,17 +148,19 @@ export class PostModelTranslator {
     }
 
     if (options.includes('translations')) {
-      const postWithTranslations = prismaPostModel as PostWithTranslations
-
       translationsCollection = Collection.initializeCollection()
 
-      postWithTranslations.translations.forEach((translation) => {
-        const domainTranslation = TranslationModelTranslator.toDomain(translation)
+      const postWithTranslations = prismaPostModel as PostWithTranslations
 
-        translationsCollection.addItem(
-          domainTranslation, translation.language + translation.field
-        )
-      })
+      if (postWithTranslations.translations) {
+        postWithTranslations.translations.forEach((translation) => {
+          const domainTranslation = TranslationModelTranslator.toDomain(translation)
+
+          translationsCollection.addItem(
+            domainTranslation, translation.language + translation.field
+          )
+        })
+      }
     }
 
     if (options.includes('reports')) {

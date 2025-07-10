@@ -93,11 +93,7 @@ export const PostPage: NextPage<PostPageProps> = ({
     ],
   }
 
-  let canonicalUrl = `${baseUrl}/posts/videos/${post.slug}`
-
-  if (lang !== 'en') {
-    canonicalUrl = `${baseUrl}/${lang}/posts/videos/${post.slug}`
-  }
+  const canonicalUrl = `${baseUrl}/posts/videos/${post.slug}`
 
   const htmlPageMetaUrlProps = (
     new HtmlPageMetaVideoService(

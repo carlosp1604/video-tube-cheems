@@ -42,7 +42,6 @@
     "bcrypt": "^5.1.0",
     "csstype": "^3.0.10",
     "dotenv": "^16.0.3",
-    "exoclick-react": "^1.2.0",
     "isomorphic-dompurify": "^2.6.0",
     "knex": "^2.3.0",
     "luxon": "^3.1.1",

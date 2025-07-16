@@ -126,7 +126,6 @@ export const PostOptions: FC<Props> = ({
 
     downloadButton = (
       <span
-        id="player-overlay"
         className={ styles.postOptions__optionItem }
         onClick={ async () => {
           ReactGA.event({

@@ -21,8 +21,8 @@ import {
   AdCashResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 import {
-  ClickAduResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
+  TrafficstarsResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
 
 export interface ActorPageProps {
   page: number
@@ -104,7 +104,7 @@ export const ActorPage: NextPage<ActorPageProps> = ({
         order={ order }
       />
 
-      <ClickAduResponsiveBanner />
+      <TrafficstarsResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

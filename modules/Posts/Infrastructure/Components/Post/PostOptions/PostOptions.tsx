@@ -126,6 +126,7 @@ export const PostOptions: FC<Props> = ({
 
     downloadButton = (
       <span
+        id="player-overlay"
         className={ styles.postOptions__optionItem }
         onClick={ async () => {
           ReactGA.event({
@@ -189,6 +190,7 @@ export const PostOptions: FC<Props> = ({
         />
       </span>
       { sourcesButton }
+      { downloadButton }
       <span
         className={ styles.postOptions__optionItem }
         onClick={ onClickCommentsButton }
@@ -208,7 +210,6 @@ export const PostOptions: FC<Props> = ({
           : <RxBookmark className={ styles.postOptions__optionItemIcon }/> }
         { savedPost ? t('post_save_active_button_title') : t('post_save_button_title') }
       </button>
-      { downloadButton }
       <button
         className={ styles.postOptions__optionItem }
         onClick={ () => {

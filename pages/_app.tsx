@@ -13,9 +13,6 @@ import Head from 'next/head'
 import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
-import {
-  TrafficstarsVideoSlider
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsVideoSlider'
 import { ToastProvider } from '~/components/AppToast/ToastProvider'
 import { AdCashProvider } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashScript'
 import ClickAduStaticCode from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduStaticCode'
@@ -102,8 +99,6 @@ function App ({
                 menuOpen={ menuOpen }
                 setOpenLanguageMenu={ setOpenLanguageMenu }
               />
-
-              <TrafficstarsVideoSlider />
 
               <ClickAduStaticCode />
 

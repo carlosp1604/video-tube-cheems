@@ -18,8 +18,8 @@ import {
   AdCashResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 import {
-  ClickAduResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
+  TrafficstarsResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
 
 export interface TagPageProps {
   page: number
@@ -83,7 +83,7 @@ export const TagPage: NextPage<TagPageProps> = ({
         postsNumber={ postsNumber }
       />
 
-      <ClickAduResponsiveBanner />
+      <TrafficstarsResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

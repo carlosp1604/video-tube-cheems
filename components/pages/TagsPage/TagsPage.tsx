@@ -17,8 +17,8 @@ import {
   AdCashResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 import {
-  ClickAduResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
+  TrafficstarsResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
 
 export interface Props {
   tagCards: TagCardComponentDto[]
@@ -58,7 +58,7 @@ export const TagsPage: NextPage<Props> = ({ tagCards, htmlPageMetaContextProps, 
 
       <Tags key={ locale } tagCards={ tagCards }/>
 
-      <ClickAduResponsiveBanner />
+      <TrafficstarsResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

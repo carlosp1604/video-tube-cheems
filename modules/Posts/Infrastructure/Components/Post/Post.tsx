@@ -14,9 +14,9 @@ import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostDat
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
-import ClickAdu300x250Banner
-  from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAdu300x250Banner'
 import AdCashBanner250x300 from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCash300x250Banner'
+import TrafficstarsDesktopBanner
+  from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsDesktopBanner'
 
 const PostComments = dynamic(() =>
   import('~/modules/Posts/Infrastructure/Components/PostComment/PostComments').then((module) => module.PostComments),
@@ -209,7 +209,7 @@ export const Post: FC<Props> = ({
             <AdCashBanner250x300 />
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
-            <ClickAdu300x250Banner />
+            <TrafficstarsDesktopBanner />
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
           </span>

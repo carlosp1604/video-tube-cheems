@@ -15,8 +15,8 @@ import {
   AdCashResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
 import {
-  ClickAduResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduResponsiveBanner'
+  TrafficstarsResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -68,7 +68,7 @@ export const TopVideoPostsPage: NextPage<Props> = ({
         currentOption={ option }
       />
 
-      <ClickAduResponsiveBanner />
+      <TrafficstarsResponsiveBanner />
 
       <div className={ styles.commonPage__pageBanner }>
         <AppBanner

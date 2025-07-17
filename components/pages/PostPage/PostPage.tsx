@@ -22,7 +22,6 @@ import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/
 import {
   TrafficstarsResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
-import Script from 'next/script'
 
 const PostCardCarousel =
   dynamic(() => import('~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel')
@@ -59,18 +58,6 @@ export const PostPage: NextPage<PostPageProps> = ({
   htmlPageMetaContextProps,
 }) => {
   const { t } = useTranslation('post_page')
-
-  let popUnder: ReactElement | null = null
-
-  if (process.env.NEXT_PUBLIC_POPUNDER_URL) {
-    popUnder = (
-      <Script
-        type={ 'text/javascript' }
-        src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
-        async={ true }
-      />
-    )
-  }
 
   const title = SEOHelper.buildTitle(post.title)
 
@@ -144,8 +131,6 @@ export const PostPage: NextPage<PostPageProps> = ({
 
   return (
     <div className={ styles.commonPage__container }>
-      { popUnder }
-
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
       <Post

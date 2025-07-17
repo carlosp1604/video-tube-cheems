@@ -10,6 +10,7 @@ import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrl
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import { RxGear } from 'react-icons/rx'
+import Script from 'next/script'
 
 export interface Props {
   title: string
@@ -48,7 +49,7 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
   if (selectedMediaUrl.mediaType === 'Embed') {
     playerElement = (
       <iframe
-        id="player-overlay"
+        id="video-player-overlay"
         key={ selectedMediaUrl.url }
         className={ styles.videoPostPlayer__iframe }
         src={ selectedMediaUrl.url }
@@ -86,6 +87,14 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
 
   return (
     <div className={ styles.videoPostPlayer__container }>
+      { videoReady && process.env.NEXT_PUBLIC_POPUNDER_URL &&
+        <Script
+          type={ 'text/javascript' }
+          src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
+          async={ true }
+        />
+      }
+
       {
         setSourcesMenuOpen
           ? <span className={ styles.videoPostPlayer__floatingMenuButton }>

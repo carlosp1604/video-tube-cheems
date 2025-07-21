@@ -132,6 +132,7 @@ module.exports = {
         'sort-menu-dropdown',
         'menu-dropdown',
         'video-player',
+        'player-overlay',
         'video-player-options',
         'video-player-options-button',
         'video-player-overlay',

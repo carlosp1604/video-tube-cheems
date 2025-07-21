@@ -1,8 +1,7 @@
-import { FC, ReactElement, useEffect, useState } from 'react'
+import { FC, ReactElement, useState } from 'react'
 import styles from './VideoPostPlayer.module.scss'
 import { MediaUrlComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostMedia/MediaUrlComponentDto'
 import { HtmlVideoPlayer } from '~/components/VideoPlayer/HtmlVideoPlayer'
-import { useFirstRender } from '~/hooks/FirstRender'
 import { ModalMenuHeader } from '~/modules/Shared/Infrastructure/Components/ModalMenuHeader/ModalMenuHeader'
 import { BsThreeDots, BsX } from 'react-icons/bs'
 import { IconButton } from '~/components/IconButton/IconButton'
@@ -10,7 +9,6 @@ import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrl
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import { RxGear } from 'react-icons/rx'
-import Script from 'next/script'
 
 export interface Props {
   title: string
@@ -30,19 +28,8 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
   onCloseSourceMenu,
   setSourcesMenuOpen = undefined,
 }) => {
-  const [videoReady, setVideoReady] = useState<boolean>(false)
   const [selectedMediaUrl, setSelectedMediaUrl] = useState<MediaUrlComponentDto>(selectableUrls[0])
-
-  const firstRender = useFirstRender()
-
   const { t } = useTranslation('post')
-
-  useEffect(() => {
-    if (firstRender) {
-      setVideoReady(true)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   let playerElement: ReactElement | null = null
 
@@ -51,11 +38,9 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
       <iframe
         id="video-player-overlay"
         key={ selectedMediaUrl.url }
-        className={ styles.videoPostPlayer__iframe }
         src={ selectedMediaUrl.url }
         width={ '100%' }
         height={ '100%' }
-        onLoad={ () => setVideoReady(true) }
         allowFullScreen={ true }
         style={ { overflow: 'hidden' } }
         title={ title }
@@ -70,7 +55,8 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
         title={ title }
         videoPostMediaUrls={ selectableUrls.filter((selectableUrl) => selectableUrl.mediaType === 'Video') }
         selectedMediaUrl={ selectedMediaUrl }
-        onPlayerReady={ () => setVideoReady(true) }
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onPlayerReady={ () => {} }
       />
     )
   }
@@ -87,14 +73,6 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
 
   return (
     <div className={ styles.videoPostPlayer__container }>
-      { videoReady && process.env.NEXT_PUBLIC_POPUNDER_URL &&
-        <Script
-          type={ 'text/javascript' }
-          src={ process.env.NEXT_PUBLIC_POPUNDER_URL }
-          async={ true }
-        />
-      }
-
       {
         setSourcesMenuOpen
           ? <span className={ styles.videoPostPlayer__floatingMenuButton }>
@@ -129,7 +107,6 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
               ${selectedMediaUrl.url === selectableUrl.url ? styles.videoPostPlayer__sourceOption__selected : ''}
             ` }
               onClick={ async () => {
-                setVideoReady(false)
                 setSelectedMediaUrl(selectableUrl)
               } }
             >

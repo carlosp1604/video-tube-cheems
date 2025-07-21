@@ -22,6 +22,7 @@ import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/
 import {
   TrafficstarsResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
+import AdCashPopUnder from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashPopUnder'
 
 const PostCardCarousel =
   dynamic(() => import('~/modules/Posts/Infrastructure/Components/PostCardCarrousel/PostCardCarousel')
@@ -132,6 +133,8 @@ export const PostPage: NextPage<PostPageProps> = ({
   return (
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
+
+      <AdCashPopUnder />
 
       <Post
         post={ post }

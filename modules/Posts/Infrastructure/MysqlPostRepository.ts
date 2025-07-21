@@ -846,7 +846,7 @@ export class MysqlPostRepository implements PostRepositoryInterface {
         meta: true,
         producer: true,
         actor: true,
-        translations: true,
+        // translations: true,
       },
       // TODO: Fix this hardcoded number
       take: 20,

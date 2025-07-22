@@ -36,7 +36,7 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
   if (selectedMediaUrl.mediaType === 'Embed') {
     playerElement = (
       <iframe
-        id="video-player-overlay"
+        className={ styles.videoPostPlayer__iframe }
         key={ selectedMediaUrl.url }
         src={ selectedMediaUrl.url }
         width={ '100%' }

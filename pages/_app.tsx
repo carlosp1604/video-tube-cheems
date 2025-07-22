@@ -15,7 +15,9 @@ import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import { ToastProvider } from '~/components/AppToast/ToastProvider'
 import { AdCashProvider } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashScript'
-import ClickAduStaticCode from '~/modules/Shared/Infrastructure/Components/Advertising/ClickAdu/ClickAduStaticCode'
+import {
+  AdsterraSocialBar
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraSocialBar'
 
 const AppFooter = dynamic(() => import('~/components/AppFooter/AppFooter')
   .then((module) => module.AppFooter),
@@ -100,7 +102,7 @@ function App ({
                 setOpenLanguageMenu={ setOpenLanguageMenu }
               />
 
-              <ClickAduStaticCode />
+              <AdsterraSocialBar />
 
               <AdCashProvider>
                 { /** Workaround to work with the sidebar fixed **/ }

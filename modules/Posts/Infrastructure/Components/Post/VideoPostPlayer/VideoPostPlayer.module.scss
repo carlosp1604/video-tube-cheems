@@ -11,10 +11,6 @@
     }
   }
 
-  &__player-overlay {
-    @apply absolute h-full w-full z-50;
-  }
-
   &__sourcesMenuContainer {
     @apply flex flex-col gap-y-2 p-4 pb-1 h-full w-full absolute
     top-0 right-0 translate-y-1/2 bg-body/90 z-video-player-options

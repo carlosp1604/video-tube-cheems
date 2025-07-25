@@ -12,11 +12,11 @@ import {
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import {
-  AdCashResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
-import {
   TrafficstarsResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface Props {
   posts: Array<PostCardComponentDto>
@@ -60,7 +60,7 @@ export const TopVideoPostsPage: NextPage<Props> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <AdCashResponsiveBanner />
+      <AdsterraResponsiveBanner />
 
       <TopVideoPosts
         posts={ posts }

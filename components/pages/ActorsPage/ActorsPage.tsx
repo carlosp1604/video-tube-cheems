@@ -14,11 +14,11 @@ import { Actors } from '~/modules/Actors/Infrastructure/Components/Actors/Actors
 import { ProfileCardDto } from '~/modules/Shared/Infrastructure/FrontEnd/ProfileCardDto'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import {
-  AdCashResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
-import {
   TrafficstarsResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface ActorsPageProps {
   initialSearchTerm: string
@@ -65,7 +65,7 @@ export const ActorsPage: NextPage<ActorsPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <AdCashResponsiveBanner />
+      <AdsterraResponsiveBanner />
 
       <Actors
         initialSearchTerm={ initialSearchTerm }

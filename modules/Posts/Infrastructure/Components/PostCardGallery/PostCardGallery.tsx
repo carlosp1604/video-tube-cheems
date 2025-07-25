@@ -231,6 +231,8 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           { loading ? firstSkeletonList : null }
         </ul>
 
+        { exoClickBanner }
+
         <ul className={ `
           ${styles.postCardGallery__container}
           ${loading && posts.length !== 0 ? styles.postCardGallery__container__loading : ''}
@@ -239,8 +241,6 @@ export const PostCardGallery: FC<Partial<Props> & Pick<Props, 'posts' | 'postCar
           { secondPostList }
           { loading ? secondSkeletonList : null }
         </ul>
-
-        { exoClickBanner }
 
         <ul className={ `
           ${styles.postCardGallery__container}

@@ -15,8 +15,8 @@ import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPag
 import { Posts } from '~/components/Posts/Posts'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import {
-  AdCashResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface Props {
   asPath: string
@@ -67,7 +67,7 @@ export const PostsPage: NextPage<Props> = (props: Props) => {
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <AdCashResponsiveBanner />
+      <AdsterraResponsiveBanner />
 
       <Posts
         key={ props.asPath }

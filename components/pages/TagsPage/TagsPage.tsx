@@ -14,11 +14,11 @@ import useTranslation from 'next-translate/useTranslation'
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { AppBanner } from '~/modules/Shared/Infrastructure/Components/AppBanner/AppBanner'
 import {
-  AdCashResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
-import {
   TrafficstarsResponsiveBanner
 } from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
+import {
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface Props {
   tagCards: TagCardComponentDto[]
@@ -54,7 +54,7 @@ export const TagsPage: NextPage<Props> = ({ tagCards, htmlPageMetaContextProps, 
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <AdCashResponsiveBanner />
+      <AdsterraResponsiveBanner />
 
       <Tags key={ locale } tagCards={ tagCards }/>
 

@@ -14,7 +14,6 @@ import { TopMobileMenu } from '~/components/TopMobileMenu/TopMobileMenu'
 import { AppMenu } from '~/components/AppMenu/AppMenu'
 import { AppProgressBar } from '~/components/AppProgressBar/AppProgressBar'
 import { ToastProvider } from '~/components/AppToast/ToastProvider'
-import { AdCashProvider } from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashScript'
 import {
   AdsterraSocialBar
 } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraSocialBar'
@@ -104,22 +103,20 @@ function App ({
 
               <AdsterraSocialBar />
 
-              <AdCashProvider>
-                { /** Workaround to work with the sidebar fixed **/ }
-                <div className={
-                  `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
-                >
-                  { /** Workaround to show tooltip in the sidebar menú**/ }
-                  <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
-                  <main className={ styles.app__container }>
-                    <TopMobileMenu />
+              { /** Workaround to work with the sidebar fixed **/ }
+              <div className={
+                `${styles.app__mainLayout} ${menuOpen ? styles.app__mainLayout__open : ''} ${roboto.variable}` }
+              >
+                { /** Workaround to show tooltip in the sidebar menú**/ }
+                <div id="tooltip-container" className={ 'fixed z-tooltip' }></div>
+                <main className={ styles.app__container }>
+                  <TopMobileMenu />
 
-                    <Component { ...pageProps }/>
-                  </main>
+                  <Component { ...pageProps }/>
+                </main>
 
-                  <AppFooter />
-                </div>
-              </AdCashProvider>
+                <AppFooter />
+              </div>
             </div>
           </LoginProvider>
         </ToastProvider>

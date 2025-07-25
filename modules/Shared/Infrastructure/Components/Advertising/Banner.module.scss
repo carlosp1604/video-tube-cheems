@@ -25,6 +25,11 @@
     cursor-pointer;
   }
 
+  &__bannerContainer50x320 {
+    @apply relative h-[50px] w-[320px] bg-surface mb-1
+    cursor-pointer;
+  }
+
   &__responsiveDesktop {
     @apply hidden;
 

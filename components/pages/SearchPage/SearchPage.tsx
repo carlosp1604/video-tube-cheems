@@ -13,8 +13,8 @@ import {
 import { HtmlPageMeta } from '~/modules/Shared/Infrastructure/Components/HtmlPageMeta/HtmlPageMeta'
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import {
-  AdCashResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 export interface SearchPageProps {
   initialSearchTerm: string
@@ -55,7 +55,7 @@ export const SearchPage: NextPage<SearchPageProps> = ({
     <div className={ styles.commonPage__container }>
       <HtmlPageMeta { ...htmlPageMetaProps } />
 
-      <AdCashResponsiveBanner />
+      <AdsterraResponsiveBanner />
 
       <Search
         key={ asPath }

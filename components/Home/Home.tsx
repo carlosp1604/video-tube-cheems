@@ -8,11 +8,8 @@ import { PostCardCarousel } from '~/modules/Posts/Infrastructure/Components/Post
 import { PostCardComponentDto } from '~/modules/Posts/Infrastructure/Dtos/PostCardComponentDto'
 import { PostCardOptionConfiguration } from '~/hooks/PostCardOptions'
 import {
-  AdCashResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCashResponsiveBanner'
-import {
-  TrafficstarsResponsiveBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsResponsiveBanner'
+  AdsterraResponsiveBanner
+} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraResponsiveBanner'
 
 const PaginationBar = dynamic(() =>
   import('~/components/PaginationBar/PaginationBar').then((module) => module.PaginationBar)
@@ -36,8 +33,6 @@ export const Home: FC<Props> = ({ posts, trendingPosts }) => {
 
   return (
     <div className={ styles.home__container }>
-
-      <TrafficstarsResponsiveBanner />
       <div className={ styles.home__entryContainer }>
         <div className={ styles.home__entryHeader }>
           <h2 className={ styles.home__entryTitle }>
@@ -59,7 +54,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts }) => {
         />
       </div>
 
-      <AdCashResponsiveBanner />
+      <AdsterraResponsiveBanner />
 
       <div className={ styles.home__entryContainer }>
         <div className={ styles.home__entryHeader }>
@@ -75,7 +70,7 @@ export const Home: FC<Props> = ({ posts, trendingPosts }) => {
         </div>
         <PostCardGallery
           posts={ posts }
-          showAds={ true }
+          showAds={ false }
           postCardOptions={ postCardOptions }
         />
         <PaginationBar

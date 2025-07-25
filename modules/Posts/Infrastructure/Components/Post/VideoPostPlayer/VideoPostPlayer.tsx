@@ -9,6 +9,9 @@ import { rgbDataURL } from '~/modules/Shared/Infrastructure/FrontEnd/BlurDataUrl
 import Image from 'next/image'
 import useTranslation from 'next-translate/useTranslation'
 import { RxGear } from 'react-icons/rx'
+import { useAdBlockDetector } from '~/hooks/AdBlockDetector'
+import { CommonButton } from '~/modules/Shared/Infrastructure/Components/CommonButton/CommonButton'
+import { IoReload } from 'react-icons/io5'
 
 export interface Props {
   title: string
@@ -30,6 +33,8 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
 }) => {
   const [selectedMediaUrl, setSelectedMediaUrl] = useState<MediaUrlComponentDto>(selectableUrls[0])
   const { t } = useTranslation('post')
+
+  const isBlocked = useAdBlockDetector()
 
   let playerElement: ReactElement | null = null
 
@@ -71,6 +76,35 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
     </span>
   )
 
+  if (isBlocked) {
+    return (
+      <div className={ styles.videoPostPlayer__container }>
+        <div className={ styles.videoPostPlayer__blockedContentContainer }>
+          <Image
+            src={ '/img/ad-block.png' }
+            alt={ t('post_ad_blocker_image_alt_title') }
+            className={ styles.videoPostPlayer__blockedImageWrapper }
+            width={ 0 }
+            height={ 0 }
+            sizes={ '100vw' }
+            placeholder={ 'blur' }
+            blurDataURL={ rgbDataURL(81, 80, 80) }
+            priority={ true }
+          />
+          <p className={ styles.videoPostPlayer__blockedMessage }>
+            { t('post_ad_blocker_message_title') }
+          </p>
+          <CommonButton
+            title={ t('post_ad_blocker_reload_button_title') }
+            disabled={ false }
+            icon={ <IoReload /> }
+            onClick={ () => window.location.reload() }
+          />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={ styles.videoPostPlayer__container }>
       {
@@ -78,7 +112,7 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
           ? <span className={ styles.videoPostPlayer__floatingMenuButton }>
             <IconButton
               onClick={ () => setSourcesMenuOpen(!sourcesMenuOpen) }
-              icon={ <BsThreeDots /> }
+              icon={ <BsThreeDots/> }
               title={ t('post_sources_button_title') }
               showTooltip={ true }
             />
@@ -95,40 +129,40 @@ export const VideoPostPlayer: FC<Props & Partial<VideoPostPlayerOptionalProps>> 
       >
         <ModalMenuHeader
           title={ t('post_video_player_sources_menu_title') }
-          subtitle={ t('post_video_player_sources_menu_subtitle') }
-          icon={ <RxGear /> }
-        />
-        <div className={ styles.videoPostPlayer__sourcesMenuList }>
-          { selectableUrls.map((selectableUrl) => (
-            <button
-              key={ selectableUrl.url }
-              className={ `
+            subtitle={ t('post_video_player_sources_menu_subtitle') }
+            icon={ <RxGear/> }
+          />
+          <div className={ styles.videoPostPlayer__sourcesMenuList }>
+            { selectableUrls.map((selectableUrl) => (
+              <button
+                key={ selectableUrl.url }
+                className={ `
               ${styles.videoPostPlayer__sourceOption} 
               ${selectedMediaUrl.url === selectableUrl.url ? styles.videoPostPlayer__sourceOption__selected : ''}
             ` }
-              onClick={ async () => {
-                setSelectedMediaUrl(selectableUrl)
-              } }
-            >
-              <div className={ styles.videoPostPlayer__sourceOptionImageWrapper }>
-                <Image
-                  src={ selectableUrl.provider.logoUrl }
-                  alt={ selectableUrl.provider.name }
-                  className={ styles.videoPostPlayer__sourceOptionImage }
-                  width={ 0 }
-                  height={ 0 }
-                  sizes={ '100vw' }
-                  placeholder={ 'blur' }
-                  blurDataURL={ rgbDataURL(81, 80, 80) }
-                />
-              </div>
-              { selectableUrl.title }
-            </button>
-          )) }
+                onClick={ async () => {
+                  setSelectedMediaUrl(selectableUrl)
+                } }
+              >
+                <div className={ styles.videoPostPlayer__sourceOptionImageWrapper }>
+                  <Image
+                    src={ selectableUrl.provider.logoUrl }
+                    alt={ selectableUrl.provider.name }
+                    className={ styles.videoPostPlayer__sourceOptionImage }
+                    width={ 0 }
+                    height={ 0 }
+                    sizes={ '100vw' }
+                    placeholder={ 'blur' }
+                    blurDataURL={ rgbDataURL(81, 80, 80) }
+                  />
+                </div>
+                { selectableUrl.title }
+              </button>
+            )) }
+          </div>
         </div>
+        { sourcesMenuOpen ? closeVideoSourceMenuButton : null }
+        { playerElement }
       </div>
-      { sourcesMenuOpen ? closeVideoSourceMenuButton : null }
-      { playerElement }
-    </div>
   )
 }

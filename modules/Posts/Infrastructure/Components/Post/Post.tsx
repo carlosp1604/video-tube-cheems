@@ -14,7 +14,6 @@ import { PostData } from '~/modules/Posts/Infrastructure/Components/Post/PostDat
 import dynamic from 'next/dynamic'
 import { useSavePost } from '~/hooks/SavePosts'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
-import AdCashBanner250x300 from '~/modules/Shared/Infrastructure/Components/Advertising/AdCash/AdCash300x250Banner'
 import TrafficstarsDesktopBanner
   from '~/modules/Shared/Infrastructure/Components/Advertising/Trafficstars/TrafficstarsDesktopBanner'
 
@@ -206,7 +205,6 @@ export const Post: FC<Props> = ({
 
         <div className={ styles.post__rightContainer }>
           <span className={ styles.post__rightContainerItem }>
-            <AdCashBanner250x300 />
           </span>
           <span className={ styles.post__rightContainerItemHiddenMobile }>
             <TrafficstarsDesktopBanner />

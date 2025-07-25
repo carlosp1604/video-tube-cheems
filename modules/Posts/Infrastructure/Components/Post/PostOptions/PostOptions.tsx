@@ -20,6 +20,7 @@ import { useToast } from '~/components/AppToast/ToastContext'
 import { useSession } from 'next-auth/react'
 import { DislikeButton } from '~/components/ReactionButton/DislikeButton'
 import { LikeButton } from '~/components/ReactionButton/LikeButton'
+import { useAdBlockDetector } from '~/hooks/AdBlockDetector'
 
 const DownloadMenu = dynamic(() => import(
   '~/modules/Posts/Infrastructure/Components/Post/DownloadMenu/DownloadMenu'
@@ -64,6 +65,8 @@ export const PostOptions: FC<Props> = ({
   const [downloadMenuOpen, setDownloadMenuOpen] = useState<boolean>(false)
   const [reportMenuOpen, setReportMenuOpen] = useState<boolean>(false)
   const { pathname } = useRouter()
+
+  const isBlocked = useAdBlockDetector()
 
   const { t } = useTranslation('post')
   const { error } = useToast()
@@ -128,6 +131,11 @@ export const PostOptions: FC<Props> = ({
       <span
         className={ styles.postOptions__optionItem }
         onClick={ async () => {
+          if (isBlocked) {
+            error(t('post_ad_blocker_blocked_resource_title'))
+
+            return
+          }
           ReactGA.event({
             category: VideoPostCategory,
             action: ClickDownloadButtonAction,
@@ -149,7 +157,14 @@ export const PostOptions: FC<Props> = ({
     sourcesButton = (
       <button
         className={ styles.postOptions__optionItem }
-        onClick={ onClickSourcesButton }
+        onClick={ () => {
+          if (isBlocked) {
+            error(t('post_ad_blocker_blocked_resource_title'))
+
+            return
+          }
+          onClickSourcesButton()
+        } }
       >
         <RxGear className={ styles.postOptions__optionItemIcon }/>
         { t('post_sources_button_title') }

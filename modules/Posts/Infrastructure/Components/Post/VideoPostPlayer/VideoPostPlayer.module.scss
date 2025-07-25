@@ -11,6 +11,24 @@
     }
   }
 
+  &__blocked-content-container {
+    @apply flex flex-col items-center justify-center gap-y-2 h-full w-full
+    bg-red/50 p-1 tb:p-4;
+  }
+
+  &__blocked-button {
+    @apply p-2 rounded-lg bg-brand-primary-bg;
+  }
+
+  &__blocked-message {
+    @apply my-1 text-xs tb:text-sm md:text-lg text-center tb:my-4
+    whitespace-pre-line leading-tight;
+  }
+
+  &__blocked-image-wrapper {
+    @apply h-10 sm:h-16 tb:h-20 md:h-32 w-auto object-contain;
+  }
+
   &__sourcesMenuContainer {
     @apply flex flex-col gap-y-2 p-4 pb-1 h-full w-full absolute
     top-0 right-0 translate-y-1/2 bg-body/90 z-video-player-options

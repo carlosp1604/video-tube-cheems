@@ -1,6 +1,10 @@
 {
   "action_cannot_be_performed_error_message": "No puedes hacer esto ahora, espera a que termine la operación actual",
   "advertising_section_title": "Publicidad",
+  "post_ad_blocker_blocked_resource_title": "Desactiva el bloqueador de anuncios para acceder al contenido",
+  "post_ad_blocker_image_alt_title": "Bloqueador de anuncios detectado",
+  "post_ad_blocker_message_title": "Hemos detectado un bloqueador de anuncios. Por favor, para acceder al contenido desactiva el bloqueador de anuncios. Los anuncios nos ayudan a mantener la web.\n\nDespués de desactivar el bloqueador recarga la página",
+  "post_ad_blocker_reload_button_title": "Recargar página",
   "post_comments_button_title": "Comentarios",
   "post_data_collaborator_title": "Colaborador",
   "post_data_actor_title": "Actor",

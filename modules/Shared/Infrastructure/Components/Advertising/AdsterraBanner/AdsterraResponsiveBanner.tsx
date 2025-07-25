@@ -1,32 +1,41 @@
 import { FC, useEffect, useState } from 'react'
-import { AdsterraBanner } from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraBanner'
-import {
-  AdsterraDesktopBanner
-} from '~/modules/Shared/Infrastructure/Components/Advertising/AdsterraBanner/AdsterraDesktopBanner'
 import { MediaQueryBreakPoints, useMediaQuery } from '~/hooks/MediaQuery'
+import styles from '~/modules/Shared/Infrastructure/Components/Advertising/Banner.module.scss'
 
 export const AdsterraResponsiveBanner: FC = () => {
-  const [showMobile, setShowMobile] = useState(false)
-  const [showDesktop, setShowDesktop] = useState(false)
+  const [mounted, setMounted] = useState<boolean>(false)
 
   const activeBreakpoint = useMediaQuery()
 
   useEffect(() => {
-    if (activeBreakpoint <= MediaQueryBreakPoints.TB) {
-      setShowMobile(true)
-      setShowDesktop(false)
+    if (mounted) {
+      return
     }
 
+    setMounted(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className={ styles.banner__container }>
+        <div className={ `${styles.banner__bannerWrapper90x729} ${styles.banner__responsiveDesktop}` } />
+        <div className={ `${styles.banner__bannerContainer50x320} ${styles.banner__responsiveMobile}` } />
+      </div>
+    )
+  } else {
     if (activeBreakpoint >= MediaQueryBreakPoints.MD) {
-      setShowDesktop(true)
-      setShowMobile(false)
+      return (
+        <div className={ styles.banner__container }>
+          <div className={ `${styles.banner__bannerWrapper90x729} ${styles.banner__responsiveDesktop}` }/>
+        </div>
+      )
+    } else {
+      return (
+        <div className={ styles.banner__container }>
+          <div className={ `${styles.banner__bannerContainer50x320} ${styles.banner__responsiveMobile}` }/>
+        </div>
+      )
     }
-  }, [activeBreakpoint])
-
-  return (
-    <>
-      { showDesktop && <AdsterraDesktopBanner showAdLegend={ false }/> }
-      { showMobile && <AdsterraBanner showAdLegend={ false }/> }
-    </>
-  )
+  }
 }

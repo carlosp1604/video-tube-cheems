@@ -4,6 +4,7 @@ export function useAdBlockDetector () {
   const [isBlocked, setIsBlocked] = useState(false)
 
   useEffect(() => {
+    /**
     const script = document.createElement('script')
 
     script.src = 'https://loopflavour.com/e1f43240407676625505d3a7d12fd9d6/invoke.js'
@@ -22,6 +23,7 @@ export function useAdBlockDetector () {
     return () => {
       script.remove()
     }
+    */
   }, [])
 
   return isBlocked
